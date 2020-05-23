@@ -46,7 +46,7 @@ getTradeStream({
                 canISell = false;
                 const profit = trade[0] / buyPrice * 100 > 100 ? Number(trade[0] / buyPrice * 100 - 100).toPrecision(3) - 0.2 : Number(-1 * (100 - trade[0] / buyPrice * 100)).toPrecision(3) - 0.2;
                 totalProfit += profit;
-                fs.appendFile('message.txt', `Sell: ${trade[0]};\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%`, err => {
+                fs.appendFile('message.txt', `Sell: ${trade[0]}; Date:${moment().format('MMMM Do YYYY, h:mm:ss a')}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`, err => {
                     if (err) throw err;
                     console.log('The sell price were appended to file!');
                 });
