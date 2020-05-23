@@ -13,7 +13,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "lint-staged && lint-diff HEAD"
+            "pre-commit": "if git-branch-is master; then echo 'Current branch is protected from commit. You can not commit directly to master'; exit 1; else lint-staged && lint-diff HEAD; fi",
         }
     },
     "lint-staged": {
@@ -38,6 +38,7 @@
         "eslint-config-prettier": "^6.9.0",
         "eslint-plugin-import": "^2.20.0",
         "eslint-plugin-prettier": "^3.0.0",
+        "git-branch-is": "^3.1.0",
         "husky": "^4.0.1",
         "lint-diff": "^1.2.1",
         "lint-staged": "^10.0.7",
