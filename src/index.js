@@ -1,3 +1,4 @@
+import { bufferCount, pluck } from 'rxjs/operators';
 import { getTradeStream } from './trades';
 
 const SYMBOLS = {
@@ -7,6 +8,7 @@ const SYMBOLS = {
 };
 
 const RESOURCES = {
+    TRADE: 'trade',
     AGG_TRADE: 'aggTrade',
     TICKER: 'ticker',
     KLINE: 'kline',
@@ -14,7 +16,9 @@ const RESOURCES = {
 
 getTradeStream({
     symbol: SYMBOLS.BTCUSDT,
-    resource: RESOURCES.AGG_TRADE,
-}).subscribe(trade => {
-    console.log(trade);
-});
+    resource: RESOURCES.TRADE,
+})
+    .pipe(pluck('price'), bufferCount(10, 1))
+    .subscribe(trade => {
+        console.log(trade);
+    });

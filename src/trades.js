@@ -8,6 +8,7 @@ const ROOT_URI = 'wss://stream.binance.com:9443/ws';
 const KEY_MAPPER = {
     e: 'eventType',
     E: 'eventTime',
+    t: 'tradeId',
     s: 'symbol',
     a: 'aggregateTradeId',
     p: 'price',
