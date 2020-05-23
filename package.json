@@ -1,13 +1,37 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "scripts": {
-    "start": "node ."
-  },
-  "dependencies": {
-    "rxjs": "^6.5.5",
-    "ws": "^7.3.0"
-  }
+    "name": "server",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "scripts": {
+        "start": "node ."
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged && lint-diff HEAD"
+        }
+    },
+    "lint-staged": {
+        "*.{js,json}": [
+            "prettier --write",
+            "git add"
+        ]
+    },
+    "dependencies": {
+        "rxjs": "^6.5.5",
+        "ws": "^7.3.0"
+    },
+    "devDependencies": {
+        "babel-eslint": "^10.0.3",
+        "eslint": "^6.8.0",
+        "eslint-config-prettier": "^6.9.0",
+        "eslint-plugin-import": "^2.20.0",
+        "eslint-plugin-prettier": "^3.0.0",
+        "husky": "^4.0.1",
+        "lint-diff": "^1.2.1",
+        "lint-staged": "^10.0.7",
+        "prettier": "^1.19.1",
+        "prettier-eslint": "^9.0.1",
+        "standard": "^14.3.1"
+    }
 }
