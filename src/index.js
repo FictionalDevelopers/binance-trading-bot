@@ -1,4 +1,4 @@
-const getTradeStream = require('./trades');
+import { getTradeStream } from './trades';
 
 const SYMBOLS = {
     BTCUSDT: 'btcusdt',
