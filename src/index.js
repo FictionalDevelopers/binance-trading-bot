@@ -9,10 +9,11 @@ const SYMBOLS = {
 const RESOURCES = {
     AGG_TRADE: 'aggTrade',
     TICKER: 'ticker',
+    KLINE: 'kline',
 };
 
 getTradeStream({
-    symbol: SYMBOLS.BNBUSDT,
+    symbol: SYMBOLS.BTCUSDT,
     resource: RESOURCES.AGG_TRADE,
 }).subscribe(trade => {
     console.log(trade);
