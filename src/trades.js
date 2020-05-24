@@ -27,8 +27,8 @@ export function getTradeStream({ symbol, resource }) {
         map(JSON.parse),
         map(_mapKeys(key => KEY_MAPPER[key] || key)),
         catchError(err => {
-            console.log('ERORR');
-            console.log(err);
+            console.error('ERROR');
+            console.error(err);
         })
     );
 }
