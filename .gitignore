@@ -3,4 +3,5 @@ node_modules/
 dist/
 *.log
 *.txt
+.env
 package-lock.json
