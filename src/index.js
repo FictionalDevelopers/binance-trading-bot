@@ -1,18 +1,11 @@
 import { bufferCount, pluck } from 'rxjs/operators';
-import { getTradeStream } from './trades';
+import { getTradeStream } from './api/trades';
+import { SYMBOLS, RESOURCES } from './constants';
+import { getBalances } from './api/balance';
 
-const SYMBOLS = {
-    BTCUSDT: 'btcusdt',
-    BNBUSDT: 'bnbusdt',
-    BNBBTC: 'bnbbtc',
-};
-
-const RESOURCES = {
-    TRADE: 'trade',
-    AGG_TRADE: 'aggTrade',
-    TICKER: 'ticker',
-    KLINE: 'kline',
-};
+getBalances('USDT').then(res => {
+    console.log('res', res);
+});
 
 getTradeStream({
     symbol: SYMBOLS.BTCUSDT,

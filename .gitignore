@@ -2,3 +2,6 @@ node_modules/
 .idea/
 dist/
 *.log
+*.txt
+.env
+package-lock.json
