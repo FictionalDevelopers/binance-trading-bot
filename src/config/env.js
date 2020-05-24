@@ -1,9 +1,11 @@
-import { config } from 'dotenv';
+import { load } from 'dotenv-extended';
 
-const { parsed } = config();
+const env = load({
+    includeProcessEnv: true,
+});
 
 export default {
-    APIKEY: parsed.APIKEY,
-    APISECRET: parsed.APISECRET,
-    DB_URL: parsed.DB_URL,
+    APIKEY: env.APIKEY,
+    APISECRET: env.APISECRET,
+    DB_URL: env.DB_URL,
 };

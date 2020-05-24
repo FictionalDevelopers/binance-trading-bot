@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - feature/5-configure-deployment-to-server
 
 jobs:
   docker-build:
@@ -12,26 +11,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-#      - name: Login into dockerhub
-#        run: |
-#          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_LOGIN }} --password-stdin
-#      - name: Pull existing image to use it as a cache
-#        run: |
-#          docker pull fictionaldev/binance-bot:latest
-#      - name: Build a docker image
-#        run: |
-#          docker build -t fictionaldev/binance-bot --cache-from fictionaldev/binance-bot .
-#      - name: Push a docker image
-#        run: |
-#          docker push fictionaldev/binance-bot
-      - name: SSH and run
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            echo "${{ secrets.SSH_HOST }}" > testfile
+      - name: Login into dockerhub
+        run: |
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_LOGIN }} --password-stdin
+      - name: Pull existing image to use it as a cache
+        run: |
+          docker pull fictionaldev/binance-bot:latest
+      - name: Build a docker image
+        run: |
+          docker build -t fictionaldev/binance-bot --cache-from fictionaldev/binance-bot .
+      - name: Push a docker image
+        run: |
+          docker push fictionaldev/binance-bot
+
+# UNCOMMENT ONCE THERE IS ACTUALLY SOMETHING TO DO ON THE SERVER
+
+#      - name: SSH and run
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.SSH_HOST }}
+#          username: ${{ secrets.SSH_USER }}
+#          password: ${{ secrets.SSH_PASSWORD }}
+#          script: |
+#            echo "APIKEY=${{ secrets.ENV_APIKEY }}" >> .env.temp
+#            echo "APISECRET=${{ secrets.ENV_APISECRET }}" >> .env.temp
+#            echo "DB_URL=${{ secrets.ENV_DB_URL }}" >> .env.temp
 #            docker pull fictionaldev/binance-bot:latest
 #            docker container stop binance-bot 2>/dev/null || true && docker container rm binance-bot 2>/dev/null || true
-#            docker run --name binance-bot fictionaldev/binance-bot
+#            docker run --env-file ./.env.temp -d --name binance-bot fictionaldev/binance-bot
+#            rm .env.temp
