@@ -13,8 +13,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "if git-branch-is master; then echo 'Current branch is protected from commit. You can not commit directly to master'; exit 1; else lint-staged && lint-diff HEAD; fi",
-            "pre-push": "if git-branch-is master; then echo 'Current branch is protected from push.'; exit 1; fi"
+            "pre-commit": "if git-branch-is master; then echo 'Current branch is protected from commit. You can not commit directly to master'; exit 1; else lint-staged && lint-diff HEAD; fi"
         }
     },
     "lint-staged": {
