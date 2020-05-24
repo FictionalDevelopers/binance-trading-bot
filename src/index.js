@@ -28,7 +28,7 @@ getTradeStream({
 })
     .pipe(pluck('price'), bufferCount(10, 1))
     .subscribe(trade => {
-        if (trade[trade.length - 1] - trade[0] >= 5 && !canISell) {
+        if (trade[trade.length - 1] - trade[8] >= 5 && !canISell) {
             buysCounter++;
             buyPrice = trade[trade.length - 1];
             canISell = true;
@@ -41,12 +41,12 @@ getTradeStream({
                 }
             );
         }
-        if (trade[0] - trade[trade.length - 1] >= 5 && canISell) {
+        if (trade[8] - trade[trade.length - 1] >= 5 && canISell) {
             if (buysCounter !== 0) {
                 canISell = false;
-                const profit = trade[0] / buyPrice * 100 > 100 ? Number(trade[0] / buyPrice * 100 - 100).toPrecision(3) - 0.2 : Number(-1 * (100 - trade[0] / buyPrice * 100)).toPrecision(3) - 0.2;
+                const profit = trade[8] / buyPrice * 100 > 100 ? Number(trade[8] / buyPrice * 100 - 100).toFixed(3) - 0.2 : Number(-1 * (100 - trade[8] / buyPrice * 100)).toFixed(3) - 0.2;
                 totalProfit += profit;
-                fs.appendFile('message.txt', `Sell: ${trade[0]}; Date:${moment().format('MMMM Do YYYY, h:mm:ss a')}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`, err => {
+                fs.appendFile('message.txt', `Sell: ${trade[8]}; Date:${moment().format('MMMM Do YYYY, h:mm:ss a')}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`, err => {
                     if (err) throw err;
                     console.log('The sell price were appended to file!');
                 });
