@@ -1,8 +1,7 @@
 import Binance from 'node-binance-api';
-import dotenv from 'dotenv';
+import config from '../config';
 
-dotenv.config();
-const { APIKEY, APISECRET } = process.env;
+const { APIKEY, APISECRET } = config;
 
 export default new Binance().options({
     APIKEY,
