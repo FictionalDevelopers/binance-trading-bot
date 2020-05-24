@@ -1,17 +1,30 @@
 import { bufferCount, pluck } from 'rxjs/operators';
+
 import { getTradeStream } from './api/trades';
-import { SYMBOLS, RESOURCES } from './constants';
+import { RESOURCES, SYMBOLS } from './constants';
 import { getBalances } from './api/balance';
+import { connect } from './db/connection';
+import { service as OrderService } from './components/orders';
 
-getBalances('USDT').then(res => {
-    console.log('res', res);
-});
+(async function() {
+    await connect();
 
-getTradeStream({
-    symbol: SYMBOLS.BTCUSDT,
-    resource: RESOURCES.TRADE,
-})
-    .pipe(pluck('price'), bufferCount(10, 1))
-    .subscribe(trade => {
-        console.log(trade);
+    const order = await OrderService.trackPurchaseOrder({
+        price: 1200,
     });
+
+    console.log(order);
+
+    const balance = await getBalances('USDT');
+
+    console.log('USDT balance', balance);
+
+    getTradeStream({
+        symbol: SYMBOLS.BTCUSDT,
+        resource: RESOURCES.TRADE,
+    })
+        .pipe(pluck('price'), bufferCount(10, 1))
+        .subscribe(trade => {
+            console.log(trade);
+        });
+})();
