@@ -8,7 +8,9 @@ let canISell = false,
     buysCounter = 0,
     totalProfit = 0,
     prevAvPrice = 0,
-    buyPrice = null;
+    buyPrice = null,
+    diffSpeed = null;
+
 
 
 const SYMBOLS = {
@@ -24,15 +26,23 @@ const RESOURCES = {
     KLINE: 'kline',
 };
 
+
+const priceDiffSpeedAnalyzer = ()=> {
+    setInterval(()=> {
+
+    })
+}
+
 const sumPricesReducer = (accumulator, currentValue) => accumulator + Number(currentValue);
 
 let tradeBy10Prices = trade => {
-    const currentAvPrice = trade.reduce(sumPricesReducer, 0) / 10;
+    const pricesArrLength = trade.length;
+    const currentAvPrice = trade.reduce(sumPricesReducer, 0) / pricesArrLength;
     if (!prevAvPrice) {
         prevAvPrice = currentAvPrice;
         return;
     }
-    if ((currentAvPrice - prevAvPrice >= 1) && !canISell) {
+    if ((currentAvPrice - prevAvPrice >= 2) && !canISell) {
         try {
             buyPrice = Number(trade[trade.length - 1]);
             fs.appendFile(
@@ -50,7 +60,7 @@ let tradeBy10Prices = trade => {
         } finally {
         }
     }
-    if ((prevAvPrice - currentAvPrice >= 3) && canISell && buysCounter !== 0) {
+    if ((prevAvPrice - currentAvPrice >= 2) && canISell && buysCounter !== 0) {
         try {
             const profit = trade[trade.length - 1] / buyPrice > 1 ? Number(trade[trade.length - 1] / buyPrice * 100 - 100) - 0.2 : Number(-1 * (100 - trade[trade.length - 1] / buyPrice * 100)) - 0.2;
             totalProfit += profit;
@@ -66,7 +76,7 @@ let tradeBy10Prices = trade => {
     }
     prevAvPrice = currentAvPrice;
 
-    // console.log(...trade);
+    console.log(...trade);
 };
 let tradeByCurrAndPrevPrices = trade => {
     const currentPrice = Number(trade[1]);
@@ -121,7 +131,7 @@ try {
         symbol: SYMBOLS.BTCUSDT,
         resource: RESOURCES.TRADE,
     })
-        .pipe(pluck('price'), bufferCount(10, 10))
+        .pipe(pluck('price'), bufferCount(20, 20))
         .subscribe(tradeBy10Prices);
 
 } catch (e) {
