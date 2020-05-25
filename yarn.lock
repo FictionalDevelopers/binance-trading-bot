@@ -1081,6 +1081,13 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
+auto-parse@^1.3.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/auto-parse/-/auto-parse-1.8.0.tgz#1164051c832d5574e8eb6a18d3a37a278fe61e72"
+  integrity sha512-Uri4uC+K5cSi5hjM4snFrqPrjqUpwxeSW5EMTPvN7Ju3PlDzmXXDr5tjdzxPvvwgT3J7bmMDJ3Rm625nbrc72A==
+  dependencies:
+    typpy "2.3.11"
+
 aws-sign2@~0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/aws-sign2/-/aws-sign2-0.7.0.tgz#b46e890934a9591f2d2f6f86d7e6a9f1b3fe76a8"
@@ -1249,6 +1256,11 @@ camelcase@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
   integrity sha1-1UVjW+HjPFQmScaRc+Xeas+uNN0=
+
+camelcase@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.3.1.tgz#e3c9b31569e106811df242f715725a1f4c494320"
+  integrity sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==
 
 caniuse-lite@^1.0.30001043:
   version "1.0.30001064"
@@ -1513,7 +1525,7 @@ cross-spawn@^6.0.0, cross-spawn@^6.0.5:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-cross-spawn@^7.0.0:
+cross-spawn@^7.0.0, cross-spawn@^7.0.1:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.2.tgz#d0d7dcfa74e89115c7619f4f721a94e1fdb716d6"
   integrity sha512-PD6G8QG3S4FK/XCGFbEQrDqO2AnMMsy0meR7lerlIOHAAbkuavGU/pOqprrlvfTNjvowivTeBsjebAL0NSoMxw==
@@ -1681,6 +1693,16 @@ doctrine@^3.0.0:
   integrity sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==
   dependencies:
     esutils "^2.0.2"
+
+dotenv-extended@^2.8.0:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/dotenv-extended/-/dotenv-extended-2.8.0.tgz#cfcf73619766cec12c848f93fac36d45560dd562"
+  integrity sha512-7R3lSD7JcKkIZ+JnVN4LPJmJ2oR3pi+taqRxVpuod0gpCw/ZjYehEXiqceblP9pQinXY0Gt4nEmVh/1um4c2Mw==
+  dependencies:
+    auto-parse "^1.3.0"
+    camelcase "^5.3.1"
+    cross-spawn "^7.0.1"
+    dotenv "^8.2.0"
 
 dotenv@^8.2.0:
   version "8.2.0"
@@ -2342,6 +2364,13 @@ function-bind@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/function-bind/-/function-bind-1.1.1.tgz#a56899d3ea3c9bab874bb9773b7c5ede92f4895d"
   integrity sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==
+
+function.name@^1.0.3:
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/function.name/-/function.name-1.0.12.tgz#34eec84476d9fb67977924a4cdcb98ec85695726"
+  integrity sha512-C7Tu+rAFrWW5RjXqtKtXp2xOdCujq+4i8ZH3w0uz/xrYHBwXZrPt96x8cDAEHrIjeyEv/Jm6iDGyqupbaVQTlw==
+  dependencies:
+    noop6 "^1.0.1"
 
 functional-red-black-tree@^1.0.1:
   version "1.0.1"
@@ -3452,6 +3481,11 @@ node-releases@^1.1.53:
   version "1.1.56"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.56.tgz#bc054a417d316e3adac90eafb7e1932802f28705"
   integrity sha512-EVo605FhWLygH8a64TjgpjyHYOihkxECwX1bHHr8tETJKWEiWS2YJjPbvsX2jFjnjTNEgBCmk9mLjKG1Mf11cw==
+
+noop6@^1.0.1:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/noop6/-/noop6-1.0.8.tgz#eff06e2e5b3621e9e5618f389d6a2294f76e64ad"
+  integrity sha512-+Al5csMVc40I8xRfJsyBcN1IbpyvebOuQmMfxdw+AL6ECELey12ANgNTRhMfTwNIDU4W9W0g8EHLcsb3+3qPFA==
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.3.4:
   version "2.5.0"
@@ -4855,6 +4889,13 @@ typescript@^3.2.1:
   version "3.9.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.3.tgz#d3ac8883a97c26139e42df5e93eeece33d610b8a"
   integrity sha512-D/wqnB2xzNFIcoBG9FG8cXRDjiqSTbG2wd8DMZeQyJlP1vfTkIxH4GKveWaEBYySKIg+USu+E+EDIR47SqnaMQ==
+
+typpy@2.3.11:
+  version "2.3.11"
+  resolved "https://registry.yarnpkg.com/typpy/-/typpy-2.3.11.tgz#21a0d22c96fb646306e08b6c669ad43608e1b3b9"
+  integrity sha512-Jh/fykZSaxeKO0ceMAs6agki9T5TNA9kiIR6fzKbvafKpIw8UlNlHhzuqKyi5lfJJ5VojJOx9tooIbyy7vHV/g==
+  dependencies:
+    function.name "^1.0.3"
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"
