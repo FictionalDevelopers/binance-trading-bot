@@ -6,10 +6,9 @@ import moment from 'moment';
 
 let canISell = false,
     buysCounter = 0,
-    buyPrice = null,
     totalProfit = 0,
     prevAvPrice = 0,
-    prevPrice = 0;
+    buyPrice = null;
 
 
 const SYMBOLS = {
@@ -28,12 +27,12 @@ const RESOURCES = {
 const sumPricesReducer = (accumulator, currentValue) => accumulator + Number(currentValue);
 
 let tradeBy10Prices = trade => {
+    const currentAvPrice = trade.reduce(sumPricesReducer, 0) / 10;
     if (!prevAvPrice) {
-        prevAvPrice = trade.reduce(sumPricesReducer, 0) / 10;
+        prevAvPrice = currentAvPrice;
         return;
     }
-    const currentAvPrice = trade.reduce(sumPricesReducer, 0) / 10;
-    if ((currentAvPrice - prevAvPrice >= 4) && !canISell) {
+    if ((currentAvPrice - prevAvPrice >= 1) && !canISell) {
         try {
             buyPrice = Number(trade[trade.length - 1]);
             fs.appendFile(
@@ -41,85 +40,91 @@ let tradeBy10Prices = trade => {
                 `Buy: ${buyPrice}; Date:${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`,
                 err => {
                     if (err) throw err;
-                    console.log('The buy price were appended to file!');
+                    console.log('Bought by ' + buyPrice);
                 }
             );
             canISell = true;
             buysCounter++;
-            prevAvPrice = currentAvPrice;
         } catch (e) {
             console.error(e);
         } finally {
         }
     }
-    if ((prevAvPrice - currentAvPrice >= 4) && canISell && buysCounter !== 0) {
+    if ((prevAvPrice - currentAvPrice >= 3) && canISell && buysCounter !== 0) {
         try {
-            const sellPrice = trade[trade.length - 1];
-            const profit = sellPrice / buyPrice > 1 ? Number(sellPrice / buyPrice * 100 - 100) - 0.2 : Number(-1 * (100 - sellPrice / buyPrice * 100)) - 0.2;
+            const profit = trade[trade.length - 1] / buyPrice > 1 ? Number(trade[trade.length - 1] / buyPrice * 100 - 100) - 0.2 : Number(-1 * (100 - trade[trade.length - 1] / buyPrice * 100)) - 0.2;
             totalProfit += profit;
-            fs.appendFile('message.txt', `Sell: ${sellPrice}; Date:${moment().format('MMMM Do YYYY, h:mm:ss a')}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`, err => {
+            fs.appendFile('message.txt', `Sell: ${trade[trade.length - 1]}; Date:${moment().format('MMMM Do YYYY, h:mm:ss a')}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`, err => {
                 if (err) throw err;
-                console.log('The sell price were appended to file!');
+                console.log('Sold by ' + trade[trade.length - 1]);
             });
             canISell = false;
-            prevAvPrice = 0;
         } catch (e) {
             console.error(e);
         } finally {
         }
-
     }
-    console.log(...trade);
+    prevAvPrice = currentAvPrice;
+
+    // console.log(...trade);
 };
 let tradeByCurrAndPrevPrices = trade => {
-    if (!prevPrice) {
-        prevPrice = trade[0];
-        return;
-    }
-    const currentPrice = trade[0];
-    if ((currentPrice - prevPrice >= 5) && !canISell) {
+    const currentPrice = Number(trade[1]);
+    const prevPrice = Number(trade[0]);
+    if ((currentPrice - prevPrice >= 2) && !canISell) {
         try {
-            buyPrice = Number(trade[0]);
             fs.appendFile(
                 'message.txt',
-                `Buy: ${buyPrice}; Date:${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`,
+                `Buy: ${currentPrice}; Date:${moment().format('MMMM Do YYYY, h:mm:ss a')}\n`,
                 err => {
                     if (err) throw err;
                     console.log('The buy price were appended to file!');
                 }
             );
+            buyPrice = currentPrice;
             canISell = true;
             buysCounter++;
-            prevAvPrice = currentAvPrice;
         } catch (e) {
             console.error(e);
         } finally {
         }
     }
-    if ((prevPrice - currentPrice >= 5) && canISell && buysCounter !== 0) {
+    if ((prevPrice - currentPrice >= 2) && canISell && buysCounter !== 0) {
         try {
-            const sellPrice = trade[0];
-            const profit = sellPrice / buyPrice > 1 ? Number(sellPrice / buyPrice * 100 - 100) - 0.2 : Number(-1 * (100 - sellPrice / buyPrice * 100)) - 0.2;
+            const profit = currentPrice / buyPrice > 1 ? Number(currentPrice / buyPrice * 100 - 100) - 0.2 : Number(-1 * (100 - currentPrice / buyPrice * 100)) - 0.2;
             totalProfit += profit;
-            fs.appendFile('message.txt', `Sell: ${sellPrice}; Date:${moment().format('MMMM Do YYYY, h:mm:ss a')}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`, err => {
+            fs.appendFile('message.txt', `Sell: ${currentPrice}; Date:${moment().format('MMMM Do YYYY, h:mm:ss a')}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`, err => {
                 if (err) throw err;
                 console.log('The sell price were appended to file!');
             });
             canISell = false;
-            prevPrice = 0;
+            console.log('Current price: ' + currentPrice);
+            console.log('Prev price: ' + prevPrice);
         } catch (e) {
             console.error(e);
         } finally {
         }
 
     }
-    console.log(...trade);
+    // console.log(...trade);
 };
 
 
-getTradeStream({
-    symbol: SYMBOLS.BTCUSDT,
-    resource: RESOURCES.TRADE,
-})
-    .pipe(pluck('price'), bufferCount(1, 1))
-    .subscribe(tradeByCurrAndPrevPrices);
+try {
+    fs.appendFile(
+        'message.txt',
+        `--------------------------------------------\nBot started working at: ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n--------------------------------------------\n`,
+        err => {
+        }
+    );
+    getTradeStream({
+        symbol: SYMBOLS.BTCUSDT,
+        resource: RESOURCES.TRADE,
+    })
+        .pipe(pluck('price'), bufferCount(10, 10))
+        .subscribe(tradeBy10Prices);
+
+} catch (e) {
+    console.error(e);
+}
+
