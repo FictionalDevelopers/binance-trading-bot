@@ -2,6 +2,9 @@ import {bufferCount, pluck} from 'rxjs/operators';
 import {getTradeStream} from './trades';
 import fs from 'fs';
 import moment from 'moment';
+import Binance from 'node-binance-api';
+
+const binance = new Binance();
 
 
 let canISell = false,
@@ -9,9 +12,7 @@ let canISell = false,
     totalProfit = 0,
     prevAvPrice = 0,
     buyPrice = null,
-    diffSpeed = null;
-
-
+    prevVolume = null;
 
 const SYMBOLS = {
     BTCUSDT: 'btcusdt',
@@ -26,13 +27,6 @@ const RESOURCES = {
     KLINE: 'kline',
 };
 
-
-const priceDiffSpeedAnalyzer = ()=> {
-    setInterval(()=> {
-
-    })
-}
-
 const sumPricesReducer = (accumulator, currentValue) => accumulator + Number(currentValue);
 
 let tradeBy10Prices = trade => {
@@ -40,9 +34,10 @@ let tradeBy10Prices = trade => {
     const currentAvPrice = trade.reduce(sumPricesReducer, 0) / pricesArrLength;
     if (!prevAvPrice) {
         prevAvPrice = currentAvPrice;
+        console.log('No prev price found');
         return;
     }
-    if ((currentAvPrice - prevAvPrice >= 2) && !canISell) {
+    if ((currentAvPrice - prevAvPrice >= 3) && !canISell) {
         try {
             buyPrice = Number(trade[trade.length - 1]);
             fs.appendFile(
@@ -60,9 +55,9 @@ let tradeBy10Prices = trade => {
         } finally {
         }
     }
-    if ((prevAvPrice - currentAvPrice >= 2) && canISell && buysCounter !== 0) {
+    if ((prevAvPrice - currentAvPrice >= 3) && canISell && buysCounter !== 0 && (Number(trade[trade.length - 1])/buyPrice)*100 >=100.3) {
         try {
-            const profit = trade[trade.length - 1] / buyPrice > 1 ? Number(trade[trade.length - 1] / buyPrice * 100 - 100) - 0.2 : Number(-1 * (100 - trade[trade.length - 1] / buyPrice * 100)) - 0.2;
+            const profit = trade[trade.length - 1] / buyPrice > 1 ? Number(trade[trade.length - 1] / buyPrice * 100 - 100) : Number(-1 * (100 - trade[trade.length - 1] / buyPrice * 100));
             totalProfit += profit;
             fs.appendFile('message.txt', `Sell: ${trade[trade.length - 1]}; Date:${moment().format('MMMM Do YYYY, h:mm:ss a')}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`, err => {
                 if (err) throw err;
@@ -76,7 +71,7 @@ let tradeBy10Prices = trade => {
     }
     prevAvPrice = currentAvPrice;
 
-    console.log(...trade);
+    // console.log(...trade);
 };
 let tradeByCurrAndPrevPrices = trade => {
     const currentPrice = Number(trade[1]);
@@ -134,6 +129,20 @@ try {
         .pipe(pluck('price'), bufferCount(20, 20))
         .subscribe(tradeBy10Prices);
 
+    binance.websockets.chart("BTCUSDT", "1m", (symbol, interval, chart) => {
+        let tick = binance.last(chart);
+        if (!prevVolume) {
+            prevVolume = chart[tick].volume;
+            return;
+        }
+        const currentVolume = chart[tick].volume ;
+        // console.info(chart);
+        // Optionally convert 'chart' object to array:
+        //  let ohlc = binance.ohlc(chart);
+        //  console.info(symbol, ohlc[ohls.]);
+        if (currentVolume - prevVolume >= 0) console.log(currentVolume - prevVolume);
+        prevVolume = currentVolume;
+    });
 } catch (e) {
     console.error(e);
 }
