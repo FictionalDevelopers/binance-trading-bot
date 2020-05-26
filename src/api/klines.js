@@ -6,7 +6,7 @@ import mapKeys from '../utils/mapKeys';
 import { getTradeStream } from './trades';
 
 export const getKlineForPeriod = period =>
-    getTradeStream({
-        symbol: SYMBOLS.BTCUSDT,
-        resource: `${RESOURCES.KLINE}_${period}`,
-    }).pipe(pluck('kline'), map(mapKeys(KEY_MAPPERS.KLINE)));
+  getTradeStream({
+    symbol: SYMBOLS.BTCUSDT,
+    resource: `${RESOURCES.KLINE}_${period}`,
+  }).pipe(pluck('kline'), map(mapKeys(KEY_MAPPERS.KLINE)));

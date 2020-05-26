@@ -9,15 +9,15 @@ import mapKeys from '../utils/mapKeys';
 const ROOT_URI = 'wss://stream.binance.com:9443/ws';
 
 export function getTradeStream({ symbol, resource }) {
-    const ws = new WebSocket(`${ROOT_URI}/${symbol}@${resource}`);
+  const ws = new WebSocket(`${ROOT_URI}/${symbol}@${resource}`);
 
-    return fromEvent(ws, 'message').pipe(
-        pluck('data'),
-        map(JSON.parse),
-        map(mapKeys(KEY_MAPPERS.COMMON)),
-        catchError(err => {
-            console.log('ERORR');
-            console.log(err);
-        })
-    );
+  return fromEvent(ws, 'message').pipe(
+    pluck('data'),
+    map(JSON.parse),
+    map(mapKeys(KEY_MAPPERS.COMMON)),
+    catchError(err => {
+      console.log('ERORR');
+      console.log(err);
+    }),
+  );
 }
