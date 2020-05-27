@@ -12,6 +12,7 @@ let canISell = false,
     totalProfit = 0,
     prevAvPrice = 0,
     buyPrice = null,
+    trendSignal = false,
     prevVolume = null;
 
 const SYMBOLS = {
@@ -29,7 +30,7 @@ const RESOURCES = {
 
 const sumPricesReducer = (accumulator, currentValue) => accumulator + Number(currentValue);
 
-let tradeBy10Prices = trade => {
+let tradeBy20Prices = trade => {
     const pricesArrLength = trade.length;
     const currentAvPrice = trade.reduce(sumPricesReducer, 0) / pricesArrLength;
     if (!prevAvPrice) {
@@ -37,7 +38,7 @@ let tradeBy10Prices = trade => {
         console.log('No prev price found');
         return;
     }
-    if ((currentAvPrice - prevAvPrice >= 3) && !canISell) {
+    if ((currentAvPrice - prevAvPrice >= 3) && !canISell && trendSignal) {
         try {
             buyPrice = Number(trade[trade.length - 1]);
             fs.appendFile(
@@ -49,13 +50,14 @@ let tradeBy10Prices = trade => {
                 }
             );
             canISell = true;
+            trendSignal = false;
             buysCounter++;
         } catch (e) {
             console.error(e);
         } finally {
         }
     }
-    if ((prevAvPrice - currentAvPrice >= 3) && canISell && buysCounter !== 0 && (Number(trade[trade.length - 1])/buyPrice)*100 >=100.3) {
+    if ((prevAvPrice - currentAvPrice >= 3) && canISell && buysCounter !== 0 && trendSignal ) {
         try {
             const profit = trade[trade.length - 1] / buyPrice > 1 ? Number(trade[trade.length - 1] / buyPrice * 100 - 100) : Number(-1 * (100 - trade[trade.length - 1] / buyPrice * 100));
             totalProfit += profit;
@@ -64,6 +66,7 @@ let tradeBy10Prices = trade => {
                 console.log('Sold by ' + trade[trade.length - 1]);
             });
             canISell = false;
+            trendSignal = false;
         } catch (e) {
             console.error(e);
         } finally {
@@ -76,7 +79,7 @@ let tradeBy10Prices = trade => {
 let tradeByCurrAndPrevPrices = trade => {
     const currentPrice = Number(trade[1]);
     const prevPrice = Number(trade[0]);
-    if ((currentPrice - prevPrice >= 2) && !canISell) {
+    if ((currentPrice - prevPrice >= 1) && !canISell) {
         try {
             fs.appendFile(
                 'message.txt',
@@ -94,7 +97,7 @@ let tradeByCurrAndPrevPrices = trade => {
         } finally {
         }
     }
-    if ((prevPrice - currentPrice >= 2) && canISell && buysCounter !== 0) {
+    if ((prevPrice - currentPrice >= 1) && canISell && buysCounter !== 0) {
         try {
             const profit = currentPrice / buyPrice > 1 ? Number(currentPrice / buyPrice * 100 - 100) - 0.2 : Number(-1 * (100 - currentPrice / buyPrice * 100)) - 0.2;
             totalProfit += profit;
@@ -127,7 +130,7 @@ try {
         resource: RESOURCES.TRADE,
     })
         .pipe(pluck('price'), bufferCount(20, 20))
-        .subscribe(tradeBy10Prices);
+        .subscribe(tradeBy20Prices);
 
     binance.websockets.chart("BTCUSDT", "1m", (symbol, interval, chart) => {
         let tick = binance.last(chart);
@@ -135,12 +138,16 @@ try {
             prevVolume = chart[tick].volume;
             return;
         }
-        const currentVolume = chart[tick].volume ;
+        const currentVolume = chart[tick].volume;
+        if (currentVolume - prevVolume >=4) trendSignal = true;
+
         // console.info(chart);
         // Optionally convert 'chart' object to array:
         //  let ohlc = binance.ohlc(chart);
         //  console.info(symbol, ohlc[ohls.]);
-        if (currentVolume - prevVolume >= 0) console.log(currentVolume - prevVolume);
+        // if (currentVolume - prevVolume >= 0) console.log(currentVolume - prevVolume);
+        // console.log('Current volume: ' + currentVolume);
+        // console.log('Prev volume: ' + prevVolume);
         prevVolume = currentVolume;
     });
 } catch (e) {
