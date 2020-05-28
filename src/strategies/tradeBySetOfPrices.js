@@ -1,9 +1,12 @@
-import { bufferCount, pluck } from 'rxjs/operators';
-import { getTradeStream } from '../api/trades';
 import fs from 'fs';
 import { format } from 'date-fns';
+import { bufferCount, pluck, map } from 'rxjs/operators';
+import last from 'lodash/last';
+
+import { getTradeStream } from '../api/trades';
 import binance from '../api/init';
 import { SYMBOLS, RESOURCES } from '../constants';
+import getAverage from '../utils/getAverage';
 
 let canISell = false;
 let buysCounter = 0;
@@ -13,12 +16,9 @@ let buyPrice = null;
 let trendSignal = false;
 let prevVolume = null;
 
-const sumPricesReducer = (accumulator, currentValue) =>
-  accumulator + Number(currentValue);
-
-const tradeBy20Prices = trade => {
-  const pricesArrLength = trade.length;
-  const currentAvPrice = trade.reduce(sumPricesReducer, 0) / pricesArrLength;
+const tradeBy20Prices = prices => {
+  const currentAvPrice = getAverage(prices);
+  const lastPrice = last(prices);
   if (!prevAvPrice) {
     prevAvPrice = currentAvPrice;
     console.log('No prev price found');
@@ -26,7 +26,7 @@ const tradeBy20Prices = trade => {
   }
   if (currentAvPrice - prevAvPrice >= 3 && !canISell && trendSignal) {
     try {
-      buyPrice = Number(trade[trade.length - 1]);
+      buyPrice = lastPrice;
       fs.appendFile(
         'message.txt',
         `Buy: ${buyPrice}; Date:${format(
@@ -53,19 +53,19 @@ const tradeBy20Prices = trade => {
   ) {
     try {
       const profit =
-        trade[trade.length - 1] / buyPrice > 1
-          ? Number((trade[trade.length - 1] / buyPrice) * 100 - 100)
-          : Number(-1 * (100 - (trade[trade.length - 1] / buyPrice) * 100));
+        lastPrice / buyPrice > 1
+          ? Number((lastPrice / buyPrice) * 100 - 100)
+          : Number(-1 * (100 - (lastPrice / buyPrice) * 100));
       totalProfit += profit;
       fs.appendFile(
         'message.txt',
-        `Sell: ${trade[trade.length - 1]}; Date:${format(
+        `Sell: ${lastPrice}; Date:${format(
           new Date(),
           'MMMM Do yyyy, h:mm:ss a',
         )}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`,
         err => {
           if (err) throw err;
-          console.log('Sold by ' + trade[trade.length - 1]);
+          console.log('Sold by ' + lastPrice);
         },
       );
       canISell = false;
@@ -90,7 +90,7 @@ try {
     symbol: SYMBOLS.BTCUSDT,
     resource: RESOURCES.TRADE,
   })
-    .pipe(pluck('price'), bufferCount(20, 20))
+    .pipe(pluck('price'), map(Number), bufferCount(20, 20))
     .subscribe(tradeBy20Prices);
 
   binance.websockets.chart(
