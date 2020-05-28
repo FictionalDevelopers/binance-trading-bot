@@ -57,7 +57,7 @@ let tradeBy20Prices = trade => {
         } finally {
         }
     }
-    if ((prevAvPrice - currentAvPrice >= 3) && canISell && buysCounter !== 0 && trendSignal ) {
+    if ((prevAvPrice - currentAvPrice >= 3) && canISell && buysCounter !== 0 && trendSignal) {
         try {
             const profit = trade[trade.length - 1] / buyPrice > 1 ? Number(trade[trade.length - 1] / buyPrice * 100 - 100) : Number(-1 * (100 - trade[trade.length - 1] / buyPrice * 100));
             totalProfit += profit;
@@ -139,7 +139,7 @@ try {
             return;
         }
         const currentVolume = chart[tick].volume;
-        if (currentVolume - prevVolume >=4) trendSignal = true;
+        if (currentVolume - prevVolume >= 3) trendSignal = true;
 
         // console.info(chart);
         // Optionally convert 'chart' object to array:
@@ -150,6 +150,13 @@ try {
         // console.log('Prev volume: ' + prevVolume);
         prevVolume = currentVolume;
     });
+    // binance.websockets.depth(['BTCUSDT'], (depth) => {
+    //     let {e:eventType, E:eventTime, s:symbol, u:updateId, b:bidDepth, a:askDepth} = depth;
+    //     console.info(symbol+" market depth update");
+    //     console.info(askDepth);
+    // });
+    ;
+
 } catch (e) {
     console.error(e);
 }
