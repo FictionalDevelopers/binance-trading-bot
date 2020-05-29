@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - rsi-strategy
 
 jobs:
   docker-build:
@@ -23,20 +24,17 @@ jobs:
       - name: Push a docker image
         run: |
           docker push fictionaldev/binance-bot
-
-# UNCOMMENT ONCE THERE IS ACTUALLY SOMETHING TO DO ON THE SERVER
-
-#      - name: SSH and run
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.SSH_HOST }}
-#          username: ${{ secrets.SSH_USER }}
-#          password: ${{ secrets.SSH_PASSWORD }}
-#          script: |
-#            echo "APIKEY=${{ secrets.ENV_APIKEY }}" >> .env.temp
-#            echo "APISECRET=${{ secrets.ENV_APISECRET }}" >> .env.temp
-#            echo "DB_URL=${{ secrets.ENV_DB_URL }}" >> .env.temp
-#            docker pull fictionaldev/binance-bot:latest
-#            docker container stop binance-bot 2>/dev/null || true && docker container rm binance-bot 2>/dev/null || true
-#            docker run --env-file ./.env.temp -d --name binance-bot fictionaldev/binance-bot
-#            rm .env.temp
+      - name: SSH and run
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            echo "APIKEY=${{ secrets.ENV_APIKEY }}" >> .env.temp
+            echo "APISECRET=${{ secrets.ENV_APISECRET }}" >> .env.temp
+            echo "DB_URL=${{ secrets.ENV_DB_URL }}" >> .env.temp
+            docker pull fictionaldev/binance-bot:latest
+            docker container stop binance-bot 2>/dev/null || true && docker container rm binance-bot 2>/dev/null || true
+            docker run --env-file ./.env.temp -d --name binance-bot fictionaldev/binance-bot
+            rm .env.temp
