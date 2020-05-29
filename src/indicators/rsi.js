@@ -15,7 +15,7 @@ export const getRsiAlertStream = ({
   interval = '1m',
 } = {}) =>
   getKlineForPeriod(interval).pipe(
-    switchMap(_ =>
+    switchMap(() =>
       from(
         alerts.rsiCheck(
           period,
