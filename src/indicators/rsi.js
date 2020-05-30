@@ -13,7 +13,7 @@ export const getRsiAlertStream = ({
   oversoldThreshold = 25,
   exchange = 'binance',
   symbol = 'BTC/USDT',
-  interval = '1m',
+  interval = '1h',
 } = {}) =>
   getCandleStreamForPeriod(SYMBOLS.BTCUSDT, interval).pipe(
     switchMap(() =>
