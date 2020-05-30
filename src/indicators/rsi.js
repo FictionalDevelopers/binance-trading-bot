@@ -16,7 +16,7 @@ export const getRsiAlertStream = ({
   interval = '1m',
 } = {}) =>
   getCandleStreamForPeriod(SYMBOLS.BTCUSDT, interval).pipe(
-    switchMap(_ =>
+    switchMap(() =>
       from(
         alerts.rsiCheck(
           period,
