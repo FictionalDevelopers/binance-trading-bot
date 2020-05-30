@@ -4,13 +4,17 @@ import fs from 'fs';
 import { format } from 'date-fns';
 import binance from '../api/init';
 import { SYMBOLS, RESOURCES } from '../constants';
+import {getDmiAlertStream} from "../indicators/dmi";
 
 let canISell = false;
 let buysCounter = 0;
 let totalProfit = 0;
 let prevAvPrice = 0;
 let buyPrice = null;
-let trendSignal = false;
+let sellPrice = null;
+let vertVolumeSignal = false;
+let dmiSignal = 0;
+let dmiSignalSwitcher = false;
 let prevVolume = null;
 
 const sumPricesReducer = (accumulator, currentValue) =>
@@ -24,7 +28,7 @@ const tradeBy20Prices = trade => {
     console.log('No prev price found');
     return;
   }
-  if (currentAvPrice - prevAvPrice >= 3 && !canISell && trendSignal) {
+  if (currentAvPrice - prevAvPrice >= 3 && !canISell && vertVolumeSignal) {
     try {
       buyPrice = Number(trade[trade.length - 1]);
       fs.appendFile(
@@ -39,7 +43,7 @@ const tradeBy20Prices = trade => {
         },
       );
       canISell = true;
-      trendSignal = false;
+      vertVolumeSignal = false;
       buysCounter++;
     } catch (e) {
       console.error(e);
@@ -49,7 +53,7 @@ const tradeBy20Prices = trade => {
     prevAvPrice - currentAvPrice >= 3 &&
     canISell &&
     buysCounter !== 0 &&
-    trendSignal
+    vertVolumeSignal
   ) {
     try {
       const profit =
@@ -69,7 +73,7 @@ const tradeBy20Prices = trade => {
         },
       );
       canISell = false;
-      trendSignal = false;
+      vertVolumeSignal = false;
     } catch (e) {
       console.error(e);
     }
@@ -128,6 +132,57 @@ const tradeByCurrAndPrevPrices = trade => {
   }
 };
 
+const tradeByDMI = trade => {
+    const currentPrice = Number(trade[1]);
+    if (dmiSignal == 1 && !canISell) {
+        try {
+            fs.appendFile(
+                'message.txt',
+                `Buy: ${currentPrice}; Date:${format(
+                    new Date(),
+                    'MMMM Do yyyy, h:mm:ss a',
+                )}\n`,
+                err => {
+                    if (err) throw err;
+                    console.log('The buy price were appended to file!');
+                },
+            );
+            buyPrice = currentPrice;
+            canISell = true;
+            buysCounter++;
+        } catch (e) {
+            console.error(e);
+        } finally {
+        }
+    }
+    if (dmiSignal == -1 && canISell && buysCounter !== 0) {
+        try {
+            const profit =
+                currentPrice / buyPrice > 1
+                    ? Number((currentPrice / buyPrice) * 100 - 100) - 0.2
+                    : Number(-1 * (100 - (currentPrice / buyPrice) * 100)) - 0.2;
+            totalProfit += profit;
+            fs.appendFile(
+                'message.txt',
+                `Sell: ${currentPrice}; Date:${format(
+                    new Date(),
+                    'MMMM Do yyyy, h:mm:ss a',
+                )}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`,
+                err => {
+                    if (err) throw err;
+                    console.log('The sell price were appended to file!');
+                },
+            );
+            canISell = false;
+            // console.log('Current price: ' + currentPrice);
+            // console.log('Prev price: ' + prevPrice);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+};
+
+
 try {
   fs.appendFile(
     'message.txt',
@@ -137,35 +192,48 @@ try {
     )}\n--------------------------------------------\n`,
     () => ({}),
   );
-  getTradeStream({
-    symbol: SYMBOLS.BTCUSDT,
-    resource: RESOURCES.TRADE,
-  })
-    .pipe(pluck('price'), bufferCount(20, 20))
-    .subscribe(tradeBy20Prices);
-
-  binance.websockets.chart(
-    SYMBOLS.BTCUSDT.toUpperCase(),
-    '1m',
-    (symbol, interval, chart) => {
-      const tick = binance.last(chart);
-      if (!prevVolume) {
-        prevVolume = chart[tick].volume;
-        return;
-      }
-      const currentVolume = chart[tick].volume;
-      if (currentVolume - prevVolume >= 4) trendSignal = true;
-
-      // console.info(chart);
-      // Optionally convert 'chart' object to array:
-      //  let ohlc = binance.ohlc(chart);
-      //  console.info(symbol, ohlc[ohls.]);
-      // if (currentVolume - prevVolume >= 0) console.log(currentVolume - prevVolume);
-      // console.log('Current volume: ' + currentVolume);
-      // console.log('Prev volume: ' + prevVolume);
-      prevVolume = currentVolume;
-    },
-  );
+  // getTradeStream({
+  //   symbol: SYMBOLS.BTCUSDT,
+  //   resource: RESOURCES.TRADE,
+  // })
+  //   .pipe(pluck('price'), bufferCount(20, 20))
+  //   .subscribe(tradeBy20Prices);
+  //
+  // binance.websockets.chart(
+  //   SYMBOLS.BTCUSDT.toUpperCase(),
+  //   '1m',
+  //   (symbol, interval, chart) => {
+  //     const tick = binance.last(chart);
+  //     if (!prevVolume) {
+  //       prevVolume = chart[tick].volume;
+  //       return;
+  //     }
+  //     const currentVolume = chart[tick].volume;
+  //     if (currentVolume - prevVolume >= 4) vertVolumeSignal = true;
+  //
+  //     // console.info(chart);
+  //     // Optionally convert 'chart' object to array:
+  //     //  let ohlc = binance.ohlc(chart);
+  //     //  console.info(symbol, ohlc[ohls.]);
+  //     // if (currentVolume - prevVolume >= 0) console.log(currentVolume - prevVolume);
+  //     // console.log('Current volume: ' + currentVolume);
+  //     // console.log('Prev volume: ' + prevVolume);
+  //     prevVolume = currentVolume;
+  //   },
+  // );
 } catch (e) {
   console.error(e);
 }
+
+getDmiAlertStream().subscribe(dmi => {
+  if (dmi.pdi > dmi.mdi) {
+      if (dmiSignal != 1 && dmiSignal != 0) {
+          dmiSignal = 1;
+      }
+  }
+  if (dmi.pdi < dmi.mdi) {
+      if (dmiSignal != -1 && dmiSignal != 0) {
+          dmiSignal = -1;
+      }
+  };
+});
