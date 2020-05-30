@@ -4794,7 +4794,7 @@ table@^5.2.3:
     slice-ansi "^2.1.0"
     string-width "^3.0.0"
 
-technicalindicators@^3.0.0:
+technicalindicators@^3.0.0, technicalindicators@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/technicalindicators/-/technicalindicators-3.1.0.tgz#a275d36c6d478dda55e002deddcb42aa5cc33f4e"
   integrity sha512-f16mOc+Y05hNy/of+UbGxhxQQmxUztCiluhsqC5QLUYz4WowUgKde9m6nIjK1Kay0wGHigT0IkOabpp0+22UfA==
