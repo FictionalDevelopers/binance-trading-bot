@@ -1,25 +1,41 @@
-import { Observable } from 'rxjs';
-import { bufferCount, tap } from 'rxjs/operators';
+import { Observable, zip, PartialObserver } from 'rxjs';
+import { bufferCount, tap, map, pluck } from 'rxjs/operators';
 
 import { getRsiAlertStream } from '../../indicators/rsi';
+import { getKlineForPeriod } from '../../api/klines';
 
 import { Threshold } from './Threshold';
 import { Trend } from './Trend';
 
-import { OnThresholdPassHandler, RsiAlert, RsiAlertConfig, TickCallback } from './types';
+import {
+  OnThresholdPassHandler,
+  RsiAlert,
+  RsiAlertConfig,
+  TickCallback,
+} from './types';
 
 export class RsiStrategy {
-  private rsiStream: Observable<RsiAlert>;
+  private rsiAlerts$: Observable<RsiAlert>;
+  private candleClosePrices$: Observable<any>;
   private onThresholdPassHandler: OnThresholdPassHandler;
 
   constructor(rsiAlertConfig?: RsiAlertConfig) {
-    this.rsiStream = getRsiAlertStream(rsiAlertConfig);
+    this.rsiAlerts$ = getRsiAlertStream(rsiAlertConfig);
+    this.candleClosePrices$ = getKlineForPeriod('1m').pipe(
+      pluck('closePrice'),
+      map(Number),
+    );
   }
 
   public run(tickCallback?: TickCallback): void {
-    this.rsiStream
-      .pipe(tap(tickCallback), bufferCount(2, 1))
-      .subscribe(alerts => this.handleRsiAlert(alerts));
+    const tappedAlerts$ = this.rsiAlerts$.pipe(
+      tap(tickCallback),
+      bufferCount(2, 1),
+    );
+
+    zip(this.candleClosePrices$, tappedAlerts$).subscribe(zip => {
+      this.handleRsiAlert(zip);
+    });
   }
 
   public onThresholdPass(handler: OnThresholdPassHandler): void {
