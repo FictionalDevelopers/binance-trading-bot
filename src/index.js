@@ -2,20 +2,19 @@ import { fromEvent, zip } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
 
 import { connect } from './db/connection';
-import { getKlineForPeriod } from './api/klines';
+import { getCandleStreamForPeriod } from './api/candles';
 import { service as rsiService } from './components/rsi-signals';
 
 import { RsiInstrument } from './instruments/RsiInstrument';
 
 import { BUY as BUY_SIGNAL, SELL as SELL_SIGNAL } from './instruments/signals';
-import { async } from 'rxjs/internal/scheduler/async';
 
 (async function() {
   await connect();
 
   const rsiInstrument = new RsiInstrument();
 
-  const oneMinuteCandle = getKlineForPeriod('1m').pipe(
+  const oneMinuteCandle = getCandleStreamForPeriod('1m').pipe(
     pluck('closePrice'),
     map(Number),
   );
@@ -39,6 +38,4 @@ import { async } from 'rxjs/internal/scheduler/async';
       });
     },
   );
-
-  rsiInstrument.run();
 })();
