@@ -1,18 +1,44 @@
-import { connect } from './db/connection';
+import { fromEvent, zip } from 'rxjs';
+import { map, pluck } from 'rxjs/operators';
 
-import { service as RsiSignalService } from './components/rsi-signals';
-import { RsiStrategy } from './strategies/RsiStrategy';
+import { connect } from './db/connection';
+import { getKlineForPeriod } from './api/klines';
+import { service as rsiService } from './components/rsi-signals';
+
+import { RsiInstrument } from './instruments/RsiInstrument';
+
+import { BUY as BUY_SIGNAL, SELL as SELL_SIGNAL } from './instruments/signals';
+import { async } from 'rxjs/internal/scheduler/async';
 
 (async function() {
   await connect();
 
-  const rsiStrategy = new RsiStrategy();
+  const rsiInstrument = new RsiInstrument();
 
-  rsiStrategy.onThresholdPass(async rsiSignal => {
-    await RsiSignalService.trackRsiSignal(rsiSignal);
-  });
+  const oneMinuteCandle = getKlineForPeriod('1m').pipe(
+    pluck('closePrice'),
+    map(Number),
+  );
 
-  rsiStrategy.run(rsiAlert => {
-    console.log('ALERT', rsiAlert);
-  });
+  zip(fromEvent(rsiInstrument, BUY_SIGNAL), oneMinuteCandle).subscribe(
+    async ([signal, price]) => {
+      await rsiService.trackRsiSignal({
+        rsi: signal.rsi,
+        signal: BUY_SIGNAL,
+        price,
+      });
+    },
+  );
+
+  zip(fromEvent(rsiInstrument, SELL_SIGNAL), oneMinuteCandle).subscribe(
+    async ([signal, price]) => {
+      await rsiService.trackRsiSignal({
+        rsi: signal.rsi,
+        signal: SELL_SIGNAL,
+        price,
+      });
+    },
+  );
+
+  rsiInstrument.run();
 })();

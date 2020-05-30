@@ -1,7 +1,4 @@
 import { Document, model, Schema } from 'mongoose';
-import values from 'lodash/values';
-
-import { THRESHOLDS, TRENDS } from './constants';
 
 export interface RsiSignal extends Document {
   latestRsi: number;
@@ -12,26 +9,20 @@ export interface RsiSignal extends Document {
 }
 
 export const schema = new Schema({
-  latestRsi: {
+  rsi: {
     type: Number,
     required: true,
   },
-  previousRsi: {
+  price: {
     type: Number,
+    required: true,
+  },
+  signal: {
+    type: String,
     required: true,
   },
   date: {
     type: Date,
-    required: true,
-  },
-  threshold: {
-    type: String,
-    enum: values(THRESHOLDS),
-    required: true,
-  },
-  trend: {
-    type: String,
-    enum: values(TRENDS),
     required: true,
   },
 });
