@@ -2,7 +2,7 @@ import Binance from 'node-binance-api';
 
 import { env } from '../config';
 
-export default new Binance().options({
+export const binance = new Binance().options({
   APIKEY: env.APIKEY,
   APISECRET: env.APISECRET,
 });
