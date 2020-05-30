@@ -38,6 +38,4 @@ import { BUY as BUY_SIGNAL, SELL as SELL_SIGNAL } from './instruments/signals';
       });
     },
   );
-
-  rsiInstrument.run();
 })();
