@@ -3,8 +3,9 @@ import { map, switchMap } from 'rxjs/operators';
 import { alerts } from 'trading-indicator';
 
 import { RSI_ALERT } from '../constants/keyMappers';
-import { getKlineForPeriod } from '../api/klines';
+import { getCandleStreamForPeriod } from '../api/candles';
 import mapKeys from '../utils/mapKeys';
+import { SYMBOLS } from '../constants';
 
 export const getRsiAlertStream = ({
   period = 14,
@@ -14,7 +15,7 @@ export const getRsiAlertStream = ({
   symbol = 'BTC/USDT',
   interval = '1m',
 } = {}) =>
-  getKlineForPeriod(interval).pipe(
+  getCandleStreamForPeriod(SYMBOLS.BTCUSDT, interval).pipe(
     switchMap(_ =>
       from(
         alerts.rsiCheck(
