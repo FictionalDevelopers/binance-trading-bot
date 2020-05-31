@@ -11,7 +11,7 @@ import { binance } from '../api/binance';
 export const getDmiAlertStream = ({
   period = 14,
   symbol = SYMBOLS.BTCUSDT,
-  interval = '1h',
+  interval = '1m',
 } = {}) =>
   getCandleStreamForInterval(symbol, interval).pipe(
     switchMap(_ => from(binance.candlesticks(symbol.toUpperCase(), interval))),

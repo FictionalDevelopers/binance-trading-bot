@@ -11,11 +11,10 @@ let buysCounter = 0;
 let totalProfit = 0;
 let prevAvPrice = 0;
 let buyPrice = null;
-let sellPrice = null;
 let vertVolumeSignal = false;
-let dmiSignal = 0;
-let dmiSignalSwitcher = false;
+let dmiSignal = null;
 let prevVolume = null;
+let prevDmi = null;
 
 const sumPricesReducer = (accumulator, currentValue) =>
   accumulator + Number(currentValue);
@@ -140,7 +139,7 @@ const tradeByDMI = trade => {
                 'message.txt',
                 `Buy: ${currentPrice}; Date:${format(
                     new Date(),
-                    'MMMM Do yyyy, h:mm:ss a',
+                    'MMMM dd yyyy, h:mm:ss a',
                 )}\n`,
                 err => {
                     if (err) throw err;
@@ -159,14 +158,14 @@ const tradeByDMI = trade => {
         try {
             const profit =
                 currentPrice / buyPrice > 1
-                    ? Number((currentPrice / buyPrice) * 100 - 100) - 0.2
-                    : Number(-1 * (100 - (currentPrice / buyPrice) * 100)) - 0.2;
+                    ? Number((currentPrice / buyPrice) * 100 - 100)
+                    : Number(-1 * (100 - (currentPrice / buyPrice) * 100));
             totalProfit += profit;
             fs.appendFile(
                 'message.txt',
                 `Sell: ${currentPrice}; Date:${format(
                     new Date(),
-                    'MMMM Do yyyy, h:mm:ss a',
+                    'MMMM dd yyyy, h:mm:ss a',
                 )}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`,
                 err => {
                     if (err) throw err;
@@ -182,22 +181,23 @@ const tradeByDMI = trade => {
     }
 };
 
+process.env.UV_THREADPOOL_SIZE=256;
 
 try {
   fs.appendFile(
-    'message.txt',
+    '1m_dmi_trade_history.txt',
     `--------------------------------------------\nBot started working at: ${format(
       new Date(),
       'MMMM Do yyyy, h:mm:ss a',
-    )}\n--------------------------------------------\n`,
+    )} with 1m interval\n--------------------------------------------\n`,
     () => ({}),
   );
-  // getTradeStream({
-  //   symbol: SYMBOLS.BTCUSDT,
-  //   resource: RESOURCES.TRADE,
-  // })
-  //   .pipe(pluck('price'), bufferCount(20, 20))
-  //   .subscribe(tradeBy20Prices);
+  getTradeStream({
+    symbol: SYMBOLS.BTCUSDT,
+    resource: RESOURCES.TRADE,
+  })
+    .pipe(pluck('price'), bufferCount(2, 2))
+    .subscribe(tradeByDMI);
   //
   // binance.websockets.chart(
   //   SYMBOLS.BTCUSDT.toUpperCase(),
@@ -221,19 +221,31 @@ try {
   //     prevVolume = currentVolume;
   //   },
   // );
+    getDmiAlertStream({
+        period: 14,
+        symbol: SYMBOLS.BTCUSDT,
+        interval: '1m'
+
+    }).subscribe(dmi => {
+        if (!prevDmi) {
+            prevDmi = dmi;
+            return;
+        }
+        if ((dmi.pdi >= dmi.adx) && (prevDmi.pdi < dmi.adx)) {
+            dmiSignal = 1;
+            console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+            console.log('Curr dmi:'+ JSON.stringify(dmi));
+        }
+        if ((dmi.pdi <= dmi.adx) && (prevDmi.pdi > dmi.adx)) {
+            dmiSignal = -1;
+            console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+            console.log('Curr dmi:'+ JSON.stringify(dmi));
+        }
+
+        prevDmi = dmi;
+    });
+
 } catch (e) {
   console.error(e);
 }
 
-getDmiAlertStream().subscribe(dmi => {
-  if (dmi.pdi > dmi.mdi) {
-      if (dmiSignal != 1 && dmiSignal != 0) {
-          dmiSignal = 1;
-      }
-  }
-  if (dmi.pdi < dmi.mdi) {
-      if (dmiSignal != -1 && dmiSignal != 0) {
-          dmiSignal = -1;
-      }
-  };
-});
