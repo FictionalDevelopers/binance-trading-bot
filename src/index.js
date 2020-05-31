@@ -13,7 +13,9 @@ import { BUY as BUY_SIGNAL, SELL as SELL_SIGNAL } from './instruments/signals';
 (async function() {
   await connect();
 
-  const rsiInstrument = new RsiInstrument();
+  const rsiInstrument = new RsiInstrument({
+    period: 1,
+  });
 
   const oneMinuteCandle = getCandleStreamForPeriod(SYMBOLS.BTCUSDT, '1m').pipe(
     pluck('closePrice'),

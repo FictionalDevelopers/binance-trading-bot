@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - fix-deploy
 
 jobs:
   docker-build:
@@ -19,7 +20,7 @@ jobs:
           docker pull fictionaldev/binance-bot:latest
       - name: Build a docker image
         run: |
-          docker build -t fictionaldev/binance-bot --cache-from fictionaldev/binance-bot .
+          docker build -t fictionaldev/binance-bot --cache-from fictionaldev/binance-bot:latest .
       - name: Push a docker image
         run: |
           docker push fictionaldev/binance-bot
@@ -35,5 +36,5 @@ jobs:
             echo "DB_URL=${{ secrets.ENV_DB_URL }}" >> .env.temp
             docker pull fictionaldev/binance-bot:latest
             docker container stop binance-bot 2>/dev/null || true && docker container rm binance-bot 2>/dev/null || true
-            docker run --env-file ./.env.temp -d --name binance-bot fictionaldev/binance-bot
+            docker run --env-file ./.env.temp -d --name binance-bot fictionaldev/binance-bot:latest
             rm .env.temp
