@@ -7,7 +7,9 @@
         "access": "restricted"
     },
     "scripts": {
-        "test": "babel-node src/strategy/test.js --extensions \".ts,.js\"",
+        "api": "babel-node src/api/balance.js --extensions \".ts,.js\"",
+        "1h_dmi_test": "babel-node src/strategy/1h_dmi_test.js --extensions \".ts,.js\"",
+        "1m_dmi_test": "babel-node src/strategy/1m_dmi_test.js --extensions \".ts,.js\"",
         "dev": "babel-node src/index.js --extensions \".ts,.js\"",
         "start": "node dist/index.js",
         "build": "rm -rf ./dist && babel src --extensions \".ts,.js\" --out-dir dist",
