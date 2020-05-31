@@ -1,6 +1,7 @@
 import { fromEvent, zip } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
 
+import SYMBOLS from './constants/symbols';
 import { connect } from './db/connection';
 import { getCandleStreamForPeriod } from './api/candles';
 import { service as rsiService } from './components/rsi-signals';
@@ -14,7 +15,7 @@ import { BUY as BUY_SIGNAL, SELL as SELL_SIGNAL } from './instruments/signals';
 
   const rsiInstrument = new RsiInstrument();
 
-  const oneMinuteCandle = getCandleStreamForPeriod('1m').pipe(
+  const oneMinuteCandle = getCandleStreamForPeriod(SYMBOLS.BTCUSDT, '1m').pipe(
     pluck('closePrice'),
     map(Number),
   );
