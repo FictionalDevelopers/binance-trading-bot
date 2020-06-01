@@ -8,7 +8,7 @@ import mapKeys from '../utils/mapKeys';
 
 const ROOT_URI = 'wss://stream.binance.com:9443/ws';
 
-export function getTradeStream({ symbol, resource }) {
+export function getPricesStream({ symbol, resource }) {
   const ws = new WebSocket(`${ROOT_URI}/${symbol}@${resource}`);
 
   return fromEvent(ws, 'message').pipe(
