@@ -1,20 +1,23 @@
-import { EventEmitter } from 'events';
-import { bufferCount } from 'rxjs/operators';
+import { bufferCount, tap } from 'rxjs/operators';
 
 import { getRsiAlertStream } from '../../indicators/rsi';
+
+import { Instrument } from '../Instrument';
 
 import { Trend } from './Trend';
 
 import { RsiAlert, RsiInstrumentConfig } from './types';
 
-import { BUY, SELL } from '../signals';
-
-export class RsiInstrument extends EventEmitter {
+export class RsiInstrument extends Instrument<{ rsi: number }> {
   constructor(rsiInstrumentConfig?: RsiInstrumentConfig) {
     super();
-
     getRsiAlertStream(rsiInstrumentConfig)
-      .pipe(bufferCount(2, 1))
+      .pipe(
+        bufferCount(2, 1),
+        tap(d => {
+          console.log('ALERT', d);
+        }),
+      )
       .subscribe(alerts => this.handleRsiAlert(alerts));
   }
 
@@ -27,11 +30,27 @@ export class RsiInstrument extends EventEmitter {
       previous.overbought !== latest.overbought &&
       trend === Trend.Ascending
     ) {
-      this.emit(SELL, { rsi: latest.rsi });
+      console.log('SELL');
+
+      this.sellSignalHandler({ rsi: latest.rsi });
+    }
+
+    if (
+      previous.overbought !== latest.overbought &&
+      trend === Trend.Descending
+    ) {
+      console.log('STOP SELL');
+      this.sellStopSignallHandler({ rsi: latest.rsi });
     }
 
     if (previous.oversold !== latest.oversold && trend === Trend.Descending) {
-      this.emit(BUY, { rsi: latest.rsi });
+      console.log('BUY');
+      this.buySignalHandler({ rsi: latest.rsi });
+    }
+
+    if (previous.oversold !== latest.oversold && trend === Trend.Ascending) {
+      console.log('STOP BUY');
+      this.buyStopSignallHandler({ rsi: latest.rsi });
     }
   }
 }
