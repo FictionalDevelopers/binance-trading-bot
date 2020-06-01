@@ -1,5 +1,5 @@
 import { bufferCount, pluck } from 'rxjs/operators';
-import { getTradeStream } from '../api/trades';
+import { getPricesStream } from '../api/trades';
 import fs from 'fs';
 import { format } from 'date-fns';
 import binance from '../api/init';
@@ -19,7 +19,7 @@ let prevDmi = null;
 const sumPricesReducer = (accumulator, currentValue) =>
   accumulator + Number(currentValue);
 
-const tradeBy20Prices = trade => {
+const tradeByComplexStrategy = trade => {
   const pricesArrLength = trade.length;
   const currentAvPrice = trade.reduce(sumPricesReducer, 0) / pricesArrLength;
   if (!prevAvPrice) {
@@ -27,7 +27,12 @@ const tradeBy20Prices = trade => {
     console.log('No prev price found');
     return;
   }
-  if (currentAvPrice - prevAvPrice >= 3 && !canISell && vertVolumeSignal) {
+  if (
+      currentAvPrice - prevAvPrice >= 3 &&
+      !canISell &&
+      vertVolumeSignal &&
+      dmiSignal == 1
+  ) {
     try {
       buyPrice = Number(trade[trade.length - 1]);
       fs.appendFile(
@@ -52,7 +57,8 @@ const tradeBy20Prices = trade => {
     prevAvPrice - currentAvPrice >= 3 &&
     canISell &&
     buysCounter !== 0 &&
-    vertVolumeSignal
+    vertVolumeSignal &&
+    dmiSignal == -1
   ) {
     try {
       const profit =
@@ -136,7 +142,7 @@ const tradeByDMI = trade => {
     if (dmiSignal == 1 && !canISell) {
         try {
             fs.appendFile(
-                'message.txt',
+                '1h_dmi_trade_history.txt',
                 `Buy: ${currentPrice}; Date:${format(
                     new Date(),
                     'MMMM dd yyyy, h:mm:ss a',
@@ -162,7 +168,7 @@ const tradeByDMI = trade => {
                     : Number(-1 * (100 - (currentPrice / buyPrice) * 100));
             totalProfit += profit;
             fs.appendFile(
-                'message.txt',
+                '1h_dmi_trade_history.txt',
                 `Sell: ${currentPrice}; Date:${format(
                     new Date(),
                     'MMMM dd yyyy, h:mm:ss a',
@@ -192,12 +198,12 @@ try {
     )} with 1h interval\n--------------------------------------------\n`,
     () => ({}),
   );
-  getTradeStream({
+  getPricesStream({
     symbol: SYMBOLS.BTCUSDT,
     resource: RESOURCES.TRADE,
   })
-    .pipe(pluck('price'), bufferCount(2, 2))
-    .subscribe(tradeByDMI);
+    .pipe(pluck('price'), bufferCount(20, 20))
+    .subscribe(tradeByComplexStrategy);
   //
   // binance.websockets.chart(
   //   SYMBOLS.BTCUSDT.toUpperCase(),
@@ -231,15 +237,15 @@ try {
             prevDmi = dmi;
             return;
         }
-        if ((dmi.pdi >= dmi.adx) && (prevDmi.pdi < dmi.adx)) {
+        if ((dmi.pdi > dmi.adx) && (prevDmi.pdi < prevDmi.adx)) {
             dmiSignal = 1;
-            console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-            console.log('Curr dmi:'+ JSON.stringify(dmi));
+            // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+            // console.log('Curr dmi:'+ JSON.stringify(dmi));
         }
-        if ((dmi.pdi <= dmi.adx) && (prevDmi.pdi > dmi.adx)) {
+        if ((dmi.pdi < dmi.adx) && (prevDmi.pdi > prevDmi.adx)) {
             dmiSignal = -1;
-            console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-            console.log('Curr dmi:'+ JSON.stringify(dmi));
+            // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+            // console.log('Curr dmi:'+ JSON.stringify(dmi));
         }
 
         prevDmi = dmi;
