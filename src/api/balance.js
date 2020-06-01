@@ -1,6 +1,6 @@
 import { get } from 'lodash';
 
-import binance from './init';
+import { binance } from './init';
 
 export async function getBalances(symbol = '') {
   const data = await binance.balance();

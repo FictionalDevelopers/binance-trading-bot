@@ -6,7 +6,7 @@ import { map, pluck, switchMap } from 'rxjs/operators';
 import { candlesticksMapper } from '../utils/candlesticksMapper';
 import { getCandleStreamForPeriod } from '../api/candles';
 import { SYMBOLS } from '../constants';
-import binance from '../api/init';
+import { binance } from '../api/init';
 
 export const getDmiAlertStream = ({
   period = 14,
