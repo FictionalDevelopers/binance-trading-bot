@@ -1,26 +1,39 @@
 import { combineLatest, Observable } from 'rxjs';
-import { map, pluck } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { BUY, SELL, IDLE } from '../signals/signals';
-import { Signal } from '../signals/types';
+import { Signal, Action } from '../signals/types';
+
+type StrategySignal = Signal & {
+  signals: Signal[];
+};
 
 export function makeStrategy(
   signalStreams: Observable<Signal>[] = [],
-): Observable<Signal> {
+): Observable<StrategySignal> {
   return combineLatest(...signalStreams).pipe(
-    map(signals => signals.map(({ signal }) => signal)),
-    map((signals: Array<typeof BUY | typeof SELL>) => {
-      console.log('SIGNALS', signals);
-
-      if (signals.every(signal => signal === BUY)) {
-        return { signal: BUY };
+    map((signals: Signal[]) => {
+      if (signals.every(({ action }) => action === BUY)) {
+        return buildStrategySignal(BUY, signals);
       }
 
-      if (signals.every(signal => signal === SELL)) {
-        return { signal: SELL };
+      if (signals.every(({ action }) => action === SELL)) {
+        return buildStrategySignal(SELL, signals);
       }
 
-      return { signal: IDLE };
+      return buildStrategySignal(IDLE, signals);
     }),
   );
+}
+
+function buildStrategySignal(
+  action: Action,
+  signals: Signal[],
+): StrategySignal {
+  return {
+    action,
+    type: 'STRATEGY',
+    signals,
+    meta: {},
+  };
 }

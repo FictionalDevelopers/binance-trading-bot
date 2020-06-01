@@ -16,5 +16,5 @@ export type RsiSignalConfig = {
 };
 
 export type RsiSignal = Signal & {
-  rsi: number;
+  meta: { rsi: number };
 };
