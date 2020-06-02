@@ -13,7 +13,7 @@ import { BUY, SELL } from './signals/signals';
 (async function() {
   await connect();
 
-  const interval = '1h';
+  const interval = '1m';
 
   const candlePrices$ = getCandleStreamForPeriod(
     SYMBOLS.BTCUSDT,
