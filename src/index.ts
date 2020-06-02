@@ -34,7 +34,10 @@ import { BUY, SELL } from './signals/signals';
       if (!hasBought && strategySignalDetails.action === BUY) {
         const strategySignal = await StrategySignalModel.create({
           action: 'BUY',
-          signals: strategySignalDetails.signals,
+          signals: strategySignalDetails.signals.map(signal => ({
+            ...signal,
+            action: 'BUY',
+          })),
           date,
         });
         await OrderModel.create({
@@ -49,7 +52,10 @@ import { BUY, SELL } from './signals/signals';
       if (hasBought && strategySignalDetails.action === SELL) {
         const strategySignal = await StrategySignalModel.create({
           action: 'SELL',
-          signals: strategySignalDetails.signals,
+          signals: strategySignalDetails.signals.map(signal => ({
+            ...signal,
+            action: 'SELL',
+          })),
           date,
         });
         await OrderModel.create({
