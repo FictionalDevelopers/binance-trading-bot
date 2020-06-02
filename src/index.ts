@@ -24,12 +24,18 @@ import { makeSendToRecipients } from './services/telegram';
     interval,
   ).pipe(pluck('closePrice'), map(Number));
 
-  const rsiSignals$ = makeRsiSignalStream({
+  const rsiConfig = {
     interval,
     period: 14,
-    overboughtThreshold: 80,
-    oversoldThreshold: 20,
-  });
+    overboughtThreshold: 70,
+    oversoldThreshold: 30,
+  };
+
+  console.log('RSI_CONFIG', rsiConfig);
+
+  await sendToRecipients(`RSI_CONFIG ${JSON.stringify(rsiConfig)}`);
+
+  const rsiSignals$ = makeRsiSignalStream(rsiConfig);
 
   const strategy$ = makeStrategy([rsiSignals$]);
 
