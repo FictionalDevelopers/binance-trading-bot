@@ -1,7 +1,22 @@
-import { env } from '../config';
+import { fromFetch } from 'rxjs/fetch';
 import axios from 'axios';
 
-console.log(env);
+import { env } from '../config';
+
+export const makeSendToRecipients = (chatIds: number[]) => (
+  text: string,
+): Promise<Array<unknown>> => {
+  const messages = chatIds.map(chatId => ({
+    chat_id: chatId,
+    text,
+  }));
+
+  return Promise.all(
+    messages.map(message =>
+      axios.post(`${env.TELEGRAM_API_URL}/sendMessage`, message),
+    ),
+  );
+};
 
 async function getUpdates() {
   return axios.get(`${env.TELEGRAM_API_URL}/getUpdates`);
@@ -30,7 +45,3 @@ async function sendMessage() {
   };
   return axios.post(`${env.TELEGRAM_API_URL}/sendMessage`, message);
 }
-
-(async function() {
-  await sendMessage();
-})();

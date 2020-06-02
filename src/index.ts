@@ -1,17 +1,21 @@
 import { zip } from 'rxjs';
 import { map, pluck } from 'rxjs/operators';
+import { format } from 'date-fns';
 
 import { connect } from './db/connection';
-import { model as OrderModel } from './components/orders';
-import { model as StrategySignalModel } from './components/strategy-signals';
 import SYMBOLS from './constants/symbols';
+import { DATE_FORMAT } from './constants/date';
 import { getCandleStreamForPeriod } from './api/candles';
 import { makeRsiSignalStream } from './signals/rsi-signal';
 import { makeStrategy } from './strategies/make-strategy';
 import { BUY, SELL } from './signals/signals';
 
+import { makeSendToRecipients } from './services/telegram';
+
 (async function() {
   await connect();
+
+  const sendToRecipients = makeSendToRecipients([372621284, 440722643]);
 
   const interval = '1m';
 
@@ -22,48 +26,36 @@ import { BUY, SELL } from './signals/signals';
 
   const rsiSignals$ = makeRsiSignalStream({
     interval,
+    period: 14,
+    overboughtThreshold: 80,
+    oversoldThreshold: 20,
   });
 
   const strategy$ = makeStrategy([rsiSignals$]);
 
+  let hasBought = false;
+
   zip(strategy$, candlePrices$).subscribe(
     async ([strategySignalDetails, price]) => {
-      let hasBought = false;
-      const date = new Date();
+      const date = format(new Date(), DATE_FORMAT);
 
       if (!hasBought && strategySignalDetails.action === BUY) {
-        const strategySignal = await StrategySignalModel.create({
-          action: 'BUY',
-          signals: strategySignalDetails.signals.map(signal => ({
-            ...signal,
-            action: 'BUY',
-          })),
-          date,
-        });
-        await OrderModel.create({
-          action: 'BUY',
-          strategySignal: strategySignal.id,
-          price,
-          date,
-        });
+        await sendToRecipients(`BUY
+          price: ${price}
+          date: ${date}
+          sinals: ${JSON.stringify(strategySignalDetails.signals)}
+        `);
+
         hasBought = true;
       }
 
       if (hasBought && strategySignalDetails.action === SELL) {
-        const strategySignal = await StrategySignalModel.create({
-          action: 'SELL',
-          signals: strategySignalDetails.signals.map(signal => ({
-            ...signal,
-            action: 'SELL',
-          })),
-          date,
-        });
-        await OrderModel.create({
-          action: 'SELL',
-          strategySignal: strategySignal.id,
-          price,
-          date,
-        });
+        await sendToRecipients(`SELL
+          price: ${price}
+          date: ${date}
+          sinals: ${JSON.stringify(strategySignalDetails.signals)}
+        `);
+
         hasBought = false;
       }
     },
