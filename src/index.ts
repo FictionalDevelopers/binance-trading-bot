@@ -10,12 +10,11 @@ import { makeRsiSignalStream } from './signals/rsi-signal';
 import { makeStrategy } from './strategies/make-strategy';
 import { BUY, SELL } from './signals/signals';
 
-import { makeSendToRecipients } from './services/telegram';
-
-const sendToRecipients = makeSendToRecipients([372621284, 440722643]);
+import { sendToRecipients, processSubscriptions } from './services/telegram';
 
 (async function() {
   await connect();
+  await processSubscriptions();
 
   const interval = '1m';
 
