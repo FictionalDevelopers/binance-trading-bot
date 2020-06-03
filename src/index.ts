@@ -26,7 +26,6 @@ import { makeSendToRecipients } from './services/telegram';
 
   const rsiConfig = {
     interval,
-    period: 14,
     overboughtThreshold: 70,
     oversoldThreshold: 30,
   };
