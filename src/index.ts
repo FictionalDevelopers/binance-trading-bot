@@ -12,10 +12,10 @@ import { BUY, SELL } from './signals/signals';
 
 import { makeSendToRecipients } from './services/telegram';
 
+const sendToRecipients = makeSendToRecipients([372621284, 440722643]);
+
 (async function() {
   await connect();
-
-  const sendToRecipients = makeSendToRecipients([372621284, 440722643]);
 
   const interval = '1m';
 
@@ -66,3 +66,12 @@ import { makeSendToRecipients } from './services/telegram';
     },
   );
 })();
+
+process.on('unhandledRejection', async (reason: Error) => {
+  await sendToRecipients(`ERROR
+    ${reason.message}
+    ${reason.stack}
+  `);
+
+  process.exit(1);
+});
