@@ -39,6 +39,7 @@ export const RSI_ALERT = {
 };
 
 export const TELEGRAM_CHAT = {
+  id: 'chatId',
   first_name: 'firstName',
   last_name: 'lastName',
 };

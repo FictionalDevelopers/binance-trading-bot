@@ -1,16 +1,17 @@
 import TelegramSubscriptionModel, { TelegramSubscription } from './model';
 
 export async function trackTelegramSubscription(telegramSubscription: {
-  id: number;
+  chatId: number;
   firstName: string;
   lastName: string;
   username: string;
   type: string;
   date: Date;
+  subscribed: boolean;
 }): Promise<TelegramSubscription> {
   return TelegramSubscriptionModel.findOneAndUpdate(
     {
-      id: telegramSubscription.id,
+      chatId: telegramSubscription.chatId,
     },
     telegramSubscription,
     {
@@ -27,4 +28,17 @@ export async function getTelegramSubscriptions(): Promise<
   return TelegramSubscriptionModel.find({
     subscribed: true,
   });
+}
+
+export async function unsubscribe(
+  chatId: number,
+): Promise<TelegramSubscription> {
+  return TelegramSubscriptionModel.updateOne(
+    {
+      chatId,
+    },
+    {
+      subscribed: false,
+    },
+  );
 }

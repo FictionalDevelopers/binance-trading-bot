@@ -9,16 +9,14 @@ import mapKeys from '../utils/mapKeys';
 import { KEY_MAPPERS } from '../constants';
 import { service as telegramService } from '../components/telegram-subscriptions';
 
-const getMessage = _get('message');
-const filterSubscriptions = ({ text }) => text === '/start';
-const getUserInfo = ({ chat }) => ({ ...chat });
-const unique = _uniqBy('id');
+const isStartBot = ({ text }) => text === '/start';
+const getChatInfo = ({ chat }) => ({ ...chat });
 
 const getSubscribers = _pipe(
-  _map(getMessage),
-  _filter(filterSubscriptions),
-  _map(getUserInfo),
-  unique,
+  _map(_get('message')),
+  _filter(isStartBot),
+  _map(getChatInfo),
+  _uniqBy('id'),
   _map(mapKeys(KEY_MAPPERS.TELEGRAM_CHAT)),
 );
 
@@ -26,14 +24,16 @@ export const sendToRecipients = async (
   text: string,
 ): Promise<Array<unknown>> => {
   const subscriptions = await telegramService.getTelegramSubscriptions();
-  const messages = subscriptions.map(id => ({
-    chat_id: id,
+  const messages = subscriptions.map(({ chatId }) => ({
+    chat_id: chatId,
     text,
   }));
 
   return Promise.all(
     messages.map(message =>
-      axios.post(`${env.TELEGRAM_API_URL}/sendMessage`, message),
+      axios
+        .post(`${env.TELEGRAM_API_URL}/sendMessage`, message)
+        .catch(() => telegramService.unsubscribe(message.chat_id)),
     ),
   );
 };

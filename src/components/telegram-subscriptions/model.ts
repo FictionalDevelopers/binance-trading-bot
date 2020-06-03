@@ -1,7 +1,7 @@
 import { model, Schema, Document } from 'mongoose';
 
 export interface TelegramSubscription extends Document {
-  id: number;
+  chatId: number;
   subscribed: boolean;
   firstName: string;
   lastName: string;
@@ -11,7 +11,7 @@ export interface TelegramSubscription extends Document {
 }
 
 const schema = new Schema({
-  id: {
+  chatId: {
     type: Number,
     required: true,
   },
