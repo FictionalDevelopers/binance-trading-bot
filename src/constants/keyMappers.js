@@ -37,3 +37,9 @@ export const RSI_ALERT = {
   overSold: 'oversold',
   rsiVal: 'rsi',
 };
+
+export const TELEGRAM_CHAT = {
+  id: 'chatId',
+  first_name: 'firstName',
+  last_name: 'lastName',
+};
