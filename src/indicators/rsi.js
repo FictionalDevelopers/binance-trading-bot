@@ -3,7 +3,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { alerts } from 'trading-indicator';
 
 import { RSI_ALERT } from '../constants/keyMappers';
-import { getCandleStreamForPeriod } from '../api/candles';
+import { getCandleStreamForInterval } from '../api/candles';
 import mapKeys from '../utils/mapKeys';
 import { SYMBOLS } from '../constants';
 
@@ -15,7 +15,7 @@ export const getRsiAlertStream = ({
   symbol = 'BTC/USDT',
   interval = '1m',
 } = {}) =>
-  getCandleStreamForPeriod(SYMBOLS.BTCUSDT, interval).pipe(
+  getCandleStreamForInterval(SYMBOLS.BTCUSDT, interval).pipe(
     switchMap(() =>
       from(
         alerts.rsiCheck(
