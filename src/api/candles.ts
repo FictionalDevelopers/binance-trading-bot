@@ -1,5 +1,5 @@
 import { combineLatest, concat, from, Observable } from 'rxjs';
-import { filter, map, pluck, concatAll, tap, bufferCount } from 'rxjs/operators';
+import { bufferCount, concatAll, filter, map, pluck } from 'rxjs/operators';
 
 import { KEY_MAPPERS, RESOURCES } from '../constants';
 import mapKeys from '../utils/mapKeys';
@@ -90,6 +90,7 @@ export type CandleDetails = {
   closePrice: number;
   highestPrice: number;
   lowestPrice: number;
+  closeTime: number;
 };
 
 const mapCandleListItemToVolumeSignalDetails = (
@@ -101,6 +102,7 @@ const mapCandleListItemToVolumeSignalDetails = (
     closePrice: toFixedNumber(candle.close, 2),
     highestPrice: toFixedNumber(candle.high, 2),
     lowestPrice: toFixedNumber(candle.low, 2),
+    closeTime: candle.closeTime,
   };
 };
 
@@ -113,10 +115,12 @@ const mapCandleStreamItemToVolumeSignalDetails = (
     closePrice: toFixedNumber(candle.closePrice, 2),
     highestPrice: toFixedNumber(candle.highPrice, 2),
     lowestPrice: toFixedNumber(candle.lowPrice, 2),
+    closeTime: candle.closeTime,
   };
 };
 
 type PreviousClosedCandles = CandleDetails[];
+
 export function getClosedLiveCandlesPairStream(
   config: CandleListConfig,
   options: {
@@ -145,5 +149,11 @@ export function getClosedLiveCandlesPairStream(
     ),
   ).pipe(bufferCount(closedCandlesNumber, 1));
 
-  return combineLatest(closedCandles$, liveCandles$);
+  return combineLatest(closedCandles$, liveCandles$).pipe(
+    filter(([closed, current]) => {
+      const [, latest] = closed;
+
+      return latest.closeTime !== current.closeTime;
+    }),
+  );
 }
