@@ -1,4 +1,4 @@
-import isNil from 'lodash/isNil';
+import { isNil } from 'lodash';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
