@@ -1,36 +1,41 @@
 import { Observable } from 'rxjs';
 import { bufferCount, map } from 'rxjs/operators';
 
-import { getRsiStream } from '../../indicators/rsi';
 import { BUY, IDLE, SELL } from '../signals';
 import { Action, Signal } from '../types';
 
-import { RsiSignal, RsiToolConfig, RsiPair } from './types';
+import { RsiPair, RsiSignal } from './types';
 
-export function makeRsiToolStream(
-  rsiToolConfig?: RsiToolConfig,
-): Observable<RsiSignal> {
-  return getRsiStream({
-    interval: rsiToolConfig.interval,
-    period: rsiToolConfig.period,
-    symbol: rsiToolConfig.symbol,
-    exchange: rsiToolConfig.exchange,
-  }).pipe(
-    bufferCount(2, 1),
-    map(
-      (rsi: number[]): RsiPair => {
-        const [previous, latest] = rsi;
+export function transformRsiToSignal(thresholds: {
+  overbought: number[];
+  oversold: number[];
+}) {
+  return (source: Observable<number>): Observable<RsiSignal> =>
+    new Observable<RsiSignal>(observer => {
+      return source
+        .pipe(
+          bufferCount(2, 1),
+          map(
+            (rsi: number[]): RsiPair => {
+              const [previous, latest] = rsi;
 
-        return { previous, latest };
-      },
-    ),
-    map(
-      getRsiSignal({
-        overbought: rsiToolConfig.overboughtThresholds,
-        oversold: rsiToolConfig.oversoldThresholds,
-      }),
-    ),
-  );
+              return { previous, latest };
+            },
+          ),
+          map(getRsiSignal(thresholds)),
+        )
+        .subscribe({
+          error(err) {
+            observer.error(err);
+          },
+          complete() {
+            observer.complete();
+          },
+          next(value) {
+            observer.next(value);
+          },
+        });
+    });
 }
 
 function getRsiSignal(thresholds: {

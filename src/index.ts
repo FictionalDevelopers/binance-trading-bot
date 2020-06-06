@@ -6,11 +6,12 @@ import { connect } from './db/connection';
 import { SYMBOLS } from './constants';
 import { DATE_FORMAT } from './constants/date';
 import { getCandleStreamForInterval } from './api/candles';
-import { makeRsiToolStream } from './tools/rsi-tool';
+import { transformRsiToSignal } from './tools/rsi-tool';
 import { makeStrategy } from './strategies/make-strategy';
 import { BUY, SELL } from './tools/signals';
 
 import { processSubscriptions, sendToRecipients } from './services/telegram';
+import { getRsiStream } from './indicators/rsi';
 
 (async function() {
   await connect();
@@ -35,7 +36,16 @@ import { processSubscriptions, sendToRecipients } from './services/telegram';
 
   await sendToRecipients(`RSI_CONFIG ${JSON.stringify(rsiConfig)}`);
 
-  const rsiSignals$ = makeRsiToolStream(rsiConfig);
+  const rsiSignals$ = getRsiStream({
+    symbol: SYMBOLS.BTCUSDT,
+    period: 14,
+    interval: '1m',
+  }).pipe(
+    transformRsiToSignal({
+      overbought: [50, 70],
+      oversold: [30, 50],
+    }),
+  );
 
   const strategy$ = makeStrategy([rsiSignals$]);
 
