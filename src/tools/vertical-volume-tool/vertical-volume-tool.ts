@@ -15,7 +15,7 @@ type VerticalVolumeSignalOptions = {
   minimalLatestCandleVolume?: number;
 };
 
-export function makeVerticalVolumeSignal(
+export function makeVerticalVolumeToolStream(
   candleConfig: CandleListConfig,
   options: VerticalVolumeSignalOptions,
 ): Observable<Signal> {
