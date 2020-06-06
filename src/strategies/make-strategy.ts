@@ -1,28 +1,39 @@
-import { combineLatest, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { combineLatest, merge, Observable } from 'rxjs';
+import { map, distinctUntilKeyChanged } from 'rxjs/operators';
 
-import { BUY, SELL, IDLE } from '../tools/signals';
-import { Signal, Action } from '../tools/types';
+import { BUY, IDLE, SELL } from '../tools/signals';
+import { Action, Signal } from '../tools/types';
 
 type StrategySignal = Signal & {
   signals: Signal[];
 };
 
-export function makeStrategy(
-  signalStreams: Observable<Signal>[] = [],
-): Observable<StrategySignal> {
-  return combineLatest(...signalStreams).pipe(
+export function makeStrategy(tools: {
+  buyTools: Observable<Signal>[];
+  sellTools: Observable<Signal>[];
+}): Observable<StrategySignal> {
+  const buyToolsSignals$ = combineLatest(...tools.buyTools).pipe(
     map((signals: Signal[]) => {
       if (signals.every(({ action }) => action === BUY)) {
         return buildStrategySignal(BUY, signals);
       }
 
+      return buildStrategySignal(IDLE, signals);
+    }),
+  );
+
+  const sellToolsSignals$ = combineLatest(...tools.sellTools).pipe(
+    map((signals: Signal[]) => {
       if (signals.every(({ action }) => action === SELL)) {
         return buildStrategySignal(SELL, signals);
       }
 
       return buildStrategySignal(IDLE, signals);
     }),
+  );
+
+  return merge(buyToolsSignals$, sellToolsSignals$).pipe(
+    distinctUntilKeyChanged('action'),
   );
 }
 

@@ -7,6 +7,7 @@ import { SYMBOLS } from './constants';
 import { DATE_FORMAT } from './constants/date';
 import { getCandleStreamForInterval } from './api/candles';
 import { transformRsiToSignal } from './tools/rsi-tool';
+import { makeVerticalVolumeToolStream } from './tools/vertical-volume-tool';
 import { makeStrategy } from './strategies/make-strategy';
 import { BUY, SELL } from './tools/signals';
 
@@ -18,6 +19,7 @@ import { getRsiStream } from './indicators/rsi';
   await processSubscriptions();
 
   const interval = '1m';
+  const symbol = SYMBOLS.BTCUSDT;
 
   const candlePrices$ = getCandleStreamForInterval(
     SYMBOLS.BTCUSDT,
@@ -25,16 +27,23 @@ import { getRsiStream } from './indicators/rsi';
   ).pipe(pluck('closePrice'), map(Number));
 
   const rsiConfig = {
-    symbol: SYMBOLS.BTCUSDT,
+    symbol,
+    interval,
     period: 14,
-    interval: '1m',
     overboughtThresholds: [50, 70],
     oversoldThresholds: [30, 50],
   };
 
-  console.log('RSI_CONFIG', rsiConfig);
-
-  await sendToRecipients(`RSI_CONFIG ${JSON.stringify(rsiConfig)}`);
+  const volumes$ = makeVerticalVolumeToolStream(
+    {
+      interval,
+      symbol,
+    },
+    {
+      minimalLatestCandleVolume: 30,
+      minimalPercentageIncrease: 20,
+    },
+  );
 
   const rsiSignals$ = getRsiStream({
     symbol: SYMBOLS.BTCUSDT,
@@ -47,9 +56,26 @@ import { getRsiStream } from './indicators/rsi';
     }),
   );
 
-  const strategy$ = makeStrategy([rsiSignals$]);
+  const strategy$ = makeStrategy({
+    buyTools: [volumes$],
+    sellTools: [rsiSignals$],
+  });
 
   let hasBought = false;
+
+  await sendToRecipients(`INIT
+  symbol: ${symbol}
+  interval: ${interval}
+  period: 14,
+
+  buy via VOLUME
+    minimalLatestCandleVolume: 30
+    minimalPercentageIncrease: 20
+  ---
+  sell via RSI
+    overbought: [50, 70]
+    oversold: [30, 50],
+  `);
 
   combineLatest(strategy$, candlePrices$).subscribe(
     async ([strategySignalDetails, price]) => {
@@ -59,7 +85,7 @@ import { getRsiStream } from './indicators/rsi';
         await sendToRecipients(`BUY
           price: ${price}
           date: ${date}
-          sinals: ${JSON.stringify(strategySignalDetails.signals)}
+          signals: ${JSON.stringify(strategySignalDetails.signals)}
         `);
 
         hasBought = true;
@@ -69,7 +95,7 @@ import { getRsiStream } from './indicators/rsi';
         await sendToRecipients(`SELL
           price: ${price}
           date: ${date}
-          sinals: ${JSON.stringify(strategySignalDetails.signals)}
+          signals: ${JSON.stringify(strategySignalDetails.signals)}
         `);
 
         hasBought = false;
