@@ -1,8 +1,8 @@
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { BUY, SELL, IDLE } from '../signals/signals';
-import { Signal, Action } from '../signals/types';
+import { BUY, SELL, IDLE } from '../tools/signals';
+import { Signal, Action } from '../tools/types';
 
 type StrategySignal = Signal & {
   signals: Signal[];

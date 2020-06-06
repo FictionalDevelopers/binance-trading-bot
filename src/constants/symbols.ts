@@ -1,8 +1,10 @@
-const SYMBOLS = {
+export const SYMBOLS = {
   BTCUSDT: 'btcusdt',
   BNBUSDT: 'bnbusdt',
   BNBBTC: 'bnbbtc',
   ETHUSDT: 'ethusdt',
 };
 
-export default SYMBOLS;
+export const RSI_LIST_SYMBOLS = {
+  [SYMBOLS.BTCUSDT]: 'BTC/USDT',
+};
