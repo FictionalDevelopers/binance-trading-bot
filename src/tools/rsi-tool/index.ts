@@ -1,1 +1,1 @@
-export { makeRsiToolStream } from './rsi-tool';
+export { transformRsiToSignal } from './rsi-tool';
