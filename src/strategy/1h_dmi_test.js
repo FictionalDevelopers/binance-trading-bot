@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import binance from '../api/init';
 import { SYMBOLS, RESOURCES } from '../constants';
 import {getDmiAlertStream} from "../indicators/dmi";
+import {getRsiAlertStream} from "../indicators/rsi";
 
 let canISell = false;
 let buysCounter = 0;
@@ -15,6 +16,9 @@ let vertVolumeSignal = false;
 let dmiSignal = null;
 let prevVolume = null;
 let prevDmi = null;
+let dmiMdiSignal = null;
+let dmiAdxSignal = null;
+let rsiSignal = false;
 
 const sumPricesReducer = (accumulator, currentValue) =>
   accumulator + Number(currentValue);
@@ -28,10 +32,13 @@ const tradeByComplexStrategy = trade => {
     return;
   }
   if (
-      currentAvPrice - prevAvPrice >= 3 &&
+      // currentAvPrice - prevAvPrice >= 3 &&
+      // !canISell &&
+      // vertVolumeSignal &&
+      // dmiSignal == 1
+      ((dmiAdxSignal + dmiMdiSignal) == 2)  &&
       !canISell &&
-      vertVolumeSignal &&
-      dmiSignal == 1
+      rsiSignal
   ) {
     try {
       buyPrice = Number(trade[trade.length - 1]);
@@ -54,11 +61,18 @@ const tradeByComplexStrategy = trade => {
     }
   }
   if (
-    prevAvPrice - currentAvPrice >= 3 &&
-    canISell &&
-    buysCounter !== 0 &&
-    vertVolumeSignal &&
-    dmiSignal == -1
+    // prevAvPrice - currentAvPrice >= 3 &&
+    // canISell &&
+    // buysCounter !== 0 &&
+    // vertVolumeSignal &&
+    // dmiSignal == -1
+      ((dmiAdxSignal  == -1) &&
+          canISell &&
+          buysCounter !== 0 &&
+          rsiSignal)
+      ||
+      (!rsiSignal &&
+          canISell)
   ) {
     try {
       const profit =
@@ -79,6 +93,9 @@ const tradeByComplexStrategy = trade => {
       );
       canISell = false;
       vertVolumeSignal = false;
+      dmiAdxSignal = 0;
+      dmiMdiSignal = 0;
+      // rsiSignal = false;
     } catch (e) {
       console.error(e);
     }
@@ -238,18 +255,52 @@ try {
             return;
         }
         if ((dmi.pdi > dmi.adx) && (prevDmi.pdi < prevDmi.adx)) {
-            dmiSignal = 1;
+            dmiAdxSignal = 1;
             // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
             // console.log('Curr dmi:'+ JSON.stringify(dmi));
+            // console.log('Pdi is upper than then ADX');
         }
         if ((dmi.pdi < dmi.adx) && (prevDmi.pdi > prevDmi.adx)) {
-            dmiSignal = -1;
+            dmiAdxSignal = -1;
             // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
             // console.log('Curr dmi:'+ JSON.stringify(dmi));
+            // console.log('Pdi is lower than then ADX');
         }
+        // if ((dmi.pdi >= dmi.mdi) && (prevDmi.pdi < prevDmi.mdi)) {
+        //     dmiSignal = 1;
+        //     console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+        //     console.log('Curr dmi:'+ JSON.stringify(dmi));
+        //     console.log('Pdi is upper than then MDI');
+        // }
+        // if ((dmi.pdi < dmi.mdi) && (prevDmi.pdi > prevDmi.mdi)) {
+        //     dmiSignal = 1;
+        //     console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+        //     console.log('Curr dmi:'+ JSON.stringify(dmi));
+        //     console.log('Pdi is lower than then MDI');
+        // }
+        // console.log(dmi)
+        if ((dmi.pdi > dmi.mdi) && (prevDmi.pdi < prevDmi.mdi)) {
+            dmiMdiSignal = 1;
+            // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+            // console.log('Curr dmi:'+ JSON.stringify(dmi));
+            // console.log('Pdi is upper than then ADX');
+        }
+        if ((dmi.pdi < dmi.mdi) && (prevDmi.pdi > prevDmi.mdi)) {
+            dmiMdiSignal = -1;
+            // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+            // console.log('Curr dmi:'+ JSON.stringify(dmi));
+            // console.log('Pdi is upper than then ADX');
+        }
+
 
         prevDmi = dmi;
     });
+
+    getRsiAlertStream().subscribe(({rsi})=>{
+        rsiSignal = rsi >= 50 ? true : false;
+        console.log(rsiSignal)
+    })
+
 
 } catch (e) {
   console.error(e);

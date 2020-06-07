@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import binance from '../api/init';
 import { SYMBOLS, RESOURCES } from '../constants';
 import {getDmiAlertStream} from "../indicators/dmi";
+import {getRsiAlertStream} from "../indicators/rsi";
 
 let canISell = false;
 let buysCounter = 0;
@@ -16,6 +17,11 @@ let dmiSignal = null;
 let prevVolume = null;
 let prevDmi = null;
 // let complexSignal = null;
+let dmiMdiSignal = 0;
+let dmiAdxSignal = 0;
+let rsiSignal = false;
+
+
 
 const sumPricesReducer = (accumulator, currentValue) =>
   accumulator + Number(currentValue);
@@ -142,7 +148,11 @@ const tradeByCurrAndPrevPrices = trade => {
 
 const tradeByDMI = trade => {
     const currentPrice = Number(trade[1]);
-    if (dmiSignal == 1 && !canISell) {
+    const profit =
+        currentPrice / buyPrice > 1
+            ? Number((currentPrice / buyPrice) * 100 - 100)
+            : Number(-1 * (100 - (currentPrice / buyPrice) * 100));
+    if (((dmiAdxSignal + dmiMdiSignal)  == 2 || (profit >= 1.5))  && !canISell && rsiSignal) {
         try {
             fs.appendFile(
                 '1m_dmi_trade_history.txt',
@@ -163,12 +173,10 @@ const tradeByDMI = trade => {
         } finally {
         }
     }
-    if (dmiSignal == -1 && canISell && buysCounter !== 0) {
+    if (((dmiAdxSignal  == -1) && canISell && buysCounter !== 0 && rsiSignal && profit >= 1.5 )
+        || (!rsiSignal && canISell)
+        || (canISell && profit <= -0.1)) {
         try {
-            const profit =
-                currentPrice / buyPrice > 1
-                    ? Number((currentPrice / buyPrice) * 100 - 100)
-                    : Number(-1 * (100 - (currentPrice / buyPrice) * 100));
             totalProfit += profit;
             fs.appendFile(
                 '1m_dmi_trade_history.txt',
@@ -182,6 +190,9 @@ const tradeByDMI = trade => {
                 },
             );
             canISell = false;
+            dmiAdxSignal = 0;
+            dmiMdiSignal = 0;
+            // rsiSignal = false;
             // console.log('Current price: ' + currentPrice);
             // console.log('Prev price: ' + prevPrice);
         } catch (e) {
@@ -206,7 +217,7 @@ try {
     resource: RESOURCES.TRADE,
   })
     .pipe(pluck('price'), bufferCount(20, 20))
-    .subscribe(tradeByComplexStrategy);
+    .subscribe(tradeByDMI);
   //
   binance.websockets.chart(
     SYMBOLS.BTCUSDT.toUpperCase(),
@@ -241,13 +252,13 @@ try {
             return;
         }
         if ((dmi.pdi > dmi.adx) && (prevDmi.pdi < prevDmi.adx)) {
-            dmiSignal = 1;
+            dmiAdxSignal = 1;
             // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
             // console.log('Curr dmi:'+ JSON.stringify(dmi));
             // console.log('Pdi is upper than then ADX');
         }
         if ((dmi.pdi < dmi.adx) && (prevDmi.pdi > prevDmi.adx)) {
-            dmiSignal = -1;
+            dmiAdxSignal = -1;
             // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
             // console.log('Curr dmi:'+ JSON.stringify(dmi));
             // console.log('Pdi is lower than then ADX');
@@ -265,8 +276,26 @@ try {
         //     console.log('Pdi is lower than then MDI');
         // }
         // console.log(dmi)
+        if ((dmi.pdi > dmi.mdi) && (prevDmi.pdi < prevDmi.mdi)) {
+            dmiMdiSignal = 1;
+            // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+            // console.log('Curr dmi:'+ JSON.stringify(dmi));
+            // console.log('Pdi is upper than then ADX');
+        }
+        if ((dmi.pdi < dmi.mdi) && (prevDmi.pdi > prevDmi.mdi)) {
+            dmiMdiSignal = -1;
+            // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+            // console.log('Curr dmi:'+ JSON.stringify(dmi));
+            // console.log('Pdi is upper than then ADX');
+        }
+
+
         prevDmi = dmi;
     });
+    getRsiAlertStream({}).subscribe(({rsi})=>{
+        rsiSignal = rsi >= 50 ? true : false;
+        console.log(rsiSignal)
+    })
 
 } catch(e) {
   console.error(e);
