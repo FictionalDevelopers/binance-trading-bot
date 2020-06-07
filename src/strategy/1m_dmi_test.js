@@ -173,9 +173,10 @@ const tradeByDMI = trade => {
         } finally {
         }
     }
-    if (((dmiAdxSignal  == -1) && canISell && buysCounter !== 0 && rsiSignal && profit >= 1.5 )
+    if ((dmiAdxSignal  == -1 && canISell && buysCounter !== 0 && rsiSignal && profit >= 1.5)
         || (!rsiSignal && canISell)
-        || (canISell && profit <= -0.1)) {
+        || (canISell && profit <= -0.1)
+    ) {
         try {
             totalProfit += profit;
             fs.appendFile(
