@@ -1,5 +1,5 @@
 import last from 'lodash/last';
-import { from, Observable } from 'rxjs';
+import { from, Observable, defer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { rsi } from 'trading-indicator';
 import { getCandleStreamForInterval } from '../api/candles';

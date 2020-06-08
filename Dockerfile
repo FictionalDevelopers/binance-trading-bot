@@ -11,4 +11,5 @@ COPY ./ ./
 
 RUN yarn build
 
-ENTRYPOINT [ "yarn", "start" ]
+ENTRYPOINT [ "node", "dist/index.js" ]
+

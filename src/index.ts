@@ -26,14 +26,6 @@ import { getRsiStream } from './indicators/rsi';
     interval,
   ).pipe(pluck('closePrice'), map(Number));
 
-  const rsiConfig = {
-    symbol,
-    interval,
-    period: 14,
-    overboughtThresholds: [50, 70],
-    oversoldThresholds: [30, 50],
-  };
-
   const volumes$ = makeVerticalVolumeToolStream(
     {
       interval,
