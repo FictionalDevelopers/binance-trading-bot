@@ -36,5 +36,5 @@ jobs:
             echo "TELEGRAM_API_URL=${{ secrets.ENV_TELEGRAM_API_URL }}" >> .env.temp
             docker pull fictionaldev/binance-bot:latest
             docker container stop binance-bot 2>/dev/null || true && docker container rm binance-bot 2>/dev/null || true
-            docker run --env-file ./.env.temp -d --name binance-bot fictionaldev/binance-bot
+            docker run --env-file ./.env.temp -d --name binance-bot --restart on-failure fictionaldev/binance-bot
             rm .env.temp

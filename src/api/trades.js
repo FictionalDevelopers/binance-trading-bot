@@ -1,6 +1,6 @@
 import WebSocket from 'ws';
 import { fromEvent } from 'rxjs';
-import { pluck, map, catchError } from 'rxjs/operators';
+import { pluck, map } from 'rxjs/operators';
 
 import { KEY_MAPPERS } from '../constants';
 
@@ -15,9 +15,5 @@ export function getTradeStream({ symbol, resource }) {
     pluck('data'),
     map(JSON.parse),
     map(mapKeys(KEY_MAPPERS.COMMON)),
-    catchError(err => {
-      console.log('ERORR');
-      console.log(err);
-    }),
   );
 }
