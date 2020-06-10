@@ -37,6 +37,15 @@ import { getRsiStream } from './indicators/rsi';
     },
   );
 
+  makeStrategy({
+    buyTools: [volumes$],
+    sellTools: [],
+  }).subscribe(d => {
+    console.log('STRATEGY', d);
+  });
+
+  return;
+
   const rsiSignals$ = getRsiStream({
     symbol: SYMBOLS.BTCUSDT,
     period: 14,

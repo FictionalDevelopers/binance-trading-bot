@@ -90,7 +90,9 @@ export type CandleDetails = {
   closePrice: number;
   highestPrice: number;
   lowestPrice: number;
+  openTime: number;
   closeTime: number;
+  isClosed: boolean;
 };
 
 const mapCandleListItemToVolumeSignalDetails = (
@@ -103,6 +105,8 @@ const mapCandleListItemToVolumeSignalDetails = (
     highestPrice: toFixedNumber(candle.high, 2),
     lowestPrice: toFixedNumber(candle.low, 2),
     closeTime: candle.closeTime,
+    openTime: candle.time,
+    isClosed: candle.closeTime >= Date.now(),
   };
 };
 
@@ -116,17 +120,19 @@ const mapCandleStreamItemToVolumeSignalDetails = (
     highestPrice: toFixedNumber(candle.highPrice, 2),
     lowestPrice: toFixedNumber(candle.lowPrice, 2),
     closeTime: candle.closeTime,
+    openTime: candle.startTime,
+    isClosed: candle.isClosed,
   };
 };
 
-type PreviousClosedCandles = CandleDetails[];
+export type PreviousClosedCandles = CandleDetails[];
 
-export function getClosedLiveCandlesPairStream(
+export function getClosedCandlesStream(
   config: CandleListConfig,
   options: {
     closedCandlesNumber: number;
   } = { closedCandlesNumber: 1 },
-): Observable<[PreviousClosedCandles, CandleDetails]> {
+): Observable<PreviousClosedCandles> {
   const { symbol, interval } = config;
   const { closedCandlesNumber } = options;
 
@@ -136,24 +142,21 @@ export function getClosedLiveCandlesPairStream(
 
   const candles$ = getCandleStreamForInterval(symbol, interval);
 
-  const liveCandles$ = candles$.pipe(
-    filter(candle => !candle.isClosed),
-    map(mapCandleStreamItemToVolumeSignalDetails),
-  );
-
-  const closedCandles$ = concat(
+  return concat(
     lastClosedCandles$,
     candles$.pipe(
       filter(candle => candle.isClosed),
       map(mapCandleStreamItemToVolumeSignalDetails),
     ),
   ).pipe(bufferCount(closedCandlesNumber, 1));
+}
 
-  return combineLatest(closedCandles$, liveCandles$).pipe(
-    filter(([closed, current]) => {
-      const [, latest] = closed;
+export function getLiveDetailsCandleStream(
+  config: CandleListConfig,
+): Observable<CandleDetails> {
+  const { symbol, interval } = config;
 
-      return latest.closeTime !== current.closeTime;
-    }),
+  return getCandleStreamForInterval(symbol, interval).pipe(
+    map(mapCandleStreamItemToVolumeSignalDetails),
   );
 }
