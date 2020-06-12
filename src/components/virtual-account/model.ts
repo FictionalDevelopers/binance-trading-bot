@@ -2,7 +2,9 @@ import { model, Schema, Document } from 'mongoose';
 
 export interface VirtualAccount extends Document {
   accountId: string;
-  value: number;
+  initialBalance: number;
+  available: number;
+  onOrder: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -12,17 +14,25 @@ const schema = new Schema({
     type: String,
     required: true,
   },
-  value: {
+  initialBalance: {
+    type: Number,
+    default: 0,
+  },
+  available: {
+    type: Number,
+    default: 0,
+  },
+  onOrder: {
     type: Number,
     default: 0,
   },
   createdAt: {
     type: Date,
-    default: Date.now(),
+    default: new Date(),
   },
   updatedAt: {
     type: Date,
-    default: Date.now(),
+    default: new Date(),
   },
 });
 

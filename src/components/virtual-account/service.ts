@@ -2,9 +2,11 @@ import VirtualAccountModel, { VirtualAccount } from './model';
 
 export async function trackVirtualAccount(virtualAccount: {
   accountId: string;
-  value: number;
-  createdAt: Date;
-  updatedAt: Date;
+  initialBalance?: number;
+  available?: number;
+  onOrder?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }): Promise<VirtualAccount> {
   return VirtualAccountModel.findOneAndUpdate(
     {
