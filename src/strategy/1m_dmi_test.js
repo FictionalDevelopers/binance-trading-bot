@@ -4,8 +4,8 @@ import fs from 'fs';
 import { format } from 'date-fns';
 import binance from '../api/init';
 import { SYMBOLS, RESOURCES } from '../constants';
-import {getDmiAlertStream} from "../indicators/dmi";
-import {getRsiAlertStream} from "../indicators/rsi";
+import { getDmiAlertStream } from '../indicators/dmi';
+import { getRsiAlertStream } from '../indicators/rsi';
 
 let canISell = false;
 let buysCounter = 0;
@@ -23,8 +23,6 @@ let dmiAdxSignal = 0;
 let rsiSignal = false;
 let rebuy = false;
 
-
-
 const sumPricesReducer = (accumulator, currentValue) =>
   accumulator + Number(currentValue);
 
@@ -37,12 +35,11 @@ const tradeByComplexStrategy = trade => {
     return;
   }
   if (
-      currentAvPrice - prevAvPrice >= 3 &&
-      !canISell &&
-      vertVolumeSignal &&
-      dmiSignal == 1
-  )
-  {
+    currentAvPrice - prevAvPrice >= 3 &&
+    !canISell &&
+    vertVolumeSignal &&
+    dmiSignal == 1
+  ) {
     try {
       buyPrice = Number(trade[trade.length - 1]);
       fs.appendFile(
@@ -69,7 +66,6 @@ const tradeByComplexStrategy = trade => {
     buysCounter !== 0 &&
     vertVolumeSignal &&
     dmiSignal == -1
-
   ) {
     try {
       const profit =
@@ -149,113 +145,100 @@ const tradeByCurrAndPrevPrices = trade => {
 };
 
 const tradeByDMI = trade => {
-    const currentPrice = Number(trade[1]);
-    const profit = buyPrice ?
-        currentPrice / buyPrice > 1
-            ? Number((currentPrice / buyPrice) * 100 - 100)
-            : Number(-1 * (100 - (currentPrice / buyPrice) * 100))
-        :
-        0;
-;
-
-    if ((((dmiAdxSignal + dmiMdiSignal) == 2) &&
-        !canISell &&
-        rsiSignal
-    )
-        ||
-        rebuy
-    ) {
-        try {
-            fs.appendFile(
-                '1m_dmi_trade_history.txt',
-                `Buy: ${currentPrice}; Date:${format(
-                    new Date(),
-                    'MMMM dd yyyy, h:mm:ss a',
-                )}\n`,
-                err => {
-                    if (err) throw err;
-                    console.log('The buy price were appended to file!');
-                },
-            );
-            buyPrice = currentPrice;
-            canISell = true;
-            rebuy = false;
-            buysCounter++;
-        } catch (e) {
-            console.error(e);
-        } finally {
-        }
+  const currentPrice = Number(trade[1]);
+  const profit = buyPrice
+    ? currentPrice / buyPrice > 1
+      ? Number((currentPrice / buyPrice) * 100 - 100)
+      : Number(-1 * (100 - (currentPrice / buyPrice) * 100))
+    : 0;
+  if ((dmiAdxSignal + dmiMdiSignal == 2 && !canISell && rsiSignal) || rebuy) {
+    try {
+      fs.appendFile(
+        '1m_dmi_trade_history.txt',
+        `Buy: ${currentPrice}; Date:${format(
+          new Date(),
+          'MMMM dd yyyy, h:mm:ss a',
+        )}\n`,
+        err => {
+          if (err) throw err;
+          console.log('The buy price were appended to file!');
+        },
+      );
+      buyPrice = currentPrice;
+      canISell = true;
+      rebuy = false;
+      buysCounter++;
+    } catch (e) {
+      console.error(e);
+    } finally {
     }
-    if
-        (
-            (dmiAdxSignal  == -1) &&
-            canISell &&
-            buysCounter !== 0 &&
-            rsiSignal &&
-            profit >= 1
-    )
-        // || (canISell && profit <= -0.1)
+  }
+  if (
+    dmiAdxSignal == -1 &&
+    canISell &&
+    buysCounter !== 0 &&
+    rsiSignal &&
+    profit >= 1
+  ) {
+    // || (canISell && profit <= -0.1)
 
-    {
-        try {
-            totalProfit += profit;
-            prevProfit = profit;
-            fs.appendFile(
-                '1m_dmi_trade_history.txt',
-                `Sell: ${currentPrice}; Date:${format(
-                    new Date(),
-                    'MMMM dd yyyy, h:mm:ss a',
-                )}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`,
-                err => {
-                    if (err) throw err;
-                    console.log('The sell price were appended to file!');
-                },
-            );
-            rebuy = true;
-            canISell = false;
-            // dmiAdxSignal = 0;
-            // dmiMdiSignal = 0;
-            // rsiSignal = false;
-            // console.log('Current price: ' + currentPrice);
-            // console.log('Prev price: ' + prevPrice);
-        } catch (e) {
-            console.error(e);
-        }
+    try {
+      totalProfit += profit;
+      prevProfit = profit;
+      fs.appendFile(
+        '1m_dmi_trade_history.txt',
+        `Sell: ${currentPrice}; Date:${format(
+          new Date(),
+          'MMMM dd yyyy, h:mm:ss a',
+        )}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`,
+        err => {
+          if (err) throw err;
+          console.log('The sell price were appended to file!');
+        },
+      );
+      rebuy = true;
+      canISell = false;
+      // dmiAdxSignal = 0;
+      // dmiMdiSignal = 0;
+      // rsiSignal = false;
+      // console.log('Current price: ' + currentPrice);
+      // console.log('Prev price: ' + prevPrice);
+    } catch (e) {
+      console.error(e);
     }
-   if (
-       !rsiSignal &&
-       canISell
-       // profit <= -0.3
-   ) {
-       try {
-           totalProfit += profit;
-           prevProfit = profit;
-           fs.appendFile(
-               '1m_dmi_trade_history.txt',
-               `Sell: ${currentPrice}; Date:${format(
-                   new Date(),
-                   'MMMM dd yyyy, h:mm:ss a',
-               )}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`,
-               err => {
-                   if (err) throw err;
-                   console.log('The sell price were appended to file!');
-               },
-           );
-           canISell = false;
-           // dmiAdxSignal = 0;
-           // dmiMdiSignal = 0;
-           // rsiSignal = false;
-           // console.log('Current price: ' + currentPrice);
-           // console.log('Prev price: ' + prevPrice);
-       } catch (e) {
-           console.error(e);
-       }
-
-   }
-
+  }
+  if (
+    !rsiSignal &&
+    canISell
+    // profit <= -0.3
+  ) {
+    try {
+      totalProfit += profit;
+      prevProfit = profit;
+      fs.appendFile(
+        '1m_dmi_trade_history.txt',
+        `Sell: ${currentPrice}; Date:${format(
+          new Date(),
+          'MMMM dd yyyy, h:mm:ss a',
+        )}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`,
+        err => {
+          if (err) throw err;
+          console.log('The sell price were appended to file!');
+        },
+      );
+      canISell = false;
+      // dmiAdxSignal = 0;
+      // dmiMdiSignal = 0;
+      // rsiSignal = false;
+      // console.log('Current price: ' + currentPrice);
+      // console.log('Prev price: ' + prevPrice);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 };
 
-process.env.UV_THREADPOOL_SIZE=256;
+process.env.UV_THREADPOOL_SIZE = 256;
 
 try {
   fs.appendFile(
@@ -295,63 +278,59 @@ try {
   //     prevVolume = currentVolume;
   //   },
   // );
-    getDmiAlertStream({
-        period: 14,
-        symbol: SYMBOLS.BTCUSDT,
-        interval: '1m'
+  getDmiAlertStream({
+    period: 14,
+    symbol: SYMBOLS.BTCUSDT,
+    interval: '1m',
+  }).subscribe(dmi => {
+    if (!prevDmi) {
+      prevDmi = dmi;
+      return;
+    }
+    if (dmi.pdi > dmi.adx && prevDmi.pdi < prevDmi.adx) {
+      dmiAdxSignal = 1;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is upper than then ADX');
+    }
+    if (dmi.pdi < dmi.adx && prevDmi.pdi > prevDmi.adx) {
+      dmiAdxSignal = -1;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is lower than then ADX');
+    }
+    // if ((dmi.pdi >= dmi.mdi) && (prevDmi.pdi < prevDmi.mdi)) {
+    //     dmiSignal = 1;
+    //     console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+    //     console.log('Curr dmi:'+ JSON.stringify(dmi));
+    //     console.log('Pdi is upper than then MDI');
+    // }
+    // if ((dmi.pdi < dmi.mdi) && (prevDmi.pdi > prevDmi.mdi)) {
+    //     dmiSignal = 1;
+    //     console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+    //     console.log('Curr dmi:'+ JSON.stringify(dmi));
+    //     console.log('Pdi is lower than then MDI');
+    // }
+    // console.log(dmi)
+    if (dmi.pdi > dmi.mdi && prevDmi.pdi < prevDmi.mdi) {
+      dmiMdiSignal = 1;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is upper than then ADX');
+    }
+    if (dmi.pdi < dmi.mdi && prevDmi.pdi > prevDmi.mdi) {
+      dmiMdiSignal = -1;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is upper than then ADX');
+    }
 
-    }).subscribe(dmi => {
-        if (!prevDmi) {
-            prevDmi = dmi;
-            return;
-        }
-        if ((dmi.pdi > dmi.adx) && (prevDmi.pdi < prevDmi.adx)) {
-            dmiAdxSignal = 1;
-            // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-            // console.log('Curr dmi:'+ JSON.stringify(dmi));
-            // console.log('Pdi is upper than then ADX');
-        }
-        if ((dmi.pdi < dmi.adx) && (prevDmi.pdi > prevDmi.adx)) {
-            dmiAdxSignal = -1;
-            // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-            // console.log('Curr dmi:'+ JSON.stringify(dmi));
-            // console.log('Pdi is lower than then ADX');
-        }
-        // if ((dmi.pdi >= dmi.mdi) && (prevDmi.pdi < prevDmi.mdi)) {
-        //     dmiSignal = 1;
-        //     console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-        //     console.log('Curr dmi:'+ JSON.stringify(dmi));
-        //     console.log('Pdi is upper than then MDI');
-        // }
-        // if ((dmi.pdi < dmi.mdi) && (prevDmi.pdi > prevDmi.mdi)) {
-        //     dmiSignal = 1;
-        //     console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-        //     console.log('Curr dmi:'+ JSON.stringify(dmi));
-        //     console.log('Pdi is lower than then MDI');
-        // }
-        // console.log(dmi)
-        if ((dmi.pdi > dmi.mdi) && (prevDmi.pdi < prevDmi.mdi)) {
-            dmiMdiSignal = 1;
-            // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-            // console.log('Curr dmi:'+ JSON.stringify(dmi));
-            // console.log('Pdi is upper than then ADX');
-        }
-        if ((dmi.pdi < dmi.mdi) && (prevDmi.pdi > prevDmi.mdi)) {
-            dmiMdiSignal = -1;
-            // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-            // console.log('Curr dmi:'+ JSON.stringify(dmi));
-            // console.log('Pdi is upper than then ADX');
-        }
-
-
-        prevDmi = dmi;
-    });
-    getRsiAlertStream({}).subscribe(({rsi})=>{
-        rsiSignal = rsi >= 50 ? true : false;
-        // console.log(rsiSignal)
-    })
-
-} catch(e) {
+    prevDmi = dmi;
+  });
+  getRsiAlertStream({}).subscribe(({ rsi }) => {
+    rsiSignal = rsi >= 50 ? true : false;
+    // console.log(rsiSignal)
+  });
+} catch (e) {
   console.error(e);
 }
-
