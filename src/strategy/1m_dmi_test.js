@@ -10,6 +10,7 @@ import {getRsiAlertStream} from "../indicators/rsi";
 let canISell = false;
 let buysCounter = 0;
 let totalProfit = 0;
+let prevProfit = 0;
 let prevAvPrice = 0;
 let buyPrice = null;
 let vertVolumeSignal = false;
@@ -20,6 +21,7 @@ let prevDmi = null;
 let dmiMdiSignal = 0;
 let dmiAdxSignal = 0;
 let rsiSignal = false;
+let rebuy = false;
 
 
 
@@ -148,11 +150,21 @@ const tradeByCurrAndPrevPrices = trade => {
 
 const tradeByDMI = trade => {
     const currentPrice = Number(trade[1]);
-    const profit =
+    const profit = buyPrice ?
         currentPrice / buyPrice > 1
             ? Number((currentPrice / buyPrice) * 100 - 100)
-            : Number(-1 * (100 - (currentPrice / buyPrice) * 100));
-    if (((dmiAdxSignal + dmiMdiSignal)  == 2 || (profit >= 1.5))  && !canISell && rsiSignal) {
+            : Number(-1 * (100 - (currentPrice / buyPrice) * 100))
+        :
+        0;
+;
+
+    if ((((dmiAdxSignal + dmiMdiSignal) == 2) &&
+        !canISell &&
+        rsiSignal
+    )
+        ||
+        rebuy
+    ) {
         try {
             fs.appendFile(
                 '1m_dmi_trade_history.txt',
@@ -167,18 +179,27 @@ const tradeByDMI = trade => {
             );
             buyPrice = currentPrice;
             canISell = true;
+            rebuy = false;
             buysCounter++;
         } catch (e) {
             console.error(e);
         } finally {
         }
     }
-    if ((dmiAdxSignal  == -1 && canISell && buysCounter !== 0 && rsiSignal && profit >= 1.5)
-        || (!rsiSignal && canISell)
-        || (canISell && profit <= -0.1)
-    ) {
+    if
+        (
+            (dmiAdxSignal  == -1) &&
+            canISell &&
+            buysCounter !== 0 &&
+            rsiSignal &&
+            profit >= 1
+    )
+        // || (canISell && profit <= -0.1)
+
+    {
         try {
             totalProfit += profit;
+            prevProfit = profit;
             fs.appendFile(
                 '1m_dmi_trade_history.txt',
                 `Sell: ${currentPrice}; Date:${format(
@@ -190,9 +211,10 @@ const tradeByDMI = trade => {
                     console.log('The sell price were appended to file!');
                 },
             );
+            rebuy = true;
             canISell = false;
-            dmiAdxSignal = 0;
-            dmiMdiSignal = 0;
+            // dmiAdxSignal = 0;
+            // dmiMdiSignal = 0;
             // rsiSignal = false;
             // console.log('Current price: ' + currentPrice);
             // console.log('Prev price: ' + prevPrice);
@@ -200,6 +222,37 @@ const tradeByDMI = trade => {
             console.error(e);
         }
     }
+   if (
+       !rsiSignal &&
+       canISell
+       // profit <= -0.3
+   ) {
+       try {
+           totalProfit += profit;
+           prevProfit = profit;
+           fs.appendFile(
+               '1m_dmi_trade_history.txt',
+               `Sell: ${currentPrice}; Date:${format(
+                   new Date(),
+                   'MMMM dd yyyy, h:mm:ss a',
+               )}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`,
+               err => {
+                   if (err) throw err;
+                   console.log('The sell price were appended to file!');
+               },
+           );
+           canISell = false;
+           // dmiAdxSignal = 0;
+           // dmiMdiSignal = 0;
+           // rsiSignal = false;
+           // console.log('Current price: ' + currentPrice);
+           // console.log('Prev price: ' + prevPrice);
+       } catch (e) {
+           console.error(e);
+       }
+
+   }
+
 };
 
 process.env.UV_THREADPOOL_SIZE=256;
@@ -217,31 +270,31 @@ try {
     symbol: SYMBOLS.BTCUSDT,
     resource: RESOURCES.TRADE,
   })
-    .pipe(pluck('price'), bufferCount(20, 20))
+    .pipe(pluck('price'), bufferCount(2, 2))
     .subscribe(tradeByDMI);
   //
-  binance.websockets.chart(
-    SYMBOLS.BTCUSDT.toUpperCase(),
-    '1m',
-    (symbol, interval, chart) => {
-      const tick = binance.last(chart);
-      if (!prevVolume) {
-        prevVolume = chart[tick].volume;
-        return;
-      }
-      const currentVolume = chart[tick].volume;
-      if (currentVolume - prevVolume >= 4) vertVolumeSignal = true;
-
-      // console.info(chart);
-      // Optionally convert 'chart' object to array:
-      //  let ohlc = binance.ohlc(chart);
-      //  console.info(symbol, ohlc[ohls.]);
-      // if (currentVolume - prevVolume >= 0) console.log(currentVolume - prevVolume);
-      // console.log('Current volume: ' + currentVolume);
-      // console.log('Prev volume: ' + prevVolume);
-      prevVolume = currentVolume;
-    },
-  );
+  // binance.websockets.chart(
+  //   SYMBOLS.BTCUSDT.toUpperCase(),
+  //   '1m',
+  //   (symbol, interval, chart) => {
+  //     const tick = binance.last(chart);
+  //     if (!prevVolume) {
+  //       prevVolume = chart[tick].volume;
+  //       return;
+  //     }
+  //     const currentVolume = chart[tick].volume;
+  //     if (currentVolume - prevVolume >= 4) vertVolumeSignal = true;
+  //
+  //     // console.info(chart);
+  //     // Optionally convert 'chart' object to array:
+  //     //  let ohlc = binance.ohlc(chart);
+  //     //  console.info(symbol, ohlc[ohls.]);
+  //     // if (currentVolume - prevVolume >= 0) console.log(currentVolume - prevVolume);
+  //     // console.log('Current volume: ' + currentVolume);
+  //     // console.log('Prev volume: ' + prevVolume);
+  //     prevVolume = currentVolume;
+  //   },
+  // );
     getDmiAlertStream({
         period: 14,
         symbol: SYMBOLS.BTCUSDT,
@@ -295,7 +348,7 @@ try {
     });
     getRsiAlertStream({}).subscribe(({rsi})=>{
         rsiSignal = rsi >= 50 ? true : false;
-        console.log(rsiSignal)
+        // console.log(rsiSignal)
     })
 
 } catch(e) {
