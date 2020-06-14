@@ -66,16 +66,6 @@ import { getDmiStream } from './indicators/dmi';
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   with using the strategy 1
   symbol: ${symbol}
-  interval: ${interval}
-  period: 14,
-
-  buy via VOLUME
-    minimalLatestCandleVolume: 30
-    minimalPercentageIncrease: 20
-  ---
-  sell via RSI
-    overbought: [50, 70]
-    oversold: [30, 50],
   `);
 
   combineLatest(strategy$, candlePrices$).subscribe(
@@ -96,7 +86,8 @@ import { getDmiStream } from './indicators/dmi';
         await sendToRecipients(`SELL
           price: ${price}
           date: ${date}
-          signals: ${JSON.stringify(strategySignalDetails.signals)}
+          current profit:
+          total profit:
         `);
 
         hasBought = false;
