@@ -37,6 +37,7 @@ import { getDmiStream } from './indicators/dmi';
 
     if (
       dmiAdxSignal + dmiMdiSignal === 2 &&
+      isAdxHigherThanMdi &&
       !canISell &&
       rsiSignal
       // currentAvPrice - prevAvPrice >= 3)
@@ -48,8 +49,6 @@ import { getDmiStream } from './indicators/dmi';
              strategy 1
              price: ${currentPrice}
              date: ${format(new Date(), DATE_FORMAT)}
-             current profit: ${profit}%
-             total profit: ${totalProfit}%
          `);
       buyPrice = currentPrice;
       canISell = true;
@@ -57,12 +56,11 @@ import { getDmiStream } from './indicators/dmi';
       buysCounter++;
     }
     if (
-      dmiAdxSignal === -1 &&
-      // !rsiSignal &&
-      canISell &&
-      buysCounter !== 0
+      (dmiAdxSignal === -1 && canISell && buysCounter !== 0) ||
+      (profit >= 1 && canISell && buysCounter !== 0) ||
       // rsiSignal &&
       // profit >= 1
+      (profit <= -0.3 && canISell && buysCounter !== 0)
     ) {
       // || (canISell && profit <= -0.1)
       // tradeActions.sellByMarketPrice(null, '1m_dmi_trade_history.txt');
@@ -123,6 +121,7 @@ import { getDmiStream } from './indicators/dmi';
   // let complexSignal = null;
   let dmiMdiSignal = 0;
   let dmiAdxSignal = 0;
+  let isAdxHigherThanMdi = false;
   let rsiSignal = false;
   // let rebuy = false;
   let currentPrice = null;
@@ -147,7 +146,7 @@ import { getDmiStream } from './indicators/dmi';
   const rsiSignals$ = getRsiStream({
     symbol: SYMBOLS.BTCUSDT,
     period: 14,
-    interval: '1m',
+    interval: '1h',
   }).subscribe(({ rsi }) => {
     rsiSignal = rsi >= 50;
     // console.log(rsiSignal)
@@ -180,18 +179,18 @@ import { getDmiStream } from './indicators/dmi';
       // console.log('Curr dmi:'+ JSON.stringify(dmi));
       // console.log('Pdi is lower than then ADX');
     }
-    // if ((dmi.pdi >= dmi.mdi) && (prevDmi.pdi < prevDmi.mdi)) {
-    //     dmiSignal = 1;
-    //     console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-    //     console.log('Curr dmi:'+ JSON.stringify(dmi));
-    //     console.log('Pdi is upper than then MDI');
-    // }
-    // if ((dmi.pdi < dmi.mdi) && (prevDmi.pdi > prevDmi.mdi)) {
-    //     dmiSignal = 1;
-    //     console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-    //     console.log('Curr dmi:'+ JSON.stringify(dmi));
-    //     console.log('Pdi is lower than then MDI');
-    // }
+    if (dmi.adx > dmi.mdi) {
+      isAdxHigherThanMdi = true;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is upper than then MDI');
+    }
+    if (dmi.adx < dmi.mdi) {
+      isAdxHigherThanMdi = false;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is lower than then MDI');
+    }
     // console.log(dmi)
     if (dmi.pdi > dmi.mdi && prevDmi.pdi < prevDmi.mdi) {
       dmiMdiSignal = 1;
@@ -258,6 +257,7 @@ import { getDmiStream } from './indicators/dmi';
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {
+  console.error(reason);
   await sendToRecipients(`ERROR
     ${reason.message}
     ${reason.stack}
