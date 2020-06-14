@@ -9,8 +9,8 @@ import { RsiInstrument } from './instruments/RsiInstrument';
 
 import { BUY as BUY_SIGNAL, SELL as SELL_SIGNAL } from './instruments/signals';
 import { async } from 'rxjs/internal/scheduler/async';
-import {getRsiAlertStream} from "./indicators/rsi";
-import {getDmiAlertStream} from "./indicators/dmi";
+import { getRsiAlertStream } from './indicators/rsi';
+import { getDmiAlertStream } from './indicators/dmi';
 
 (async function() {
   await connect();
@@ -21,8 +21,6 @@ import {getDmiAlertStream} from "./indicators/dmi";
     if (dmi.pdi > dmi.mdi) console.log('Buy');
     if (dmi.pdi < dmi.mdi) console.log('Sell');
   });
-
-
 
   // const rsiInstrument = new RsiInstrument();
   //
