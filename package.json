@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "babel-node src/index.ts --extensions \".ts,.js\"",
+    "strategy1": "babel-node src/strategy1.ts --extensions \".ts,.js\"",
     "start": "node dist/index.js",
     "build": "rm -rf ./dist && babel src --extensions \".ts,.js\" --out-dir dist",
     "lint": "eslint --fix src/*"

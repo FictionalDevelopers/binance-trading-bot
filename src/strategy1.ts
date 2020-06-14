@@ -63,6 +63,8 @@ import { getDmiStream } from './indicators/dmi';
   let hasBought = false;
 
   await sendToRecipients(`INIT
+  Bot started working at: ${format(new Date(), DATE_FORMAT)}
+  with using the strategy 1
   symbol: ${symbol}
   interval: ${interval}
   period: 14,
