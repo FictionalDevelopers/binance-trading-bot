@@ -20,6 +20,27 @@ import { getDmiStream } from './indicators/dmi';
   await connect();
   await processSubscriptions();
 
+  const interval = '1m';
+  const symbol = SYMBOLS.BTCUSDT;
+  let canISell = false;
+  let buysCounter = 0;
+  let totalProfit = 0;
+  let prevProfit = 0;
+  const prevAvPrice = 0;
+  let buyPrice = null;
+  const vertVolumeSignal = false;
+  const dmiSignal = null;
+  const prevVolume = null;
+  let prevDmi = null;
+  // let complexSignal = null;
+  let dmiMdiSignal = 0;
+  let dmiAdxSignal = 0;
+  let isAdxHigherThanMdi = false;
+  let rsiSignal = false;
+  // let rebuy = false;
+  let currentPrice = null;
+  let profit = 0;
+
   const dmiTradeStrategy = async pricesStream => {
     // const pricesArrLength = trade.length;
     currentPrice = Number(pricesStream[pricesStream.length - 1]);
@@ -34,10 +55,13 @@ import { getDmiStream } from './indicators/dmi';
     //   console.log('No prev price found');
     //   return;
     // }
+    // console.log(
+    //   `DmiAdxSignal: ${dmiAdxSignal} buysCounter: ${buysCounter} profit: ${profit} canISell: ${canISell} rsi: ${rsiSignal} isAdxHigherThanMdi: ${isAdxHigherThanMdi} `,
+    // );
 
     if (
       dmiAdxSignal + dmiMdiSignal === 2 &&
-      isAdxHigherThanMdi &&
+      // isAdxHigherThanMdi &&
       !canISell &&
       rsiSignal
       // currentAvPrice - prevAvPrice >= 3)
@@ -45,33 +69,45 @@ import { getDmiStream } from './indicators/dmi';
       // rebuy
     ) {
       // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
+      buyPrice = currentPrice;
+      canISell = true;
+      // rebuy = false;
+      buysCounter++;
       await sendToRecipients(`BUY
              strategy 1
              price: ${currentPrice}
              date: ${format(new Date(), DATE_FORMAT)}
          `);
-      buyPrice = currentPrice;
-      canISell = true;
-      // rebuy = false;
-      buysCounter++;
+      console.log(`BUY
+                     price: ${currentPrice}
+                     date: ${format(new Date(), DATE_FORMAT)}
+                     total profit: ${Number(totalProfit).toPrecision(4)}
+      `);
     }
     if (
-      (dmiAdxSignal === -1 && canISell && buysCounter !== 0) ||
-      (profit >= 1 && canISell && buysCounter !== 0) ||
+      canISell &&
+      buysCounter !== 0 &&
+      (!rsiSignal || profit >= 1 || profit <= -0.3)
+    ) {
       // rsiSignal &&
       // profit >= 1
-      (profit <= -0.3 && canISell && buysCounter !== 0)
-    ) {
       // || (canISell && profit <= -0.1)
       // tradeActions.sellByMarketPrice(null, '1m_dmi_trade_history.txt');
+      canISell = false;
+      totalProfit += profit;
       await sendToRecipients(`SELL
              strategy 1
              price: ${currentPrice}
              date: ${format(new Date(), DATE_FORMAT)}
-             current profit: ${profit}%
-             total profit: ${totalProfit}%
+             current profit: ${Number(profit).toPrecision(4)}%
+             total profit: ${Number(totalProfit).toPrecision(4)}%
          `);
-      canISell = false;
+      console.log(`Sell
+                    price: ${currentPrice}
+                    date: ${format(new Date(), DATE_FORMAT)}
+                    current profit: ${Number(profit).toPrecision(4)}%
+                    total profit: ${Number(totalProfit).toPrecision(4)}%
+      `);
     }
     // if (
     //   !rsiSignal &&
@@ -106,27 +142,6 @@ import { getDmiStream } from './indicators/dmi';
     // prevAvPrice = currentAvPrice;
   };
 
-  const interval = '1m';
-  const symbol = SYMBOLS.BTCUSDT;
-  let canISell = false;
-  let buysCounter = 0;
-  let totalProfit = 0;
-  let prevProfit = 0;
-  const prevAvPrice = 0;
-  let buyPrice = null;
-  const vertVolumeSignal = false;
-  const dmiSignal = null;
-  const prevVolume = null;
-  let prevDmi = null;
-  // let complexSignal = null;
-  let dmiMdiSignal = 0;
-  let dmiAdxSignal = 0;
-  let isAdxHigherThanMdi = false;
-  let rsiSignal = false;
-  // let rebuy = false;
-  let currentPrice = null;
-  let profit = 0;
-
   // const candlePrices$ = getCandleStreamForInterval(
   //   SYMBOLS.BTCUSDT,
   //   interval,
@@ -147,9 +162,8 @@ import { getDmiStream } from './indicators/dmi';
     symbol: SYMBOLS.BTCUSDT,
     period: 14,
     interval: '1h',
-  }).subscribe(({ rsi }) => {
+  }).subscribe(rsi => {
     rsiSignal = rsi >= 50;
-    // console.log(rsiSignal)
   });
   //     .pipe(
   //   transformRsiToSignal({
@@ -179,13 +193,13 @@ import { getDmiStream } from './indicators/dmi';
       // console.log('Curr dmi:'+ JSON.stringify(dmi));
       // console.log('Pdi is lower than then ADX');
     }
-    if (dmi.adx > dmi.mdi) {
+    if (dmi.adx - dmi.mdi >= 2) {
       isAdxHigherThanMdi = true;
       // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
       // console.log('Curr dmi:'+ JSON.stringify(dmi));
       // console.log('Pdi is upper than then MDI');
     }
-    if (dmi.adx < dmi.mdi) {
+    if (dmi.adx - dmi.mdi < 2) {
       isAdxHigherThanMdi = false;
       // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
       // console.log('Curr dmi:'+ JSON.stringify(dmi));
