@@ -1,9 +1,8 @@
 import { combineLatest } from 'rxjs';
 import { map, pluck, bufferCount } from 'rxjs/operators';
 import { format } from 'date-fns';
-
 import { connect } from './db/connection';
-import { SYMBOLS, RESOURCES } from './constants';
+import { RESOURCES } from './constants';
 import { DATE_FORMAT } from './constants/date';
 import { getCandleStreamForInterval } from './api/candles';
 import { getTradeStream } from './api/trades.js';
@@ -11,7 +10,6 @@ import { transformRsiToSignal } from './tools/rsi-tool';
 import { makeVerticalVolumeToolStream } from './tools/vertical-volume-tool';
 import { makeStrategy } from './strategies/make-strategy';
 import { BUY, SELL } from './tools/signals';
-
 import { processSubscriptions, sendToRecipients } from './services/telegram';
 import { getRsiStream } from './indicators/rsi';
 import { getDmiStream } from './indicators/dmi';
@@ -20,12 +18,13 @@ import { getDmiStream } from './indicators/dmi';
   await connect();
   await processSubscriptions();
 
+  const symbol = process.argv[2];
   const interval = '1m';
-  const symbol = SYMBOLS.BTCUSDT;
+  // const symbol = SYMBOLS.ERDUSDT;
   let canISell = false;
-  let buysCounter = 0;
+  // let buysCounter = 0;
   let totalProfit = 0;
-  let prevProfit = 0;
+  // let prevProfit = 0;
   const prevAvPrice = 0;
   let buyPrice = null;
   const vertVolumeSignal = false;
@@ -36,16 +35,17 @@ import { getDmiStream } from './indicators/dmi';
   let dmiMdiSignal = 0;
   let dmiAdxSignal = 0;
   let isAdxHigherThanMdi = false;
+  let isMdiHigherThanAdx = false;
   let rsiSignal = false;
-  // let rebuy = false;
+  let rebuy = false;
   let currentPrice = null;
-  let profit = 0;
+  // let profit = 0;
 
   const dmiTradeStrategy = async pricesStream => {
     // const pricesArrLength = trade.length;
     currentPrice = Number(pricesStream[pricesStream.length - 1]);
     // const currentAvPrice = trade.reduce(sumPricesReducer, 0) / pricesArrLength;
-    profit = buyPrice
+    const profit = buyPrice
       ? currentPrice / buyPrice > 1
         ? Number((currentPrice / buyPrice) * 100 - 100)
         : Number(-1 * (100 - (currentPrice / buyPrice) * 100))
@@ -55,41 +55,78 @@ import { getDmiStream } from './indicators/dmi';
     //   console.log('No prev price found');
     //   return;
     // }
-    // console.log(
-    //   `DmiAdxSignal: ${dmiAdxSignal} buysCounter: ${buysCounter} profit: ${profit} canISell: ${canISell} rsi: ${rsiSignal} isAdxHigherThanMdi: ${isAdxHigherThanMdi} `,
-    // );
+    console.log(
+      `DmiAdxSignal: ${dmiAdxSignal} DmiMdiSignal: ${dmiMdiSignal}  profit: ${profit} canISell: ${canISell} rsi: ${rsiSignal} isAdxHigherThanMdi: ${isAdxHigherThanMdi} `,
+    );
 
     if (
+      !canISell &&
       dmiAdxSignal + dmiMdiSignal === 2 &&
       // isAdxHigherThanMdi &&
-      !canISell &&
       rsiSignal
       // currentAvPrice - prevAvPrice >= 3)
       // ||
       // rebuy
     ) {
       // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
-      buyPrice = currentPrice;
       canISell = true;
+      buyPrice = currentPrice;
       // rebuy = false;
-      buysCounter++;
+      // buysCounter++;
       await sendToRecipients(`BUY
-             strategy 1
+             STRATEGY 1
+             symbol: ${symbol.toUpperCase()}
              price: ${currentPrice}
              date: ${format(new Date(), DATE_FORMAT)}
-             total profit: ${Number(totalProfit).toPrecision(4)}
+             total profit: ${Number(totalProfit).toPrecision(4)}%
 
          `);
       console.log(`BUY
+                     STRATEGY 1
+                     symbol: ${symbol.toUpperCase()}
                      price: ${currentPrice}
                      date: ${format(new Date(), DATE_FORMAT)}
-                     total profit: ${Number(totalProfit).toPrecision(4)}
+                     total profit: ${Number(totalProfit).toPrecision(4)}%
       `);
+      return;
+    }
+    if (canISell && profit >= 1) {
+      // buysCounter !== 0 &&
+      // (dmiAdxSignal === -1 && isAdxHigherThanMdi) ||
+      // (dmiMdiSignal === -1 && isMdiHigherThanAdx) ||
+      // rsiSignal &&
+      // profit >= 1
+      // || (canISell && profit <= -0.1)
+      // tradeActions.sellByMarketPrice(null, '1m_dmi_trade_history.txt');
+      canISell = false;
+      totalProfit += profit;
+      buyPrice = null;
+      rebuy = true;
+      await sendToRecipients(`SELL
+             STRATEGY 1
+             symbol: ${symbol.toUpperCase()}
+             price: ${currentPrice}
+             date: ${format(new Date(), DATE_FORMAT)}
+             current profit: ${Number(profit).toPrecision(4)}%
+             total profit: ${Number(totalProfit).toPrecision(4)}%
+         `);
+      console.log(`Sell
+                    STRATEGY 1
+                    symbol: ${symbol.toUpperCase()}
+                    price: ${currentPrice}
+                    date: ${format(new Date(), DATE_FORMAT)}
+                    current profit: ${Number(profit).toPrecision(4)}%
+                    total profit: ${Number(totalProfit).toPrecision(4)}%
+      `);
+      return;
     }
     if (
-      canISell &&
-      buysCounter !== 0 &&
-      (dmiAdxSignal === -1 || profit >= 1 || profit <= -0.3)
+      (canISell &&
+        ((dmiAdxSignal === -1 && isAdxHigherThanMdi) ||
+          (dmiMdiSignal === -1 && isMdiHigherThanAdx))) ||
+      profit <= -1
+      // currentAvPrice - prevAvPrice <= 3
+      // profit <= -0.3
     ) {
       // rsiSignal &&
       // profit >= 1
@@ -97,51 +134,25 @@ import { getDmiStream } from './indicators/dmi';
       // tradeActions.sellByMarketPrice(null, '1m_dmi_trade_history.txt');
       canISell = false;
       totalProfit += profit;
+      buyPrice = null;
+      rebuy = false;
       await sendToRecipients(`SELL
-             strategy 1
+             STRATEGY 1
+             symbol: ${symbol.toUpperCase()}
              price: ${currentPrice}
              date: ${format(new Date(), DATE_FORMAT)}
              current profit: ${Number(profit).toPrecision(4)}%
              total profit: ${Number(totalProfit).toPrecision(4)}%
          `);
       console.log(`Sell
+                    STRATEGY 1
+                    symbol: ${symbol.toUpperCase()}
                     price: ${currentPrice}
                     date: ${format(new Date(), DATE_FORMAT)}
                     current profit: ${Number(profit).toPrecision(4)}%
                     total profit: ${Number(totalProfit).toPrecision(4)}%
       `);
     }
-    // if (
-    //   !rsiSignal &&
-    //   canISell
-    //   // currentAvPrice - prevAvPrice <= 3
-    //   // profit <= -0.3
-    // ) {
-    //   try {
-    //     totalProfit += profit;
-    //     prevProfit = profit;
-    //     fs.appendFile(
-    //       '1m_dmi_trade_history.txt',
-    //       `Sell: ${currentPrice}; Date:${format(
-    //         new Date(),
-    //         'MMMM dd yyyy, h:mm:ss a',
-    //       )}\nCurrent profit: ${profit}%\nTotal profit: ${totalProfit}%\n\n`,
-    //       err => {
-    //         if (err) throw err;
-    //         console.log('The sell price were appended to file!');
-    //       },
-    //     );
-    //     canISell = false;
-    //     // dmiAdxSignal = 0;
-    //     // dmiMdiSignal = 0;
-    //     // rsiSignal = false;
-    //     // console.log('Current price: ' + currentPrice);
-    //     // console.log('Prev price: ' + prevPrice);
-    //   } catch (e) {
-    //     console.error(e);
-    //   }
-    // }
-    // prevAvPrice = currentAvPrice;
   };
 
   // const candlePrices$ = getCandleStreamForInterval(
@@ -161,11 +172,12 @@ import { getDmiStream } from './indicators/dmi';
   // );
 
   const rsiSignals$ = getRsiStream({
-    symbol: SYMBOLS.BTCUSDT,
+    symbol: symbol,
     period: 14,
-    interval: '1h',
+    interval: '1d',
   }).subscribe(rsi => {
-    rsiSignal = rsi >= 50;
+    // console.log(rsi);
+    rsiSignal = rsi >= 55;
   });
   //     .pipe(
   //   transformRsiToSignal({
@@ -175,7 +187,7 @@ import { getDmiStream } from './indicators/dmi';
   // );
 
   getDmiStream({
-    symbol: SYMBOLS.BTCUSDT,
+    symbol: symbol,
     interval: '1m',
     period: 14,
   }).subscribe(dmi => {
@@ -183,6 +195,7 @@ import { getDmiStream } from './indicators/dmi';
       prevDmi = dmi;
       return;
     }
+    // console.log(dmi);
     if (dmi.pdi > dmi.adx && prevDmi.pdi < prevDmi.adx) {
       dmiAdxSignal = 1;
       // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
@@ -203,6 +216,18 @@ import { getDmiStream } from './indicators/dmi';
     }
     if (dmi.adx - dmi.mdi < 2) {
       isAdxHigherThanMdi = false;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is lower than then MDI');
+    }
+    if (dmi.mdi - dmi.adx >= 2) {
+      isMdiHigherThanAdx = true;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is upper than then MDI');
+    }
+    if (dmi.mdi - dmi.adx < 2) {
+      isMdiHigherThanAdx = false;
       // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
       // console.log('Curr dmi:'+ JSON.stringify(dmi));
       // console.log('Pdi is lower than then MDI');
