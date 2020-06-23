@@ -31,11 +31,15 @@ import { getDmiStream } from './indicators/dmi';
   const dmiSignal = null;
   const prevVolume = null;
   let prevDmi = null;
+  let prev1hDmi = null;
+
   // let complexSignal = null;
   let dmiMdiSignal = 0;
   let dmiAdxSignal = 0;
   let isAdxHigherThanMdi = false;
+  let isPdi1hHigherThanMdi = false;
   let isMdiHigherThanAdx = false;
+  // let isMdi1hHigherThanAdx = false;
   let rsiSignal = false;
   let rebuy = false;
   let currentPrice = null;
@@ -56,14 +60,15 @@ import { getDmiStream } from './indicators/dmi';
     //   return;
     // }
     console.log(
-      `DmiAdxSignal: ${dmiAdxSignal} DmiMdiSignal: ${dmiMdiSignal}  profit: ${profit} canISell: ${canISell} rsi: ${rsiSignal} isAdxHigherThanMdi: ${isAdxHigherThanMdi} `,
+      `DmiAdxSignal: ${dmiAdxSignal} DmiMdiSignal: ${dmiMdiSignal}  profit: ${profit} canISell: ${canISell} rsi: ${rsiSignal} isAdxHigherThanMdi: ${isAdxHigherThanMdi} isPdi1hHigherThanMdi ${isPdi1hHigherThanMdi}`,
     );
 
     if (
       !canISell &&
       dmiAdxSignal + dmiMdiSignal === 2 &&
       // isAdxHigherThanMdi &&
-      rsiSignal
+      rsiSignal &&
+      isPdi1hHigherThanMdi
       // currentAvPrice - prevAvPrice >= 3)
       // ||
       // rebuy
@@ -136,6 +141,8 @@ import { getDmiStream } from './indicators/dmi';
       totalProfit += profit;
       buyPrice = null;
       rebuy = false;
+      dmiMdiSignal = -1;
+      dmiAdxSignal = -1;
       await sendToRecipients(`SELL
              STRATEGY 1
              symbol: ${symbol.toUpperCase()}
@@ -247,6 +254,77 @@ import { getDmiStream } from './indicators/dmi';
     }
 
     prevDmi = dmi;
+  });
+
+  getDmiStream({
+    symbol: symbol,
+    interval: '1h',
+    period: 14,
+  }).subscribe(dmi => {
+    if (!prev1hDmi) {
+      prev1hDmi = dmi;
+      return;
+    }
+    // console.log(dmi);
+    // if (dmi.pdi > dmi.adx && prevDmi.pdi < prevDmi.adx) {
+    //   dmiAdxSignal = 1;
+    // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+    // console.log('Curr dmi:'+ JSON.stringify(dmi));
+    // console.log('Pdi is upper than then ADX');
+    // }
+    // if (dmi.pdi < dmi.adx && prevDmi.pdi > prevDmi.adx) {
+    //   dmiAdxSignal = -1;
+    // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+    // console.log('Curr dmi:'+ JSON.stringify(dmi));
+    // console.log('Pdi is lower than then ADX');
+    // }
+    if (dmi.adx - dmi.mdi >= 2) {
+      // isAdx1hHigherThanMdi = true;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is upper than then MDI');
+    }
+    if (dmi.adx - dmi.mdi < 2) {
+      // isAdx1hHigherThanMdi = false;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is lower than then MDI');
+    }
+    if (dmi.mdi - dmi.adx >= 2) {
+      // isMdi1hHigherThanAdx = true;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is upper than then MDI');
+    }
+    if (dmi.mdi - dmi.adx < 2) {
+      // isMdi1hHigherThanAdx = false;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is lower than then MDI');
+    }
+    isPdi1hHigherThanMdi = dmi.pdi - dmi.mdi >= 2;
+
+    // if (dmi.pdi - dmi.mdi >= 2) {
+    // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+    // console.log('Curr dmi:'+ JSON.stringify(dmi));
+    // console.log('Pdi is upper than then MDI');
+    // }
+
+    // console.log(dmi)
+    if (dmi.pdi > dmi.mdi && prevDmi.pdi < prevDmi.mdi) {
+      //   dmiMdiSignal = 1;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is upper than then ADX');
+    }
+    if (dmi.pdi < dmi.mdi && prevDmi.pdi > prevDmi.mdi) {
+      //   dmiMdiSignal = -1;
+      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+      // console.log('Curr dmi:'+ JSON.stringify(dmi));
+      // console.log('Pdi is upper than then ADX');
+    }
+
+    prev1hDmi = dmi;
   });
 
   // const strategy$ = makeStrategy({
