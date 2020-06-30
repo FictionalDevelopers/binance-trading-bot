@@ -13,6 +13,8 @@ import { BUY, SELL } from './tools/signals';
 import { processSubscriptions, sendToRecipients } from './services/telegram';
 import { getRsiStream } from './indicators/rsi';
 import { getDmiStream } from './indicators/dmi';
+import _isEqual from 'lodash/isEqual';
+import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
 
 (async function() {
   await connect();
@@ -25,29 +27,85 @@ import { getDmiStream } from './indicators/dmi';
   // let buysCounter = 0;
   let totalProfit = 0;
   // let prevProfit = 0;
-  const prevAvPrice = 0;
+  // const prevAvPrice = 0;
   let buyPrice = null;
   const vertVolumeSignal = false;
   const dmiSignal = null;
   const prevVolume = null;
   let prevDmi = null;
-  let prev1hDmi = null;
+  const prev1hDmi = null;
+  const tradesActivity = 0;
+  const prev1sPrice = 0;
+  const prices = [];
+  const intervalPriceDiff = [];
+  const prevAvPrice = null;
 
   // let complexSignal = null;
   let dmiMdiSignal = 0;
   let dmiAdxSignal = 0;
   let isAdxHigherThanMdi = false;
-  let isPdi1hHigherThanMdi = false;
+  const isPdi1hHigherThanMdi = false;
   let isMdiHigherThanAdx = false;
   // let isMdi1hHigherThanAdx = false;
-  let rsiSignal = false;
+  let rsi1dSignal = false;
+  let rsi1hSignalValue = null;
   let rebuy = false;
   let currentPrice = null;
   // let profit = 0;
 
+  const sumPricesReducer = (accumulator, currentValue) =>
+    accumulator + Number(currentValue);
+
+  // const getIntervalPriceDiff = setInterval(() => {
+  //   if (
+  //     intervalPriceDiff[4] > intervalPriceDiff[3] &&
+  //     intervalPriceDiff[3] > intervalPriceDiff[2] &&
+  //     intervalPriceDiff[2] > intervalPriceDiff[1] &&
+  //     intervalPriceDiff[1] > intervalPriceDiff[0]
+  //   )
+  //     console.log('Price Up');
+  //   intervalPriceDiff.length = 0;
+  // }, 5000);
+
+  // const getOneSecondPriceDiff = setInterval(() => {
+  //   let priceDiff;
+  //   const current1sPrice = prices[prices.length - 1];
+  //   if (!prev1sPrice) {
+  //     prev1sPrice = current1sPrice;
+  //     priceDiff = Number(0).toFixed(7);
+  //     console.log(Number(priceDiff).toFixed(7) + '%');
+  //     intervalPriceDiff.push(priceDiff);
+  //     return;
+  //   }
+  //   priceDiff = current1sPrice
+  //     ? current1sPrice / prev1sPrice > 1
+  //       ? Number((current1sPrice / prev1sPrice) * 100 - 100)
+  //       : Number(-1 * (100 - (current1sPrice / prev1sPrice) * 100))
+  //     : null;
+  //
+  //   prev1sPrice = current1sPrice;
+  //   prices.length = 0;
+  //   console.log(Number(priceDiff).toFixed(7) + '%');
+  //   intervalPriceDiff.push(priceDiff);
+  // }, 1000);
+
   const dmiTradeStrategy = async pricesStream => {
-    // const pricesArrLength = trade.length;
     currentPrice = Number(pricesStream[pricesStream.length - 1]);
+    // prices.push(currentPrice);
+    // console.log(currentPrice);
+    // const upSortedPricesArr = [...pricesStream].sort((a, b) => a - b);
+    // const downSortedPricesArr = [...pricesStream].sort((a, b) => b - a);
+    // if (_isEqual(upSortedPricesArr, pricesStream)) {
+    //   console.log('UP!!!!!!!');
+    //   console.log(`date: ${format(new Date(), DATE_FORMAT)}`);
+    // }
+    // if (_isEqual(downSortedPricesArr, pricesStream)) {
+    //   console.log('DOWN!!!!!!!');
+    //   console.log(`date: ${format(new Date(), DATE_FORMAT)}`);
+    // }
+    console.log(currentPrice);
+
+    // const pricesArrLength = pricesStream.length;
     // const currentAvPrice = trade.reduce(sumPricesReducer, 0) / pricesArrLength;
     const profit = buyPrice
       ? currentPrice / buyPrice > 1
@@ -59,19 +117,19 @@ import { getDmiStream } from './indicators/dmi';
     //   console.log('No prev price found');
     //   return;
     // }
-    console.log(
-      `DmiAdxSignal: ${dmiAdxSignal} DmiMdiSignal: ${dmiMdiSignal}  profit: ${profit} canISell: ${canISell} rsi: ${rsiSignal} isAdxHigherThanMdi: ${isAdxHigherThanMdi} isPdi1hHigherThanMdi ${isPdi1hHigherThanMdi}`,
-    );
+    // console.log(
+    //   `DmiAdxSignal: ${dmiAdxSignal} DmiMdiSignal: ${dmiMdiSignal}  profit: ${profit} canISell: ${canISell} rsi: ${rsiSignal} isAdxHigherThanMdi: ${isAdxHigherThanMdi} isPdi1hHigherThanMdi ${isPdi1hHigherThanMdi}`,
+    // );
 
     if (
       !canISell &&
-      dmiAdxSignal + dmiMdiSignal === 2 &&
-      // isAdxHigherThanMdi &&
-      rsiSignal &&
-      isPdi1hHigherThanMdi
-      // currentAvPrice - prevAvPrice >= 3)
-      // ||
-      // rebuy
+      ((dmiAdxSignal + dmiMdiSignal === 2 &&
+        // isAdxHigherThanMdi &&
+        rsi1dSignal &&
+        rsi1hSignalValue >= 52) ||
+        // && isPdi1hHigherThanMdi
+        // && (currentAvPrice - prevAvPrice >= 3)
+        rebuy)
     ) {
       // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
       canISell = true;
@@ -126,10 +184,17 @@ import { getDmiStream } from './indicators/dmi';
       return;
     }
     if (
-      (canISell &&
-        ((dmiAdxSignal === -1 && isAdxHigherThanMdi) ||
-          (dmiMdiSignal === -1 && isMdiHigherThanAdx))) ||
-      profit <= -1
+      canISell &&
+      // dmiAdxSignal === -1
+      // ||
+      (profit <= -3 || rsi1hSignalValue <= 48)
+
+      // (canISell &&
+      //   ((dmiAdxSignal === -1 && isAdxHigherThanMdi) ||
+      //     (dmiMdiSignal === -1 && isMdiHigherThanAdx))
+      // ) ||
+      // profit <= -1
+
       // currentAvPrice - prevAvPrice <= 3
       // profit <= -0.3
     ) {
@@ -141,8 +206,8 @@ import { getDmiStream } from './indicators/dmi';
       totalProfit += profit;
       buyPrice = null;
       rebuy = false;
-      dmiMdiSignal = -1;
-      dmiAdxSignal = -1;
+      // dmiMdiSignal = -1;
+      // dmiAdxSignal = -1;
       await sendToRecipients(`SELL
              STRATEGY 1
              symbol: ${symbol.toUpperCase()}
@@ -166,7 +231,7 @@ import { getDmiStream } from './indicators/dmi';
   //   SYMBOLS.BTCUSDT,
   //   interval,
   // ).pipe(pluck('closePrice'), map(Number));
-
+  //
   // const volumes$ = makeVerticalVolumeToolStream(
   //   {
   //     interval,
@@ -178,13 +243,22 @@ import { getDmiStream } from './indicators/dmi';
   //   },
   // );
 
-  const rsiSignals$ = getRsiStream({
+  const rsi1dSignals = getRsiStream({
     symbol: symbol,
     period: 14,
     interval: '1d',
   }).subscribe(rsi => {
     // console.log(rsi);
-    rsiSignal = rsi >= 55;
+    rsi1dSignal = rsi >= 52;
+  });
+
+  const rsi1hSignals = getRsiStream({
+    symbol: symbol,
+    period: 14,
+    interval: '1h',
+  }).subscribe(rsi => {
+    // console.log(rsi);
+    rsi1hSignalValue = rsi;
   });
   //     .pipe(
   //   transformRsiToSignal({
@@ -256,76 +330,76 @@ import { getDmiStream } from './indicators/dmi';
     prevDmi = dmi;
   });
 
-  getDmiStream({
-    symbol: symbol,
-    interval: '1h',
-    period: 14,
-  }).subscribe(dmi => {
-    if (!prev1hDmi) {
-      prev1hDmi = dmi;
-      return;
-    }
-    // console.log(dmi);
-    // if (dmi.pdi > dmi.adx && prevDmi.pdi < prevDmi.adx) {
-    //   dmiAdxSignal = 1;
-    // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-    // console.log('Curr dmi:'+ JSON.stringify(dmi));
-    // console.log('Pdi is upper than then ADX');
-    // }
-    // if (dmi.pdi < dmi.adx && prevDmi.pdi > prevDmi.adx) {
-    //   dmiAdxSignal = -1;
-    // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-    // console.log('Curr dmi:'+ JSON.stringify(dmi));
-    // console.log('Pdi is lower than then ADX');
-    // }
-    if (dmi.adx - dmi.mdi >= 2) {
-      // isAdx1hHigherThanMdi = true;
-      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-      // console.log('Curr dmi:'+ JSON.stringify(dmi));
-      // console.log('Pdi is upper than then MDI');
-    }
-    if (dmi.adx - dmi.mdi < 2) {
-      // isAdx1hHigherThanMdi = false;
-      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-      // console.log('Curr dmi:'+ JSON.stringify(dmi));
-      // console.log('Pdi is lower than then MDI');
-    }
-    if (dmi.mdi - dmi.adx >= 2) {
-      // isMdi1hHigherThanAdx = true;
-      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-      // console.log('Curr dmi:'+ JSON.stringify(dmi));
-      // console.log('Pdi is upper than then MDI');
-    }
-    if (dmi.mdi - dmi.adx < 2) {
-      // isMdi1hHigherThanAdx = false;
-      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-      // console.log('Curr dmi:'+ JSON.stringify(dmi));
-      // console.log('Pdi is lower than then MDI');
-    }
-    isPdi1hHigherThanMdi = dmi.pdi - dmi.mdi >= 2;
-
-    // if (dmi.pdi - dmi.mdi >= 2) {
-    // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-    // console.log('Curr dmi:'+ JSON.stringify(dmi));
-    // console.log('Pdi is upper than then MDI');
-    // }
-
-    // console.log(dmi)
-    if (dmi.pdi > dmi.mdi && prevDmi.pdi < prevDmi.mdi) {
-      //   dmiMdiSignal = 1;
-      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-      // console.log('Curr dmi:'+ JSON.stringify(dmi));
-      // console.log('Pdi is upper than then ADX');
-    }
-    if (dmi.pdi < dmi.mdi && prevDmi.pdi > prevDmi.mdi) {
-      //   dmiMdiSignal = -1;
-      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-      // console.log('Curr dmi:'+ JSON.stringify(dmi));
-      // console.log('Pdi is upper than then ADX');
-    }
-
-    prev1hDmi = dmi;
-  });
+  // getDmiStream({
+  //   symbol: symbol,
+  //   interval: '1h',
+  //   period: 14,
+  // }).subscribe(dmi => {
+  //   if (!prev1hDmi) {
+  //     prev1hDmi = dmi;
+  //     return;
+  //   }
+  //   // console.log(dmi);
+  //   // if (dmi.pdi > dmi.adx && prevDmi.pdi < prevDmi.adx) {
+  //   //   dmiAdxSignal = 1;
+  //   // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+  //   // console.log('Curr dmi:'+ JSON.stringify(dmi));
+  //   // console.log('Pdi is upper than then ADX');
+  //   // }
+  //   // if (dmi.pdi < dmi.adx && prevDmi.pdi > prevDmi.adx) {
+  //   //   dmiAdxSignal = -1;
+  //   // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+  //   // console.log('Curr dmi:'+ JSON.stringify(dmi));
+  //   // console.log('Pdi is lower than then ADX');
+  //   // }
+  //   if (dmi.adx - dmi.mdi >= 2) {
+  //     // isAdx1hHigherThanMdi = true;
+  //     // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+  //     // console.log('Curr dmi:'+ JSON.stringify(dmi));
+  //     // console.log('Pdi is upper than then MDI');
+  //   }
+  //   if (dmi.adx - dmi.mdi < 2) {
+  //     // isAdx1hHigherThanMdi = false;
+  //     // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+  //     // console.log('Curr dmi:'+ JSON.stringify(dmi));
+  //     // console.log('Pdi is lower than then MDI');
+  //   }
+  //   if (dmi.mdi - dmi.adx >= 2) {
+  //     // isMdi1hHigherThanAdx = true;
+  //     // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+  //     // console.log('Curr dmi:'+ JSON.stringify(dmi));
+  //     // console.log('Pdi is upper than then MDI');
+  //   }
+  //   if (dmi.mdi - dmi.adx < 2) {
+  //     // isMdi1hHigherThanAdx = false;
+  //     // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+  //     // console.log('Curr dmi:'+ JSON.stringify(dmi));
+  //     // console.log('Pdi is lower than then MDI');
+  //   }
+  //   isPdi1hHigherThanMdi = dmi.pdi - dmi.mdi >= 2;
+  //
+  //   // if (dmi.pdi - dmi.mdi >= 2) {
+  //   // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+  //   // console.log('Curr dmi:'+ JSON.stringify(dmi));
+  //   // console.log('Pdi is upper than then MDI');
+  //   // }
+  //
+  //   // console.log(dmi)
+  //   if (dmi.pdi > dmi.mdi && prevDmi.pdi < prevDmi.mdi) {
+  //     //   dmiMdiSignal = 1;
+  //     // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+  //     // console.log('Curr dmi:'+ JSON.stringify(dmi));
+  //     // console.log('Pdi is upper than then ADX');
+  //   }
+  //   if (dmi.pdi < dmi.mdi && prevDmi.pdi > prevDmi.mdi) {
+  //     //   dmiMdiSignal = -1;
+  //     // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+  //     // console.log('Curr dmi:'+ JSON.stringify(dmi));
+  //     // console.log('Pdi is upper than then ADX');
+  //   }
+  //
+  //   prev1hDmi = dmi;
+  // });
 
   // const strategy$ = makeStrategy({
   //   buyTools: [volumes$],
@@ -336,8 +410,8 @@ import { getDmiStream } from './indicators/dmi';
 
   await sendToRecipients(`INIT
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  with using the strategy 1
-  symbol: ${symbol}
+  with using the STRATEGY 1
+  symbol: ${symbol.toUpperCase()}
   `);
 
   getTradeStream({
