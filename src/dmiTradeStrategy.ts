@@ -49,7 +49,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
   // let isMdi1hHigherThanAdx = false;
   let rsi1dSignal = false;
   let rsi1hSignalValue = null;
-  let rebuy = false;
+  // let rebuy = false;
   let currentPrice = null;
   // let profit = 0;
 
@@ -123,13 +123,13 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
 
     if (
       !canISell &&
-      ((dmiAdxSignal + dmiMdiSignal === 2 &&
-        // isAdxHigherThanMdi &&
-        rsi1dSignal &&
-        rsi1hSignalValue >= 52) ||
-        // && isPdi1hHigherThanMdi
-        // && (currentAvPrice - prevAvPrice >= 3)
-        rebuy)
+      dmiAdxSignal + dmiMdiSignal === 2 &&
+      // isAdxHigherThanMdi &&
+      rsi1dSignal &&
+      rsi1hSignalValue >= 52 &&
+      rsi1hSignalValue < 70
+      // && isPdi1hHigherThanMdi
+      // && (currentAvPrice - prevAvPrice >= 3)
     ) {
       // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
       canISell = true;
@@ -162,15 +162,15 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       // || (canISell && profit <= -0.1)
       // tradeActions.sellByMarketPrice(null, '1m_dmi_trade_history.txt');
       canISell = false;
-      totalProfit += profit;
+      totalProfit += profit - 0.2;
       buyPrice = null;
-      rebuy = true;
+      // rebuy = true;
       await sendToRecipients(`SELL
              STRATEGY 1
              symbol: ${symbol.toUpperCase()}
              price: ${currentPrice}
              date: ${format(new Date(), DATE_FORMAT)}
-             current profit: ${Number(profit).toPrecision(4)}%
+             current profit: ${Number(profit - 0.2).toPrecision(4)}%
              total profit: ${Number(totalProfit).toPrecision(4)}%
          `);
       console.log(`Sell
@@ -178,16 +178,20 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
                     symbol: ${symbol.toUpperCase()}
                     price: ${currentPrice}
                     date: ${format(new Date(), DATE_FORMAT)}
-                    current profit: ${Number(profit).toPrecision(4)}%
+                    current profit: ${Number(profit - 0.2).toPrecision(4)}%
                     total profit: ${Number(totalProfit).toPrecision(4)}%
       `);
       return;
     }
     if (
       canISell &&
-      // dmiAdxSignal === -1
+      dmiAdxSignal === -1
       // ||
-      (profit <= -3 || rsi1hSignalValue <= 48)
+      // (
+      // profit <= -3
+      // ||
+      // rsi1hSignalValue <= 48
+      // )
 
       // (canISell &&
       //   ((dmiAdxSignal === -1 && isAdxHigherThanMdi) ||
@@ -203,9 +207,9 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       // || (canISell && profit <= -0.1)
       // tradeActions.sellByMarketPrice(null, '1m_dmi_trade_history.txt');
       canISell = false;
-      totalProfit += profit;
+      totalProfit += profit - 0.2;
       buyPrice = null;
-      rebuy = false;
+      // rebuy = false;
       // dmiMdiSignal = -1;
       // dmiAdxSignal = -1;
       await sendToRecipients(`SELL
@@ -213,7 +217,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
              symbol: ${symbol.toUpperCase()}
              price: ${currentPrice}
              date: ${format(new Date(), DATE_FORMAT)}
-             current profit: ${Number(profit).toPrecision(4)}%
+             current profit: ${Number(profit - 0.2).toPrecision(4)}%
              total profit: ${Number(totalProfit).toPrecision(4)}%
          `);
       console.log(`Sell
@@ -221,7 +225,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
                     symbol: ${symbol.toUpperCase()}
                     price: ${currentPrice}
                     date: ${format(new Date(), DATE_FORMAT)}
-                    current profit: ${Number(profit).toPrecision(4)}%
+                    current profit: ${Number(profit - 0.2).toPrecision(4)}%
                     total profit: ${Number(totalProfit).toPrecision(4)}%
       `);
     }
@@ -276,51 +280,56 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       prevDmi = dmi;
       return;
     }
-    // console.log(dmi);
-    if (dmi.pdi > dmi.adx && prevDmi.pdi < prevDmi.adx) {
+    console.log('dmiMdiSignal', dmiMdiSignal);
+    console.log('dmiAdxSignal', dmiAdxSignal);
+    if (dmi.pdi - dmi.adx >= 2) {
       dmiAdxSignal = 1;
       // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
       // console.log('Curr dmi:'+ JSON.stringify(dmi));
       // console.log('Pdi is upper than then ADX');
     }
-    if (dmi.pdi < dmi.adx && prevDmi.pdi > prevDmi.adx) {
+    if (dmi.pdi - dmi.adx <= -2) {
       dmiAdxSignal = -1;
-      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-      // console.log('Curr dmi:'+ JSON.stringify(dmi));
-      // console.log('Pdi is lower than then ADX');
     }
-    if (dmi.adx - dmi.mdi >= 2) {
-      isAdxHigherThanMdi = true;
-      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-      // console.log('Curr dmi:'+ JSON.stringify(dmi));
-      // console.log('Pdi is upper than then MDI');
-    }
-    if (dmi.adx - dmi.mdi < 2) {
-      isAdxHigherThanMdi = false;
-      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-      // console.log('Curr dmi:'+ JSON.stringify(dmi));
-      // console.log('Pdi is lower than then MDI');
-    }
-    if (dmi.mdi - dmi.adx >= 2) {
-      isMdiHigherThanAdx = true;
-      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-      // console.log('Curr dmi:'+ JSON.stringify(dmi));
-      // console.log('Pdi is upper than then MDI');
-    }
-    if (dmi.mdi - dmi.adx < 2) {
-      isMdiHigherThanAdx = false;
-      // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
-      // console.log('Curr dmi:'+ JSON.stringify(dmi));
-      // console.log('Pdi is lower than then MDI');
-    }
-    // console.log(dmi)
-    if (dmi.pdi > dmi.mdi && prevDmi.pdi < prevDmi.mdi) {
+
+    // if (dmi.adx - dmi.pdi >= 2 && prevDmi.pdi > prevDmi.adx) {
+    //   dmiAdxSignal = -1;
+    //   // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+    //   // console.log('Curr dmi:'+ JSON.stringify(dmi));
+    //   // console.log('Pdi is lower than then ADX');
+    // }
+    // if (dmi.adx - dmi.mdi >= 2) {
+    //   isAdxHigherThanMdi = true;
+    //   // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+    //   // console.log('Curr dmi:'+ JSON.stringify(dmi));
+    //   // console.log('Pdi is upper than then MDI');
+    // }
+    // if (dmi.adx - dmi.mdi < 2) {
+    //   isAdxHigherThanMdi = false;
+    //   // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+    //   // console.log('Curr dmi:'+ JSON.stringify(dmi));
+    //   // console.log('Pdi is lower than then MDI');
+    // }
+    // if (dmi.mdi - dmi.adx >= 2) {
+    //   isMdiHigherThanAdx = true;
+    //   // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+    //   // console.log('Curr dmi:'+ JSON.stringify(dmi));
+    //   // console.log('Pdi is upper than then MDI');
+    // }
+    // if (dmi.mdi - dmi.adx < 2) {
+    //   isMdiHigherThanAdx = false;
+    //   // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
+    //   // console.log('Curr dmi:'+ JSON.stringify(dmi));
+    //   // console.log('Pdi is lower than then MDI');
+    // }
+    // // console.log(dmi)
+    if (dmi.pdi - dmi.mdi > 0.5) {
       dmiMdiSignal = 1;
       // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
       // console.log('Curr dmi:'+ JSON.stringify(dmi));
       // console.log('Pdi is upper than then ADX');
     }
-    if (dmi.pdi < dmi.mdi && prevDmi.pdi > prevDmi.mdi) {
+    if (dmi.pdi - dmi.mdi < -0.5) {
       dmiMdiSignal = -1;
       // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
       // console.log('Curr dmi:'+ JSON.stringify(dmi));

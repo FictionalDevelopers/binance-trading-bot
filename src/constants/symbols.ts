@@ -8,6 +8,7 @@ export const SYMBOLS = {
   FETUSDT: 'fetusdt',
   ERDUSDT: 'erdusdt',
   ADAUSDT: 'adausdt',
+  LINKUSDT: 'linkusdt',
 };
 
 export const RSI_LIST_SYMBOLS = {
@@ -17,4 +18,5 @@ export const RSI_LIST_SYMBOLS = {
   [SYMBOLS.FETUSDT]: 'FET/USDT',
   [SYMBOLS.ERDUSDT]: 'ERD/USDT',
   [SYMBOLS.ADAUSDT]: 'ADA/USDT',
+  [SYMBOLS.LINKUSDT]: 'LINK/USDT',
 };
