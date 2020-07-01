@@ -20,7 +20,8 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
   await connect();
   await processSubscriptions();
 
-  const symbol = process.argv[2];
+  // const symbol = process.argv[2];
+  const symbol = 'erdusdt';
   const interval = '1m';
   // const symbol = SYMBOLS.ERDUSDT;
   let canISell = false;

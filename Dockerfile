@@ -11,5 +11,5 @@ COPY ./ ./
 
 RUN yarn build
 
-ENTRYPOINT [ "node", "dist/index.js" ]
+ENTRYPOINT [ "node", "dist/dmiTradeStrategy.js" ]
 
