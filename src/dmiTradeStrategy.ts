@@ -127,7 +127,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       dmiAdxSignal + dmiMdiSignal === 2 &&
       // isAdxHigherThanMdi &&
       rsi1dSignal &&
-      rsi1hSignalValue >= 52 &&
+      rsi1hSignalValue >= 55 &&
       rsi1hSignalValue < 70
       // && isPdi1hHigherThanMdi
       // && (currentAvPrice - prevAvPrice >= 3)
@@ -254,7 +254,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
     interval: '1d',
   }).subscribe(rsi => {
     // console.log(rsi);
-    rsi1dSignal = rsi >= 52;
+    rsi1dSignal = rsi >= 55;
   });
 
   const rsi1hSignals = getRsiStream({
