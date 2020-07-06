@@ -105,7 +105,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
     //   console.log('DOWN!!!!!!!');
     //   console.log(`date: ${format(new Date(), DATE_FORMAT)}`);
     // }
-    console.log(currentPrice);
+    // console.log(currentPrice);
     // console.log(rsi1mValue);
 
     // const pricesArrLength = pricesStream.length;
@@ -147,7 +147,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       // rebuy = false;
       // buysCounter++;
       await sendToRecipients(`BUY
-             STRATEGY 1.3
+             STRATEGY 1.2 (RSI + DMI)
              symbol: ${symbol.toUpperCase()}
              price: ${currentPrice}
              date: ${format(new Date(), DATE_FORMAT)}
@@ -155,7 +155,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
 
          `);
       console.log(`BUY
-                     STRATEGY 1.3
+                     STRATEGY 1.2(RSI + DMI)
                      symbol: ${symbol.toUpperCase()}
                      price: ${currentPrice}
                      date: ${format(new Date(), DATE_FORMAT)}
@@ -195,8 +195,9 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
     // }
     if (
       canISell &&
-      rsi1mValue >= 68 &&
-      profit >= 0.3
+      rsi1mValue >= 60 &&
+      profit >= 0.3 &&
+      dmiAdxSignal === -1
       // (dmiAdxSignal === -1 || rsi1mValue <= 48)
       // (canISell && profit <= -0.5) ||
 
@@ -227,7 +228,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       // dmiMdiSignal = -1;
       // dmiAdxSignal = -1;
       await sendToRecipients(`SELL
-             STRATEGY 1.3
+             STRATEGY 1.2(RSI + DMI)
              symbol: ${symbol.toUpperCase()}
              price: ${currentPrice}
              date: ${format(new Date(), DATE_FORMAT)}
@@ -235,7 +236,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
              total profit: ${Number(totalProfit).toPrecision(4)}%
          `);
       console.log(`Sell
-                    STRATEGY 1.3
+                    STRATEGY 1.2 (RSI + DMI)
                     symbol: ${symbol.toUpperCase()}
                     price: ${currentPrice}
                     date: ${format(new Date(), DATE_FORMAT)}
@@ -261,23 +262,23 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
   //   },
   // );
 
-  const rsi1dSignals = getRsiStream({
-    symbol: symbol,
-    period: 14,
-    interval: '1d',
-  }).subscribe(rsi => {
-    // console.log(rsi);
-    rsi1dSignal = rsi >= 55;
-  });
+  // const rsi1dSignals = getRsiStream({
+  //   symbol: symbol,
+  //   period: 14,
+  //   interval: '1d',
+  // }).subscribe(rsi => {
+  //   // console.log(rsi);
+  //   rsi1dSignal = rsi >= 55;
+  // });
 
-  const rsi1hSignals = getRsiStream({
-    symbol: symbol,
-    period: 14,
-    interval: '1h',
-  }).subscribe(rsi => {
-    // console.log(rsi);
-    rsi1hSignalValue = rsi;
-  });
+  // const rsi1hSignals = getRsiStream({
+  //   symbol: symbol,
+  //   period: 14,
+  //   interval: '1h',
+  // }).subscribe(rsi => {
+  //   // console.log(rsi);
+  //   rsi1hSignalValue = rsi;
+  // });
 
   const rsi1mSignals = getRsiStream({
     symbol: symbol,
@@ -304,8 +305,8 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       prevDmi = dmi;
       return;
     }
-    console.log('dmiMdiSignal', dmiMdiSignal);
-    console.log('dmiAdxSignal', dmiAdxSignal);
+    // console.log('dmiMdiSignal', dmiMdiSignal);
+    // console.log('dmiAdxSignal', dmiAdxSignal);
     if (dmi.pdi - dmi.adx >= 2) {
       dmiAdxSignal = 1;
       // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
@@ -441,9 +442,9 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
 
   // let hasBought = false;
 
-  await sendToRecipients(`INIT
+  await sendToRecipients(`INIT (LOCAL)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  with using the STRATEGY 1.3
+  with using the STRATEGY 1.2(RSI + DMI)
   symbol: ${symbol.toUpperCase()}
   `);
 
