@@ -136,7 +136,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       // isAdxHigherThanMdi &&
       // rsi1dSignal &&
       // rsi1hSignalValue >= 53 &&
-      rsi1mValue <= 34 &&
+      rsi1mValue <= 50 &&
       rsi1mValue !== null &&
       !sellRightNow
       // &&
