@@ -20,14 +20,14 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
   await connect();
   await processSubscriptions();
 
-  // const symbol = process.argv[2];
-  const symbol = 'erdusdt';
+  const symbol = process.argv[2];
+  // const symbol = 'erdusdt';
   const interval = '1m';
   // const symbol = SYMBOLS.ERDUSDT;
   let canISell = false;
   // let buysCounter = 0;
   let totalProfit = 0;
-  // let prevProfit = 0;
+  let prevProfit = 0;
   // const prevAvPrice = 0;
   let buyPrice = null;
   const vertVolumeSignal = false;
@@ -36,7 +36,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
   let prevDmi = null;
   const prev1hDmi = null;
   const tradesActivity = 0;
-  const prev1sPrice = 0;
+  let prev1sPrice = 0;
   const prices = [];
   const intervalPriceDiff = [];
   const prevAvPrice = null;
@@ -54,6 +54,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
   // let rebuy = false;
   let currentPrice = null;
   // let profit = 0;
+  let sellRightNow = false;
 
   const sumPricesReducer = (accumulator, currentValue) =>
     accumulator + Number(currentValue);
@@ -69,31 +70,36 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
   //   intervalPriceDiff.length = 0;
   // }, 5000);
 
-  // const getOneSecondPriceDiff = setInterval(() => {
-  //   let priceDiff;
-  //   const current1sPrice = prices[prices.length - 1];
-  //   if (!prev1sPrice) {
-  //     prev1sPrice = current1sPrice;
-  //     priceDiff = Number(0).toFixed(7);
-  //     console.log(Number(priceDiff).toFixed(7) + '%');
-  //     intervalPriceDiff.push(priceDiff);
-  //     return;
-  //   }
-  //   priceDiff = current1sPrice
-  //     ? current1sPrice / prev1sPrice > 1
-  //       ? Number((current1sPrice / prev1sPrice) * 100 - 100)
-  //       : Number(-1 * (100 - (current1sPrice / prev1sPrice) * 100))
-  //     : null;
-  //
-  //   prev1sPrice = current1sPrice;
-  //   prices.length = 0;
-  //   console.log(Number(priceDiff).toFixed(7) + '%');
-  //   intervalPriceDiff.push(priceDiff);
-  // }, 1000);
+  const getOneSecondPriceDiff = setInterval(() => {
+    let priceDiff;
+    const current1sPrice = prices[prices.length - 1];
+    if (!prev1sPrice) {
+      prev1sPrice = current1sPrice;
+      priceDiff = Number(0).toFixed(7);
+      // console.log(Number(priceDiff).toFixed(7) + '%');
+      intervalPriceDiff.push(priceDiff);
+      return;
+    }
+    priceDiff = current1sPrice
+      ? current1sPrice / prev1sPrice > 1
+        ? Number((current1sPrice / prev1sPrice) * 100 - 100)
+        : Number(-1 * (100 - (current1sPrice / prev1sPrice) * 100))
+      : null;
+
+    prev1sPrice = current1sPrice;
+    prices.length = 0;
+    sellRightNow = priceDiff <= -2;
+    // console.log(
+    //   Number(priceDiff).toFixed(7) + '%; ',
+    //   'Sell right now:',
+    //   sellRightNow,
+    // );
+    intervalPriceDiff.push(priceDiff);
+  }, 1000);
 
   const dmiTradeStrategy = async pricesStream => {
     currentPrice = Number(pricesStream[pricesStream.length - 1]);
-    // prices.push(currentPrice);
+    prices.push(currentPrice);
     // console.log(currentPrice);
     // const upSortedPricesArr = [...pricesStream].sort((a, b) => a - b);
     // const downSortedPricesArr = [...pricesStream].sort((a, b) => b - a);
@@ -131,7 +137,8 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       // rsi1dSignal &&
       // rsi1hSignalValue >= 53 &&
       rsi1mValue <= 34 &&
-      rsi1mValue !== null
+      rsi1mValue !== null &&
+      !sellRightNow
       // &&
       // rsi1mValue <= 65
 
@@ -195,9 +202,9 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
     // }
     if (
       canISell &&
-      rsi1mValue >= 60 &&
-      profit >= 0.3 &&
-      dmiAdxSignal === -1
+      ((rsi1mValue >= 60 && profit >= 0.3 && dmiAdxSignal === -1) ||
+        sellRightNow)
+
       // (dmiAdxSignal === -1 || rsi1mValue <= 48)
       // (canISell && profit <= -0.5) ||
 
