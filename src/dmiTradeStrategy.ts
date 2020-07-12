@@ -147,7 +147,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       rsi1mValue !== null &&
       rsi1hValue < 68 &&
       rsi1hValue !== null &&
-      dmiMdi1hSignal
+      dmiMdi1hSignal === 1
 
       // !sellRightNow
       // &&
@@ -214,7 +214,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
     if (
       canISell &&
       ((rsi1mValue >= 60 && profit >= 0.3 && dmiAdxSignal === -1) ||
-        !dmiMdi1hSignal)
+        dmiMdi1hSignal === -1)
       // sellRightNow
 
       // (dmiAdxSignal === -1 || rsi1mValue <= 48)
@@ -443,13 +443,13 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
     //   // console.log('Pdi is lower than then MDI');
     // }
     // // console.log(dmi)
-    if (dmi.pdi - dmi.mdi > 2) {
+    if (dmi.pdi - dmi.mdi >= 2) {
       dmiMdi1hSignal = 1;
       // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
       // console.log('Curr dmi:'+ JSON.stringify(dmi));
       // console.log('Pdi is upper than then ADX');
     }
-    if (dmi.pdi - dmi.mdi < -2) {
+    if (dmi.pdi - dmi.mdi <= -2) {
       dmiMdi1hSignal = -1;
       // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
       // console.log('Curr dmi:'+ JSON.stringify(dmi));
