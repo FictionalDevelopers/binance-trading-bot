@@ -14,6 +14,10 @@ import { processSubscriptions, sendToRecipients } from './services/telegram';
 import { getRsiStream } from './indicators/rsi';
 import { getDmiStream } from './indicators/dmi';
 import _isEqual from 'lodash/isEqual';
+import { binance } from './api/binance';
+import getBalances from './api/balance';
+import { getExchangeInfo } from './api/exchangeInfo';
+import { marketSell, marketBuy } from './api/order';
 
 (async function() {
   await connect();
@@ -21,6 +25,7 @@ import _isEqual from 'lodash/isEqual';
 
   // const symbol = process.argv[2];
   const symbol = 'erdusdt';
+  const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
   const interval = '1m';
   // const symbol = SYMBOLS.ERDUSDT;
   let canISell = false;
@@ -69,9 +74,9 @@ import _isEqual from 'lodash/isEqual';
     //   intervalPriceDiff[1] > intervalPriceDiff[0]
     // )
     //   console.log('Price Up');
+    // intervalPriceDiff.length = 0;
     sellRightNow = intervalPriceDiff.every(elem => elem < 0);
     if (sellRightNow) console.log('Sell right now!!!');
-    intervalPriceDiff.length = 0;
   }, 5000);
 
   const getOneSecondPriceDiff = setInterval(() => {
@@ -95,7 +100,11 @@ import _isEqual from 'lodash/isEqual';
 
     // sellRightNow = priceDiff <= -2;
 
-    console.log(Number(priceDiff).toFixed(7) + '%; ');
+    // console.log(
+    //   Number(priceDiff).toFixed(7) + '%; ',
+    //   'Sell right now:',
+    //   sellRightNow,
+    // );
     intervalPriceDiff.push(priceDiff);
   }, 1000);
 
@@ -157,16 +166,19 @@ import _isEqual from 'lodash/isEqual';
       // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
       canISell = true;
       buyPrice = currentPrice;
+      const { available } = await getBalances('USDT');
+      const amount = binance.roundStep(available / currentPrice, stepSize);
+      const order = await marketBuy(symbol.toUpperCase(), +amount);
       // rebuy = false;
       // buysCounter++;
-      // await sendToRecipients(`BUY
-      //        STRATEGY 1.2 (RSI + DMI) MODIFIED
-      //        symbol: ${symbol.toUpperCase()}
-      //        price: ${currentPrice}
-      //        date: ${format(new Date(), DATE_FORMAT)}
-      //        total profit: ${Number(totalProfit).toPrecision(4)}%
-      //
-      //    `);
+      await sendToRecipients(`BUY
+             STRATEGY 1.2 (RSI + DMI) MODIFIED
+             symbol: ${symbol.toUpperCase()}
+             price: ${currentPrice}
+             date: ${format(new Date(), DATE_FORMAT)}
+             total profit: ${Number(totalProfit).toPrecision(4)}%
+             orderInfo: ${order}
+         `);
       console.log(`BUY
                      STRATEGY 1.2(RSI + DMI) MODIFIED
                      symbol: ${symbol.toUpperCase()}
@@ -238,17 +250,22 @@ import _isEqual from 'lodash/isEqual';
       canISell = false;
       totalProfit += profit - 0.2;
       buyPrice = null;
+      const { available } = await getBalances('ERD');
+      const amount = binance.roundStep(available, stepSize);
+      const order = await marketSell(symbol.toUpperCase(), amount);
       // rebuy = false;
       // dmiMdiSignal = -1;
       // dmiAdxSignal = -1;
-      // await sendToRecipients(`SELL
-      //        STRATEGY 1.2(RSI + DMI)
-      //        symbol: ${symbol.toUpperCase()}
-      //        price: ${currentPrice}
-      //        date: ${format(new Date(), DATE_FORMAT)}
-      //        current profit: ${Number(profit - 0.2).toPrecision(4)}%
-      //        total profit: ${Number(totalProfit).toPrecision(4)}%
-      //    `);
+      await sendToRecipients(`SELL
+             STRATEGY 1.2(RSI + DMI)
+             symbol: ${symbol.toUpperCase()}
+             price: ${currentPrice}
+             date: ${format(new Date(), DATE_FORMAT)}
+             current profit: ${Number(profit - 0.2).toPrecision(4)}%
+             total profit: ${Number(totalProfit).toPrecision(4)}%
+             orderInfo: ${order}
+             totalBalance: ${await getBalances('USDT')}
+         `);
       console.log(`Sell
                     STRATEGY 1.2 (RSI + DMI)
                     symbol: ${symbol.toUpperCase()}
@@ -532,11 +549,11 @@ import _isEqual from 'lodash/isEqual';
 
   // let hasBought = false;
 
-  // await sendToRecipients(`INIT
-  // Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  // with using the STRATEGY 1.2(RSI + DMI) (MODIFIED)
-  // symbol: ${symbol.toUpperCase()}
-  // `);
+  await sendToRecipients(`INIT 
+  Bot started working at: ${format(new Date(), DATE_FORMAT)}
+  with using the STRATEGY 1.2(RSI + DMI) (MODIFIED)
+  symbol: ${symbol.toUpperCase()}
+  `);
 
   getTradeStream({
     symbol: symbol,

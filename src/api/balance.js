@@ -1,5 +1,4 @@
 import { get } from 'lodash';
-
 import { binance } from './binance';
 
 export default async function getBalances(symbol = '') {
