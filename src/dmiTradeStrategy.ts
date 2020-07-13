@@ -14,7 +14,6 @@ import { processSubscriptions, sendToRecipients } from './services/telegram';
 import { getRsiStream } from './indicators/rsi';
 import { getDmiStream } from './indicators/dmi';
 import _isEqual from 'lodash/isEqual';
-import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
 
 (async function() {
   await connect();
@@ -70,9 +69,9 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
     //   intervalPriceDiff[1] > intervalPriceDiff[0]
     // )
     //   console.log('Price Up');
-    // intervalPriceDiff.length = 0;
     sellRightNow = intervalPriceDiff.every(elem => elem < 0);
     if (sellRightNow) console.log('Sell right now!!!');
+    intervalPriceDiff.length = 0;
   }, 5000);
 
   const getOneSecondPriceDiff = setInterval(() => {
@@ -96,11 +95,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
 
     // sellRightNow = priceDiff <= -2;
 
-    // console.log(
-    //   Number(priceDiff).toFixed(7) + '%; ',
-    //   'Sell right now:',
-    //   sellRightNow,
-    // );
+    console.log(Number(priceDiff).toFixed(7) + '%; ');
     intervalPriceDiff.push(priceDiff);
   }, 1000);
 
@@ -164,14 +159,14 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       buyPrice = currentPrice;
       // rebuy = false;
       // buysCounter++;
-      await sendToRecipients(`BUY
-             STRATEGY 1.2 (RSI + DMI) MODIFIED
-             symbol: ${symbol.toUpperCase()}
-             price: ${currentPrice}
-             date: ${format(new Date(), DATE_FORMAT)}
-             total profit: ${Number(totalProfit).toPrecision(4)}%
-
-         `);
+      // await sendToRecipients(`BUY
+      //        STRATEGY 1.2 (RSI + DMI) MODIFIED
+      //        symbol: ${symbol.toUpperCase()}
+      //        price: ${currentPrice}
+      //        date: ${format(new Date(), DATE_FORMAT)}
+      //        total profit: ${Number(totalProfit).toPrecision(4)}%
+      //
+      //    `);
       console.log(`BUY
                      STRATEGY 1.2(RSI + DMI) MODIFIED
                      symbol: ${symbol.toUpperCase()}
@@ -246,14 +241,14 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       // rebuy = false;
       // dmiMdiSignal = -1;
       // dmiAdxSignal = -1;
-      await sendToRecipients(`SELL
-             STRATEGY 1.2(RSI + DMI)
-             symbol: ${symbol.toUpperCase()}
-             price: ${currentPrice}
-             date: ${format(new Date(), DATE_FORMAT)}
-             current profit: ${Number(profit - 0.2).toPrecision(4)}%
-             total profit: ${Number(totalProfit).toPrecision(4)}%
-         `);
+      // await sendToRecipients(`SELL
+      //        STRATEGY 1.2(RSI + DMI)
+      //        symbol: ${symbol.toUpperCase()}
+      //        price: ${currentPrice}
+      //        date: ${format(new Date(), DATE_FORMAT)}
+      //        current profit: ${Number(profit - 0.2).toPrecision(4)}%
+      //        total profit: ${Number(totalProfit).toPrecision(4)}%
+      //    `);
       console.log(`Sell
                     STRATEGY 1.2 (RSI + DMI)
                     symbol: ${symbol.toUpperCase()}
@@ -537,11 +532,11 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
 
   // let hasBought = false;
 
-  await sendToRecipients(`INIT 
-  Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  with using the STRATEGY 1.2(RSI + DMI) (MODIFIED)
-  symbol: ${symbol.toUpperCase()}
-  `);
+  // await sendToRecipients(`INIT
+  // Bot started working at: ${format(new Date(), DATE_FORMAT)}
+  // with using the STRATEGY 1.2(RSI + DMI) (MODIFIED)
+  // symbol: ${symbol.toUpperCase()}
+  // `);
 
   getTradeStream({
     symbol: symbol,
