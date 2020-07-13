@@ -14,7 +14,10 @@ import { processSubscriptions, sendToRecipients } from './services/telegram';
 import { getRsiStream } from './indicators/rsi';
 import { getDmiStream } from './indicators/dmi';
 import _isEqual from 'lodash/isEqual';
-import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
+import { binance } from './api/binance';
+import { getBalances } from './api/balance';
+import { getExchangeInfo } from './api/exchangeInfo';
+import { marketSell, marketBuy } from './api/order';
 
 (async function() {
   await connect();
@@ -22,6 +25,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
 
   // const symbol = process.argv[2];
   const symbol = 'erdusdt';
+  const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
   const interval = '1m';
   // const symbol = SYMBOLS.ERDUSDT;
   let canISell = false;
@@ -162,6 +166,9 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
       canISell = true;
       buyPrice = currentPrice;
+      const { available } = await getBalances('USDT');
+      const amount = binance.roundStep(available / currentPrice, stepSize);
+      const order = await marketBuy(symbol.toUpperCase(), +amount);
       // rebuy = false;
       // buysCounter++;
       await sendToRecipients(`BUY
@@ -170,7 +177,7 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
              price: ${currentPrice}
              date: ${format(new Date(), DATE_FORMAT)}
              total profit: ${Number(totalProfit).toPrecision(4)}%
-
+             orderInfo: ${order}
          `);
       console.log(`BUY
                      STRATEGY 1.2(RSI + DMI) MODIFIED
@@ -243,6 +250,9 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
       canISell = false;
       totalProfit += profit - 0.2;
       buyPrice = null;
+      const { available } = await getBalances('ERD');
+      const amount = binance.roundStep(available, stepSize);
+      const order = await marketSell(symbol.toUpperCase(), amount);
       // rebuy = false;
       // dmiMdiSignal = -1;
       // dmiAdxSignal = -1;
@@ -253,6 +263,8 @@ import { dmiTradeStrategy } from './strategies/dmiTradeStrategy';
              date: ${format(new Date(), DATE_FORMAT)}
              current profit: ${Number(profit - 0.2).toPrecision(4)}%
              total profit: ${Number(totalProfit).toPrecision(4)}%
+             orderInfo: ${order}
+             totalBalance: ${await getBalances('USDT')}
          `);
       console.log(`Sell
                     STRATEGY 1.2 (RSI + DMI)
