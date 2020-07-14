@@ -25,13 +25,16 @@ import { marketSell, marketBuy } from './api/order';
 
   // const symbol = process.argv[2];
   const symbol = 'erdusdt';
+  const initialUSDTBalance = await getBalances('USDT');
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
+  let availableUSDT = null;
+  let availableERD = null;
   const interval = '1m';
   // const symbol = SYMBOLS.ERDUSDT;
   let canISell = false;
   // let buysCounter = 0;
-  let totalProfit = 0;
-  let prevProfit = 0;
+  // let totalProfit = 0;
+  // let prevProfit = 0;
   // const prevAvPrice = 0;
   let buyPrice = null;
   const vertVolumeSignal = false;
@@ -61,52 +64,52 @@ import { marketSell, marketBuy } from './api/order';
   // let rebuy = false;
   let currentPrice = null;
   // let profit = 0;
-  let sellRightNow = false;
+  // let sellRightNow = false;
 
-  const sumPricesReducer = (accumulator, currentValue) =>
-    accumulator + Number(currentValue);
+  // const sumPricesReducer = (accumulator, currentValue) =>
+  //   accumulator + Number(currentValue);
 
-  const getIntervalPriceDiff = setInterval(() => {
-    // if (
-    //   intervalPriceDiff[4] > intervalPriceDiff[3] &&
-    //   intervalPriceDiff[3] > intervalPriceDiff[2] &&
-    //   intervalPriceDiff[2] > intervalPriceDiff[1] &&
-    //   intervalPriceDiff[1] > intervalPriceDiff[0]
-    // )
-    //   console.log('Price Up');
-    // intervalPriceDiff.length = 0;
-    sellRightNow = intervalPriceDiff.every(elem => elem < 0);
-    if (sellRightNow) console.log('Sell right now!!!');
-  }, 5000);
+  // const getIntervalPriceDiff = setInterval(() => {
+  //   // if (
+  //   //   intervalPriceDiff[4] > intervalPriceDiff[3] &&
+  //   //   intervalPriceDiff[3] > intervalPriceDiff[2] &&
+  //   //   intervalPriceDiff[2] > intervalPriceDiff[1] &&
+  //   //   intervalPriceDiff[1] > intervalPriceDiff[0]
+  //   // )
+  //   //   console.log('Price Up');
+  //   // intervalPriceDiff.length = 0;
+  //   sellRightNow = intervalPriceDiff.every(elem => elem < 0);
+  //   if (sellRightNow) console.log('Sell right now!!!');
+  // }, 5000);
 
-  const getOneSecondPriceDiff = setInterval(() => {
-    let priceDiff;
-    const current1sPrice = prices[prices.length - 1];
-    if (!prev1sPrice) {
-      prev1sPrice = current1sPrice;
-      priceDiff = Number(0).toFixed(7);
-      // console.log(Number(priceDiff).toFixed(7) + '%');
-      intervalPriceDiff.push(priceDiff);
-      return;
-    }
-    priceDiff = current1sPrice
-      ? current1sPrice / prev1sPrice > 1
-        ? Number((current1sPrice / prev1sPrice) * 100 - 100)
-        : Number(-1 * (100 - (current1sPrice / prev1sPrice) * 100))
-      : null;
-
-    prev1sPrice = current1sPrice;
-    prices.length = 0;
-
-    // sellRightNow = priceDiff <= -2;
-
-    // console.log(
-    //   Number(priceDiff).toFixed(7) + '%; ',
-    //   'Sell right now:',
-    //   sellRightNow,
-    // );
-    intervalPriceDiff.push(priceDiff);
-  }, 1000);
+  // const getOneSecondPriceDiff = setInterval(() => {
+  //   let priceDiff;
+  //   const current1sPrice = prices[prices.length - 1];
+  //   if (!prev1sPrice) {
+  //     prev1sPrice = current1sPrice;
+  //     priceDiff = Number(0).toFixed(7);
+  //     // console.log(Number(priceDiff).toFixed(7) + '%');
+  //     intervalPriceDiff.push(priceDiff);
+  //     return;
+  //   }
+  //   priceDiff = current1sPrice
+  //     ? current1sPrice / prev1sPrice > 1
+  //       ? Number((current1sPrice / prev1sPrice) * 100 - 100)
+  //       : Number(-1 * (100 - (current1sPrice / prev1sPrice) * 100))
+  //     : null;
+  //
+  //   prev1sPrice = current1sPrice;
+  //   prices.length = 0;
+  //
+  //   // sellRightNow = priceDiff <= -2;
+  //
+  //   // console.log(
+  //   //   Number(priceDiff).toFixed(7) + '%; ',
+  //   //   'Sell right now:',
+  //   //   sellRightNow,
+  //   // );
+  //   intervalPriceDiff.push(priceDiff);
+  // }, 1000);
 
   const dmiTradeStrategy = async pricesStream => {
     currentPrice = Number(pricesStream[pricesStream.length - 1]);
@@ -163,30 +166,39 @@ import { marketSell, marketBuy } from './api/order';
       // && isPdi1hHigherThanMdi
       // && (currentAvPrice - prevAvPrice >= 3)
     ) {
-      // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
-      canISell = true;
-      buyPrice = currentPrice;
-      const { available } = await getBalances('USDT');
-      const amount = binance.roundStep(available / currentPrice, stepSize);
-      const order = await marketBuy(symbol.toUpperCase(), +amount);
-      // rebuy = false;
-      // buysCounter++;
-      await sendToRecipients(`BUY
+      try {
+        // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
+        canISell = true;
+        buyPrice = currentPrice;
+        availableUSDT = await getBalances('USDT');
+        const amount = binance.roundStep(
+          availableUSDT / currentPrice,
+          stepSize,
+        );
+        const order = await marketBuy(symbol.toUpperCase(), +amount);
+        // rebuy = false;
+        // buysCounter++;
+        await sendToRecipients(`BUY
              STRATEGY 1.2 (RSI + DMI) MODIFIED
              symbol: ${symbol.toUpperCase()}
-             price: ${currentPrice}
+             price: ${currentPrice} USDT
              date: ${format(new Date(), DATE_FORMAT)}
-             total profit: ${Number(totalProfit).toPrecision(4)}%
-             orderInfo: ${order}
+             orderInfo: ${JSON.stringify(order)}
          `);
-      console.log(`BUY
-                     STRATEGY 1.2(RSI + DMI) MODIFIED
-                     symbol: ${symbol.toUpperCase()}
-                     price: ${currentPrice}
-                     date: ${format(new Date(), DATE_FORMAT)}
-                     total profit: ${Number(totalProfit).toPrecision(4)}%
-      `);
-      return;
+        // console.log(`BUY
+        //                STRATEGY 1.2(RSI + DMI) MODIFIED
+        //                symbol: ${symbol.toUpperCase()}
+        //                price: ${currentPrice}
+        //                date: ${format(new Date(), DATE_FORMAT)}
+        //                total profit: ${Number(totalProfit).toPrecision(4)}%
+        // `);
+        return;
+      } catch (e) {
+        await sendToRecipients(`ERROR
+        ${e.message}
+        ${e.stack}
+  `);
+      }
     }
     // if (canISell && profit >= 0.3) {
     //   // buysCounter !== 0 &&
@@ -243,37 +255,48 @@ import { marketSell, marketBuy } from './api/order';
       // currentAvPrice - prevAvPrice <= 3
       // profit <= -0.3
     ) {
-      // rsiSignal &&
-      // profit >= 1
-      // || (canISell && profit <= -0.1)
-      // tradeActions.sellByMarketPrice(null, '1m_dmi_trade_history.txt');
-      canISell = false;
-      totalProfit += profit - 0.2;
-      buyPrice = null;
-      const { available } = await getBalances('ERD');
-      const amount = binance.roundStep(Number(available), stepSize);
-      const order = await marketSell(symbol.toUpperCase(), +amount);
-      // rebuy = false;
-      // dmiMdiSignal = -1;
-      // dmiAdxSignal = -1;
-      await sendToRecipients(`SELL
+      try {
+        // rsiSignal &&
+        // profit >= 1
+        // || (canISell && profit <= -0.1)
+        // tradeActions.sellByMarketPrice(null, '1m_dmi_trade_history.txt');
+        canISell = false;
+        // totalProfit += profit - 0.2;
+        buyPrice = null;
+        availableERD = await getBalances('ERD');
+        const amount = binance.roundStep(Number(availableERD), stepSize);
+        const order = await marketSell(symbol.toUpperCase(), +amount);
+        const refreshedUSDTBalance = await getBalances('USDT');
+        const currentProfit =
+          Number(refreshedUSDTBalance) - Number(availableUSDT);
+        // rebuy = false;
+        // dmiMdiSignal = -1;
+        // dmiAdxSignal = -1;
+        await sendToRecipients(`SELL
              STRATEGY 1.2(RSI + DMI)
              symbol: ${symbol.toUpperCase()}
-             price: ${currentPrice}
+             price: ${currentPrice} USDT
              date: ${format(new Date(), DATE_FORMAT)}
-             current profit: ${Number(profit - 0.2).toPrecision(4)}%
-             total profit: ${Number(totalProfit).toPrecision(4)}%
-             orderInfo: ${order}
-             totalBalance: ${await getBalances('USDT')}
+             current profit: ${currentProfit} USDT
+             total profit: ${Number(refreshedUSDTBalance) -
+               Number(initialUSDTBalance)} USDT
+             balance: ${+refreshedUSDTBalance} USDT
+             orderInfo: ${JSON.stringify(order)}
          `);
-      console.log(`Sell
-                    STRATEGY 1.2 (RSI + DMI)
-                    symbol: ${symbol.toUpperCase()}
-                    price: ${currentPrice}
-                    date: ${format(new Date(), DATE_FORMAT)}
-                    current profit: ${Number(profit - 0.2).toPrecision(4)}%
-                    total profit: ${Number(totalProfit).toPrecision(4)}%
-      `);
+        // console.log(`Sell
+        //               STRATEGY 1.2 (RSI + DMI)
+        //               symbol: ${symbol.toUpperCase()}
+        //               price: ${currentPrice}
+        //               date: ${format(new Date(), DATE_FORMAT)}
+        //               current profit: ${Number(profit - 0.2).toPrecision(4)}%
+        //               total profit: ${Number(totalProfit).toPrecision(4)}%
+        // `);
+      } catch (e) {
+        await sendToRecipients(`ERROR
+        ${e.message}
+        ${e.stack}
+  `);
+      }
     }
   };
 
