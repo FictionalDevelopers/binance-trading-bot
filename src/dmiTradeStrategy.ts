@@ -196,7 +196,7 @@ import { marketSell, marketBuy } from './api/order';
         return;
       } catch (e) {
         await sendToRecipients(`ERROR
-        ${e.toString()}
+        ${JSON.stringify(e)}
   `);
       }
     }
@@ -294,7 +294,7 @@ import { marketSell, marketBuy } from './api/order';
         // `);
       } catch (e) {
         await sendToRecipients(`ERROR
-        ${e.toString()}
+        ${JSON.stringify(e)}
   `);
       }
     }
