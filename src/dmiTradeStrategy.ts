@@ -172,10 +172,7 @@ import { marketSell, marketBuy } from './api/order';
         buyPrice = currentPrice;
         const { available } = await getBalances('USDT');
         availableUSDT = available;
-        const amount = binance.roundStep(
-          availableUSDT / currentPrice,
-          stepSize,
-        );
+        const amount = binance.roundStep(available / currentPrice, stepSize);
         const order = await marketBuy(symbol.toUpperCase(), +amount);
         // rebuy = false;
         // buysCounter++;
