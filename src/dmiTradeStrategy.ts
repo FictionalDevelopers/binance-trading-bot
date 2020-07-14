@@ -180,10 +180,10 @@ import { marketSell, marketBuy } from './api/order';
         // buysCounter++;
         await sendToRecipients(`BUY
              STRATEGY 1.2 (RSI + DMI) MODIFIED
-             symbol: ${symbol.toUpperCase()}
-             price: ${currentPrice} USDT
-             date: ${format(new Date(), DATE_FORMAT)}
-             orderInfo: ${JSON.stringify(order)}
+             Symbol: ${symbol.toUpperCase()}
+             Price: ${currentPrice} USDT
+             Date: ${format(new Date(), DATE_FORMAT)}
+             OrderInfo: ${JSON.stringify(order)}
          `);
         // console.log(`BUY
         //                STRATEGY 1.2(RSI + DMI) MODIFIED
@@ -274,14 +274,14 @@ import { marketSell, marketBuy } from './api/order';
         // dmiAdxSignal = -1;
         await sendToRecipients(`SELL
              STRATEGY 1.2(RSI + DMI)
-             symbol: ${symbol.toUpperCase()}
-             price: ${currentPrice} USDT
-             date: ${format(new Date(), DATE_FORMAT)}
-             current profit: ${currentProfit} USDT
-             total profit: ${Number(refreshedUSDTBalance) -
+             Symbol: ${symbol.toUpperCase()}
+             Price: ${currentPrice} USDT
+             Date: ${format(new Date(), DATE_FORMAT)}
+             Current profit: ${currentProfit} USDT
+             Total profit: ${Number(refreshedUSDTBalance) -
                Number(initialUSDTBalance)} USDT
-             balance: ${+refreshedUSDTBalance} USDT
-             orderInfo: ${JSON.stringify(order)}
+             Balance: ${+refreshedUSDTBalance} USDT
+             OrderInfo: ${JSON.stringify(order)}
          `);
         // console.log(`Sell
         //               STRATEGY 1.2 (RSI + DMI)
@@ -575,7 +575,8 @@ import { marketSell, marketBuy } from './api/order';
   await sendToRecipients(`INIT 
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   with using the STRATEGY 1.2(RSI + DMI) (MODIFIED)
-  symbol: ${symbol.toUpperCase()}
+  Symbol: ${symbol.toUpperCase()}
+  Initial balance: ${initialUSDTBalance} USDT
   `);
 
   getTradeStream({
