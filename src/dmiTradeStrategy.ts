@@ -196,8 +196,7 @@ import { marketSell, marketBuy } from './api/order';
         return;
       } catch (e) {
         await sendToRecipients(`ERROR
-        ${e.message}
-        ${e.stack}
+        ${e}
   `);
       }
     }
@@ -295,8 +294,7 @@ import { marketSell, marketBuy } from './api/order';
         // `);
       } catch (e) {
         await sendToRecipients(`ERROR
-        ${e.message}
-        ${e.stack}
+        ${e}
   `);
       }
     }
