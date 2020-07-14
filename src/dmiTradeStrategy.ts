@@ -24,6 +24,7 @@ import { marketSell, marketBuy } from './api/order';
   await processSubscriptions();
 
   // const symbol = process.argv[2];
+  const tradeAmountPercent = 0.9;
   const symbol = 'erdusdt';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
@@ -172,8 +173,10 @@ import { marketSell, marketBuy } from './api/order';
         buyPrice = currentPrice;
         const { available } = await getBalances('USDT');
         availableUSDT = available;
-        const amount = binance.roundStep(available / currentPrice, stepSize);
-        await sendToRecipients(`Amount: ${amount} USDT`);
+        const amount = binance.roundStep(
+          (available * tradeAmountPercent) / currentPrice,
+          stepSize,
+        );
         const order = await marketBuy(symbol.toUpperCase(), +amount);
         // rebuy = false;
         // buysCounter++;
