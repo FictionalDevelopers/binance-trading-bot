@@ -25,7 +25,7 @@ import { marketSell, marketBuy } from './api/order';
 
   // const symbol = process.argv[2];
   const symbol = 'erdusdt';
-  const initialUSDTBalance = await getBalances('USDT');
+  const { available: initialUSDTBalance } = await getBalances('USDT');
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
   let availableUSDT = null;
   let availableERD = null;
@@ -170,7 +170,8 @@ import { marketSell, marketBuy } from './api/order';
         // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
         canISell = true;
         buyPrice = currentPrice;
-        availableUSDT = await getBalances('USDT');
+        const { available } = await getBalances('USDT');
+        availableUSDT = available;
         const amount = binance.roundStep(
           availableUSDT / currentPrice,
           stepSize,
@@ -263,10 +264,12 @@ import { marketSell, marketBuy } from './api/order';
         canISell = false;
         // totalProfit += profit - 0.2;
         buyPrice = null;
-        availableERD = await getBalances('ERD');
-        const amount = binance.roundStep(Number(availableERD), stepSize);
+        const { available: availableExchCurr } = await getBalances('ERD');
+        availableERD = availableExchCurr;
+        const amount = binance.roundStep(Number(availableExchCurr), stepSize);
         const order = await marketSell(symbol.toUpperCase(), +amount);
-        const refreshedUSDTBalance = await getBalances('USDT');
+        const { available: availableUSDT } = await getBalances('USDT');
+        const refreshedUSDTBalance = availableUSDT;
         const currentProfit =
           Number(refreshedUSDTBalance) - Number(availableUSDT);
         // rebuy = false;
