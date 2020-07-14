@@ -268,8 +268,7 @@ import { marketSell, marketBuy } from './api/order';
         availableERD = availableExchCurr;
         const amount = binance.roundStep(Number(availableExchCurr), stepSize);
         const order = await marketSell(symbol.toUpperCase(), +amount);
-        const { available: availableUSDT } = await getBalances('USDT');
-        const refreshedUSDTBalance = availableUSDT;
+        const { available: refreshedUSDTBalance } = await getBalances('USDT');
         const currentProfit =
           Number(refreshedUSDTBalance) - Number(availableUSDT);
         // rebuy = false;
