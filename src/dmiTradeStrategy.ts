@@ -611,7 +611,7 @@ import { marketSell, marketBuy } from './api/order';
 
   await sendToRecipients(`INIT
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  with using the STRATEGY 1.2(RSI + DMI) (MODIFIED)
+  with using the STRATEGY 1.2(RSI + DMI) (LAST MODIFIED)
   Symbol: ${symbol.toUpperCase()}
   Initial balance: ${initialUSDTBalance} USDT
   `);
