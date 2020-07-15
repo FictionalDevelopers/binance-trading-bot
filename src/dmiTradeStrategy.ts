@@ -609,12 +609,12 @@ import { marketSell, marketBuy } from './api/order';
 
   // let hasBought = false;
 
-  // await sendToRecipients(`INIT
-  // Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  // with using the STRATEGY 1.2(RSI + DMI) (MODIFIED)
-  // Symbol: ${symbol.toUpperCase()}
-  // Initial balance: ${initialUSDTBalance} USDT
-  // `);
+  await sendToRecipients(`INIT
+  Bot started working at: ${format(new Date(), DATE_FORMAT)}
+  with using the STRATEGY 1.2(RSI + DMI) (MODIFIED)
+  Symbol: ${symbol.toUpperCase()}
+  Initial balance: ${initialUSDTBalance} USDT
+  `);
 
   getTradeStream({
     symbol: symbol,
