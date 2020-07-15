@@ -28,16 +28,16 @@ import { marketSell, marketBuy } from './api/order';
   const symbol = 'erdusdt';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
-  const availableUSDT = null;
-  const availableERD = null;
+  let availableUSDT = null;
+  let availableERD = null;
   const interval = '1m';
   // const symbol = SYMBOLS.ERDUSDT;
-  const canISell = false;
+  let canISell = false;
   // let buysCounter = 0;
   // let totalProfit = 0;
   // let prevProfit = 0;
   // const prevAvPrice = 0;
-  const buyPrice = null;
+  let buyPrice = null;
   const vertVolumeSignal = false;
   const dmiSignal = null;
   const prevVolume = null;
@@ -65,7 +65,7 @@ import { marketSell, marketBuy } from './api/order';
   let rsi1hValue = null;
   // let rebuy = false;
   let currentPrice = null;
-  let trendSignal = null;
+  const trendSignal = null;
   let sellSignal = false;
   let isAdx1mHigherThanPdi1m = false;
   const rsiValuesAmount = 20;
@@ -117,23 +117,27 @@ import { marketSell, marketBuy } from './api/order';
   //   intervalPriceDiff.push(priceDiff);
   // }, 1000);
 
-  const getOneMinuteRsiValue = setInterval(
-    valuesAmount => {
-      if (!rsi1mValue) return;
-      if (rsi1mValues.length < rsiValuesAmount) {
-        rsi1mValues.push(rsi1mValue);
-      } else {
-        if (rsi1mValues.every(rsiValue => rsiValue >= 50))
-          trendSignal = 'upTrend';
-        else if (rsi1mValues.every(rsiValue => rsiValue <= 50))
-          trendSignal = 'downTrend';
-        rsi1mValues.length = 0;
-        rsi1mValues.push(rsi1mValue);
-      }
-    },
-    60000,
-    rsiValuesAmount,
-  );
+  // const getOneMinuteRsiValue = setInterval(
+  //   valuesAmount => {
+  //     if (!rsi1mValue) return;
+  //     if (rsi1mValues.length < rsiValuesAmount) {
+  //       rsi1mValues.push(rsi1mValue);
+  //     } else {
+  //       if (rsi1mValues.every(rsiValue => rsiValue >= 50)) {
+  //         trendSignal = 'upTrend';
+  //         console.log(trendSignal);
+  //       } else if (rsi1mValues.every(rsiValue => rsiValue <= 50)) {
+  //         trendSignal = 'downTrend';
+  //         console.log(trendSignal);
+  //       }
+  //       rsi1mValues.length = 0;
+  //       rsi1mValues.push(rsi1mValue);
+  //     }
+  //     console.log(rsi1mValues);
+  //   },
+  //   60000,
+  //   rsiValuesAmount,
+  // );
 
   const dmiTradeStrategy = async pricesStream => {
     currentPrice = Number(pricesStream[pricesStream.length - 1]);
@@ -190,38 +194,38 @@ import { marketSell, marketBuy } from './api/order';
       // && isPdi1hHigherThanMdi
       // && (currentAvPrice - prevAvPrice >= 3)
     ) {
-      //     try {
-      //       // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
-      //       canISell = true;
-      //       buyPrice = currentPrice;
-      //       const { available } = await getBalances('USDT');
-      //       availableUSDT = available;
-      //       const amount = binance.roundStep(
-      //         (available * tradeAmountPercent) / currentPrice,
-      //         stepSize,
-      //       );
-      //       const order = await marketBuy(symbol.toUpperCase(), +amount);
-      //       // rebuy = false;
-      //       // buysCounter++;
-      //       await sendToRecipients(`BUY
-      //            STRATEGY 1.2 (RSI + DMI) MODIFIED
-      //            Symbol: ${symbol.toUpperCase()}
-      //            Price: ${currentPrice} USDT
-      //            Date: ${format(new Date(), DATE_FORMAT)}
-      //            OrderInfo: ${JSON.stringify(order)}
-      //        `);
-      console.log(`BUY
-                           STRATEGY 1.2(RSI + DMI) MODIFIED
-                           symbol: ${symbol.toUpperCase()}
-                           price: ${currentPrice}
-                           date: ${format(new Date(), DATE_FORMAT)}
-            `);
-      //       return;
-      //     } catch (e) {
-      //       await sendToRecipients(`ERROR
-      //       ${JSON.stringify(e)}
-      // `);
-      //     }
+      try {
+        // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
+        canISell = true;
+        buyPrice = currentPrice;
+        const { available } = await getBalances('USDT');
+        availableUSDT = available;
+        const amount = binance.roundStep(
+          (available * tradeAmountPercent) / currentPrice,
+          stepSize,
+        );
+        const order = await marketBuy(symbol.toUpperCase(), +amount);
+        // rebuy = false;
+        // buysCounter++;
+        await sendToRecipients(`BUY
+                 STRATEGY 1.2 (RSI + DMI) MODIFIED
+                 Symbol: ${symbol.toUpperCase()}
+                 Price: ${currentPrice} USDT
+                 Date: ${format(new Date(), DATE_FORMAT)}
+                 OrderInfo: ${JSON.stringify(order)}
+             `);
+        // console.log(`BUY
+        //                      STRATEGY 1.2(RSI + DMI) MODIFIED
+        //                      symbol: ${symbol.toUpperCase()}
+        //                      price: ${currentPrice}
+        //                      date: ${format(new Date(), DATE_FORMAT)}
+        //       `);
+        return;
+      } catch (e) {
+        await sendToRecipients(`ERROR
+            ${JSON.stringify(e)}
+      `);
+      }
     }
     // if (canISell && profit >= 0.3) {
     //   // buysCounter !== 0 &&
@@ -255,8 +259,9 @@ import { marketSell, marketBuy } from './api/order';
     // }
     if (
       canISell &&
-      ((rsi1mValue >= 60 && profit >= 0.3 && dmiAdxSignal === -1) ||
-        dmiMdi1hSignal === -1)
+      ((rsi1mValue >= 60 && profit >= 0.3 && sellSignal) ||
+        dmiMdi1hSignal === -1 ||
+        profit <= -1)
       // sellRightNow
 
       // (dmiAdxSignal === -1 || rsi1mValue <= 48)
@@ -278,50 +283,45 @@ import { marketSell, marketBuy } from './api/order';
       // currentAvPrice - prevAvPrice <= 3
       // profit <= -0.3
     ) {
-      //     try {
-      //       // rsiSignal &&
-      //       // profit >= 1
-      //       // || (canISell && profit <= -0.1)
-      //       // tradeActions.sellByMarketPrice(null, '1m_dmi_trade_history.txt');
-      //       canISell = false;
-      //       // totalProfit += profit - 0.2;
-      //       buyPrice = null;
-      //       const { available: availableExchCurr } = await getBalances('ERD');
-      //       availableERD = availableExchCurr;
-      //       const amount = binance.roundStep(Number(availableExchCurr), stepSize);
-      //       const order = await marketSell(symbol.toUpperCase(), +amount);
-      //       const { available: refreshedUSDTBalance } = await getBalances('USDT');
-      //       const currentProfit =
-      //         Number(refreshedUSDTBalance) - Number(availableUSDT);
-      //       // rebuy = false;
-      //       // dmiMdiSignal = -1;
-      //       // dmiAdxSignal = -1;
-      //       await sendToRecipients(`SELL
-      //            STRATEGY 1.2(RSI + DMI)
-      //            Symbol: ${symbol.toUpperCase()}
-      //            Price: ${currentPrice} USDT
-      //            Date: ${format(new Date(), DATE_FORMAT)}
-      //            Current profit: ${currentProfit} USDT
-      //            Total profit: ${Number(refreshedUSDTBalance) -
-      //              Number(initialUSDTBalance)} USDT
-      //            Balance: ${+refreshedUSDTBalance} USDT
-      //            OrderInfo: ${JSON.stringify(order)}
-      //        `);
-      console.log(`Sell
-                          STRATEGY 1.2 (RSI + DMI)
-                          symbol: ${symbol.toUpperCase()}
-                          price: ${currentPrice}
-                          date: ${format(new Date(), DATE_FORMAT)}
-                          current profit: ${Number(profit - 0.2).toPrecision(
-                            4,
-                          )}%
-                          total profit: ${Number(totalProfit).toPrecision(4)}%
-            `);
-      //     } catch (e) {
-      //       await sendToRecipients(`ERROR
-      //       ${JSON.stringify(e)}
-      // `);
-      //     }
+      try {
+        canISell = false;
+        // totalProfit += profit - 0.2;
+        buyPrice = null;
+        const { available: availableExchCurr } = await getBalances('ERD');
+        availableERD = availableExchCurr;
+        const amount = binance.roundStep(Number(availableExchCurr), stepSize);
+        const order = await marketSell(symbol.toUpperCase(), +amount);
+        const { available: refreshedUSDTBalance } = await getBalances('USDT');
+        const currentProfit =
+          Number(refreshedUSDTBalance) - Number(availableUSDT);
+        // rebuy = false;
+        // dmiMdiSignal = -1;
+        // dmiAdxSignal = -1;
+        await sendToRecipients(`SELL
+                 STRATEGY 1.2(RSI + DMI)
+                 Symbol: ${symbol.toUpperCase()}
+                 Price: ${currentPrice} USDT
+                 Date: ${format(new Date(), DATE_FORMAT)}
+                 Current profit: ${currentProfit} USDT
+                 Total profit: ${Number(refreshedUSDTBalance) -
+                   Number(initialUSDTBalance)} USDT
+                 Balance: ${+refreshedUSDTBalance} USDT
+                 OrderInfo: ${JSON.stringify(order)}
+             `);
+        // console.log(`Sell
+        //                     STRATEGY 1.2 (RSI + DMI)
+        //                     symbol: ${symbol.toUpperCase()}
+        //                     price: ${currentPrice}
+        //                     date: ${format(new Date(), DATE_FORMAT)}
+        //                     current profit: ${Number(profit - 0.2).toPrecision(
+        //                       4,
+        //                     )}%
+        //       `);
+      } catch (e) {
+        await sendToRecipients(`ERROR
+            ${JSON.stringify(e)}
+      `);
+      }
     }
   };
 
