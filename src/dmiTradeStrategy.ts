@@ -178,7 +178,9 @@ import { marketSell, marketBuy } from './api/order';
       // isAdxHigherThanMdi &&
       // rsi1dSignal &&
       // rsi1hSignalValue >= 53 &&
-      rsi1mValue <= 50 &&
+
+      // rsi1mValue <= 50 &&
+      dmiMdiSignal === 1 &&
       rsi1mValue !== null &&
       rsi1hValue < 68 &&
       rsi1hValue !== null &&
@@ -284,7 +286,6 @@ import { marketSell, marketBuy } from './api/order';
       // profit <= -0.3
     ) {
       try {
-        canISell = false;
         // totalProfit += profit - 0.2;
         buyPrice = null;
         const { available: availableExchCurr } = await getBalances('ERD');
@@ -308,6 +309,8 @@ import { marketSell, marketBuy } from './api/order';
                  Balance: ${+refreshedUSDTBalance} USDT
                  OrderInfo: ${JSON.stringify(order)}
              `);
+        canISell = false;
+
         // console.log(`Sell
         //                     STRATEGY 1.2 (RSI + DMI)
         //                     symbol: ${symbol.toUpperCase()}
@@ -448,13 +451,13 @@ import { marketSell, marketBuy } from './api/order';
     //   // console.log('Pdi is lower than then MDI');
     // }
     // // console.log(dmi)
-    if (dmi.pdi - dmi.mdi > 0.5) {
+    if (dmi.pdi - dmi.mdi >= 2) {
       dmiMdiSignal = 1;
       // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
       // console.log('Curr dmi:'+ JSON.stringify(dmi));
       // console.log('Pdi is upper than then ADX');
     }
-    if (dmi.pdi - dmi.mdi < -0.5) {
+    if (dmi.pdi - dmi.mdi <= -2) {
       dmiMdiSignal = -1;
       // console.log('Prev dmi:'+ JSON.stringify(prevDmi));
       // console.log('Curr dmi:'+ JSON.stringify(dmi));
