@@ -212,10 +212,13 @@ import { marketSell, marketBuy } from './api/order';
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${currentPrice} USDT
                  Date: ${format(new Date(), DATE_FORMAT)}
+                 Available USDT: ${availableUSDT}
+                 Available ExcCurr: ${availableERD}
                  OrderInfo: ${JSON.stringify(order)}
              `);
         buyPrice = Number(order.fills[0].price);
-        availableERD = await getBalances('LINK');
+        const { available } = await getBalances('LINK');
+        availableERD = available;
         canISell = true;
         // console.log(`BUY
         //                      STRATEGY 1.2(RSI + DMI) MODIFIED
@@ -308,6 +311,7 @@ import { marketSell, marketBuy } from './api/order';
                  Total profit: ${Number(refreshedUSDTBalance) -
                    Number(initialUSDTBalance)} USDT
                  Balance: ${+refreshedUSDTBalance} USDT
+                 Available ExCurr: ${availableERD}
                  OrderInfo: ${JSON.stringify(order)}
              `);
         availableUSDT = +refreshedUSDTBalance;
