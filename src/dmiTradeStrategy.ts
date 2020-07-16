@@ -28,7 +28,7 @@ import { marketSell, marketBuy } from './api/order';
   const symbol = 'linkusdt';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   let availableUSDT = initialUSDTBalance;
-  const { available: initialERDBalance } = await getBalances('ERD');
+  const { available: initialERDBalance } = await getBalances('LINK');
   let availableERD = initialERDBalance;
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
   const interval = '1m';
@@ -215,7 +215,7 @@ import { marketSell, marketBuy } from './api/order';
                  OrderInfo: ${JSON.stringify(order)}
              `);
         buyPrice = Number(order.fills[0].price);
-        availableERD = await getBalances('ERD');
+        availableERD = await getBalances('LINK');
         canISell = true;
         // console.log(`BUY
         //                      STRATEGY 1.2(RSI + DMI) MODIFIED
