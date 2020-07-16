@@ -6,6 +6,7 @@ import { SYMBOLS, RESOURCES } from '../constants';
 import { getDmiAlertStream } from '../indicators/dmi';
 import { getRsiAlertStream } from '../indicators/rsi';
 
+let a;
 let canISell = false;
 let buysCounter = 0;
 let totalProfit = 0;
