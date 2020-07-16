@@ -25,7 +25,7 @@ import { marketSell, marketBuy } from './api/order';
 
   // const symbol = process.argv[2];
   const tradeAmountPercent = 0.9;
-  const symbol = 'erdusdt';
+  const symbol = 'linkusdt';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   let availableUSDT = initialUSDTBalance;
   const { available: initialERDBalance } = await getBalances('ERD');
@@ -180,12 +180,12 @@ import { marketSell, marketBuy } from './api/order';
       // rsi1dSignal &&
       // rsi1hSignalValue >= 53 &&
 
-      rsi1mValue <= 50 &&
+      rsi1mValue <= 40 &&
       // dmiMdiSignal === 1 &&
       rsi1mValue !== null &&
       rsi1hValue < 68 &&
-      rsi1hValue !== null &&
-      dmiMdi1hSignal === 1
+      rsi1hValue !== null
+      // && dmiMdi1hSignal === 1
 
       // !sellRightNow
       // &&
@@ -262,9 +262,11 @@ import { marketSell, marketBuy } from './api/order';
     // }
     if (
       canISell &&
-      ((rsi1mValue >= 60 && profit >= 0.3 && sellSignal) ||
-        dmiMdi1hSignal === -1 ||
-        profit <= -2)
+      ((rsi1mValue >= 60 && profit >= 0.7) ||
+        // && sellSignal
+        // ||
+        // dmiMdi1hSignal === -1
+        profit <= -1)
       // sellRightNow
 
       // (dmiAdxSignal === -1 || rsi1mValue <= 48)
