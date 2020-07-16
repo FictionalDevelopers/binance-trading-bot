@@ -27,9 +27,10 @@ import { marketSell, marketBuy } from './api/order';
   const tradeAmountPercent = 0.9;
   const symbol = 'erdusdt';
   const { available: initialUSDTBalance } = await getBalances('USDT');
+  let availableUSDT = initialUSDTBalance;
+  const { available: initialERDBalance } = await getBalances('ERD');
+  let availableERD = initialERDBalance;
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
-  let availableUSDT = null;
-  let availableERD = null;
   const interval = '1m';
   // const symbol = SYMBOLS.ERDUSDT;
   let canISell = false;
@@ -198,12 +199,9 @@ import { marketSell, marketBuy } from './api/order';
     ) {
       try {
         // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
-        canISell = true;
-        buyPrice = currentPrice;
-        const { available } = await getBalances('USDT');
-        availableUSDT = available;
+        // buyPrice = currentPrice;
         const amount = binance.roundStep(
-          (available * tradeAmountPercent) / currentPrice,
+          (availableUSDT * tradeAmountPercent) / currentPrice,
           stepSize,
         );
         const order = await marketBuy(symbol.toUpperCase(), +amount);
@@ -216,6 +214,9 @@ import { marketSell, marketBuy } from './api/order';
                  Date: ${format(new Date(), DATE_FORMAT)}
                  OrderInfo: ${JSON.stringify(order)}
              `);
+        buyPrice = Number(order.fills[0].price);
+        availableERD = await getBalances('ERD');
+        canISell = true;
         // console.log(`BUY
         //                      STRATEGY 1.2(RSI + DMI) MODIFIED
         //                      symbol: ${symbol.toUpperCase()}
@@ -288,9 +289,7 @@ import { marketSell, marketBuy } from './api/order';
       try {
         // totalProfit += profit - 0.2;
         buyPrice = null;
-        const { available: availableExchCurr } = await getBalances('ERD');
-        availableERD = availableExchCurr;
-        const amount = binance.roundStep(Number(availableExchCurr), stepSize);
+        const amount = binance.roundStep(Number(availableERD), stepSize);
         const order = await marketSell(symbol.toUpperCase(), +amount);
         const { available: refreshedUSDTBalance } = await getBalances('USDT');
         const currentProfit =
@@ -309,6 +308,7 @@ import { marketSell, marketBuy } from './api/order';
                  Balance: ${+refreshedUSDTBalance} USDT
                  OrderInfo: ${JSON.stringify(order)}
              `);
+        availableUSDT = +refreshedUSDTBalance;
         canISell = false;
 
         // console.log(`Sell
