@@ -25,10 +25,12 @@ import { marketSell, marketBuy } from './api/order';
 
   // const symbol = process.argv[2];
   const tradeAmountPercent = 0.9;
-  const symbol = 'linkusdt';
+  const symbol = 'erdusdt';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   let availableUSDT = initialUSDTBalance;
-  const { available: initialERDBalance } = await getBalances('ERD');
+  const { available: initialERDBalance } = await getBalances(
+    symbol.toUpperCase().slice(0, -4),
+  );
   let availableERD = initialERDBalance;
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
   const interval = '1m';
@@ -230,7 +232,7 @@ import { marketSell, marketBuy } from './api/order';
         //       `);
         return;
       } catch (e) {
-        await sendToRecipients(`ERROR
+        await sendToRecipients(`BUY ERROR
             ${JSON.stringify(e)}
       `);
       }
@@ -329,7 +331,7 @@ import { marketSell, marketBuy } from './api/order';
         //                     )}%
         //       `);
       } catch (e) {
-        await sendToRecipients(`ERROR
+        await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
       `);
       }
