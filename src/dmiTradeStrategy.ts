@@ -182,12 +182,12 @@ import { marketSell, marketBuy } from './api/order';
       // rsi1dSignal &&
       // rsi1hSignalValue >= 53 &&
 
-      rsi1mValue <= 40 &&
+      rsi1mValue <= 50 &&
       // dmiMdiSignal === 1 &&
       rsi1mValue !== null &&
       rsi1hValue < 68 &&
-      rsi1hValue !== null
-      // && dmiMdi1hSignal === 1
+      rsi1hValue !== null &&
+      dmiMdi1hSignal === 1
 
       // !sellRightNow
       // &&
@@ -200,7 +200,6 @@ import { marketSell, marketBuy } from './api/order';
       // && (currentAvPrice - prevAvPrice >= 3)
     ) {
       try {
-        canISell = true;
         // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
         // buyPrice = currentPrice;
         const amount = binance.roundStep(
@@ -210,20 +209,19 @@ import { marketSell, marketBuy } from './api/order';
         const order = await marketBuy(symbol.toUpperCase(), +amount);
         // rebuy = false;
         // buysCounter++;
-        await sendToRecipients(`BUY
-                 STRATEGY 1.2 (RSI + DMI) MODIFIED
-                 Symbol: ${symbol.toUpperCase()}
-                 Price: ${currentPrice} USDT
-                 Date: ${format(new Date(), DATE_FORMAT)}
-                 Available USDT: ${availableUSDT}
-                 Available ${symbol.toUpperCase().slice(0, -4)}: ${availableERD}
-                 OrderInfo: ${JSON.stringify(order)}
-             `);
         buyPrice = Number(order.fills[0].price);
         const { available } = await getBalances(
           symbol.toUpperCase().slice(0, -4),
         );
         availableERD = available;
+        await sendToRecipients(`BUY
+                 STRATEGY 1.2 (RSI + DMI) MODIFIED
+                 Symbol: ${symbol.toUpperCase()}
+                 Price: ${currentPrice} USDT
+                 Date: ${format(new Date(), DATE_FORMAT)}
+                 OrderInfo: ${JSON.stringify(order)}
+             `);
+        canISell = true;
         // console.log(`BUY
         //                      STRATEGY 1.2(RSI + DMI) MODIFIED
         //                      symbol: ${symbol.toUpperCase()}
@@ -269,11 +267,9 @@ import { marketSell, marketBuy } from './api/order';
     // }
     if (
       canISell &&
-      ((rsi1mValue >= 60 && profit >= 0.7) ||
-        // && sellSignal
-        // ||
-        // dmiMdi1hSignal === -1
-        profit <= -1)
+      ((rsi1mValue >= 60 && profit >= 0.3 && sellSignal) ||
+        dmiMdi1hSignal === -1 ||
+        profit <= -2)
       // sellRightNow
 
       // (dmiAdxSignal === -1 || rsi1mValue <= 48)
@@ -296,7 +292,6 @@ import { marketSell, marketBuy } from './api/order';
       // profit <= -0.3
     ) {
       try {
-        canISell = false;
         // totalProfit += profit - 0.2;
         buyPrice = null;
         const amount = binance.roundStep(Number(availableERD), stepSize);
@@ -307,6 +302,12 @@ import { marketSell, marketBuy } from './api/order';
         // rebuy = false;
         // dmiMdiSignal = -1;
         // dmiAdxSignal = -1;
+        availableUSDT = +refreshedUSDTBalance;
+        const { available: refreshedERDBalance } = await getBalances(
+          symbol.toUpperCase().slice(0, -4),
+        );
+        availableERD = refreshedERDBalance;
+
         await sendToRecipients(`SELL
                  STRATEGY 1.2(RSI + DMI)
                  Symbol: ${symbol.toUpperCase()}
@@ -316,10 +317,9 @@ import { marketSell, marketBuy } from './api/order';
                  Total profit: ${Number(refreshedUSDTBalance) -
                    Number(initialUSDTBalance)} USDT
                  Balance: ${+refreshedUSDTBalance} USDT
-                 Available ${symbol.toUpperCase().slice(0, -4)}: ${availableERD}
                  OrderInfo: ${JSON.stringify(order)}
              `);
-        availableUSDT = +refreshedUSDTBalance;
+        canISell = false;
 
         // console.log(`Sell
         //                     STRATEGY 1.2 (RSI + DMI)
