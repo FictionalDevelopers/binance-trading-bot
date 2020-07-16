@@ -627,6 +627,9 @@ import { marketSell, marketBuy } from './api/order';
   with using the STRATEGY 1.2(RSI + DMI) (LAST MODIFIED)
   Symbol: ${symbol.toUpperCase()}
   Initial balance: ${initialUSDTBalance} USDT
+  Initial exchcurr balance: ${initialERDBalance} ${symbol
+    .toUpperCase()
+    .slice(0, -4)}
   `);
 
   getTradeStream({
