@@ -198,6 +198,7 @@ import { marketSell, marketBuy } from './api/order';
       // && (currentAvPrice - prevAvPrice >= 3)
     ) {
       try {
+        canISell = true;
         // tradeActions.buyByMarketPrice(null, '1m_dmi_trade_history.txt');
         // buyPrice = currentPrice;
         const amount = binance.roundStep(
@@ -219,7 +220,6 @@ import { marketSell, marketBuy } from './api/order';
         buyPrice = Number(order.fills[0].price);
         const { available } = await getBalances('LINK');
         availableERD = available;
-        canISell = true;
         // console.log(`BUY
         //                      STRATEGY 1.2(RSI + DMI) MODIFIED
         //                      symbol: ${symbol.toUpperCase()}
@@ -292,6 +292,7 @@ import { marketSell, marketBuy } from './api/order';
       // profit <= -0.3
     ) {
       try {
+        canISell = false;
         // totalProfit += profit - 0.2;
         buyPrice = null;
         const amount = binance.roundStep(Number(availableERD), stepSize);
@@ -315,7 +316,6 @@ import { marketSell, marketBuy } from './api/order';
                  OrderInfo: ${JSON.stringify(order)}
              `);
         availableUSDT = +refreshedUSDTBalance;
-        canISell = false;
 
         // console.log(`Sell
         //                     STRATEGY 1.2 (RSI + DMI)
