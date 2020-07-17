@@ -23,7 +23,7 @@ import { marketSell, marketBuy } from './api/order';
 
   // const symbol = process.argv[2];
   const botState = {
-    status: 'isPending',
+    status: 'buy',
     currentProfit: null,
     totalProfit: null,
     tradeAmountPercent: 0.9,
@@ -83,8 +83,6 @@ import { marketSell, marketBuy } from './api/order';
         const order = await marketBuy(symbol.toUpperCase(), +amount);
         botState.updateState('buyPrice', Number(order.fills[0].price));
         botState.updateState('order', order);
-        const { available } = await getBalances(cryptoCoin);
-        botState.updateState('availableCryptoCoin', available);
         await sendToRecipients(`BUY
                  STRATEGY 1.2 (RSI + DMI) MODIFIED
                  Symbol: ${symbol.toUpperCase()}
@@ -246,7 +244,7 @@ import { marketSell, marketBuy } from './api/order';
   with using the STRATEGY 1.2(RSI + DMI) (LAST MODIFIED)
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
-  Initial exchcurr balance: ${initialCryptoCoinBalance} ${cryptoCoin}
+  Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
   `);
 
   getTradeStream({
