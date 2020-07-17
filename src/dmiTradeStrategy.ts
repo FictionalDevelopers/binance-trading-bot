@@ -15,36 +15,59 @@ import { marketSell, marketBuy } from './api/order';
 (async function() {
   await connect();
   await processSubscriptions();
-  // const symbol = process.argv[2];
-  const tradeAmountPercent = 0.9;
   const symbol = 'linkusdt';
-  const exchCurr = symbol.toUpperCase().slice(0, -4);
+  const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
-  let availableUSDT = initialUSDTBalance;
-  const { available: initialERDBalance } = await getBalances(exchCurr);
-  let availableERD = initialERDBalance;
+  const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
-  let canISell = false;
-  let buyPrice = null;
-  let prev1mDmi = null;
-  let prev1hDmi = null;
-  let dmiMdi1hSignal = 0;
-  let rsi1mValue = null;
-  let rsi1hValue = null;
-  let currentPrice = null;
-  let sellSignal = false;
-  let isAdx1mHigherThanPdi1m = false;
+
+  // const symbol = process.argv[2];
+  const botState = {
+    currentProfit: null,
+    totalProfit: null,
+    tradeAmountPercent: 0.9,
+    availableUSDT: initialUSDTBalance,
+    availableCryptoCoin: initialCryptoCoinBalance,
+    canISell: false,
+    buyPrice: null,
+    currentPrice: null,
+    order: null,
+    updateState: function(fieldName, value) {
+      this[`${fieldName}`] = value;
+    },
+  };
+
+  const indicatorsData = {
+    prev1mDmi: null,
+    prev1hDmi: null,
+    dmiMdi1hSignal: 0,
+    rsi1mValue: null,
+    rsi1hValue: null,
+    sellSignal: false,
+    isAdx1mHigherThanPdi1m: false,
+  };
 
   const trader = async pricesStream => {
-    currentPrice = Number(pricesStream[pricesStream.length - 1]);
-    const profit = buyPrice
-      ? currentPrice / buyPrice > 1
-        ? Number((currentPrice / buyPrice) * 100 - 100)
-        : Number(-1 * (100 - (currentPrice / buyPrice) * 100))
+    const { tradeAmountPercent } = botState;
+    const {
+      rsi1mValue,
+      sellSignal,
+      rsi1hValue,
+      dmiMdi1hSignal,
+    } = indicatorsData;
+
+    botState.updateState(
+      'currentPrice',
+      Number(pricesStream[pricesStream.length - 1]),
+    );
+    const expectedProfit = botState.buyPrice
+      ? botState.currentPrice / botState.buyPrice > 1
+        ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
+        : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
       : 0;
 
     if (
-      !canISell &&
+      !botState.canISell &&
       rsi1mValue <= 50 &&
       rsi1mValue !== null &&
       rsi1hValue < 68 &&
@@ -52,21 +75,24 @@ import { marketSell, marketBuy } from './api/order';
       dmiMdi1hSignal === 1
     ) {
       try {
-        canISell = true;
+        botState.updateState('canISell', true);
         const amount = binance.roundStep(
-          (availableUSDT * tradeAmountPercent) / currentPrice,
+          (botState.availableUSDT * tradeAmountPercent) / botState.currentPrice,
           stepSize,
         );
         const order = await marketBuy(symbol.toUpperCase(), +amount);
-        buyPrice = Number(order.fills[0].price);
-        const { available } = await getBalances(exchCurr);
-        availableERD = available;
+        botState.updateState('buyPrice', Number(order.fills[0].price));
+        botState.updateState('order', order);
+        const { available } = await getBalances(cryptoCoin);
+        botState.updateState('availableCryptoCoin', available);
         await sendToRecipients(`BUY
                  STRATEGY 1.2 (RSI + DMI) MODIFIED
                  Symbol: ${symbol.toUpperCase()}
-                 Price: ${currentPrice} USDT
+                 Price: ${botState.buyPrice} USDT
                  Date: ${format(new Date(), DATE_FORMAT)}
-                 OrderInfo: ${JSON.stringify(order)}
+                 USDT Balance: ${botState.availableUSDT} USDT
+                 ${cryptoCoin} Balance: ${+botState.availableCryptoCoin} USDT
+                 OrderInfo: ${JSON.stringify(botState.order)}
              `);
         // console.log(`BUY
         //                      STRATEGY 1.2(RSI + DMI) MODIFIED
@@ -83,33 +109,47 @@ import { marketSell, marketBuy } from './api/order';
     }
 
     if (
-      canISell &&
-      ((rsi1mValue >= 60 && profit >= 0.3 && sellSignal) ||
+      botState.canISell &&
+      ((rsi1mValue >= 60 && expectedProfit >= 0.3 && sellSignal) ||
         dmiMdi1hSignal === -1 ||
-        profit <= -2)
+        expectedProfit <= -2)
     ) {
       try {
-        canISell = false;
-        buyPrice = null;
-        const amount = binance.roundStep(Number(availableERD), stepSize);
+        botState.updateState('canISell', false);
+        botState.updateState('buyPrice', null);
+        const amount = binance.roundStep(
+          Number(botState.availableCryptoCoin),
+          stepSize,
+        );
         const order = await marketSell(symbol.toUpperCase(), +amount);
+        botState.updateState('order', order);
         const { available: refreshedUSDTBalance } = await getBalances('USDT');
         const currentProfit =
-          Number(refreshedUSDTBalance) - Number(availableUSDT);
-        availableUSDT = +refreshedUSDTBalance;
-        const { available: refreshedERDBalance } = await getBalances(exchCurr);
-        availableERD = refreshedERDBalance;
+          Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
+        botState.updateState('currentProfit', currentProfit);
+        botState.updateState('availableUSDT', +refreshedUSDTBalance);
+        botState.updateState(
+          'totalProfit',
+          Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
+        );
+        const { available: refreshedCryptoCoinBalance } = await getBalances(
+          cryptoCoin,
+        );
+        botState.updateState(
+          'availableCryptoCoin',
+          +refreshedCryptoCoinBalance,
+        );
 
         await sendToRecipients(`SELL
                  STRATEGY 1.2(RSI + DMI)
                  Symbol: ${symbol.toUpperCase()}
-                 Price: ${currentPrice} USDT
+                 Price: ${botState.order.fills[0].price} USDT
                  Date: ${format(new Date(), DATE_FORMAT)}
-                 Current profit: ${currentProfit} USDT
-                 Total profit: ${Number(refreshedUSDTBalance) -
-                   Number(initialUSDTBalance)} USDT
-                 Balance: ${+refreshedUSDTBalance} USDT
-                 OrderInfo: ${JSON.stringify(order)}
+                 Current profit: ${botState.currentProfit} USDT
+                 Total profit: ${botState.totalProfit} USDT
+                 USDT Balance: ${botState.availableUSDT} USDT
+                 ${cryptoCoin} Balance: ${+botState.availableCryptoCoin} USDT
+                 OrderInfo: ${JSON.stringify(botState.order)}
              `);
 
         // console.log(`Sell
@@ -134,7 +174,7 @@ import { marketSell, marketBuy } from './api/order';
     period: 14,
     interval: '1m',
   }).subscribe(rsi => {
-    rsi1mValue = rsi;
+    indicatorsData.rsi1mValue = rsi;
   });
 
   getRsiStream({
@@ -142,7 +182,7 @@ import { marketSell, marketBuy } from './api/order';
     period: 14,
     interval: '1h',
   }).subscribe(rsi => {
-    rsi1hValue = rsi;
+    indicatorsData.rsi1hValue = rsi;
   });
 
   getDmiStream({
@@ -150,27 +190,33 @@ import { marketSell, marketBuy } from './api/order';
     interval: '1m',
     period: 14,
   }).subscribe(dmi => {
-    if (!prev1mDmi) {
-      prev1mDmi = dmi;
+    if (!indicatorsData.prev1mDmi) {
+      indicatorsData.prev1mDmi = dmi;
       return;
     }
 
-    if (dmi.adx > dmi.pdi && prev1mDmi.pdi >= prev1mDmi.adx) {
+    if (
+      dmi.adx > dmi.pdi &&
+      indicatorsData.prev1mDmi.pdi >= indicatorsData.prev1mDmi.adx
+    ) {
       console.log('Pdi is lower than Adx!');
-      isAdx1mHigherThanPdi1m = true;
-      console.log('Sell signal: ' + sellSignal);
+      indicatorsData.isAdx1mHigherThanPdi1m = true;
+      console.log('Sell signal: ' + indicatorsData.sellSignal);
     }
-    if (dmi.adx < dmi.pdi && prev1mDmi.pdi <= prev1mDmi.adx) {
+    if (
+      dmi.adx < dmi.pdi &&
+      indicatorsData.prev1mDmi.pdi <= indicatorsData.prev1mDmi.adx
+    ) {
       console.log('Pdi is higher than Adx!');
-      isAdx1mHigherThanPdi1m = false;
-      sellSignal = false;
-      console.log('Sell signal: ' + sellSignal);
+      indicatorsData.isAdx1mHigherThanPdi1m = false;
+      indicatorsData.sellSignal = false;
+      console.log('Sell signal: ' + indicatorsData.sellSignal);
     }
-    if (dmi.adx - dmi.pdi >= 2 && isAdx1mHigherThanPdi1m) {
-      sellSignal = true;
-      console.log('Sell signal: ' + sellSignal);
+    if (dmi.adx - dmi.pdi >= 2 && indicatorsData.isAdx1mHigherThanPdi1m) {
+      indicatorsData.sellSignal = true;
+      console.log('Sell signal: ' + indicatorsData.sellSignal);
     }
-    prev1mDmi = dmi;
+    indicatorsData.prev1mDmi = dmi;
   });
 
   getDmiStream({
@@ -178,17 +224,17 @@ import { marketSell, marketBuy } from './api/order';
     interval: '1h',
     period: 14,
   }).subscribe(dmi => {
-    if (!prev1hDmi) {
-      prev1hDmi = dmi;
+    if (!indicatorsData.prev1hDmi) {
+      indicatorsData.prev1hDmi = dmi;
       return;
     }
     if (dmi.pdi - dmi.mdi >= 2) {
-      dmiMdi1hSignal = 1;
+      indicatorsData.dmiMdi1hSignal = 1;
     }
     if (dmi.pdi - dmi.mdi <= -2) {
-      dmiMdi1hSignal = -1;
+      indicatorsData.dmiMdi1hSignal = -1;
     }
-    prev1hDmi = dmi;
+    indicatorsData.prev1hDmi = dmi;
   });
 
   await sendToRecipients(`INIT
@@ -196,7 +242,7 @@ import { marketSell, marketBuy } from './api/order';
   with using the STRATEGY 1.2(RSI + DMI) (LAST MODIFIED)
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
-  Initial exchcurr balance: ${initialERDBalance} ${exchCurr}
+  Initial exchcurr balance: ${initialCryptoCoinBalance} ${cryptoCoin}
   `);
 
   getTradeStream({
