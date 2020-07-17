@@ -15,21 +15,17 @@ import { marketSell, marketBuy } from './api/order';
 (async function() {
   await connect();
   await processSubscriptions();
-
   // const symbol = process.argv[2];
   const symbol = 'erdusdt';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
   let availableUSDT = null;
   let availableERD = null;
-  const interval = '1m';
   let canISell = false;
   let buyPrice = null;
   let prevDmi = null;
   let prev1hDmi = null;
   const prices = [];
-
-  // let complexSignal = null;
   let dmiMdiSignal = 0;
   let dmiAdxSignal = 0;
   let dmiAdx1hSignal = 0;
