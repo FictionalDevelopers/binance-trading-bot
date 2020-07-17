@@ -23,12 +23,12 @@ import { marketSell, marketBuy } from './api/order';
 
   // const symbol = process.argv[2];
   const botState = {
+    status: 'isPending',
     currentProfit: null,
     totalProfit: null,
     tradeAmountPercent: 0.9,
     availableUSDT: initialUSDTBalance,
     availableCryptoCoin: initialCryptoCoinBalance,
-    canISell: false,
     buyPrice: null,
     currentPrice: null,
     order: null,
@@ -56,6 +56,7 @@ import { marketSell, marketBuy } from './api/order';
       dmiMdi1hSignal,
     } = indicatorsData;
 
+    if (botState.status === 'isPending') return;
     botState.updateState(
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
@@ -65,9 +66,8 @@ import { marketSell, marketBuy } from './api/order';
         ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
         : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
       : 0;
-
     if (
-      !botState.canISell &&
+      botState.status === 'buy' &&
       rsi1mValue <= 50 &&
       rsi1mValue !== null &&
       rsi1hValue < 68 &&
@@ -75,7 +75,7 @@ import { marketSell, marketBuy } from './api/order';
       dmiMdi1hSignal === 1
     ) {
       try {
-        botState.updateState('canISell', true);
+        botState.updateState('status', 'isPending');
         const amount = binance.roundStep(
           (botState.availableUSDT * tradeAmountPercent) / botState.currentPrice,
           stepSize,
@@ -100,22 +100,24 @@ import { marketSell, marketBuy } from './api/order';
         //                      price: ${currentPrice}
         //                      date: ${format(new Date(), DATE_FORMAT)}
         //       `);
+        botState.updateState('status', 'sell');
         return;
       } catch (e) {
         await sendToRecipients(`BUY ERROR
-            ${JSON.stringify(e)}
+            statusCode: ${e.statusCode}
+            msg: ${e.body.msg}
       `);
       }
     }
 
     if (
-      botState.canISell &&
+      botState.status === 'sell' &&
       ((rsi1mValue >= 60 && expectedProfit >= 0.3 && sellSignal) ||
         dmiMdi1hSignal === -1 ||
         expectedProfit <= -2)
     ) {
       try {
-        botState.updateState('canISell', false);
+        botState.updateState('status', 'isPending');
         botState.updateState('buyPrice', null);
         const amount = binance.roundStep(
           Number(botState.availableCryptoCoin),
@@ -161,9 +163,11 @@ import { marketSell, marketBuy } from './api/order';
         //                       4,
         //                     )}%
         //       `);
+        botState.updateState('status', 'buy');
       } catch (e) {
         await sendToRecipients(`SELL ERROR
-            ${JSON.stringify(e)}
+            statusCode: ${e.statusCode}
+            msg: ${e.body.msg}
       `);
       }
     }
