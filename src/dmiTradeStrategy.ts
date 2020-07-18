@@ -83,6 +83,10 @@ import { marketSell, marketBuy } from './api/order';
         const order = await marketBuy(symbol.toUpperCase(), +amount);
         botState.updateState('buyPrice', Number(order.fills[0].price));
         botState.updateState('order', order);
+        const { available: refreshedCryptoCoinBalance } = await getBalances(
+          cryptoCoin,
+        );
+        botState.updateState('availableCryptoCoin', refreshedCryptoCoinBalance);
         await sendToRecipients(`BUY
                  STRATEGY 1.2 (RSI + DMI) MODIFIED
                  Symbol: ${symbol.toUpperCase()}
@@ -102,9 +106,9 @@ import { marketSell, marketBuy } from './api/order';
         return;
       } catch (e) {
         await sendToRecipients(`BUY ERROR
-            statusCode: ${e.statusCode}
-            msg: ${e.body.msg}
+            ${e}
       `);
+        botState.updateState('status', 'buy');
       }
     }
 
@@ -164,9 +168,9 @@ import { marketSell, marketBuy } from './api/order';
         botState.updateState('status', 'buy');
       } catch (e) {
         await sendToRecipients(`SELL ERROR
-            statusCode: ${e.statusCode}
-            msg: ${e.body.msg}
+            ${e}
       `);
+        botState.updateState('status', 'sell');
       }
     }
   };
