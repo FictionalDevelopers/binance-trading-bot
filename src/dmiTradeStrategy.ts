@@ -43,9 +43,6 @@ import { marketSell, marketBuy } from './api/order';
     dmiMdi1hSignal: 0,
     rsi1mValue: null,
     rsi1hValue: null,
-    sellSignal: false,
-    isAdx1mHigherThanPdi1m: false,
-    isMdi1mHigherThanPdi1m: false,
     adx1mSignal: 0,
     mdi1mSignal: 0,
     mdi1hSignal: 0,
@@ -53,13 +50,7 @@ import { marketSell, marketBuy } from './api/order';
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
-    const {
-      rsi1mValue,
-      rsi1hValue,
-      adx1mSignal,
-      mdi1mSignal,
-      mdi1hSignal,
-    } = indicatorsData;
+    const { rsi1mValue, rsi1hValue, adx1mSignal, mdi1mSignal } = indicatorsData;
 
     if (botState.status === 'isPending') return;
     botState.updateState(
@@ -204,9 +195,8 @@ import { marketSell, marketBuy } from './api/order';
   }).subscribe(dmi => {
     if (dmi.adx - dmi.pdi >= 2) indicatorsData.adx1mSignal = -1;
     if (dmi.pdi - dmi.adx >= 2) indicatorsData.adx1mSignal = 1;
-    if (dmi.mdi - dmi.pdi >= 2) indicatorsData.adx1mSignal = -1;
-    if (dmi.pdi - dmi.mdi >= 2) indicatorsData.adx1mSignal = 1;
-    indicatorsData.prev1mDmi = dmi;
+    if (dmi.mdi - dmi.pdi >= 2) indicatorsData.mdi1mSignal = -1;
+    if (dmi.pdi - dmi.mdi >= 2) indicatorsData.mdi1mSignal = 1;
   });
 
   getDmiStream({
