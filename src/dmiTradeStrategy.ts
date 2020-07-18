@@ -45,15 +45,20 @@ import { marketSell, marketBuy } from './api/order';
     rsi1hValue: null,
     sellSignal: false,
     isAdx1mHigherThanPdi1m: false,
+    isMdi1mHigherThanPdi1m: false,
+    adx1mSignal: 0,
+    mdi1mSignal: 0,
+    mdi1hSignal: 0,
   };
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
     const {
       rsi1mValue,
-      sellSignal,
       rsi1hValue,
-      dmiMdi1hSignal,
+      adx1mSignal,
+      mdi1mSignal,
+      mdi1hSignal,
     } = indicatorsData;
 
     if (botState.status === 'isPending') return;
@@ -68,11 +73,12 @@ import { marketSell, marketBuy } from './api/order';
       : 0;
     if (
       botState.status === 'buy' &&
-      rsi1mValue <= 50 &&
-      rsi1mValue !== null &&
+      // rsi1mValue <= 50 &&
+      // rsi1mValue !== null &&
       rsi1hValue < 68 &&
       rsi1hValue !== null &&
-      dmiMdi1hSignal === 1
+      // mdi1hSignal === 1 &&
+      adx1mSignal + mdi1mSignal === 2
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -114,9 +120,9 @@ import { marketSell, marketBuy } from './api/order';
 
     if (
       botState.status === 'sell' &&
-      ((rsi1mValue >= 60 && expectedProfit >= 0.3 && sellSignal) ||
-        dmiMdi1hSignal === -1 ||
-        expectedProfit <= -2)
+      ((rsi1mValue >= 65 && expectedProfit >= 0.7 && adx1mSignal === -1) ||
+        // mdi1hSignal === -1 ||
+        expectedProfit <= -1)
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -196,32 +202,10 @@ import { marketSell, marketBuy } from './api/order';
     interval: '1m',
     period: 14,
   }).subscribe(dmi => {
-    if (!indicatorsData.prev1mDmi) {
-      indicatorsData.prev1mDmi = dmi;
-      return;
-    }
-
-    if (
-      dmi.adx > dmi.pdi &&
-      indicatorsData.prev1mDmi.pdi >= indicatorsData.prev1mDmi.adx
-    ) {
-      console.log('Pdi is lower than Adx!');
-      indicatorsData.isAdx1mHigherThanPdi1m = true;
-      console.log('Sell signal: ' + indicatorsData.sellSignal);
-    }
-    if (
-      dmi.adx < dmi.pdi &&
-      indicatorsData.prev1mDmi.pdi <= indicatorsData.prev1mDmi.adx
-    ) {
-      console.log('Pdi is higher than Adx!');
-      indicatorsData.isAdx1mHigherThanPdi1m = false;
-      indicatorsData.sellSignal = false;
-      console.log('Sell signal: ' + indicatorsData.sellSignal);
-    }
-    if (dmi.adx - dmi.pdi >= 2 && indicatorsData.isAdx1mHigherThanPdi1m) {
-      indicatorsData.sellSignal = true;
-      console.log('Sell signal: ' + indicatorsData.sellSignal);
-    }
+    if (dmi.adx - dmi.pdi >= 2) indicatorsData.adx1mSignal = -1;
+    if (dmi.pdi - dmi.adx >= 2) indicatorsData.adx1mSignal = 1;
+    if (dmi.mdi - dmi.pdi >= 2) indicatorsData.adx1mSignal = -1;
+    if (dmi.pdi - dmi.mdi >= 2) indicatorsData.adx1mSignal = 1;
     indicatorsData.prev1mDmi = dmi;
   });
 
@@ -230,17 +214,8 @@ import { marketSell, marketBuy } from './api/order';
     interval: '1h',
     period: 14,
   }).subscribe(dmi => {
-    if (!indicatorsData.prev1hDmi) {
-      indicatorsData.prev1hDmi = dmi;
-      return;
-    }
-    if (dmi.pdi - dmi.mdi >= 2) {
-      indicatorsData.dmiMdi1hSignal = 1;
-    }
-    if (dmi.pdi - dmi.mdi <= -2) {
-      indicatorsData.dmiMdi1hSignal = -1;
-    }
-    indicatorsData.prev1hDmi = dmi;
+    if (dmi.mdi - dmi.pdi >= 2) indicatorsData.mdi1hSignal = -1;
+    if (dmi.pdi - dmi.mdi >= 2) indicatorsData.mdi1hSignal = 1;
   });
 
   await sendToRecipients(`INIT
