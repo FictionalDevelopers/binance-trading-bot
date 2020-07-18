@@ -121,8 +121,8 @@ import { marketSell, marketBuy } from './api/order';
     if (
       botState.status === 'sell' &&
       ((rsi1mValue >= 65 && expectedProfit >= 0.7 && adx1mSignal === -1) ||
-        // mdi1hSignal === -1 ||
-        expectedProfit <= -1)
+        (rsi1mValue < 50 && adx1mSignal === -1))
+      // mdi1hSignal === -1 ||
     ) {
       try {
         botState.updateState('status', 'isPending');
