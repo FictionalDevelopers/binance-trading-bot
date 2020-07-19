@@ -68,14 +68,7 @@ import { marketSell, marketBuy } from './api/order';
         ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
         : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
       : 0;
-    if (
-      botState.status === 'buy' &&
-      rsi1mValue < 70 &&
-      rsi1mValue !== null &&
-      rsi1hValue < 68 &&
-      rsi1hValue !== null &&
-      adx1mSignal + mdi1mSignal === 2
-    ) {
+    if (botState.status === 'buy' && rsi1mValue < 35 && rsi1mValue !== null) {
       try {
         botState.updateState('status', 'isPending');
         const amount = binance.roundStep(
@@ -116,12 +109,9 @@ import { marketSell, marketBuy } from './api/order';
 
     if (
       botState.status === 'sell' &&
-      ((mdi1hSignal === 1 &&
-        ((rsi1mValue >= 65 && expectedProfit >= 0.7 && adx1mSignal === -1) ||
-          (rsi1mValue < 50 && adx1mSignal === -1))) ||
-        (mdi1hSignal === -1 &&
-          ((rsi1mValue >= 70 && expectedProfit >= 0.3) ||
-            (rsi1mValue < 50 && adx1mSignal === -1))))
+      rsi1mValue >= 60 &&
+      rsi1mValue !== null &&
+      expectedProfit >= 0.5
       // mdi1hSignal === -1 ||
     ) {
       try {
