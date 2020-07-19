@@ -50,7 +50,13 @@ import { marketSell, marketBuy } from './api/order';
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
-    const { rsi1mValue, rsi1hValue, adx1mSignal, mdi1mSignal } = indicatorsData;
+    const {
+      rsi1mValue,
+      rsi1hValue,
+      adx1mSignal,
+      mdi1mSignal,
+      mdi1hSignal,
+    } = indicatorsData;
 
     if (botState.status === 'isPending') return;
     botState.updateState(
@@ -69,7 +75,8 @@ import { marketSell, marketBuy } from './api/order';
       rsi1hValue < 68 &&
       rsi1hValue !== null &&
       // mdi1hSignal === 1 &&
-      adx1mSignal + mdi1mSignal === 2
+      adx1mSignal + mdi1mSignal === 2 &&
+      mdi1hSignal === 1
     ) {
       try {
         botState.updateState('status', 'isPending');
