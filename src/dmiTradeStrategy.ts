@@ -70,8 +70,8 @@ import { marketSell, marketBuy } from './api/order';
       : 0;
     if (
       botState.status === 'buy' &&
-      // rsi1mValue <= 50 &&
-      // rsi1mValue !== null &&
+      rsi1mValue < 70 &&
+      rsi1mValue !== null &&
       rsi1hValue < 68 &&
       rsi1hValue !== null &&
       adx1mSignal + mdi1mSignal === 2
