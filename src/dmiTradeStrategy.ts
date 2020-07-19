@@ -119,7 +119,9 @@ import { marketSell, marketBuy } from './api/order';
       ((mdi1hSignal === 1 &&
         ((rsi1mValue >= 65 && expectedProfit >= 0.7 && adx1mSignal === -1) ||
           (rsi1mValue < 50 && adx1mSignal === -1))) ||
-        (mdi1hSignal === -1 && rsi1mValue >= 70 && expectedProfit >= 0.3))
+        (mdi1hSignal === -1 &&
+          ((rsi1mValue >= 70 && expectedProfit >= 0.3) ||
+            (rsi1mValue < 50 && adx1mSignal === -1))))
       // mdi1hSignal === -1 ||
     ) {
       try {
