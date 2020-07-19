@@ -15,7 +15,7 @@ import { marketSell, marketBuy } from './api/order';
 (async function() {
   await connect();
   await processSubscriptions();
-  const symbol = 'linkusdt';
+  const symbol = 'adausdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -89,8 +89,8 @@ import { marketSell, marketBuy } from './api/order';
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.buyPrice} USDT
                  Date: ${format(new Date(), DATE_FORMAT)}
-                 USDT Balance: ${botState.availableUSDT} USDT
-                 ${cryptoCoin} Balance: ${+botState.availableCryptoCoin} USDT
+                 USDT Balance: ${botState.availableUSDT} 
+                 ${cryptoCoin} Balance: ${+botState.availableCryptoCoin} 
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
         // console.log(`BUY
@@ -148,8 +148,8 @@ import { marketSell, marketBuy } from './api/order';
                  Date: ${format(new Date(), DATE_FORMAT)}
                  Current profit: ${botState.currentProfit} USDT
                  Total profit: ${botState.totalProfit} USDT
-                 USDT Balance: ${botState.availableUSDT} USDT
-                 ${cryptoCoin} Balance: ${+botState.availableCryptoCoin} USDT
+                 USDT Balance: ${botState.availableUSDT} 
+                 ${cryptoCoin} Balance: ${+botState.availableCryptoCoin} 
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
 
