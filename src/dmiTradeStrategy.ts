@@ -32,6 +32,10 @@ import { marketSell, marketBuy } from './api/order';
     buyPrice: null,
     currentPrice: null,
     order: null,
+    avrDealProfit: null,
+    dealsCount: 1,
+    startTime: new Date().getTime(),
+    workDuration: null,
     updateState: function(fieldName, value) {
       this[`${fieldName}`] = value;
     },
@@ -63,11 +67,27 @@ import { marketSell, marketBuy } from './api/order';
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
     );
-    const expectedProfit = botState.buyPrice
+    const expectedProfitPercent = botState.buyPrice
       ? botState.currentPrice / botState.buyPrice > 1
         ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
         : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
       : 0;
+    const expectedStableCoinProfit =
+      (botState.availableCryptoCoin * botState.currentPrice) /
+        botState.availableUSDT >
+      1
+        ? Number(
+            ((botState.availableCryptoCoin * botState.currentPrice) /
+              botState.availableUSDT) *
+              100 -
+              100,
+          )
+        : Number(
+            100 -
+              ((botState.availableCryptoCoin * botState.currentPrice) /
+                botState.availableUSDT) *
+                100,
+          );
     if (botState.status === 'buy' && rsi1mValue < 40 && rsi1mValue !== null) {
       try {
         botState.updateState('status', 'isPending');
@@ -84,11 +104,12 @@ import { marketSell, marketBuy } from './api/order';
         botState.updateState('availableCryptoCoin', refreshedCryptoCoinBalance);
         await sendToRecipients(`BUY
                  STRATEGY 1.2 (RSI + DMI) MODIFIED
+                 Deal №: ${botState.dealsCount}
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.buyPrice} USDT
                  Date: ${format(new Date(), DATE_FORMAT)}
-                 USDT Balance: ${botState.availableUSDT} 
-                 ${cryptoCoin} Balance: ${+botState.availableCryptoCoin} 
+                 Prebuy stablecoin balance: ${botState.availableUSDT} USDT 
+                 Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin} 
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
         // console.log(`BUY
@@ -109,8 +130,10 @@ import { marketSell, marketBuy } from './api/order';
 
     if (
       botState.status === 'sell' &&
-      ((rsi1mValue >= 60 && rsi1mValue !== null && expectedProfit >= 0.5) ||
-        expectedProfit <= -1)
+      ((rsi1mValue >= 60 &&
+        rsi1mValue !== null &&
+        expectedStableCoinProfit >= 0.5) ||
+        expectedStableCoinProfit <= -1)
 
       // mdi1hSignal === -1 ||
     ) {
@@ -142,14 +165,21 @@ import { marketSell, marketBuy } from './api/order';
 
         await sendToRecipients(`SELL
                  STRATEGY 1.2(RSI + DMI)
+                 Deal №: ${botState.dealsCount}
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.order.fills[0].price} USDT
                  Date: ${format(new Date(), DATE_FORMAT)}
                  Current profit: ${botState.currentProfit} USDT
                  Total profit: ${botState.totalProfit} USDT
-                 USDT Balance: ${botState.availableUSDT} 
-                 ${cryptoCoin} Balance: ${+botState.availableCryptoCoin} 
+                 Average deal profit: ${botState.availableUSDT /
+                   botState.dealsCount} USDT
+                 Stablecoin balance: ${botState.availableUSDT} USDT
+                 Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}
+                 Work duration: ${format(
+                   botState.startTime - new Date().getTime(),
+                   DATE_FORMAT,
+                 )}
              `);
 
         // console.log(`Sell
@@ -161,6 +191,7 @@ import { marketSell, marketBuy } from './api/order';
         //                       4,
         //                     )}%
         //       `);
+        botState.dealsCount++;
         botState.updateState('status', 'buy');
       } catch (e) {
         await sendToRecipients(`SELL ERROR
