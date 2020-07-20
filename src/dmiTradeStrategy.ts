@@ -90,8 +90,12 @@ import { marketSell, marketBuy } from './api/order';
     //       );
     if (
       botState.status === 'buy' &&
-      rsi1mValue < 40 &&
+      rsi1mValue <= 50 &&
       rsi1mValue !== null &&
+      rsi1hValue < 68 &&
+      rsi1hValue !== null &&
+      mdi1mSignal === 1 &&
+      adx1mSignal === 1 &&
       mdi1hSignal === 1
     ) {
       try {
@@ -136,7 +140,7 @@ import { marketSell, marketBuy } from './api/order';
     if (
       botState.status === 'sell' &&
       ((rsi1mValue >= 60 &&
-        rsi1mValue !== null &&
+        adx1mSignal === -1 &&
         expectedProfitPercent >= 0.5) ||
         expectedProfitPercent <= -1 ||
         mdi1hSignal === -1)
