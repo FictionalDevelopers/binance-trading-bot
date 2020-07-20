@@ -88,7 +88,12 @@ import { marketSell, marketBuy } from './api/order';
                 botState.availableUSDT) *
                 100,
           );
-    if (botState.status === 'buy' && rsi1mValue < 40 && rsi1mValue !== null) {
+    if (
+      botState.status === 'buy' &&
+      rsi1mValue < 40 &&
+      rsi1mValue !== null &&
+      mdi1hSignal === 1
+    ) {
       try {
         botState.updateState('status', 'isPending');
         const amount = binance.roundStep(
@@ -129,13 +134,12 @@ import { marketSell, marketBuy } from './api/order';
     }
 
     if (
-      botState.status === 'sell' &&
-      ((rsi1mValue >= 60 &&
-        rsi1mValue !== null &&
-        expectedStableCoinProfit >= 0.5) ||
-        expectedStableCoinProfit <= -1)
-
-      // mdi1hSignal === -1 ||
+      (botState.status === 'sell' &&
+        ((rsi1mValue >= 60 &&
+          rsi1mValue !== null &&
+          expectedStableCoinProfit >= 0.5) ||
+          expectedStableCoinProfit <= -1)) ||
+      mdi1hSignal === -1
     ) {
       try {
         botState.updateState('status', 'isPending');
