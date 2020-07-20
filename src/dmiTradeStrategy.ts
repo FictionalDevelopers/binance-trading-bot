@@ -67,11 +67,11 @@ import { marketSell, marketBuy } from './api/order';
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
     );
-    const expectedProfitPercent = botState.buyPrice
-      ? botState.currentPrice / botState.buyPrice > 1
-        ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
-        : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
-      : 0;
+    // const expectedProfitPercent = botState.buyPrice
+    //   ? botState.currentPrice / botState.buyPrice > 1
+    //     ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
+    //     : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
+    //   : 0;
     const expectedStableCoinProfit =
       (botState.availableCryptoCoin * botState.currentPrice * 0.999) /
         botState.availableUSDT >
@@ -134,12 +134,12 @@ import { marketSell, marketBuy } from './api/order';
     }
 
     if (
-      (botState.status === 'sell' &&
-        ((rsi1mValue >= 60 &&
-          rsi1mValue !== null &&
-          expectedStableCoinProfit >= 0.5) ||
-          expectedStableCoinProfit <= -1)) ||
-      mdi1hSignal === -1
+      botState.status === 'sell' &&
+      ((rsi1mValue >= 60 &&
+        rsi1mValue !== null &&
+        expectedStableCoinProfit >= 0.5) ||
+        expectedStableCoinProfit <= -1 ||
+        mdi1hSignal === -1)
     ) {
       try {
         botState.updateState('status', 'isPending');
