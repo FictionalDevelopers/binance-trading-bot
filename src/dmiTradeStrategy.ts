@@ -15,7 +15,7 @@ import { marketSell, marketBuy } from './api/order';
 (async function() {
   await connect();
   await processSubscriptions();
-  const symbol = 'kavausdt';
+  const symbol = 'wavesusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);

@@ -10,6 +10,7 @@ export const SYMBOLS = {
   ADAUSDT: 'adausdt',
   LINKUSDT: 'linkusdt',
   KAVAUSDT: 'kavausdt',
+  WAVESUSDT: 'wavesusdt',
 };
 
 export const INDICATORS_LIST_SYMBOLS = {
@@ -21,4 +22,5 @@ export const INDICATORS_LIST_SYMBOLS = {
   [SYMBOLS.ADAUSDT]: 'ADA/USDT',
   [SYMBOLS.LINKUSDT]: 'LINK/USDT',
   [SYMBOLS.KAVAUSDT]: 'KAVA/USDT',
+  [SYMBOLS.WAVESUSDT]: 'WAVES/USDT',
 };
