@@ -67,27 +67,27 @@ import { marketSell, marketBuy } from './api/order';
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
     );
-    // const expectedProfitPercent = botState.buyPrice
-    //   ? botState.currentPrice / botState.buyPrice > 1
-    //     ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
-    //     : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
-    //   : 0;
-    const expectedStableCoinProfit =
-      (botState.availableCryptoCoin * botState.currentPrice * 0.999) /
-        botState.availableUSDT >
-      1
-        ? Number(
-            ((botState.availableCryptoCoin * botState.currentPrice) /
-              botState.availableUSDT) *
-              100 -
-              100,
-          )
-        : Number(
-            100 -
-              ((botState.availableCryptoCoin * botState.currentPrice) /
-                botState.availableUSDT) *
-                100,
-          );
+    const expectedProfitPercent = botState.buyPrice
+      ? botState.currentPrice / botState.buyPrice > 1
+        ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
+        : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
+      : 0;
+    // const expectedStableCoinProfit =
+    //   (botState.availableCryptoCoin * botState.currentPrice * 0.999) /
+    //     botState.availableUSDT >
+    //   1
+    //     ? Number(
+    //         ((botState.availableCryptoCoin * botState.currentPrice) /
+    //           botState.availableUSDT) *
+    //           100 -
+    //           100,
+    //       )
+    //     : Number(
+    //         100 -
+    //           ((botState.availableCryptoCoin * botState.currentPrice) /
+    //             botState.availableUSDT) *
+    //             100,
+    //       );
     if (
       botState.status === 'buy' &&
       rsi1mValue < 40 &&
@@ -137,8 +137,8 @@ import { marketSell, marketBuy } from './api/order';
       botState.status === 'sell' &&
       ((rsi1mValue >= 60 &&
         rsi1mValue !== null &&
-        expectedStableCoinProfit >= 0.5) ||
-        expectedStableCoinProfit <= -1 ||
+        expectedProfitPercent >= 0.5) ||
+        expectedProfitPercent <= -1 ||
         mdi1hSignal === -1)
     ) {
       try {
@@ -175,8 +175,8 @@ import { marketSell, marketBuy } from './api/order';
                  Date: ${format(new Date(), DATE_FORMAT)}
                  Current profit: ${botState.currentProfit} USDT
                  Total profit: ${botState.totalProfit} USDT
-                 Average deal profit: ${botState.availableUSDT /
-                   botState.dealsCount} USDT
+                 Average deal profit: ${botState.totalProfit /
+                   botState.dealsCount} USDT/deal
                  Stablecoin balance: ${botState.availableUSDT} USDT
                  Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}
