@@ -73,7 +73,7 @@ import { marketSell, marketBuy } from './api/order';
         : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
       : 0;
     const expectedStableCoinProfit =
-      (botState.availableCryptoCoin * botState.currentPrice) /
+      (botState.availableCryptoCoin * botState.currentPrice * 0.999) /
         botState.availableUSDT >
       1
         ? Number(
