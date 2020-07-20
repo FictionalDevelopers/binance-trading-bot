@@ -9,6 +9,7 @@ export const SYMBOLS = {
   ERDUSDT: 'erdusdt',
   ADAUSDT: 'adausdt',
   LINKUSDT: 'linkusdt',
+  KAVAUSDT: 'kavausdt',
 };
 
 export const RSI_LIST_SYMBOLS = {
@@ -19,4 +20,5 @@ export const RSI_LIST_SYMBOLS = {
   [SYMBOLS.ERDUSDT]: 'ERD/USDT',
   [SYMBOLS.ADAUSDT]: 'ADA/USDT',
   [SYMBOLS.LINKUSDT]: 'LINK/USDT',
+  [SYMBOLS.KAVAUSDT]: 'KAVA/USDT',
 };
