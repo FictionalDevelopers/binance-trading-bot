@@ -12,7 +12,7 @@ export const SYMBOLS = {
   KAVAUSDT: 'kavausdt',
 };
 
-export const RSI_LIST_SYMBOLS = {
+export const INDICATORS_LIST_SYMBOLS = {
   [SYMBOLS.BTCUSDT]: 'BTC/USDT',
   [SYMBOLS.STRATUSDT]: 'STRAT/USDT',
   [SYMBOLS.ONTUSDT]: 'ONT/USDT',
