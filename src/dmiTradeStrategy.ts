@@ -15,7 +15,7 @@ import { marketSell, marketBuy } from './api/order';
 (async function() {
   await connect();
   await processSubscriptions();
-  const symbol = 'wavesusdt';
+  const symbol = 'adausdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -90,12 +90,12 @@ import { marketSell, marketBuy } from './api/order';
     //       );
     if (
       botState.status === 'buy' &&
-      rsi1mValue <= 50 &&
+      rsi1mValue > 50 &&
       rsi1mValue !== null &&
       rsi1hValue < 68 &&
       rsi1hValue !== null &&
       mdi1mSignal === 1 &&
-      adx1mSignal === 1 &&
+      // adx1mSignal === 1 &&
       mdi1hSignal === 1
     ) {
       try {
