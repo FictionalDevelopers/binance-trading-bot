@@ -188,7 +188,9 @@ import { getEmaStream } from './indicators/ema';
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.order.fills[0].price} USDT
                  Date: ${format(new Date(), DATE_FORMAT)}
-                 Current profit: ${botState.currentProfit} USDT
+                 Current profit: ${
+                   botState.currentProfit
+                 } USDT (${expectedProfitPercent} %)
                  Total profit: ${botState.totalProfit} USDT
                  Average deal profit: ${botState.totalProfit /
                    botState.dealsCount} USDT/deal
