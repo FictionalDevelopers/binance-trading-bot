@@ -11,6 +11,7 @@ import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketSell, marketBuy } from './api/order';
+import { getEmaStream } from './indicators/ema';
 
 (async function() {
   await connect();
@@ -50,6 +51,9 @@ import { marketSell, marketBuy } from './api/order';
     adx1mSignal: 0,
     mdi1mSignal: 0,
     mdi1hSignal: 0,
+    slow1mEMA: 0,
+    middle1mEMA: 0,
+    fast1mEMA: 0,
   };
 
   const trader = async pricesStream => {
@@ -60,6 +64,9 @@ import { marketSell, marketBuy } from './api/order';
       adx1mSignal,
       mdi1mSignal,
       mdi1hSignal,
+      slow1mEMA,
+      fast1mEMA,
+      middle1mEMA,
     } = indicatorsData;
 
     if (botState.status === 'isPending') return;
@@ -67,6 +74,9 @@ import { marketSell, marketBuy } from './api/order';
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
     );
+    let ema1mSignal;
+    if (fast1mEMA > middle1mEMA && middle1mEMA > slow1mEMA) ema1mSignal = 1;
+    if (fast1mEMA < slow1mEMA) ema1mSignal = -1;
     const expectedProfitPercent = botState.buyPrice
       ? botState.currentPrice / botState.buyPrice > 1
         ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
@@ -90,13 +100,14 @@ import { marketSell, marketBuy } from './api/order';
     //       );
     if (
       botState.status === 'buy' &&
-      rsi1mValue > 50 &&
-      rsi1mValue !== null &&
-      rsi1hValue < 68 &&
-      rsi1hValue !== null &&
+      ema1mSignal === 1 &&
+      // rsi1mValue > 50 &&
+      // rsi1mValue !== null &&
+      // rsi1hValue < 68 &&
+      // rsi1hValue !== null &&
       mdi1mSignal === 1 &&
-      // adx1mSignal === 1 &&
-      mdi1hSignal === 1
+      adx1mSignal === 1
+      // mdi1hSignal === 1
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -138,12 +149,12 @@ import { marketSell, marketBuy } from './api/order';
     }
 
     if (
-      botState.status === 'sell' &&
-      ((rsi1mValue >= 60 &&
-        adx1mSignal === -1 &&
-        expectedProfitPercent >= 0.5) ||
-        expectedProfitPercent <= -1 ||
-        mdi1hSignal === -1)
+      botState.status === 'sell' && // rsi1mValue >= 60 &&
+      ((adx1mSignal === -1 && expectedProfitPercent >= 0.5) ||
+        // expectedProfitPercent <= -1 ||
+        mdi1mSignal === -1 ||
+        ema1mSignal === -1)
+      // mdi1hSignal === -1
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -244,6 +255,30 @@ import { marketSell, marketBuy } from './api/order';
   }).subscribe(dmi => {
     if (dmi.mdi - dmi.pdi >= 2) indicatorsData.mdi1hSignal = -1;
     if (dmi.pdi - dmi.mdi >= 2) indicatorsData.mdi1hSignal = 1;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 7,
+  }).subscribe(fastEMA => {
+    indicatorsData.fast1mEMA = fastEMA;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 25,
+  }).subscribe(middleEMA => {
+    indicatorsData.middle1mEMA = middleEMA;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 99,
+  }).subscribe(slowEMA => {
+    indicatorsData.slow1mEMA = slowEMA;
   });
 
   await sendToRecipients(`INIT
