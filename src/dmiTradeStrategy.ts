@@ -16,7 +16,7 @@ import { getEmaStream } from './indicators/ema';
 (async function() {
   await connect();
   await processSubscriptions();
-  const symbol = 'wavesusdt';
+  const symbol = 'adausdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -191,7 +191,7 @@ import { getEmaStream } from './indicators/ema';
                  Current profit: ${
                    botState.currentProfit
                  } USDT (${expectedProfitPercent} %)
-                 Total profit: ${botState.totalProfit} USDT
+                 Total profit: ${botState.totalProfit} USDT 
                  Average deal profit: ${botState.totalProfit /
                    botState.dealsCount} USDT/deal
                  Stablecoin balance: ${botState.availableUSDT} USDT
