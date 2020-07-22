@@ -256,8 +256,8 @@ import { getEmaStream } from './indicators/ema';
     interval: '1h',
     period: 14,
   }).subscribe(dmi => {
-    if (dmi.mdi - dmi.pdi >= 2) indicatorsData.mdi1hSignal = -1;
-    if (dmi.pdi - dmi.mdi >= 2) indicatorsData.mdi1hSignal = 1;
+    if (dmi.mdi > dmi.pdi) indicatorsData.mdi1hSignal = -1;
+    if (dmi.pdi > dmi.mdi) indicatorsData.mdi1hSignal = 1;
   });
 
   getEmaStream({
