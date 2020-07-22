@@ -106,8 +106,8 @@ import { getEmaStream } from './indicators/ema';
       // rsi1hValue < 68 &&
       // rsi1hValue !== null &&
       mdi1mSignal === 1 &&
-      adx1mSignal === 1
-      // mdi1hSignal === 1
+      adx1mSignal === 1 &&
+      mdi1hSignal === 1
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -152,7 +152,8 @@ import { getEmaStream } from './indicators/ema';
       botState.status === 'sell' && // rsi1mValue >= 60 &&
       ((adx1mSignal === -1 && expectedProfitPercent >= 0.5) ||
         // expectedProfitPercent <= -1 ||
-        mdi1mSignal === -1 ||
+        // mdi1mSignal === -1
+        //   ||
         ema1mSignal === -1)
       // mdi1hSignal === -1
     ) {
