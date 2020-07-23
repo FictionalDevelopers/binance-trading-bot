@@ -80,7 +80,7 @@ import { getEmaStream } from './indicators/ema';
       (middle1mEMA / slow1mEMA) * 100 - 100 >= 0.15
     )
       ema1mSignal = 1;
-    if (fast1mEMA < slow1mEMA) ema1mSignal = -1;
+    if ((slow1mEMA / fast1mEMA) * 100 - 100 >= 0.05) ema1mSignal = -1;
     const expectedProfitPercent = botState.buyPrice
       ? botState.currentPrice / botState.buyPrice > 1
         ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
