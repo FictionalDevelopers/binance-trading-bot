@@ -142,7 +142,7 @@ import { getEmaStream } from './indicators/ema';
         return;
       } catch (e) {
         await sendToRecipients(`BUY ERROR
-            ${e}
+            ${JSON.stringify(e)}
       `);
         botState.updateState('status', 'buy');
       }
@@ -217,7 +217,7 @@ import { getEmaStream } from './indicators/ema';
         botState.updateState('status', 'buy');
       } catch (e) {
         await sendToRecipients(`SELL ERROR
-            ${e}
+            ${JSON.stringify(e)}
       `);
         botState.updateState('status', 'sell');
       }
