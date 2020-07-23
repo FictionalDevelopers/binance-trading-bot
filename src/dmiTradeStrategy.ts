@@ -76,8 +76,8 @@ import { getEmaStream } from './indicators/ema';
     );
     let ema1mSignal;
     if (
-      (fast1mEMA / middle1mEMA) * 100 - 100 >= 4.5 &&
-      (middle1mEMA / slow1mEMA) * 100 - 100 >= 4.5
+      (fast1mEMA / middle1mEMA) * 100 - 100 >= 0.15 &&
+      (middle1mEMA / slow1mEMA) * 100 - 100 >= 0.3
     )
       ema1mSignal = 1;
     if (fast1mEMA < slow1mEMA) ema1mSignal = -1;
