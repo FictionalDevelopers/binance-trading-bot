@@ -86,9 +86,8 @@ import { getEmaStream } from './indicators/ema';
     slow1mEMA = data;
     if (fast1mEMA > middle1mEMA && middle1mEMA > slow1mEMA) ema1mSignal = 'buy';
     if (fast1mEMA < slow1mEMA) ema1mSignal = 'sell';
-    console.log('fast', fast1mEMA.toString());
-    console.log('middle', middle1mEMA.toString());
-    console.log('slow', slow1mEMA.toString());
+    console.log('fast/middle', ((fast1mEMA / middle1mEMA) * 100).toString());
+    console.log('middle/slow', ((middle1mEMA / slow1mEMA) * 100).toString());
     // console.log(ema1mSignal);
   });
 
