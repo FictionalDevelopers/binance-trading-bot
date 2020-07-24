@@ -104,12 +104,14 @@ import { getEmaStream } from './indicators/ema';
     //       );
     if (
       botState.status === 'buy' &&
-      ema1mSignal === 1 &&
-      // rsi1mValue > 50 &&
-      // rsi1mValue !== null &&
-      // rsi1hValue < 68 &&
-      // rsi1hValue !== null &&
-      mdi1mSignal === 1 &&
+      // dmiAdxSignal + dmiMdiSignal === 2 &&
+      // isAdxHigherThanMdi &&
+      // rsi1dSignal &&
+      // rsi1hSignalValue >= 53 &&
+      rsi1mValue <= 50 &&
+      rsi1mValue !== null &&
+      rsi1hValue < 68 &&
+      rsi1hValue !== null &&
       adx1mSignal === 1 &&
       mdi1hSignal === 1
     ) {
@@ -153,12 +155,12 @@ import { getEmaStream } from './indicators/ema';
     }
 
     if (
-      botState.status === 'sell' && // rsi1mValue >= 60 &&
-      ((adx1mSignal === -1 && expectedProfitPercent >= 0.5) ||
-        // expectedProfitPercent <= -1 ||
-        // mdi1mSignal === -1
-        //   ||
-        ema1mSignal === -1)
+      botState.status === 'sell' &&
+      ((rsi1mValue >= 60 &&
+        expectedProfitPercent >= 0.3 &&
+        adx1mSignal === -1) ||
+        ema1mSignal === -1 ||
+        mdi1hSignal === -1)
       // mdi1hSignal === -1
     ) {
       try {
