@@ -59,7 +59,7 @@ import { getEmaStream } from './indicators/ema';
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
-    const {
+    let {
       rsi1mValue,
       rsi1hValue,
       adx1mSignal,
