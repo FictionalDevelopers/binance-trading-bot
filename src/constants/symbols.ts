@@ -12,6 +12,9 @@ export const SYMBOLS = {
   KAVAUSDT: 'kavausdt',
   WAVESUSDT: 'wavesusdt',
   BCHUSDT: 'bchusdt',
+  EOSUSDT: 'eosusdt',
+  VETUSDT: 'vetusdt',
+  XLMUSDT: 'xlmusdt',
 };
 
 export const INDICATORS_LIST_SYMBOLS = {
@@ -25,4 +28,7 @@ export const INDICATORS_LIST_SYMBOLS = {
   [SYMBOLS.KAVAUSDT]: 'KAVA/USDT',
   [SYMBOLS.WAVESUSDT]: 'WAVES/USDT',
   [SYMBOLS.BCHUSDT]: 'BCH/USDT',
+  [SYMBOLS.EOSUSDT]: 'EOS/USDT',
+  [SYMBOLS.VETUSDT]: 'VET/USDT',
+  [SYMBOLS.XLMUSDT]: 'XLM/USDT',
 };
