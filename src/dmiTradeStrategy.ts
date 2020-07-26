@@ -59,7 +59,7 @@ import { getEmaStream } from './indicators/ema';
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
-    let {
+    const {
       rsi1mValue,
       rsi1hValue,
       adx1mSignal,
@@ -157,7 +157,8 @@ import { getEmaStream } from './indicators/ema';
 
     if (
       botState.status === 'sell' && // rsi1mValue >= 60 &&
-      adx1mSignal === -1 &&
+      // adx1mSignal === -1 &&
+      fast1mEMA < middle1mEMA &&
       expectedProfitPercent >= 2
     ) {
       try {
