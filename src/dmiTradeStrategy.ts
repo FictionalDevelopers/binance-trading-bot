@@ -79,11 +79,10 @@ import { getEmaStream } from './indicators/ema';
     let ema1mSignal;
     if (fast1mEMA > middle1mEMA && middle1mEMA > slow1mEMA) {
       ema1mSignal = 1;
-      isDownTrend = false;
+      indicatorsData.isDownTrend = false;
     }
     if (fast1mEMA < middle1mEMA && middle1mEMA < slow1mEMA) ema1mSignal = -1;
 
-    ema1mSignal = -1;
     const expectedProfitPercent = botState.buyPrice
       ? botState.currentPrice / botState.buyPrice > 1
         ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
@@ -107,7 +106,7 @@ import { getEmaStream } from './indicators/ema';
     //       );
     if (
       botState.status === 'buy' &&
-      !isDownTrend &&
+      !indicatorsData.isDownTrend &&
       // ema1mSignal === 1 &&
       rsi1mValue <= 35 &&
       rsi1mValue !== null &&
