@@ -157,9 +157,9 @@ import { getEmaStream } from './indicators/ema';
 
     if (
       botState.status === 'sell' && // rsi1mValue >= 60 &&
-      // adx1mSignal === -1 &&
-      fast1mEMA < middle1mEMA &&
-      expectedProfitPercent >= 2
+      adx1mSignal === -1 &&
+      // fast1mEMA < middle1mEMA &&
+      expectedProfitPercent >= 1
     ) {
       try {
         botState.updateState('status', 'isPending');
