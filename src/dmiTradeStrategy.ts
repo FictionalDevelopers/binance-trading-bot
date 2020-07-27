@@ -15,7 +15,7 @@ import { getEmaStream } from './indicators/ema';
 
 (async function() {
   await connect();
-  await processSubscriptions();
+  // await processSubscriptions();
   const symbol = 'eosusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
