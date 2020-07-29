@@ -54,6 +54,9 @@ import { getEmaStream } from './indicators/ema';
     slow1mEMA: 0,
     middle1mEMA: 0,
     fast1mEMA: 0,
+    slow1hEMA: 0,
+    middle1hEMA: 0,
+    fast1hEMA: 0,
     isDownTrend: false,
   };
 
@@ -68,6 +71,9 @@ import { getEmaStream } from './indicators/ema';
       slow1mEMA,
       fast1mEMA,
       middle1mEMA,
+      fast1hEMA,
+      middle1hEMA,
+      slow1hEMA,
       isDownTrend,
     } = indicatorsData;
 
@@ -77,11 +83,18 @@ import { getEmaStream } from './indicators/ema';
       Number(pricesStream[pricesStream.length - 1]),
     );
     let ema1mSignal;
+    let ema1hSignal;
     if (fast1mEMA > middle1mEMA && middle1mEMA > slow1mEMA) {
       ema1mSignal = 1;
       indicatorsData.isDownTrend = false;
     }
     if (fast1mEMA < middle1mEMA && middle1mEMA < slow1mEMA) ema1mSignal = -1;
+
+    if (fast1hEMA > middle1hEMA) {
+      ema1hSignal = 1;
+      indicatorsData.isDownTrend = false;
+    }
+    if (fast1hEMA < middle1hEMA) ema1hSignal = -1;
 
     const expectedProfitPercent = botState.buyPrice
       ? botState.currentPrice / botState.buyPrice > 1
@@ -108,13 +121,14 @@ import { getEmaStream } from './indicators/ema';
       botState.status === 'buy' &&
       // !indicatorsData.isDownTrend &&
       ema1mSignal === 1 &&
+      ema1hSignal === 1 &&
       // rsi1mValue <= 35 &&
       // rsi1mValue !== null &&
       rsi1hValue < 68 &&
       rsi1hValue !== null &&
       // mdi1mSignal === 1 &&
       // adx1mSignal === 1 &&
-      mdi1hSignal === 1
+      // mdi1hSignal === 1
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -156,12 +170,18 @@ import { getEmaStream } from './indicators/ema';
     }
 
     if (
-      botState.status === 'sell' && // rsi1mValue >= 60 &&
-      ((middle1mEMA > fast1mEMA &&
+      botState.status === 'sell' &&
+        // rsi1mValue >= 60 &&
+        ((ema1mSignal === -1 && ema1hSignal === -1
+              // middle1mEMA > fast1mEMA &&
         // adx1mSignal === -1 &&
         // fast1mEMA < middle1mEMA &&
-        expectedProfitPercent >= 1) ||
-        ema1mSignal === -1)
+          ) || (
+            expectedProfitPercent >= 1 &&
+            adx1mSignal === -1)
+        )
+          // ||
+        // ema1mSignal === -1)
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -359,6 +379,30 @@ import { getEmaStream } from './indicators/ema';
     period: 99,
   }).subscribe(slowEMA => {
     indicatorsData.slow1mEMA = slowEMA;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1h',
+    period: 7,
+  }).subscribe(fastEMA => {
+    indicatorsData.fast1hEMA = fastEMA;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1h',
+    period: 25,
+  }).subscribe(middleEMA => {
+    indicatorsData.middle1hEMA = middleEMA;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1h',
+    period: 99,
+  }).subscribe(slowEMA => {
+    indicatorsData.slow1hEMA = slowEMA;
   });
 
   await sendToRecipients(`INIT
