@@ -172,12 +172,11 @@ import { getEmaStream } from './indicators/ema';
     if (
       botState.status === 'sell' &&
       // rsi1mValue >= 60 &&
-      ((ema1mSignal === -1 && ema1hSignal === -1) ||
+      (expectedProfitPercent <= -2 ||
         // middle1mEMA > fast1mEMA &&
         // adx1mSignal === -1 &&
         // fast1mEMA < middle1mEMA &&
-        (expectedProfitPercent >= 1 && adx1mSignal === -1) ||
-        expectedProfitPercent <= -2)
+        (expectedProfitPercent >= 0.7 && fast1mEMA < middle1mEMA))
       // ||
       // ema1mSignal === -1)
     ) {
