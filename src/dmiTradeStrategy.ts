@@ -59,6 +59,7 @@ import { getEmaStream } from './indicators/ema';
     fast1hEMA: 0,
     isDownTrend: false,
     rebuy: true,
+    sellInOverboughtArea: false,
   };
 
   const trader = async pricesStream => {
@@ -122,15 +123,21 @@ import { getEmaStream } from './indicators/ema';
     //       );
     if (
       botState.status === 'buy' &&
-      // !indicatorsData.isDownTrend &&
+      rsi1hValue !== null &&
+      rsi1hValue > 50 &&
+      rsi1hValue <= 68 &&
+      rsi1mValue !== null &&
+      rsi1mValue > 50 &&
       ema1mSignal === 1 &&
-      ema1hSignal === 1 &&
+      !indicatorsData.sellInOverboughtArea
+      // !indicatorsData.isDownTrend &&
+      // ema1mSignal === 1 &&
+      // ema1hSignal === 1 &&
       // rsi1mValue <= 35 &&
       // rsi1mValue !== null &&
-      rsi1hValue < 68 &&
-      rsi1hValue !== null &&
-      rebuy
-
+      // rsi1hValue < 68 &&
+      // rsi1hValue !== null &&
+      // rebuy
       // mdi1mSignal === 1 &&
       // adx1mSignal === 1 &&
       // mdi1hSignal === 1
@@ -176,8 +183,9 @@ import { getEmaStream } from './indicators/ema';
 
     if (
       botState.status === 'sell' &&
+      (rsi1hValue < 50 || ema1mSignal === -1 || expectedProfitPercent <= -2)
       // rsi1mValue >= 60 &&
-      ema1mSignal === -1
+      // ema1mSignal === -1
       // middle1mEMA > fast1mEMA &&
       // adx1mSignal === -1 &&
       // fast1mEMA < middle1mEMA &&
@@ -252,9 +260,12 @@ import { getEmaStream } from './indicators/ema';
     }
     if (
       botState.status === 'sell' &&
+      ((rsi1mValue > 70 &&
+        indicatorsData.sellInOverboughtArea &&
+        expectedProfitPercent >= 0.5) ||
+        expectedProfitPercent >= 0.5)
       // rsi1mValue >= 60 &&
-      rsi1mValue >= 70 &&
-      expectedProfitPercent >= 0.6
+      // ema1mSignal === -1
       // middle1mEMA > fast1mEMA &&
       // adx1mSignal === -1 &&
       // fast1mEMA < middle1mEMA &&
@@ -319,7 +330,6 @@ import { getEmaStream } from './indicators/ema';
         //                     )}%
         //       `);
         botState.dealsCount++;
-        indicatorsData.rebuy = false;
         botState.updateState('status', 'buy');
       } catch (e) {
         await sendToRecipients(`SELL ERROR
@@ -351,10 +361,16 @@ import { getEmaStream } from './indicators/ema';
     interval: '1m',
     period: 14,
   }).subscribe(dmi => {
+    if (!indicatorsData.prev1mDmi) {
+      indicatorsData.prev1mDmi = dmi;
+      return;
+    }
     if (dmi.adx - dmi.pdi >= 2) indicatorsData.adx1mSignal = -1;
     if (dmi.pdi - dmi.adx >= 2) indicatorsData.adx1mSignal = 1;
     if (dmi.mdi - dmi.pdi >= 2) indicatorsData.mdi1mSignal = -1;
     if (dmi.pdi - dmi.mdi >= 2) indicatorsData.mdi1mSignal = 1;
+    if (indicatorsData.prev1mDmi.adx === dmi.adx) return;
+    indicatorsData.prev1mDmi = dmi.adx < indicatorsData.prev1mDmi.adx;
   });
 
   getDmiStream({
