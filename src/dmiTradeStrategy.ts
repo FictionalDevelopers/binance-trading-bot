@@ -141,7 +141,7 @@ import { getEmaStream } from './indicators/ema';
         //          Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
         //          OrderInfo: ${JSON.stringify(botState.order)}
         //      `);
-        console.log(`BUY
+        await sendToRecipients(`BUY
                              ADX STRATEGY 
                              symbol: ${symbol.toUpperCase()}
                              price: ${botState.buyPrice}
@@ -210,7 +210,7 @@ import { getEmaStream } from './indicators/ema';
         //          )}
         //      `);
 
-        console.log(`Sell
+        await sendToRecipients(`Sell
                             STRATEGY 1.2 (RSI + DMI)
                             symbol: ${symbol.toUpperCase()}
                             price: ${pricesStream[pricesStream.length - 1]}
