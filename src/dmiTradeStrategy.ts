@@ -154,6 +154,8 @@ import { getEmaStream } from './indicators/ema';
         await sendToRecipients(`BUY ERROR
             ${JSON.stringify(e)}
       `);
+        indicatorsData.directional1mMovementSignalWeight = 0;
+        indicatorsData.directional1hMovementSignalWeight = 0;
         botState.updateState('status', 'buy');
       }
     }
@@ -211,13 +213,15 @@ import { getEmaStream } from './indicators/ema';
         //      `);
 
         await sendToRecipients(`Sell
-                            STRATEGY 1.2 (RSI + DMI)
+                            ADX STRATEGY
                             symbol: ${symbol.toUpperCase()}
                             price: ${pricesStream[pricesStream.length - 1]}
                             date: ${format(new Date(), DATE_FORMAT)}
               `);
         botState.dealsCount++;
         botState.updateState('status', 'buy');
+        indicatorsData.directional1mMovementSignalWeight = 0;
+        indicatorsData.directional1hMovementSignalWeight = 0;
       } catch (e) {
         await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
