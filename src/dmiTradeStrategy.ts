@@ -64,8 +64,6 @@ import { getEmaStream } from './indicators/ema';
     isDirectional1mMovementChanged: false,
     directional1mMovementSignalWeight: 0,
     directional1hMovementSignalWeight: 0,
-    adx1mActionSignal: null,
-    adx1hActionSignal: null,
     trend1m: null,
     trend1h: null,
   };
@@ -73,17 +71,23 @@ import { getEmaStream } from './indicators/ema';
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
     const {
-      adx1hActionSignal,
-      adx1mActionSignal,
-      trend1h,
-      trend1m,
       directional1hMovementSignalWeight,
       directional1mMovementSignalWeight,
-      isDirectional1hMovementChanged,
-      isDirectional1mMovementChanged,
+      trend1m,
+      trend1h,
     } = indicatorsData;
 
     if (botState.status === 'isPending') return;
+    let adx1mActionSignal, adx1hActionSignal;
+    if (trend1h === 'DOWN' && directional1hMovementSignalWeight > 0)
+      adx1hActionSignal = 'BUY';
+    if (trend1h === 'UP' && directional1hMovementSignalWeight > 0)
+      adx1hActionSignal = 'SELL';
+    if (trend1m === 'UP' && directional1mMovementSignalWeight > 0)
+      adx1mActionSignal = 'SELL';
+    if (trend1m === 'UP' && directional1mMovementSignalWeight > 0)
+      adx1mActionSignal = 'SELL';
+
     botState.updateState(
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
@@ -277,10 +281,14 @@ import { getEmaStream } from './indicators/ema';
     if (dmi.adx > dmi.pdi) indicatorsData.adx1mSignal = -1;
     if (dmi.pdi > dmi.adx) indicatorsData.adx1mSignal = 1;
     if (dmi.mdi > dmi.pdi) {
+      if (indicatorsData.trend1m === 'UP')
+        indicatorsData.directional1mMovementSignalWeight = 0;
       indicatorsData.mdi1mSignal = -1;
       indicatorsData.trend1m = 'DOWN';
     }
     if (dmi.pdi > dmi.mdi) {
+      if (indicatorsData.trend1m === 'DOWN')
+        indicatorsData.directional1mMovementSignalWeight = 0;
       indicatorsData.mdi1mSignal = 1;
       indicatorsData.trend1m = 'UP';
     }
@@ -348,10 +356,14 @@ import { getEmaStream } from './indicators/ema';
     if (dmi.adx > dmi.pdi) indicatorsData.adx1hSignal = -1;
     if (dmi.pdi > dmi.adx) indicatorsData.adx1hSignal = 1;
     if (dmi.mdi > dmi.pdi) {
+      if (indicatorsData.trend1h === 'UP')
+        indicatorsData.directional1hMovementSignalWeight = 0;
       indicatorsData.mdi1hSignal = -1;
       indicatorsData.trend1h = 'DOWN';
     }
     if (dmi.pdi > dmi.mdi) {
+      if (indicatorsData.trend1h === 'DOWN')
+        indicatorsData.directional1hMovementSignalWeight = 0;
       indicatorsData.mdi1hSignal = 1;
       indicatorsData.trend1h = 'UP';
     }
