@@ -49,6 +49,7 @@ import { getEmaStream } from './indicators/ema';
     rsi1mValue: null,
     rsi1hValue: null,
     adx1mSignal: 0,
+    adx1hSignal: 0,
     mdi1mSignal: 0,
     mdi1hSignal: 0,
     slow1mEMA: 0,
@@ -72,19 +73,14 @@ import { getEmaStream } from './indicators/ema';
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
     const {
-      rsi1mValue,
-      rsi1hValue,
-      adx1mSignal,
-      mdi1mSignal,
-      mdi1hSignal,
-      slow1mEMA,
-      fast1mEMA,
-      middle1mEMA,
-      fast1hEMA,
-      middle1hEMA,
-      slow1hEMA,
-      isDownTrend,
-      rebuy,
+      adx1hActionSignal,
+      adx1mActionSignal,
+      trend1h,
+      trend1m,
+      directional1hMovementSignalWeight,
+      directional1mMovementSignalWeight,
+      isDirectional1hMovementChanged,
+      isDirectional1mMovementChanged,
     } = indicatorsData;
 
     if (botState.status === 'isPending') return;
@@ -92,21 +88,6 @@ import { getEmaStream } from './indicators/ema';
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
     );
-    let ema1mSignal;
-    let ema1hSignal;
-    if (fast1mEMA > middle1mEMA && middle1mEMA > slow1mEMA) {
-      ema1mSignal = 1;
-      // indicatorsData.isDownTrend = false;
-      indicatorsData.rebuy = true;
-    }
-    if (fast1mEMA < middle1mEMA && middle1mEMA < slow1mEMA) ema1mSignal = -1;
-
-    if (fast1hEMA > middle1hEMA) {
-      ema1hSignal = 1;
-      indicatorsData.isDownTrend = false;
-    }
-    if (fast1hEMA < middle1hEMA) ema1hSignal = -1;
-
     const expectedProfitPercent = botState.buyPrice
       ? botState.currentPrice / botState.buyPrice > 1
         ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
@@ -130,36 +111,39 @@ import { getEmaStream } from './indicators/ema';
     //       );
     if (
       botState.status === 'buy' &&
+      adx1mActionSignal === 'BUY' &&
+      adx1hActionSignal === 'BUY'
     ) {
       try {
         botState.updateState('status', 'isPending');
-        const amount = binance.roundStep(
-          (botState.availableUSDT * tradeAmountPercent) / botState.currentPrice,
-          stepSize,
-        );
-        const order = await marketBuy(symbol.toUpperCase(), +amount);
-        botState.updateState('buyPrice', Number(order.fills[0].price));
-        botState.updateState('order', order);
-        const { available: refreshedCryptoCoinBalance } = await getBalances(
-          cryptoCoin,
-        );
-        botState.updateState('availableCryptoCoin', refreshedCryptoCoinBalance);
-        await sendToRecipients(`BUY
-                 STRATEGY 1.2 (RSI + DMI) MODIFIED
-                 Deal №: ${botState.dealsCount}
-                 Symbol: ${symbol.toUpperCase()}
-                 Price: ${botState.buyPrice} USDT
-                 Date: ${format(new Date(), DATE_FORMAT)}
-                 Prebuy stablecoin balance: ${botState.availableUSDT} USDT 
-                 Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin} 
-                 OrderInfo: ${JSON.stringify(botState.order)}
-             `);
-        // console.log(`BUY
-        //                      STRATEGY 1.2(RSI + DMI) MODIFIED
-        //                      symbol: ${symbol.toUpperCase()}
-        //                      price: ${currentPrice}
-        //                      date: ${format(new Date(), DATE_FORMAT)}
-        //       `);
+        // const amount = binance.roundStep(
+        //   (botState.availableUSDT * tradeAmountPercent) / botState.currentPrice,
+        //   stepSize,
+        // );
+        // const order = await marketBuy(symbol.toUpperCase(), +amount);
+        // botState.updateState('buyPrice', Number(order.fills[0].price));
+        // botState.updateState('order', order);
+        // const { available: refreshedCryptoCoinBalance } = await getBalances(
+        //   cryptoCoin,
+        // );
+        // botState.updateState('availableCryptoCoin', refreshedCryptoCoinBalance);
+        // await sendToRecipients(`BUY
+        //          STRATEGY 1.2 (RSI + DMI) MODIFIED
+        //          Deal №: ${botState.dealsCount}
+        //          Symbol: ${symbol.toUpperCase()}
+        //          Price: ${botState.buyPrice} USDT
+        //          Date: ${format(new Date(), DATE_FORMAT)}
+        //          Prebuy stablecoin balance: ${botState.availableUSDT} USDT
+        //          Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
+        //          OrderInfo: ${JSON.stringify(botState.order)}
+        //      `);
+        console.log(`BUY
+                             ADX STRATEGY 
+                             symbol: ${symbol.toUpperCase()}
+                             price: ${botState.buyPrice}
+                             date: ${format(new Date(), DATE_FORMAT)}
+              `);
+
         botState.updateState('status', 'sell');
         return;
       } catch (e) {
@@ -172,72 +156,62 @@ import { getEmaStream } from './indicators/ema';
 
     if (
       botState.status === 'sell' &&
-      (rsi1hValue < 50 || ema1mSignal === -1 || expectedProfitPercent <= -2)
-      // rsi1mValue >= 60 &&
-      // ema1mSignal === -1
-      // middle1mEMA > fast1mEMA &&
-      // adx1mSignal === -1 &&
-      // fast1mEMA < middle1mEMA &&
-      // (expectedProfitPercent >= 0.7 && fast1mEMA < middle1mEMA) ||
-      // ||
-      // ema1mSignal === -1)
+      adx1mActionSignal === 'SELL' &&
+      adx1hActionSignal === 'SELL'
     ) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState('buyPrice', null);
-        const amount = binance.roundStep(
-          Number(botState.availableCryptoCoin),
-          stepSize,
-        );
-        const order = await marketSell(symbol.toUpperCase(), +amount);
-        botState.updateState('order', order);
-        const { available: refreshedUSDTBalance } = await getBalances('USDT');
-        const currentProfit =
-          Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
-        botState.updateState('currentProfit', currentProfit);
-        botState.updateState('availableUSDT', +refreshedUSDTBalance);
-        botState.updateState(
-          'totalProfit',
-          Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
-        );
-        const { available: refreshedCryptoCoinBalance } = await getBalances(
-          cryptoCoin,
-        );
-        botState.updateState(
-          'availableCryptoCoin',
-          +refreshedCryptoCoinBalance,
-        );
+        // const amount = binance.roundStep(
+        //   Number(botState.availableCryptoCoin),
+        //   stepSize,
+        // );
+        // const order = await marketSell(symbol.toUpperCase(), +amount);
+        // botState.updateState('order', order);
+        // const { available: refreshedUSDTBalance } = await getBalances('USDT');
+        // const currentProfit =
+        //   Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
+        // botState.updateState('currentProfit', currentProfit);
+        // botState.updateState('availableUSDT', +refreshedUSDTBalance);
+        // botState.updateState(
+        //   'totalProfit',
+        //   Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
+        // );
+        // const { available: refreshedCryptoCoinBalance } = await getBalances(
+        //   cryptoCoin,
+        // );
+        // botState.updateState(
+        //   'availableCryptoCoin',
+        //   +refreshedCryptoCoinBalance,
+        // );
+        //
+        // await sendToRecipients(`SELL
+        //          STRATEGY 1.2(RSI + DMI)
+        //          Deal №: ${botState.dealsCount}
+        //          Symbol: ${symbol.toUpperCase()}
+        //          Price: ${botState.order.fills[0].price} USDT
+        //          Date: ${format(new Date(), DATE_FORMAT)}
+        //          Current profit: ${
+        //            botState.currentProfit
+        //          } USDT (${expectedProfitPercent} %)
+        //          Total profit: ${botState.totalProfit} USDT
+        //          Average deal profit: ${botState.totalProfit /
+        //            botState.dealsCount} USDT/deal
+        //          Stablecoin balance: ${botState.availableUSDT} USDT
+        //          Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
+        //          OrderInfo: ${JSON.stringify(botState.order)}
+        //          Work duration: ${format(
+        //            botState.startTime - new Date().getTime(),
+        //            DATE_FORMAT,
+        //          )}
+        //      `);
 
-        await sendToRecipients(`SELL
-                 STRATEGY 1.2(RSI + DMI)
-                 Deal №: ${botState.dealsCount}
-                 Symbol: ${symbol.toUpperCase()}
-                 Price: ${botState.order.fills[0].price} USDT
-                 Date: ${format(new Date(), DATE_FORMAT)}
-                 Current profit: ${
-                   botState.currentProfit
-                 } USDT (${expectedProfitPercent} %)
-                 Total profit: ${botState.totalProfit} USDT 
-                 Average deal profit: ${botState.totalProfit /
-                   botState.dealsCount} USDT/deal
-                 Stablecoin balance: ${botState.availableUSDT} USDT
-                 Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
-                 OrderInfo: ${JSON.stringify(botState.order)}
-                 Work duration: ${format(
-                   botState.startTime - new Date().getTime(),
-                   DATE_FORMAT,
-                 )}
-             `);
-
-        // console.log(`Sell
-        //                     STRATEGY 1.2 (RSI + DMI)
-        //                     symbol: ${symbol.toUpperCase()}
-        //                     price: ${currentPrice}
-        //                     date: ${format(new Date(), DATE_FORMAT)}
-        //                     current profit: ${Number(profit - 0.2).toPrecision(
-        //                       4,
-        //                     )}%
-        //       `);
+        console.log(`Sell
+                            STRATEGY 1.2 (RSI + DMI)
+                            symbol: ${symbol.toUpperCase()}
+                            price: ${pricesStream[pricesStream.length - 1]}
+                            date: ${format(new Date(), DATE_FORMAT)}
+              `);
         botState.dealsCount++;
         botState.updateState('status', 'buy');
       } catch (e) {
@@ -314,32 +288,32 @@ import { getEmaStream } from './indicators/ema';
     // if (indicatorsData.prev1mDmi.adx === dmi.adx) return;
 
     indicatorsData.isDirectional1mMovementChanged =
-        indicatorsData.prev1mDmi.adx > dmi.adx;
+      indicatorsData.prev1mDmi.adx > dmi.adx;
     if (
-        indicatorsData.trend1m === 'DOWN' &&
-        indicatorsData.isDirectional1mMovementChanged
+      indicatorsData.trend1m === 'DOWN' &&
+      indicatorsData.isDirectional1mMovementChanged
     ) {
       indicatorsData.directional1mMovementSignalWeight++;
       console.log(
-          'Weight for BUY: ' +
+        'Weight for BUY: ' +
           indicatorsData.directional1mMovementSignalWeight.toString(),
       );
     } else if (
-        indicatorsData.trend1m === 'DOWN' &&
-        !indicatorsData.isDirectional1mMovementChanged
+      indicatorsData.trend1m === 'DOWN' &&
+      !indicatorsData.isDirectional1mMovementChanged
     ) {
     } else if (
-        indicatorsData.trend1m === 'UP' &&
-        indicatorsData.isDirectional1mMovementChanged
+      indicatorsData.trend1m === 'UP' &&
+      indicatorsData.isDirectional1mMovementChanged
     ) {
       indicatorsData.directional1mMovementSignalWeight++;
       console.log(
-          'Weight for SELL: ' +
+        'Weight for SELL: ' +
           indicatorsData.directional1mMovementSignalWeight.toString(),
       );
     } else if (
-        indicatorsData.trend1m === 'UP' &&
-        !indicatorsData.isDirectional1mMovementChanged
+      indicatorsData.trend1m === 'UP' &&
+      !indicatorsData.isDirectional1mMovementChanged
     ) {
     }
     indicatorsData.prev1mDmi = dmi;
@@ -385,32 +359,32 @@ import { getEmaStream } from './indicators/ema';
     // if (indicatorsData.prev1mDmi.adx === dmi.adx) return;
 
     indicatorsData.isDirectional1hMovementChanged =
-        indicatorsData.prev1hDmi.adx > dmi.adx;
+      indicatorsData.prev1hDmi.adx > dmi.adx;
     if (
-        indicatorsData.trend1h === 'DOWN' &&
-        indicatorsData.isDirectional1hMovementChanged
+      indicatorsData.trend1h === 'DOWN' &&
+      indicatorsData.isDirectional1hMovementChanged
     ) {
       indicatorsData.directional1hMovementSignalWeight++;
       console.log(
-          'Weight for BUY: ' +
+        'Weight for BUY: ' +
           indicatorsData.directional1hMovementSignalWeight.toString(),
       );
     } else if (
-        indicatorsData.trend1h === 'DOWN' &&
-        !indicatorsData.isDirectional1hMovementChanged
+      indicatorsData.trend1h === 'DOWN' &&
+      !indicatorsData.isDirectional1hMovementChanged
     ) {
     } else if (
-        indicatorsData.trend1h === 'UP' &&
-        indicatorsData.isDirectional1hMovementChanged
+      indicatorsData.trend1h === 'UP' &&
+      indicatorsData.isDirectional1hMovementChanged
     ) {
       indicatorsData.directional1hMovementSignalWeight++;
       console.log(
-          'Weight for SELL: ' +
+        'Weight for SELL: ' +
           indicatorsData.directional1hMovementSignalWeight.toString(),
       );
     } else if (
-        indicatorsData.trend1h === 'UP' &&
-        !indicatorsData.isDirectional1hMovementChanged
+      indicatorsData.trend1h === 'UP' &&
+      !indicatorsData.isDirectional1hMovementChanged
     ) {
     }
     indicatorsData.prev1hDmi = dmi;
