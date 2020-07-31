@@ -148,14 +148,14 @@ import { getEmaStream } from './indicators/ema';
                              date: ${format(new Date(), DATE_FORMAT)}
               `);
 
+        indicatorsData.directional1mMovementSignalWeight = 0;
+        indicatorsData.directional1hMovementSignalWeight = 0;
         botState.updateState('status', 'sell');
         return;
       } catch (e) {
         await sendToRecipients(`BUY ERROR
             ${JSON.stringify(e)}
       `);
-        indicatorsData.directional1mMovementSignalWeight = 0;
-        indicatorsData.directional1hMovementSignalWeight = 0;
         botState.updateState('status', 'buy');
       }
     }
@@ -219,9 +219,9 @@ import { getEmaStream } from './indicators/ema';
                             date: ${format(new Date(), DATE_FORMAT)}
               `);
         botState.dealsCount++;
-        botState.updateState('status', 'buy');
         indicatorsData.directional1mMovementSignalWeight = 0;
         indicatorsData.directional1hMovementSignalWeight = 0;
+        botState.updateState('status', 'buy');
       } catch (e) {
         await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
