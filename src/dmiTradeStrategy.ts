@@ -60,8 +60,6 @@ import { getEmaStream } from './indicators/ema';
     fast1hEMA: 0,
     isDownTrend: false,
     rebuy: true,
-    isDirectional1hMovementChanged: false,
-    isDirectional1mMovementChanged: false,
     directional1mMovementSignalWeight: 0,
     directional1hMovementSignalWeight: 0,
     trend1m: null,
@@ -79,15 +77,22 @@ import { getEmaStream } from './indicators/ema';
 
     if (botState.status === 'isPending') return;
     let adx1mActionSignal, adx1hActionSignal;
-    if (trend1h === 'DOWN' && directional1hMovementSignalWeight > 0)
-      adx1hActionSignal = 'BUY';
-    if (trend1h === 'UP' && directional1hMovementSignalWeight > 0)
-      adx1hActionSignal = 'SELL';
-    if (trend1m === 'UP' && directional1mMovementSignalWeight > 0)
-      adx1mActionSignal = 'SELL';
-    if (trend1m === 'UP' && directional1mMovementSignalWeight > 0)
-      adx1mActionSignal = 'SELL';
-
+    if (trend1h === 'DOWN') {
+      if (directional1hMovementSignalWeight > 0) adx1hActionSignal = 'BUY';
+      if (directional1hMovementSignalWeight < 0) adx1hActionSignal = 'SELL';
+    }
+    if (trend1h === 'UP') {
+      if (directional1hMovementSignalWeight > 0) adx1hActionSignal = 'SELL';
+      if (directional1hMovementSignalWeight < 0) adx1hActionSignal = 'BUY';
+    }
+    if (trend1m === 'DOWN') {
+      if (directional1mMovementSignalWeight > 0) adx1mActionSignal = 'BUY';
+      if (directional1mMovementSignalWeight < 0) adx1mActionSignal = 'SELL';
+    }
+    if (trend1m === 'UP') {
+      if (directional1mMovementSignalWeight > 0) adx1mActionSignal = 'SELL';
+      if (directional1mMovementSignalWeight < 0) adx1mActionSignal = 'BUY';
+    }
     botState.updateState(
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
@@ -299,35 +304,21 @@ import { getEmaStream } from './indicators/ema';
     console.log(indicatorsData.trend1m);
     // if (indicatorsData.prev1mDmi.adx === dmi.adx) return;
 
-    indicatorsData.isDirectional1mMovementChanged =
-      indicatorsData.prev1mDmi.adx > dmi.adx;
-    if (
-      indicatorsData.trend1m === 'DOWN' &&
-      indicatorsData.isDirectional1mMovementChanged
-    ) {
-      indicatorsData.directional1mMovementSignalWeight++;
-      console.log(
-        'Weight for BUY: ' +
-          indicatorsData.directional1mMovementSignalWeight.toString(),
-      );
-    } else if (
-      indicatorsData.trend1m === 'DOWN' &&
-      !indicatorsData.isDirectional1mMovementChanged
-    ) {
-    } else if (
-      indicatorsData.trend1m === 'UP' &&
-      indicatorsData.isDirectional1mMovementChanged
-    ) {
-      indicatorsData.directional1mMovementSignalWeight++;
-      console.log(
-        'Weight for SELL: ' +
-          indicatorsData.directional1mMovementSignalWeight.toString(),
-      );
-    } else if (
-      indicatorsData.trend1m === 'UP' &&
-      !indicatorsData.isDirectional1mMovementChanged
-    ) {
+    // indicatorsData.isDirectional1mMovementChanged =
+    //   indicatorsData.prev1mDmi.adx > dmi.adx;
+    if (indicatorsData.prev1mDmi.adx > dmi.adx) {
+      if (indicatorsData.trend1m === 'UP')
+        indicatorsData.directional1mMovementSignalWeight++;
+      if (indicatorsData.trend1m === 'DOWN')
+        indicatorsData.directional1mMovementSignalWeight--;
     }
+    if (indicatorsData.prev1mDmi.adx < dmi.adx) {
+      if (indicatorsData.trend1m === 'UP')
+        indicatorsData.directional1mMovementSignalWeight--;
+      if (indicatorsData.trend1m === 'DOWN')
+        indicatorsData.directional1mMovementSignalWeight++;
+    }
+
     indicatorsData.prev1mDmi = dmi;
   });
 
@@ -374,35 +365,21 @@ import { getEmaStream } from './indicators/ema';
     console.log(indicatorsData.trend1h);
     // if (indicatorsData.prev1mDmi.adx === dmi.adx) return;
 
-    indicatorsData.isDirectional1hMovementChanged =
-      indicatorsData.prev1hDmi.adx > dmi.adx;
-    if (
-      indicatorsData.trend1h === 'DOWN' &&
-      indicatorsData.isDirectional1hMovementChanged
-    ) {
-      indicatorsData.directional1hMovementSignalWeight++;
-      console.log(
-        'Weight for BUY: ' +
-          indicatorsData.directional1hMovementSignalWeight.toString(),
-      );
-    } else if (
-      indicatorsData.trend1h === 'DOWN' &&
-      !indicatorsData.isDirectional1hMovementChanged
-    ) {
-    } else if (
-      indicatorsData.trend1h === 'UP' &&
-      indicatorsData.isDirectional1hMovementChanged
-    ) {
-      indicatorsData.directional1hMovementSignalWeight++;
-      console.log(
-        'Weight for SELL: ' +
-          indicatorsData.directional1hMovementSignalWeight.toString(),
-      );
-    } else if (
-      indicatorsData.trend1h === 'UP' &&
-      !indicatorsData.isDirectional1hMovementChanged
-    ) {
+    // indicatorsData.isDirectional1hMovementChanged =
+    //   indicatorsData.prev1hDmi.adx > dmi.adx;
+    if (indicatorsData.prev1hDmi.adx > dmi.adx) {
+      if (indicatorsData.trend1h === 'UP')
+        indicatorsData.directional1hMovementSignalWeight++;
+      if (indicatorsData.trend1h === 'DOWN')
+        indicatorsData.directional1hMovementSignalWeight--;
     }
+    if (indicatorsData.prev1hDmi.adx < dmi.adx) {
+      if (indicatorsData.trend1h === 'UP')
+        indicatorsData.directional1hMovementSignalWeight--;
+      if (indicatorsData.trend1h === 'DOWN')
+        indicatorsData.directional1hMovementSignalWeight++;
+    }
+
     indicatorsData.prev1hDmi = dmi;
   });
 
