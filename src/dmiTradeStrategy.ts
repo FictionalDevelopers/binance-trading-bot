@@ -74,8 +74,6 @@ import { getEmaStream } from './indicators/ema';
       trend1m,
       trend1h,
     } = indicatorsData;
-
-    if (botState.status === 'isPending') return;
     let adx1mActionSignal, adx1hActionSignal;
     if (trend1h === 'DOWN') {
       if (directional1hMovementSignalWeight > 0) adx1hActionSignal = 'BUY';
@@ -93,6 +91,9 @@ import { getEmaStream } from './indicators/ema';
       if (directional1mMovementSignalWeight > 0) adx1mActionSignal = 'SELL';
       if (directional1mMovementSignalWeight < 0) adx1mActionSignal = 'BUY';
     }
+
+    if (botState.status === 'isPending') return;
+
     botState.updateState(
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
@@ -125,6 +126,11 @@ import { getEmaStream } from './indicators/ema';
     ) {
       try {
         botState.updateState('status', 'isPending');
+        botState.updateState(
+          'buyPrice',
+          Number(pricesStream[pricesStream.length - 1]),
+        );
+
         // const amount = binance.roundStep(
         //   (botState.availableUSDT * tradeAmountPercent) / botState.currentPrice,
         //   stepSize,

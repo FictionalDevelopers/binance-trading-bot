@@ -76,8 +76,6 @@ import { getEmaStream } from './indicators/ema';
       trend1m,
       trend1h,
     } = indicatorsData;
-
-    if (botState.status === 'isPending') return;
     let adx1mActionSignal, adx1hActionSignal;
     if (trend1h === 'DOWN') {
       if (directional1hMovementSignalWeight > 0) adx1hActionSignal = 'BUY';
@@ -97,6 +95,9 @@ import { getEmaStream } from './indicators/ema';
     }
     console.log('1h signal: ' + adx1hActionSignal);
     console.log('1m signal: ' + adx1mActionSignal);
+
+    if (botState.status === 'isPending') return;
+
     botState.updateState(
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
@@ -134,7 +135,10 @@ import { getEmaStream } from './indicators/ema';
         //   stepSize,
         // );
         // const order = await marketBuy(symbol.toUpperCase(), +amount);
-        // botState.updateState('buyPrice', Number(order.fills[0].price));
+        botState.updateState(
+          'buyPrice',
+          Number(pricesStream[pricesStream.length - 1]),
+        );
         // botState.updateState('order', order);
         // const { available: refreshedCryptoCoinBalance } = await getBalances(
         //   cryptoCoin,
