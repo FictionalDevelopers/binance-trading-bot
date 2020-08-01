@@ -25,7 +25,7 @@ import { marketBuy, marketSell } from './api/order';
     status: 'buy',
     currentProfit: null,
     totalProfit: null,
-    tradeAmountPercent: 0.95,
+    tradeAmountPercent: 0.6,
     availableUSDT: initialUSDTBalance,
     availableCryptoCoin: initialCryptoCoinBalance,
     buyPrice: null,
@@ -200,7 +200,7 @@ import { marketBuy, marketSell } from './api/order';
 
   getDmiStream({
     symbol: symbol,
-    interval: '1m',
+    interval: '1h',
     period: 14,
   }).subscribe(dmi => {
     if (!indicatorsData.prev1mDmi) {
