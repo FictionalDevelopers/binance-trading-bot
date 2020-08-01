@@ -10,8 +10,6 @@ import { getDmiStream } from './indicators/dmi';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
-import { marketSell, marketBuy } from './api/order';
-import { getEmaStream } from './indicators/ema';
 
 (async function() {
   await connect();
@@ -49,7 +47,6 @@ import { getEmaStream } from './indicators/ema';
     rsi1mValue: null,
     rsi1hValue: null,
     adx1mSignal: 0,
-    adx1hSignal: 0,
     mdi1mSignal: 0,
     mdi1hSignal: 0,
     slow1mEMA: 0,
@@ -59,11 +56,9 @@ import { getEmaStream } from './indicators/ema';
     middle1hEMA: 0,
     fast1hEMA: 0,
     isDownTrend: false,
-    rebuy: true,
-    directional1mMovementSignalWeight: 0,
-    directional1hMovementSignalWeight: 0,
-    trend1m: null,
-    trend1h: null,
+    trend: null,
+    adxBuySignalVolume: 0,
+    adxSellSignalVolume: 0,
   };
 
   const trader = async pricesStream => {
