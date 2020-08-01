@@ -5,11 +5,11 @@ import { RESOURCES } from './constants';
 import { DATE_FORMAT } from './constants/date';
 import { getTradeStream } from './api/trades.js';
 import { processSubscriptions, sendToRecipients } from './services/telegram';
-import { getRsiStream } from './indicators/rsi';
 import { getDmiStream } from './indicators/dmi';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
+import { marketBuy, marketSell } from './api/order';
 
 (async function() {
   await connect();
@@ -63,32 +63,7 @@ import { getExchangeInfo } from './api/exchangeInfo';
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
-    const {
-      directional1hMovementSignalWeight,
-      directional1mMovementSignalWeight,
-      trend1m,
-      trend1h,
-    } = indicatorsData;
-    let adx1mActionSignal, adx1hActionSignal;
-    if (trend1h === 'DOWN') {
-      if (directional1hMovementSignalWeight > 0) adx1hActionSignal = 'BUY';
-      if (directional1hMovementSignalWeight < 0) adx1hActionSignal = 'SELL';
-    }
-    if (trend1h === 'UP') {
-      if (directional1hMovementSignalWeight > 0) adx1hActionSignal = 'SELL';
-      if (directional1hMovementSignalWeight < 0) adx1hActionSignal = 'BUY';
-    }
-    if (trend1m === 'DOWN') {
-      if (directional1mMovementSignalWeight > 0) adx1mActionSignal = 'BUY';
-      if (directional1mMovementSignalWeight < 0) adx1mActionSignal = 'SELL';
-    }
-    if (trend1m === 'UP') {
-      if (directional1mMovementSignalWeight > 0) adx1mActionSignal = 'SELL';
-      if (directional1mMovementSignalWeight < 0) adx1mActionSignal = 'BUY';
-    }
-
     if (botState.status === 'isPending') return;
-
     botState.updateState(
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
@@ -114,11 +89,7 @@ import { getExchangeInfo } from './api/exchangeInfo';
     //             botState.availableUSDT) *
     //             100,
     //       );
-    if (
-      botState.status === 'buy' &&
-      adx1mActionSignal === 'BUY' &&
-      adx1hActionSignal === 'BUY'
-    ) {
+    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState(
@@ -126,36 +97,33 @@ import { getExchangeInfo } from './api/exchangeInfo';
           Number(pricesStream[pricesStream.length - 1]),
         );
 
-        // const amount = binance.roundStep(
-        //   (botState.availableUSDT * tradeAmountPercent) / botState.currentPrice,
-        //   stepSize,
-        // );
-        // const order = await marketBuy(symbol.toUpperCase(), +amount);
-        // botState.updateState('buyPrice', Number(order.fills[0].price));
-        // botState.updateState('order', order);
-        // const { available: refreshedCryptoCoinBalance } = await getBalances(
-        //   cryptoCoin,
-        // );
-        // botState.updateState('availableCryptoCoin', refreshedCryptoCoinBalance);
-        // await sendToRecipients(`BUY
-        //          STRATEGY 1.2 (RSI + DMI) MODIFIED
-        //          Deal №: ${botState.dealsCount}
-        //          Symbol: ${symbol.toUpperCase()}
-        //          Price: ${botState.buyPrice} USDT
-        //          Date: ${format(new Date(), DATE_FORMAT)}
-        //          Prebuy stablecoin balance: ${botState.availableUSDT} USDT
-        //          Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
-        //          OrderInfo: ${JSON.stringify(botState.order)}
-        //      `);
+        const amount = binance.roundStep(
+          (botState.availableUSDT * tradeAmountPercent) / botState.currentPrice,
+          stepSize,
+        );
+        const order = await marketBuy(symbol.toUpperCase(), +amount);
+        botState.updateState('buyPrice', Number(order.fills[0].price));
+        botState.updateState('order', order);
+        const { available: refreshedCryptoCoinBalance } = await getBalances(
+          cryptoCoin,
+        );
+        botState.updateState('availableCryptoCoin', refreshedCryptoCoinBalance);
         await sendToRecipients(`BUY
-                             ADX STRATEGY 
-                             symbol: ${symbol.toUpperCase()}
-                             price: ${botState.buyPrice}
-                             date: ${format(new Date(), DATE_FORMAT)}
-              `);
-
-        indicatorsData.directional1mMovementSignalWeight = 0;
-        indicatorsData.directional1hMovementSignalWeight = 0;
+                 STRATEGY 1.2 (RSI + DMI) MODIFIED
+                 Deal №: ${botState.dealsCount}
+                 Symbol: ${symbol.toUpperCase()}
+                 Price: ${botState.buyPrice} USDT
+                 Date: ${format(new Date(), DATE_FORMAT)}
+                 Prebuy stablecoin balance: ${botState.availableUSDT} USDT
+                 Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
+                 OrderInfo: ${JSON.stringify(botState.order)}
+             `);
+        // await sendToRecipients(`BUY
+        //                      ADX STRATEGY
+        //                      symbol: ${symbol.toUpperCase()}
+        //                      price: ${botState.buyPrice}
+        //                      date: ${format(new Date(), DATE_FORMAT)}
+        //       `);
         botState.updateState('status', 'sell');
         return;
       } catch (e) {
@@ -166,67 +134,60 @@ import { getExchangeInfo } from './api/exchangeInfo';
       }
     }
 
-    if (
-      botState.status === 'sell' &&
-      adx1mActionSignal === 'SELL' &&
-      adx1hActionSignal === 'SELL'
-    ) {
+    if (botState.status === 'sell' && indicatorsData.adxSellSignalVolume > 0) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState('buyPrice', null);
-        // const amount = binance.roundStep(
-        //   Number(botState.availableCryptoCoin),
-        //   stepSize,
-        // );
-        // const order = await marketSell(symbol.toUpperCase(), +amount);
-        // botState.updateState('order', order);
-        // const { available: refreshedUSDTBalance } = await getBalances('USDT');
-        // const currentProfit =
-        //   Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
-        // botState.updateState('currentProfit', currentProfit);
-        // botState.updateState('availableUSDT', +refreshedUSDTBalance);
-        // botState.updateState(
-        //   'totalProfit',
-        //   Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
-        // );
-        // const { available: refreshedCryptoCoinBalance } = await getBalances(
-        //   cryptoCoin,
-        // );
-        // botState.updateState(
-        //   'availableCryptoCoin',
-        //   +refreshedCryptoCoinBalance,
-        // );
-        //
-        // await sendToRecipients(`SELL
-        //          STRATEGY 1.2(RSI + DMI)
-        //          Deal №: ${botState.dealsCount}
-        //          Symbol: ${symbol.toUpperCase()}
-        //          Price: ${botState.order.fills[0].price} USDT
-        //          Date: ${format(new Date(), DATE_FORMAT)}
-        //          Current profit: ${
-        //            botState.currentProfit
-        //          } USDT (${expectedProfitPercent} %)
-        //          Total profit: ${botState.totalProfit} USDT
-        //          Average deal profit: ${botState.totalProfit /
-        //            botState.dealsCount} USDT/deal
-        //          Stablecoin balance: ${botState.availableUSDT} USDT
-        //          Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
-        //          OrderInfo: ${JSON.stringify(botState.order)}
-        //          Work duration: ${format(
-        //            botState.startTime - new Date().getTime(),
-        //            DATE_FORMAT,
-        //          )}
-        //      `);
+        const amount = binance.roundStep(
+          Number(botState.availableCryptoCoin),
+          stepSize,
+        );
+        const order = await marketSell(symbol.toUpperCase(), +amount);
+        botState.updateState('order', order);
+        const { available: refreshedUSDTBalance } = await getBalances('USDT');
+        const currentProfit =
+          Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
+        botState.updateState('currentProfit', currentProfit);
+        botState.updateState('availableUSDT', +refreshedUSDTBalance);
+        botState.updateState(
+          'totalProfit',
+          Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
+        );
+        const { available: refreshedCryptoCoinBalance } = await getBalances(
+          cryptoCoin,
+        );
+        botState.updateState(
+          'availableCryptoCoin',
+          +refreshedCryptoCoinBalance,
+        );
 
-        await sendToRecipients(`Sell
-                            ADX STRATEGY
-                            symbol: ${symbol.toUpperCase()}
-                            price: ${pricesStream[pricesStream.length - 1]}
-                            date: ${format(new Date(), DATE_FORMAT)}
-              `);
+        await sendToRecipients(`SELL
+                 STRATEGY 1.2(RSI + DMI)
+                 Deal №: ${botState.dealsCount}
+                 Symbol: ${symbol.toUpperCase()}
+                 Price: ${botState.order.fills[0].price} USDT
+                 Date: ${format(new Date(), DATE_FORMAT)}
+                 Current profit: ${
+                   botState.currentProfit
+                 } USDT (${expectedProfitPercent} %)
+                 Total profit: ${botState.totalProfit} USDT
+                 Average deal profit: ${botState.totalProfit /
+                   botState.dealsCount} USDT/deal
+                 Stablecoin balance: ${botState.availableUSDT} USDT
+                 Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
+                 OrderInfo: ${JSON.stringify(botState.order)}
+                 Work duration: ${format(
+                   botState.startTime - new Date().getTime(),
+                   DATE_FORMAT,
+                 )}
+             `);
+        // await sendToRecipients(`Sell
+        //                     ADX STRATEGY
+        //                     symbol: ${symbol.toUpperCase()}
+        //                     price: ${pricesStream[pricesStream.length - 1]}
+        //                     date: ${format(new Date(), DATE_FORMAT)}
+        //       `);
         botState.dealsCount++;
-        indicatorsData.directional1mMovementSignalWeight = 0;
-        indicatorsData.directional1hMovementSignalWeight = 0;
         botState.updateState('status', 'buy');
       } catch (e) {
         await sendToRecipients(`SELL ERROR
@@ -237,31 +198,6 @@ import { getExchangeInfo } from './api/exchangeInfo';
     }
   };
 
-  getRsiStream({
-    symbol: symbol,
-    period: 14,
-    interval: '1m',
-  }).subscribe(rsi => {
-    // if (!indicatorsData.rsi1mValue) {
-    //   indicatorsData.rsi1mValue = rsi;
-    //   return;
-    // }
-    // if (
-    //     (indicatorsData.rsi1mValue > 50 && rsi < 50) ||
-    //     (indicatorsData.rsi1mValue < 50 && rsi > 50)
-    // )
-    //   indicatorsData.directionalMovementSignalWeight = 0;
-    indicatorsData.rsi1mValue = rsi;
-  });
-
-  getRsiStream({
-    symbol: symbol,
-    period: 14,
-    interval: '1h',
-  }).subscribe(rsi => {
-    indicatorsData.rsi1hValue = rsi;
-  });
-
   getDmiStream({
     symbol: symbol,
     interval: '1m',
@@ -271,166 +207,55 @@ import { getExchangeInfo } from './api/exchangeInfo';
       indicatorsData.prev1mDmi = dmi;
       return;
     }
-    // if (
-    //   indicatorsData.prev1mDmi.mdi > indicatorsData.prev1mDmi.pdi &&
-    //   dmi.pdi > dmi.mdi
-    // ) {
-    //   indicatorsData.trend = 'UP';
-    //   indicatorsData.directionalMovementSignalWeight = 0;
-    // }
-    // if (
-    //   indicatorsData.prev1mDmi.mdi < indicatorsData.prev1mDmi.pdi &&
-    //   dmi.pdi < dmi.mdi
-    // ) {
-    //   indicatorsData.trend = 'DOWN';
-    //   indicatorsData.directionalMovementSignalWeight = 0;
-    // }
-    // // console.log('Trend: ' + indicatorsData.trend);
-    // console.log(dmi);
-    // console.log(indicatorsData.prev1mDmi);
     if (dmi.adx > dmi.pdi) indicatorsData.adx1mSignal = -1;
     if (dmi.pdi > dmi.adx) indicatorsData.adx1mSignal = 1;
     if (dmi.mdi > dmi.pdi) {
-      if (indicatorsData.trend1m === 'UP')
-        indicatorsData.directional1mMovementSignalWeight = 0;
+      if (indicatorsData.trend === 'UP') {
+        indicatorsData.adxBuySignalVolume = 0;
+        indicatorsData.adxSellSignalVolume = 0;
+      }
       indicatorsData.mdi1mSignal = -1;
-      indicatorsData.trend1m = 'DOWN';
+      indicatorsData.trend = 'DOWN';
     }
     if (dmi.pdi > dmi.mdi) {
-      if (indicatorsData.trend1m === 'DOWN')
-        indicatorsData.directional1mMovementSignalWeight = 0;
+      if (indicatorsData.trend === 'DOWN') {
+        indicatorsData.adxBuySignalVolume = 0;
+        indicatorsData.adxSellSignalVolume = 0;
+      }
       indicatorsData.mdi1mSignal = 1;
-      indicatorsData.trend1m = 'UP';
-    }
-    console.log(indicatorsData.trend1m);
-    // if (indicatorsData.prev1mDmi.adx === dmi.adx) return;
-
-    // indicatorsData.isDirectional1mMovementChanged =
-    //   indicatorsData.prev1mDmi.adx > dmi.adx;
-    if (indicatorsData.prev1mDmi.adx > dmi.adx) {
-      if (indicatorsData.trend1m === 'UP')
-        indicatorsData.directional1mMovementSignalWeight++;
-      if (indicatorsData.trend1m === 'DOWN')
-        indicatorsData.directional1mMovementSignalWeight--;
-    }
-    if (indicatorsData.prev1mDmi.adx < dmi.adx) {
-      if (indicatorsData.trend1m === 'UP')
-        indicatorsData.directional1mMovementSignalWeight--;
-      if (indicatorsData.trend1m === 'DOWN')
-        indicatorsData.directional1mMovementSignalWeight++;
+      indicatorsData.trend = 'UP';
     }
 
+    if (indicatorsData.trend === 'DOWN') {
+      if (indicatorsData.prev1mDmi.adx > dmi.adx) {
+        indicatorsData.adxBuySignalVolume++;
+        indicatorsData.adxSellSignalVolume = 0;
+      }
+      if (indicatorsData.prev1mDmi.adx < dmi.adx) {
+        indicatorsData.adxSellSignalVolume++;
+        indicatorsData.adxBuySignalVolume = 0;
+      }
+      if (indicatorsData.prev1mDmi.adx === dmi.adx) {
+        indicatorsData.adxBuySignalVolume = 0;
+        indicatorsData.adxSellSignalVolume = 0;
+      }
+    }
+    if (indicatorsData.trend === 'UP') {
+      if (indicatorsData.prev1mDmi.adx > dmi.adx) {
+        indicatorsData.adxSellSignalVolume++;
+        indicatorsData.adxBuySignalVolume = 0;
+      }
+      if (indicatorsData.prev1mDmi.adx < dmi.adx) {
+        indicatorsData.adxBuySignalVolume++;
+        indicatorsData.adxSellSignalVolume = 0;
+      }
+      if (indicatorsData.prev1mDmi.adx === dmi.adx) {
+        indicatorsData.adxBuySignalVolume = 0;
+        indicatorsData.adxSellSignalVolume = 0;
+      }
+    }
     indicatorsData.prev1mDmi = dmi;
   });
-
-  getDmiStream({
-    symbol: symbol,
-    interval: '1h',
-    period: 14,
-  }).subscribe(dmi => {
-    if (!indicatorsData.prev1hDmi) {
-      indicatorsData.prev1hDmi = dmi;
-      return;
-    }
-    // if (
-    //   indicatorsData.prev1mDmi.mdi > indicatorsData.prev1mDmi.pdi &&
-    //   dmi.pdi > dmi.mdi
-    // ) {
-    //   indicatorsData.trend = 'UP';
-    //   indicatorsData.directionalMovementSignalWeight = 0;
-    // }
-    // if (
-    //   indicatorsData.prev1mDmi.mdi < indicatorsData.prev1mDmi.pdi &&
-    //   dmi.pdi < dmi.mdi
-    // ) {
-    //   indicatorsData.trend = 'DOWN';
-    //   indicatorsData.directionalMovementSignalWeight = 0;
-    // }
-    // // console.log('Trend: ' + indicatorsData.trend);
-    // console.log(dmi);
-    // console.log(indicatorsData.prev1mDmi);
-    if (dmi.adx > dmi.pdi) indicatorsData.adx1hSignal = -1;
-    if (dmi.pdi > dmi.adx) indicatorsData.adx1hSignal = 1;
-    if (dmi.mdi > dmi.pdi) {
-      if (indicatorsData.trend1h === 'UP')
-        indicatorsData.directional1hMovementSignalWeight = 0;
-      indicatorsData.mdi1hSignal = -1;
-      indicatorsData.trend1h = 'DOWN';
-    }
-    if (dmi.pdi > dmi.mdi) {
-      if (indicatorsData.trend1h === 'DOWN')
-        indicatorsData.directional1hMovementSignalWeight = 0;
-      indicatorsData.mdi1hSignal = 1;
-      indicatorsData.trend1h = 'UP';
-    }
-    console.log(indicatorsData.trend1h);
-    // if (indicatorsData.prev1mDmi.adx === dmi.adx) return;
-
-    // indicatorsData.isDirectional1hMovementChanged =
-    //   indicatorsData.prev1hDmi.adx > dmi.adx;
-    if (indicatorsData.prev1hDmi.adx > dmi.adx) {
-      if (indicatorsData.trend1h === 'UP')
-        indicatorsData.directional1hMovementSignalWeight++;
-      if (indicatorsData.trend1h === 'DOWN')
-        indicatorsData.directional1hMovementSignalWeight--;
-    }
-    if (indicatorsData.prev1hDmi.adx < dmi.adx) {
-      if (indicatorsData.trend1h === 'UP')
-        indicatorsData.directional1hMovementSignalWeight--;
-      if (indicatorsData.trend1h === 'DOWN')
-        indicatorsData.directional1hMovementSignalWeight++;
-    }
-
-    indicatorsData.prev1hDmi = dmi;
-  });
-
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1m',
-  //   period: 7,
-  // }).subscribe(fastEMA => {
-  //   indicatorsData.fast1mEMA = fastEMA;
-  // });
-
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1m',
-  //   period: 25,
-  // }).subscribe(middleEMA => {
-  //   indicatorsData.middle1mEMA = middleEMA;
-  // });
-
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1m',
-  //   period: 99,
-  // }).subscribe(slowEMA => {
-  //   indicatorsData.slow1mEMA = slowEMA;
-  // });
-  //
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1h',
-  //   period: 7,
-  // }).subscribe(fastEMA => {
-  //   indicatorsData.fast1hEMA = fastEMA;
-  // });
-  //
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1h',
-  //   period: 25,
-  // }).subscribe(middleEMA => {
-  //   indicatorsData.middle1hEMA = middleEMA;
-  // });
-  //
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1h',
-  //   period: 99,
-  // }).subscribe(slowEMA => {
-  //   indicatorsData.slow1hEMA = slowEMA;
-  // });
 
   await sendToRecipients(`INIT
   Bot started working at: ${format(new Date(), DATE_FORMAT)}

@@ -5,13 +5,10 @@ import { RESOURCES } from './constants';
 import { DATE_FORMAT } from './constants/date';
 import { getTradeStream } from './api/trades.js';
 import { processSubscriptions, sendToRecipients } from './services/telegram';
-import { getRsiStream } from './indicators/rsi';
 import { getDmiStream } from './indicators/dmi';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
-import { marketSell, marketBuy } from './api/order';
-import { getEmaStream } from './indicators/ema';
 
 (async function() {
   await connect();
@@ -59,8 +56,6 @@ import { getEmaStream } from './indicators/ema';
     fast1hEMA: 0,
     isDownTrend: false,
     rebuy: true,
-    // isDirectionalMovementChanged: false,
-    // directionalMovementSignalWeight: 0,
     trend: null,
     adxBuySignalVolume: 0,
     adxSellSignalVolume: 0,
@@ -68,8 +63,6 @@ import { getEmaStream } from './indicators/ema';
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
-    const { rsi1hValue } = indicatorsData;
-
     if (botState.status === 'isPending') return;
     botState.updateState(
       'currentPrice',
@@ -131,26 +124,6 @@ import { getEmaStream } from './indicators/ema';
       }
     }
   };
-
-  // getRsiStream({
-  //   symbol: symbol,
-  //   period: 14,
-  //   interval: '1m',
-  // }).subscribe(rsi => {
-  //   if (!indicatorsData.rsi1mValue) {
-  //     indicatorsData.rsi1mValue = rsi;
-  //     return;
-  //   }
-  //   indicatorsData.rsi1mValue = rsi;
-  // });
-  //
-  // getRsiStream({
-  //   symbol: symbol,
-  //   period: 14,
-  //   interval: '1h',
-  // }).subscribe(rsi => {
-  //   indicatorsData.rsi1hValue = rsi;
-  // });
 
   getDmiStream({
     symbol: symbol,
@@ -237,63 +210,6 @@ import { getEmaStream } from './indicators/ema';
     // );
     indicatorsData.prev1mDmi = dmi;
   });
-
-  // getDmiStream({
-  //   symbol: symbol,
-  //   interval: '1h',
-  //   period: 14,
-  // }).subscribe(dmi => {
-  //   if (dmi.mdi > dmi.pdi) indicatorsData.mdi1hSignal = -1;
-  //   if (dmi.pdi > dmi.mdi) indicatorsData.mdi1hSignal = 1;
-  // });
-
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1m',
-  //   period: 7,
-  // }).subscribe(fastEMA => {
-  //   indicatorsData.fast1mEMA = fastEMA;
-  // });
-  //
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1m',
-  //   period: 25,
-  // }).subscribe(middleEMA => {
-  //   indicatorsData.middle1mEMA = middleEMA;
-  // });
-  //
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1m',
-  //   period: 99,
-  // }).subscribe(slowEMA => {
-  //   indicatorsData.slow1mEMA = slowEMA;
-  // });
-  //
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1h',
-  //   period: 7,
-  // }).subscribe(fastEMA => {
-  //   indicatorsData.fast1hEMA = fastEMA;
-  // });
-  //
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1h',
-  //   period: 25,
-  // }).subscribe(middleEMA => {
-  //   indicatorsData.middle1hEMA = middleEMA;
-  // });
-  //
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1h',
-  //   period: 99,
-  // }).subscribe(slowEMA => {
-  //   indicatorsData.slow1hEMA = slowEMA;
-  // });
 
   // await sendToRecipients(`INIT
   // Bot started working at: ${format(new Date(), DATE_FORMAT)}
