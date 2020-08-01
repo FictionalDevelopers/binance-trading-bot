@@ -14,9 +14,9 @@ import { marketBuy, marketSell } from './api/order';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'erdbusd';
+  const symbol = 'erdusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
-  const { available: initialUSDTBalance } = await getBalances('BUSD');
+  const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
 
@@ -25,7 +25,7 @@ import { marketBuy, marketSell } from './api/order';
     status: 'buy',
     currentProfit: null,
     totalProfit: null,
-    tradeAmountPercent: 0.9,
+    tradeAmountPercent: 0.6,
     availableUSDT: initialUSDTBalance,
     availableCryptoCoin: initialCryptoCoinBalance,
     buyPrice: null,
@@ -112,9 +112,9 @@ import { marketBuy, marketSell } from './api/order';
                  STRATEGY 1.2 (RSI + DMI) MODIFIED
                  Deal №: ${botState.dealsCount}
                  Symbol: ${symbol.toUpperCase()}
-                 Price: ${botState.buyPrice} BUSD
+                 Price: ${botState.buyPrice} USDT
                  Date: ${format(new Date(), DATE_FORMAT)}
-                 Prebuy stablecoin balance: ${botState.availableUSDT} BUSD
+                 Prebuy stablecoin balance: ${botState.availableUSDT} USDT
                  Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
@@ -144,7 +144,7 @@ import { marketBuy, marketSell } from './api/order';
         );
         const order = await marketSell(symbol.toUpperCase(), +amount);
         botState.updateState('order', order);
-        const { available: refreshedUSDTBalance } = await getBalances('BUSD');
+        const { available: refreshedUSDTBalance } = await getBalances('USDT');
         const currentProfit =
           Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
         botState.updateState('currentProfit', currentProfit);
@@ -165,15 +165,15 @@ import { marketBuy, marketSell } from './api/order';
                  STRATEGY 1.2(RSI + DMI)
                  Deal №: ${botState.dealsCount}
                  Symbol: ${symbol.toUpperCase()}
-                 Price: ${botState.order.fills[0].price} BUSD
+                 Price: ${botState.order.fills[0].price} USDT
                  Date: ${format(new Date(), DATE_FORMAT)}
                  Current profit: ${
                    botState.currentProfit
-                 } BUSD (${expectedProfitPercent} %)
-                 Total profit: ${botState.totalProfit} BUSD
+                 } USDT (${expectedProfitPercent} %)
+                 Total profit: ${botState.totalProfit} USDT
                  Average deal profit: ${botState.totalProfit /
-                   botState.dealsCount} BUSD/deal
-                 Stablecoin balance: ${botState.availableUSDT} BUSD
+                   botState.dealsCount} USDT/deal
+                 Stablecoin balance: ${botState.availableUSDT} USDT
                  Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}
                  Work duration: ${format(
@@ -261,7 +261,7 @@ import { marketBuy, marketSell } from './api/order';
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   with using the ADX STRATEGY
   Symbol: ${symbol.toUpperCase()}
-  Initial BUSD balance: ${initialUSDTBalance} BUSD
+  Initial USDT balance: ${initialUSDTBalance} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
   `);
 

@@ -7,7 +7,6 @@ export const SYMBOLS = {
   ONTUSDT: 'ontusdt',
   FETUSDT: 'fetusdt',
   ERDUSDT: 'erdusdt',
-  ERDBUSD: 'erdbusd',
   ADAUSDT: 'adausdt',
   LINKUSDT: 'linkusdt',
   KAVAUSDT: 'kavausdt',
@@ -32,5 +31,4 @@ export const INDICATORS_LIST_SYMBOLS = {
   [SYMBOLS.EOSUSDT]: 'EOS/USDT',
   [SYMBOLS.VETUSDT]: 'VET/USDT',
   [SYMBOLS.XLMUSDT]: 'XLM/USDT',
-  [SYMBOLS.ERDBUSD]: 'ERD/BUSD',
 };
