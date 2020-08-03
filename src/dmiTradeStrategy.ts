@@ -15,7 +15,7 @@ import { getRsiStream } from './indicators/rsi';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'adausdt';
+  const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
