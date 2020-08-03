@@ -10,6 +10,7 @@ import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketBuy, marketSell } from './api/order';
+import { getRsiStream } from './indicators/rsi';
 
 (async function() {
   await connect();
@@ -63,6 +64,7 @@ import { marketBuy, marketSell } from './api/order';
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
+    const { rsi1mValue } = indicatorsData;
     if (botState.status === 'isPending') return;
     botState.updateState(
       'currentPrice',
@@ -89,7 +91,12 @@ import { marketBuy, marketSell } from './api/order';
     //             botState.availableUSDT) *
     //             100,
     //       );
-    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
+    if (
+      botState.status === 'buy' &&
+      indicatorsData.adxBuySignalVolume >= 2 &&
+      rsi1mValue !== null &&
+      rsi1mValue < 50
+    ) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState(
@@ -134,7 +141,11 @@ import { marketBuy, marketSell } from './api/order';
       }
     }
 
-    if (botState.status === 'sell' && indicatorsData.adxSellSignalVolume > 0) {
+    if (
+      botState.status === 'sell' &&
+      ((rsi1mValue !== null && rsi1mValue >= 65) ||
+        indicatorsData.adxSellSignalVolume > 0)
+    ) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState('buyPrice', null);
@@ -255,6 +266,14 @@ import { marketBuy, marketSell } from './api/order';
       }
     }
     indicatorsData.prev1mDmi = dmi;
+  });
+
+  getRsiStream({
+    symbol: symbol,
+    period: 14,
+    interval: '1m',
+  }).subscribe(rsi => {
+    indicatorsData.rsi1mValue = rsi;
   });
 
   await sendToRecipients(`INIT
