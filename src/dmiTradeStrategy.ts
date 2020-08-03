@@ -95,7 +95,8 @@ import { getRsiStream } from './indicators/rsi';
       botState.status === 'buy' &&
       indicatorsData.adxBuySignalVolume >= 2 &&
       rsi1mValue !== null &&
-      rsi1mValue < 50
+      rsi1mValue < 50 &&
+      expectedProfitPercent >= 1
     ) {
       try {
         botState.updateState('status', 'isPending');

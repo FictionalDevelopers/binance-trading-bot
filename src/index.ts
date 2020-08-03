@@ -13,7 +13,7 @@ import { getExchangeInfo } from './api/exchangeInfo';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'erdusdt';
+  const symbol = 'adausdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -75,7 +75,7 @@ import { getExchangeInfo } from './api/exchangeInfo';
         : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
       : 0;
 
-    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume > 1) {
+    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume > 0) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState(
