@@ -60,6 +60,7 @@ import { getRsiStream } from './indicators/rsi';
     trend: null,
     adxBuySignalVolume: 0,
     adxSellSignalVolume: 0,
+    willPriceGrow: false,
   };
 
   const trader = async pricesStream => {
@@ -93,7 +94,7 @@ import { getRsiStream } from './indicators/rsi';
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.adxBuySignalVolume >= 2 &&
+      indicatorsData.willPriceGrow &&
       rsi1mValue !== null &&
       rsi1mValue < 50
     ) {
@@ -146,7 +147,7 @@ import { getRsiStream } from './indicators/rsi';
       ((rsi1mValue !== null &&
         rsi1mValue >= 65 &&
         expectedProfitPercent >= 1) ||
-        indicatorsData.adxSellSignalVolume > 0)
+        !indicatorsData.willPriceGrow)
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -267,6 +268,10 @@ import { getRsiStream } from './indicators/rsi';
         indicatorsData.adxSellSignalVolume = 0;
       }
     }
+    if (indicatorsData.adxBuySignalVolume >= 2)
+      indicatorsData.willPriceGrow = true;
+    if (indicatorsData.adxSellSignalVolume > 0)
+      indicatorsData.willPriceGrow = false;
     indicatorsData.prev1mDmi = dmi;
   });
 
