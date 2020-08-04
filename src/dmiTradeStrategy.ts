@@ -10,7 +10,6 @@ import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketBuy, marketSell } from './api/order';
-import { getRsiStream } from './indicators/rsi';
 
 (async function() {
   await connect();
@@ -44,9 +43,6 @@ import { getRsiStream } from './indicators/rsi';
   const indicatorsData = {
     prev1mDmi: null,
     prev1hDmi: null,
-    prev1mRsi: null,
-    sellNow: false,
-    buyNow: false,
     dmiMdi1hSignal: 0,
     rsi1mValue: null,
     rsi1hValue: null,
@@ -63,12 +59,10 @@ import { getRsiStream } from './indicators/rsi';
     trend: null,
     adxBuySignalVolume: 0,
     adxSellSignalVolume: 0,
-    willPriceGrow: false,
   };
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
-    const { rsi1mValue, sellNow, buyNow } = indicatorsData;
     if (botState.status === 'isPending') return;
     botState.updateState(
       'currentPrice',
@@ -95,13 +89,7 @@ import { getRsiStream } from './indicators/rsi';
     //             botState.availableUSDT) *
     //             100,
     //       );
-    if (
-      botState.status === 'buy' &&
-      indicatorsData.willPriceGrow &&
-      rsi1mValue !== null &&
-      rsi1mValue < 50 &&
-      buyNow
-    ) {
+    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState(
@@ -146,14 +134,7 @@ import { getRsiStream } from './indicators/rsi';
       }
     }
 
-    if (
-      botState.status === 'sell' &&
-      ((rsi1mValue !== null &&
-        rsi1mValue >= 65 &&
-        sellNow &&
-        expectedProfitPercent >= 1) ||
-        !indicatorsData.willPriceGrow)
-    ) {
+    if (botState.status === 'sell' && indicatorsData.adxSellSignalVolume > 0) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState('buyPrice', null);
@@ -181,7 +162,7 @@ import { getRsiStream } from './indicators/rsi';
         );
 
         await sendToRecipients(`SELL
-                 ADX STRATEGY
+                 STRATEGY 1.2(RSI + DMI)
                  Deal №: ${botState.dealsCount}
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.order.fills[0].price} USDT
@@ -273,31 +254,7 @@ import { getRsiStream } from './indicators/rsi';
         indicatorsData.adxSellSignalVolume = 0;
       }
     }
-    if (indicatorsData.adxBuySignalVolume >= 2)
-      indicatorsData.willPriceGrow = true;
-    if (indicatorsData.adxSellSignalVolume > 0)
-      indicatorsData.willPriceGrow = false;
     indicatorsData.prev1mDmi = dmi;
-  });
-
-  getRsiStream({
-    symbol: symbol,
-    period: 14,
-    interval: '1m',
-  }).subscribe(rsi => {
-    if (!indicatorsData.prev1mRsi) {
-      indicatorsData.prev1mRsi = rsi;
-      return;
-    }
-    if (indicatorsData.prev1mRsi > rsi) {
-      indicatorsData.sellNow = true;
-      indicatorsData.buyNow = false;
-    }
-    if (indicatorsData.prev1mRsi < rsi) {
-      indicatorsData.sellNow = false;
-      indicatorsData.buyNow = true;
-    }
-    indicatorsData.rsi1mValue = rsi;
   });
 
   await sendToRecipients(`INIT
