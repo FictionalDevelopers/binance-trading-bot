@@ -44,6 +44,9 @@ import { getRsiStream } from './indicators/rsi';
   const indicatorsData = {
     prev1mDmi: null,
     prev1hDmi: null,
+    prev1mRsi: null,
+    sellNow: false,
+    buyNow: false,
     dmiMdi1hSignal: 0,
     rsi1mValue: null,
     rsi1hValue: null,
@@ -65,7 +68,7 @@ import { getRsiStream } from './indicators/rsi';
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
-    const { rsi1mValue } = indicatorsData;
+    const { rsi1mValue, sellNow, buyNow } = indicatorsData;
     if (botState.status === 'isPending') return;
     botState.updateState(
       'currentPrice',
@@ -96,7 +99,8 @@ import { getRsiStream } from './indicators/rsi';
       botState.status === 'buy' &&
       indicatorsData.willPriceGrow &&
       rsi1mValue !== null &&
-      rsi1mValue < 50
+      rsi1mValue < 50 &&
+      buyNow
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -146,6 +150,7 @@ import { getRsiStream } from './indicators/rsi';
       botState.status === 'sell' &&
       ((rsi1mValue !== null &&
         rsi1mValue >= 65 &&
+        sellNow &&
         expectedProfitPercent >= 1) ||
         !indicatorsData.willPriceGrow)
     ) {
@@ -176,7 +181,7 @@ import { getRsiStream } from './indicators/rsi';
         );
 
         await sendToRecipients(`SELL
-                 STRATEGY 1.2(RSI + DMI)
+                 ADX STRATEGY
                  Deal №: ${botState.dealsCount}
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.order.fills[0].price} USDT
@@ -280,6 +285,18 @@ import { getRsiStream } from './indicators/rsi';
     period: 14,
     interval: '1m',
   }).subscribe(rsi => {
+    if (!indicatorsData.prev1mRsi) {
+      indicatorsData.prev1mRsi = rsi;
+      return;
+    }
+    if (indicatorsData.prev1mRsi > rsi) {
+      indicatorsData.sellNow = true;
+      indicatorsData.buyNow = false;
+    }
+    if (indicatorsData.prev1mRsi < rsi) {
+      indicatorsData.sellNow = false;
+      indicatorsData.buyNow = true;
+    }
     indicatorsData.rsi1mValue = rsi;
   });
 

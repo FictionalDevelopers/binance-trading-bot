@@ -10,16 +10,17 @@ import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 
+const symbol = process.argv[2];
+
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'adausdt';
+  // const symbol = 'erdusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
 
-  // const symbol = process.argv[2];
   const botState = {
     status: 'buy',
     currentProfit: null,
@@ -211,13 +212,13 @@ import { getExchangeInfo } from './api/exchangeInfo';
     indicatorsData.prev1mDmi = dmi;
   });
 
-  // await sendToRecipients(`INIT
-  // Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  // with using the STRATEGY 1.2(RSI + DMI) (LAST MODIFIED)
-  // Symbol: ${symbol.toUpperCase()}
-  // Initial USDT balance: ${initialUSDTBalance} USDT
-  // Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
-  // `);
+  console.log(`INIT
+  Bot started working at: ${format(new Date(), DATE_FORMAT)}
+  with using the STRATEGY 1.2(RSI + DMI) (LAST MODIFIED)
+  Symbol: ${symbol.toUpperCase()}
+  Initial USDT balance: ${initialUSDTBalance} USDT
+  Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
+  `);
 
   getTradeStream({
     symbol: symbol,
@@ -229,10 +230,10 @@ import { getExchangeInfo } from './api/exchangeInfo';
 
 process.on('unhandledRejection', async (reason: Error) => {
   console.error(reason);
-  await sendToRecipients(`ERROR
-    ${reason.message}
-    ${reason.stack}
-  `);
+  // await sendToRecipients(`ERROR
+  //   ${reason.message}
+  //   ${reason.stack}
+  // `);
 
   process.exit(1);
 });
