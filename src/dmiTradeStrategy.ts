@@ -89,7 +89,7 @@ import { marketBuy, marketSell } from './api/order';
     //             botState.availableUSDT) *
     //             100,
     //       );
-    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
+    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume > 0) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState(
@@ -144,6 +144,11 @@ import { marketBuy, marketSell } from './api/order';
         );
         const order = await marketSell(symbol.toUpperCase(), +amount);
         botState.updateState('order', order);
+        const sellPrice = Number(order.fills[0].price);
+        const profitPercent =
+          sellPrice / botState.buyPrice > 1
+            ? Number((sellPrice / botState.buyPrice) * 100 - 100)
+            : Number(-1 * (100 - (sellPrice / botState.buyPrice) * 100));
         const { available: refreshedUSDTBalance } = await getBalances('USDT');
         const currentProfit =
           Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
@@ -169,8 +174,10 @@ import { marketBuy, marketSell } from './api/order';
                  Date: ${format(new Date(), DATE_FORMAT)}
                  Current profit: ${
                    botState.currentProfit
-                 } USDT (${expectedProfitPercent} %)
-                 Total profit: ${botState.totalProfit} USDT
+                 } USDT (${profitPercent} %)
+                 Total profit: ${
+                   botState.totalProfit
+                 } USDT (${(botState.totalProfit / initialUSDTBalance) * 100} %)
                  Average deal profit: ${botState.totalProfit /
                    botState.dealsCount} USDT/deal
                  Stablecoin balance: ${botState.availableUSDT} USDT
