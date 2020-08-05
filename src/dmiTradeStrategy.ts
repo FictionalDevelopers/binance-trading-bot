@@ -36,12 +36,14 @@ import { getRsiStream } from './indicators/rsi';
     dealsCount: 1,
     startTime: new Date().getTime(),
     workDuration: null,
+    dealEnter: true,
     updateState: function(fieldName, value) {
       this[`${fieldName}`] = value;
     },
   };
 
   const indicatorsData = {
+    willPriceGrow: false,
     prev1mDmi: null,
     prev1hDmi: null,
     dmiMdi1hSignal: 0,
@@ -94,7 +96,11 @@ import { getRsiStream } from './indicators/rsi';
     //             botState.availableUSDT) *
     //             100,
     //       );
-    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
+    if (
+      botState.status === 'buy' &&
+      indicatorsData.willPriceGrow &&
+      (botState.dealEnter || (rsi1mValue !== null && rsi1mValue < 50 && buyNow))
+    ) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState(
@@ -145,7 +151,7 @@ import { getRsiStream } from './indicators/rsi';
         rsi1mValue > 65 &&
         sellNow &&
         expectedProfitPercent >= 1) ||
-        indicatorsData.adxSellSignalVolume > 0)
+        !indicatorsData.willPriceGrow)
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -208,6 +214,7 @@ import { getRsiStream } from './indicators/rsi';
         //                     date: ${format(new Date(), DATE_FORMAT)}
         //       `);
         botState.dealsCount++;
+        botState.updateState('dealEnter', false);
         botState.updateState('status', 'buy');
       } catch (e) {
         await sendToRecipients(`SELL ERROR
@@ -274,6 +281,10 @@ import { getRsiStream } from './indicators/rsi';
         indicatorsData.adxSellSignalVolume = 0;
       }
     }
+    if (indicatorsData.adxBuySignalVolume >= 2)
+      indicatorsData.willPriceGrow = true;
+    if (indicatorsData.adxSellSignalVolume > 0)
+      indicatorsData.willPriceGrow = false;
     indicatorsData.prev1mDmi = dmi;
   });
 
