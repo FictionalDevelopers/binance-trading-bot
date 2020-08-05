@@ -99,7 +99,7 @@ import { getRsiStream } from './indicators/rsi';
     if (
       botState.status === 'buy' &&
       indicatorsData.willPriceGrow &&
-      (botState.dealEnter || (rsi1mValue !== null && rsi1mValue < 50 && buyNow))
+      (botState.dealEnter || (rsi1mValue !== null && rsi1mValue < 55 && buyNow))
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -299,7 +299,7 @@ import { getRsiStream } from './indicators/rsi';
 
   getDmiStream({
     symbol: symbol,
-    interval: '1h',
+    interval: '15m',
     period: 14,
   }).subscribe(dmi => {
     if (!indicatorsData.prev1mDmi) {
