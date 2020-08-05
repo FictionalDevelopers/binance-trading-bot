@@ -147,11 +147,11 @@ import { getRsiStream } from './indicators/rsi';
 
     if (
       botState.status === 'sell' &&
-      ((rsi1mValue !== null &&
-        rsi1mValue > 65 &&
-        sellNow &&
-        expectedProfitPercent >= 1) ||
-        !indicatorsData.willPriceGrow)
+      rsi1mValue !== null &&
+      rsi1mValue > 65 &&
+      sellNow &&
+      expectedProfitPercent >= 1 &&
+      indicatorsData.willPriceGrow
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -215,6 +215,78 @@ import { getRsiStream } from './indicators/rsi';
         //       `);
         botState.dealsCount++;
         botState.updateState('dealEnter', false);
+        botState.updateState('status', 'buy');
+        return;
+      } catch (e) {
+        await sendToRecipients(`SELL ERROR
+            ${JSON.stringify(e)}
+      `);
+        botState.updateState('status', 'sell');
+      }
+    }
+    if (botState.status === 'sell' && !indicatorsData.willPriceGrow) {
+      try {
+        botState.updateState('status', 'isPending');
+        botState.updateState('buyPrice', null);
+        const amount = binance.roundStep(
+          Number(botState.availableCryptoCoin),
+          stepSize,
+        );
+        const order = await marketSell(symbol.toUpperCase(), +amount);
+        botState.updateState('order', order);
+        const sellPrice = Number(order.fills[0].price);
+        const profitPercent = botState.buyPrice
+          ? sellPrice / botState.buyPrice > 1
+            ? Number((sellPrice / botState.buyPrice) * 100 - 100)
+            : Number(-1 * (100 - (sellPrice / botState.buyPrice) * 100))
+          : 0;
+        const { available: refreshedUSDTBalance } = await getBalances('USDT');
+        const currentProfit =
+          Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
+        botState.updateState('currentProfit', currentProfit);
+        botState.updateState('availableUSDT', +refreshedUSDTBalance);
+        botState.updateState(
+          'totalProfit',
+          Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
+        );
+        const { available: refreshedCryptoCoinBalance } = await getBalances(
+          cryptoCoin,
+        );
+        botState.updateState(
+          'availableCryptoCoin',
+          +refreshedCryptoCoinBalance,
+        );
+
+        await sendToRecipients(`SELL
+                 STRATEGY 1.2(RSI + DMI)
+                 Deal №: ${botState.dealsCount}
+                 Symbol: ${symbol.toUpperCase()}
+                 Price: ${botState.order.fills[0].price} USDT
+                 Date: ${format(new Date(), DATE_FORMAT)}
+                 Current profit: ${
+                   botState.currentProfit
+                 } USDT (${profitPercent} %)
+                 Total profit: ${
+                   botState.totalProfit
+                 } USDT (${(botState.totalProfit / initialUSDTBalance) * 100} %)
+                 Average deal profit: ${botState.totalProfit /
+                   botState.dealsCount} USDT/deal
+                 Stablecoin balance: ${botState.availableUSDT} USDT
+                 Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
+                 OrderInfo: ${JSON.stringify(botState.order)}
+                 Work duration: ${format(
+                   botState.startTime - new Date().getTime(),
+                   DATE_FORMAT,
+                 )}
+             `);
+        // await sendToRecipients(`Sell
+        //                     ADX STRATEGY
+        //                     symbol: ${symbol.toUpperCase()}
+        //                     price: ${pricesStream[pricesStream.length - 1]}
+        //                     date: ${format(new Date(), DATE_FORMAT)}
+        //       `);
+        botState.dealsCount++;
+        botState.updateState('dealEnter', true);
         botState.updateState('status', 'buy');
       } catch (e) {
         await sendToRecipients(`SELL ERROR
