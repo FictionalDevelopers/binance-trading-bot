@@ -76,7 +76,7 @@ const symbol = process.argv[2];
         : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
       : 0;
 
-    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume > 0) {
+    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState(
