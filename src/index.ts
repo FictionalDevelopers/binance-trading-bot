@@ -76,7 +76,7 @@ const symbol = process.argv[2];
         : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
       : 0;
 
-    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
+    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume > 0) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState(
@@ -212,7 +212,7 @@ const symbol = process.argv[2];
     indicatorsData.prev1mDmi = dmi;
   });
 
-  console.log(`INIT
+  console.log(`INIT 
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   with using the STRATEGY 1.2(RSI + DMI) (LAST MODIFIED)
   Symbol: ${symbol.toUpperCase()}
