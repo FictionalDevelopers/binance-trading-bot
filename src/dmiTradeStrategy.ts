@@ -299,7 +299,7 @@ import { getRsiStream } from './indicators/rsi';
 
   getDmiStream({
     symbol: symbol,
-    interval: '15m',
+    interval: '1h',
     period: 14,
   }).subscribe(dmi => {
     if (!indicatorsData.prev1mDmi) {
