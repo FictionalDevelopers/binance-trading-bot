@@ -357,9 +357,9 @@ import { getRsiStream } from './indicators/rsi';
         indicatorsData.adxSellSignalVolume = 0;
       }
     }
-    if (indicatorsData.adxBuySignalVolume > 0)
+    if (indicatorsData.adxBuySignalVolume >= 2)
       indicatorsData.willPriceGrow = true;
-    if (indicatorsData.adxSellSignalVolume > 0)
+    if (indicatorsData.adxSellSignalVolume >= 2)
       indicatorsData.willPriceGrow = false;
     indicatorsData.prev1mDmi = dmi;
   });
