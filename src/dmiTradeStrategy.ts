@@ -99,7 +99,11 @@ import { getRsiStream } from './indicators/rsi';
     if (
       botState.status === 'buy' &&
       indicatorsData.willPriceGrow &&
-      (botState.dealEnter || (rsi1mValue !== null && rsi1mValue < 55 && buyNow))
+      ((botState.dealEnter &&
+        rsi1mValue !== null &&
+        rsi1mValue < 70 &&
+        buyNow) ||
+        (rsi1mValue !== null && rsi1mValue < 55 && buyNow))
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -353,7 +357,7 @@ import { getRsiStream } from './indicators/rsi';
         indicatorsData.adxSellSignalVolume = 0;
       }
     }
-    if (indicatorsData.adxBuySignalVolume >= 2)
+    if (indicatorsData.adxBuySignalVolume > 0)
       indicatorsData.willPriceGrow = true;
     if (indicatorsData.adxSellSignalVolume > 0)
       indicatorsData.willPriceGrow = false;
