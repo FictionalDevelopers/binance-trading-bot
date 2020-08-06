@@ -10,12 +10,11 @@ import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketBuy, marketSell } from './api/order';
-import { getRsiStream } from './indicators/rsi';
 
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'adausdt';
+  const symbol = 'erdusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -36,22 +35,17 @@ import { getRsiStream } from './indicators/rsi';
     dealsCount: 1,
     startTime: new Date().getTime(),
     workDuration: null,
-    dealEnter: true,
     updateState: function(fieldName, value) {
       this[`${fieldName}`] = value;
     },
   };
 
   const indicatorsData = {
-    willPriceGrow: false,
     prev1mDmi: null,
     prev1hDmi: null,
     dmiMdi1hSignal: 0,
     rsi1mValue: null,
     rsi1hValue: null,
-    prev1mRsi: null,
-    sellNow: false,
-    buyNow: false,
     adx1mSignal: 0,
     mdi1mSignal: 0,
     mdi1hSignal: 0,
@@ -69,7 +63,6 @@ import { getRsiStream } from './indicators/rsi';
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
-    const { rsi1mValue, sellNow, buyNow } = indicatorsData;
     if (botState.status === 'isPending') return;
     botState.updateState(
       'currentPrice',
@@ -96,15 +89,7 @@ import { getRsiStream } from './indicators/rsi';
     //             botState.availableUSDT) *
     //             100,
     //       );
-    if (
-      botState.status === 'buy' &&
-      indicatorsData.willPriceGrow &&
-      ((botState.dealEnter &&
-        rsi1mValue !== null &&
-        rsi1mValue < 70 &&
-        buyNow) ||
-        (rsi1mValue !== null && rsi1mValue < 55 && buyNow))
-    ) {
+    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState(
@@ -149,14 +134,7 @@ import { getRsiStream } from './indicators/rsi';
       }
     }
 
-    if (
-      botState.status === 'sell' &&
-      rsi1mValue !== null &&
-      rsi1mValue > 65 &&
-      sellNow &&
-      expectedProfitPercent >= 1 &&
-      indicatorsData.willPriceGrow
-    ) {
+    if (botState.status === 'sell' && indicatorsData.adxSellSignalVolume > 0) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState('buyPrice', null);
@@ -166,12 +144,6 @@ import { getRsiStream } from './indicators/rsi';
         );
         const order = await marketSell(symbol.toUpperCase(), +amount);
         botState.updateState('order', order);
-        const sellPrice = Number(order.fills[0].price);
-        const profitPercent = botState.buyPrice
-          ? sellPrice / botState.buyPrice > 1
-            ? Number((sellPrice / botState.buyPrice) * 100 - 100)
-            : Number(-1 * (100 - (sellPrice / botState.buyPrice) * 100))
-          : 0;
         const { available: refreshedUSDTBalance } = await getBalances('USDT');
         const currentProfit =
           Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
@@ -197,10 +169,8 @@ import { getRsiStream } from './indicators/rsi';
                  Date: ${format(new Date(), DATE_FORMAT)}
                  Current profit: ${
                    botState.currentProfit
-                 } USDT (${profitPercent} %)
-                 Total profit: ${
-                   botState.totalProfit
-                 } USDT (${(botState.totalProfit / initialUSDTBalance) * 100} %)
+                 } USDT (${expectedProfitPercent} %)
+                 Total profit: ${botState.totalProfit} USDT
                  Average deal profit: ${botState.totalProfit /
                    botState.dealsCount} USDT/deal
                  Stablecoin balance: ${botState.availableUSDT} USDT
@@ -218,79 +188,6 @@ import { getRsiStream } from './indicators/rsi';
         //                     date: ${format(new Date(), DATE_FORMAT)}
         //       `);
         botState.dealsCount++;
-        botState.updateState('dealEnter', false);
-        botState.updateState('status', 'buy');
-        return;
-      } catch (e) {
-        await sendToRecipients(`SELL ERROR
-            ${JSON.stringify(e)}
-      `);
-        botState.updateState('status', 'sell');
-      }
-    }
-    if (botState.status === 'sell' && !indicatorsData.willPriceGrow) {
-      try {
-        botState.updateState('status', 'isPending');
-        botState.updateState('buyPrice', null);
-        const amount = binance.roundStep(
-          Number(botState.availableCryptoCoin),
-          stepSize,
-        );
-        const order = await marketSell(symbol.toUpperCase(), +amount);
-        botState.updateState('order', order);
-        const sellPrice = Number(order.fills[0].price);
-        const profitPercent = botState.buyPrice
-          ? sellPrice / botState.buyPrice > 1
-            ? Number((sellPrice / botState.buyPrice) * 100 - 100)
-            : Number(-1 * (100 - (sellPrice / botState.buyPrice) * 100))
-          : 0;
-        const { available: refreshedUSDTBalance } = await getBalances('USDT');
-        const currentProfit =
-          Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
-        botState.updateState('currentProfit', currentProfit);
-        botState.updateState('availableUSDT', +refreshedUSDTBalance);
-        botState.updateState(
-          'totalProfit',
-          Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
-        );
-        const { available: refreshedCryptoCoinBalance } = await getBalances(
-          cryptoCoin,
-        );
-        botState.updateState(
-          'availableCryptoCoin',
-          +refreshedCryptoCoinBalance,
-        );
-
-        await sendToRecipients(`SELL
-                 STRATEGY 1.2(RSI + DMI)
-                 Deal №: ${botState.dealsCount}
-                 Symbol: ${symbol.toUpperCase()}
-                 Price: ${botState.order.fills[0].price} USDT
-                 Date: ${format(new Date(), DATE_FORMAT)}
-                 Current profit: ${
-                   botState.currentProfit
-                 } USDT (${profitPercent} %)
-                 Total profit: ${
-                   botState.totalProfit
-                 } USDT (${(botState.totalProfit / initialUSDTBalance) * 100} %)
-                 Average deal profit: ${botState.totalProfit /
-                   botState.dealsCount} USDT/deal
-                 Stablecoin balance: ${botState.availableUSDT} USDT
-                 Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
-                 OrderInfo: ${JSON.stringify(botState.order)}
-                 Work duration: ${format(
-                   botState.startTime - new Date().getTime(),
-                   DATE_FORMAT,
-                 )}
-             `);
-        // await sendToRecipients(`Sell
-        //                     ADX STRATEGY
-        //                     symbol: ${symbol.toUpperCase()}
-        //                     price: ${pricesStream[pricesStream.length - 1]}
-        //                     date: ${format(new Date(), DATE_FORMAT)}
-        //       `);
-        botState.dealsCount++;
-        botState.updateState('dealEnter', true);
         botState.updateState('status', 'buy');
       } catch (e) {
         await sendToRecipients(`SELL ERROR
@@ -357,31 +254,7 @@ import { getRsiStream } from './indicators/rsi';
         indicatorsData.adxSellSignalVolume = 0;
       }
     }
-    if (indicatorsData.adxBuySignalVolume >= 2)
-      indicatorsData.willPriceGrow = true;
-    if (indicatorsData.adxSellSignalVolume >= 2)
-      indicatorsData.willPriceGrow = false;
     indicatorsData.prev1mDmi = dmi;
-  });
-
-  getRsiStream({
-    symbol: symbol,
-    period: 14,
-    interval: '1m',
-  }).subscribe(rsi => {
-    if (!indicatorsData.prev1mRsi) {
-      indicatorsData.prev1mRsi = rsi;
-      return;
-    }
-    if (indicatorsData.prev1mRsi > rsi) {
-      indicatorsData.sellNow = true;
-      indicatorsData.buyNow = false;
-    }
-    if (indicatorsData.prev1mRsi < rsi) {
-      indicatorsData.sellNow = false;
-      indicatorsData.buyNow = true;
-    }
-    indicatorsData.rsi1mValue = rsi;
   });
 
   await sendToRecipients(`INIT
