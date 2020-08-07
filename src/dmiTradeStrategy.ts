@@ -60,6 +60,7 @@ import { marketBuy, marketSell } from './api/order';
     trend: null,
     adxBuySignalVolume: 0,
     adxSellSignalVolume: 0,
+    willPriceGrow: false,
   };
 
   const trader = async pricesStream => {
@@ -93,7 +94,7 @@ import { marketBuy, marketSell } from './api/order';
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.adxBuySignalVolume >= 2 &&
+      indicatorsData.willPriceGrow &&
       rsi1mValue !== null &&
       rsi1mValue < 70 &&
       rsi1hValue !== null &&
@@ -145,7 +146,7 @@ import { marketBuy, marketSell } from './api/order';
 
     if (
       botState.status === 'sell' &&
-      (indicatorsData.adxSellSignalVolume > 0 || expectedProfitPercent <= 0.2)
+      (!indicatorsData.willPriceGrow || expectedProfitPercent <= 0.2)
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -282,6 +283,10 @@ import { marketBuy, marketSell } from './api/order';
         indicatorsData.adxSellSignalVolume = 0;
       }
     }
+    if (indicatorsData.adxBuySignalVolume >= 2)
+      indicatorsData.willPriceGrow = true;
+    if (indicatorsData.adxSellSignalVolume > 0)
+      indicatorsData.willPriceGrow = false;
     indicatorsData.prev1mDmi = dmi;
   });
 
