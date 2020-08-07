@@ -6,6 +6,7 @@ import { DATE_FORMAT } from './constants/date';
 import { getTradeStream } from './api/trades.js';
 import { processSubscriptions, sendToRecipients } from './services/telegram';
 import { getDmiStream } from './indicators/dmi';
+import { getRsiStream } from './indicators/rsi';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
@@ -63,6 +64,7 @@ import { marketBuy, marketSell } from './api/order';
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
+    const { rsi1mValue, rsi1hValue } = indicatorsData;
     if (botState.status === 'isPending') return;
     botState.updateState(
       'currentPrice',
@@ -89,7 +91,14 @@ import { marketBuy, marketSell } from './api/order';
     //             botState.availableUSDT) *
     //             100,
     //       );
-    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
+    if (
+      botState.status === 'buy' &&
+      indicatorsData.adxBuySignalVolume >= 2 &&
+      rsi1mValue !== null &&
+      rsi1mValue < 70 &&
+      rsi1hValue !== null &&
+      rsi1hValue < 70
+    ) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState(
@@ -134,7 +143,10 @@ import { marketBuy, marketSell } from './api/order';
       }
     }
 
-    if (botState.status === 'sell' && indicatorsData.adxSellSignalVolume > 0) {
+    if (
+      botState.status === 'sell' &&
+      (indicatorsData.adxSellSignalVolume > 0 || expectedProfitPercent <= 0.2)
+    ) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState('buyPrice', null);
@@ -197,6 +209,22 @@ import { marketBuy, marketSell } from './api/order';
       }
     }
   };
+
+  getRsiStream({
+    symbol: symbol,
+    period: 14,
+    interval: '1m',
+  }).subscribe(rsi => {
+    indicatorsData.rsi1mValue = rsi;
+  });
+
+  getRsiStream({
+    symbol: symbol,
+    period: 14,
+    interval: '1h',
+  }).subscribe(rsi => {
+    indicatorsData.rsi1hValue = rsi;
+  });
 
   getDmiStream({
     symbol: symbol,
