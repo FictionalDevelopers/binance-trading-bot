@@ -144,10 +144,7 @@ import { marketBuy, marketSell } from './api/order';
       }
     }
 
-    if (
-      botState.status === 'sell' &&
-      (!indicatorsData.willPriceGrow || expectedProfitPercent <= 0.2)
-    ) {
+    if (botState.status === 'sell' && !indicatorsData.willPriceGrow) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState('buyPrice', null);
