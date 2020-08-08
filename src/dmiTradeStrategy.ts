@@ -93,7 +93,7 @@ import { marketBuy, marketSell } from './api/order';
     //             botState.availableUSDT) *
     //             100,
     //       );
-    if (botState.status === 'buy' && indicatorsData.willPriceGrow) {
+    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState(
@@ -144,7 +144,7 @@ import { marketBuy, marketSell } from './api/order';
 
     if (
       botState.status === 'sell' &&
-      (!indicatorsData.willPriceGrow || expectedProfitPercent <= -0.2)
+      (indicatorsData.adxSellSignalVolume > 0 || expectedProfitPercent <= -0.2)
     ) {
       try {
         botState.updateState('status', 'isPending');
