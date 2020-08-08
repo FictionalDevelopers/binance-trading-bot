@@ -11,6 +11,7 @@ import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketBuy, marketSell } from './api/order';
+import { getEmaStream } from './indicators/ema';
 
 (async function() {
   await connect();
@@ -142,7 +143,11 @@ import { marketBuy, marketSell } from './api/order';
       }
     }
 
-    if (botState.status === 'sell' && indicatorsData.adxSellSignalVolume > 0) {
+    if (
+      botState.status === 'sell' &&
+      (indicatorsData.adxSellSignalVolume > 0 ||
+        indicatorsData.middle1mEMA > indicatorsData.fast1mEMA)
+    ) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState('buyPrice', null);
@@ -207,21 +212,21 @@ import { marketBuy, marketSell } from './api/order';
     }
   };
 
-  getRsiStream({
-    symbol: symbol,
-    period: 14,
-    interval: '1m',
-  }).subscribe(rsi => {
-    indicatorsData.rsi1mValue = rsi;
-  });
-
-  getRsiStream({
-    symbol: symbol,
-    period: 14,
-    interval: '1h',
-  }).subscribe(rsi => {
-    indicatorsData.rsi1hValue = rsi;
-  });
+  // getRsiStream({
+  //   symbol: symbol,
+  //   period: 14,
+  //   interval: '1m',
+  // }).subscribe(rsi => {
+  //   indicatorsData.rsi1mValue = rsi;
+  // });
+  //
+  // getRsiStream({
+  //   symbol: symbol,
+  //   period: 14,
+  //   interval: '1h',
+  // }).subscribe(rsi => {
+  //   indicatorsData.rsi1hValue = rsi;
+  // });
 
   getDmiStream({
     symbol: symbol,
@@ -284,6 +289,30 @@ import { marketBuy, marketSell } from './api/order';
     if (indicatorsData.adxSellSignalVolume > 0)
       indicatorsData.willPriceGrow = false;
     indicatorsData.prev1mDmi = dmi;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 7,
+  }).subscribe(fastEMA => {
+    indicatorsData.fast1mEMA = fastEMA;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 25,
+  }).subscribe(middleEMA => {
+    indicatorsData.middle1mEMA = middleEMA;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 99,
+  }).subscribe(slowEMA => {
+    indicatorsData.slow1mEMA = slowEMA;
   });
 
   await sendToRecipients(`INIT
