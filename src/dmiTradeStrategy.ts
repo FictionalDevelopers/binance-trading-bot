@@ -29,6 +29,7 @@ import { marketBuy, marketSell } from './api/order';
     tradeAmountPercent: 0.6,
     availableUSDT: initialUSDTBalance,
     availableCryptoCoin: initialCryptoCoinBalance,
+    cummulativeQuoteQty: null,
     buyPrice: null,
     currentPrice: null,
     order: null,
@@ -107,6 +108,10 @@ import { marketBuy, marketSell } from './api/order';
         const order = await marketBuy(symbol.toUpperCase(), +amount);
         botState.updateState('buyPrice', Number(order.fills[0].price));
         botState.updateState('order', order);
+        botState.updateState(
+          'cummulativeQuoteQty',
+          Number(order.cummulativeQuoteQty),
+        );
         const { available: refreshedCryptoCoinBalance } = await getBalances(
           cryptoCoin,
         );
@@ -175,7 +180,8 @@ import { marketBuy, marketSell } from './api/order';
                  Date: ${format(new Date(), DATE_FORMAT)}
                  Current profit: ${
                    botState.currentProfit
-                 } USDT (${expectedProfitPercent} %)
+                 } USDT (${(currentProfit / botState.cummulativeQuoteQty) *
+          100} %)
                  Total profit: ${botState.totalProfit} USDT
                  Average deal profit: ${botState.totalProfit /
                    botState.dealsCount} USDT/deal
