@@ -363,8 +363,6 @@ import { getEmaStream } from './indicators/ema';
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   with using the ${botState.strategy}
   Symbol: ${symbol.toUpperCase()}
-  Initial USDT balance: ${initialUSDTBalance} USDT
-  Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
   `);
   } else {
     await sendToRecipients(`INIT
