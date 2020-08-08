@@ -99,7 +99,10 @@ const symbol = process.argv[2];
       }
     }
 
-    if (botState.status === 'sell' && indicatorsData.adxSellSignalVolume > 0) {
+    if (
+      botState.status === 'sell' &&
+      (indicatorsData.adxSellSignalVolume > 0 || expectedProfitPercent <= 0)
+    ) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState('buyPrice', null);
