@@ -24,6 +24,8 @@ import { getEmaStream } from './indicators/ema';
 
   // const symbol = process.argv[2];
   const botState = {
+    strategy: 'ADX EMA STRATEGY',
+    testMode: false,
     status: 'buy',
     currentProfit: null,
     totalProfit: null,
@@ -95,30 +97,56 @@ import { getEmaStream } from './indicators/ema';
     //             100,
     //       );
     if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
-      try {
-        botState.updateState('status', 'isPending');
-        botState.updateState(
-          'buyPrice',
-          Number(pricesStream[pricesStream.length - 1]),
-        );
+      if (botState.testMode) {
+        try {
+          botState.updateState('status', 'isPending');
+          botState.updateState(
+            'buyPrice',
+            Number(pricesStream[pricesStream.length - 1]),
+          );
+          console.log(`BUY
+                             ${botState.strategy}
+                             symbol: ${symbol.toUpperCase()}
+                             price: ${botState.buyPrice}
+                             date: ${format(new Date(), DATE_FORMAT)}
+              `);
+          botState.updateState('status', 'sell');
+          return;
+        } catch (e) {
+          await sendToRecipients(`BUY ERROR
+            ${JSON.stringify(e)}
+      `);
+          botState.updateState('status', 'buy');
+        }
+      } else {
+        try {
+          botState.updateState('status', 'isPending');
+          botState.updateState(
+            'buyPrice',
+            Number(pricesStream[pricesStream.length - 1]),
+          );
 
-        const amount = binance.roundStep(
-          (botState.availableUSDT * tradeAmountPercent) / botState.currentPrice,
-          stepSize,
-        );
-        const order = await marketBuy(symbol.toUpperCase(), +amount);
-        botState.updateState('buyPrice', Number(order.fills[0].price));
-        botState.updateState('order', order);
-        botState.updateState(
-          'cummulativeQuoteQty',
-          Number(order.cummulativeQuoteQty),
-        );
-        const { available: refreshedCryptoCoinBalance } = await getBalances(
-          cryptoCoin,
-        );
-        botState.updateState('availableCryptoCoin', refreshedCryptoCoinBalance);
-        await sendToRecipients(`BUY
-                 STRATEGY 1.2 (RSI + DMI) MODIFIED
+          const amount = binance.roundStep(
+            (botState.availableUSDT * tradeAmountPercent) /
+              botState.currentPrice,
+            stepSize,
+          );
+          const order = await marketBuy(symbol.toUpperCase(), +amount);
+          botState.updateState('buyPrice', Number(order.fills[0].price));
+          botState.updateState('order', order);
+          botState.updateState(
+            'cummulativeQuoteQty',
+            Number(order.cummulativeQuoteQty),
+          );
+          const { available: refreshedCryptoCoinBalance } = await getBalances(
+            cryptoCoin,
+          );
+          botState.updateState(
+            'availableCryptoCoin',
+            refreshedCryptoCoinBalance,
+          );
+          await sendToRecipients(`BUY
+                 ${botState.strategy}
                  Deal №: ${botState.dealsCount}
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.buyPrice} USDT
@@ -127,56 +155,75 @@ import { getEmaStream } from './indicators/ema';
                  Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
-        // await sendToRecipients(`BUY
-        //                      ADX STRATEGY
-        //                      symbol: ${symbol.toUpperCase()}
-        //                      price: ${botState.buyPrice}
-        //                      date: ${format(new Date(), DATE_FORMAT)}
-        //       `);
-        botState.updateState('status', 'sell');
-        return;
-      } catch (e) {
-        await sendToRecipients(`BUY ERROR
+          botState.updateState('status', 'sell');
+          return;
+        } catch (e) {
+          await sendToRecipients(`BUY ERROR
             ${JSON.stringify(e)}
       `);
-        botState.updateState('status', 'buy');
+          botState.updateState('status', 'buy');
+        }
       }
     }
-
     if (
       botState.status === 'sell' &&
       (indicatorsData.adxSellSignalVolume > 0 ||
         (indicatorsData.middle1mEMA > indicatorsData.fast1mEMA &&
           expectedProfitPercent < 1))
     ) {
-      try {
-        botState.updateState('status', 'isPending');
-        botState.updateState('buyPrice', null);
-        const amount = binance.roundStep(
-          Number(botState.availableCryptoCoin),
-          stepSize,
-        );
-        const order = await marketSell(symbol.toUpperCase(), +amount);
-        botState.updateState('order', order);
-        const { available: refreshedUSDTBalance } = await getBalances('USDT');
-        const currentProfit =
-          Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
-        botState.updateState('currentProfit', currentProfit);
-        botState.updateState('availableUSDT', +refreshedUSDTBalance);
-        botState.updateState(
-          'totalProfit',
-          Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
-        );
-        const { available: refreshedCryptoCoinBalance } = await getBalances(
-          cryptoCoin,
-        );
-        botState.updateState(
-          'availableCryptoCoin',
-          +refreshedCryptoCoinBalance,
-        );
-
-        await sendToRecipients(`SELL
-                 STRATEGY 1.2(RSI + DMI)
+      if (botState.testMode) {
+        try {
+          botState.updateState('status', 'isPending');
+          botState.updateState('buyPrice', null);
+          botState.updateState(
+            'totalProfit',
+            (botState.totalProfit += expectedProfitPercent),
+          );
+          console.log(`Sell
+                            ${botState.strategy}
+                            symbol: ${symbol.toUpperCase()}
+                            price: ${pricesStream[pricesStream.length - 1]}
+                            date: ${format(new Date(), DATE_FORMAT)}
+                            current profit: ${expectedProfitPercent}%
+                            total profit: ${botState.totalProfit}%
+              `);
+          botState.dealsCount++;
+          indicatorsData.adxBuySignalVolume = 0;
+          botState.updateState('status', 'buy');
+        } catch (e) {
+          await sendToRecipients(`SELL ERROR
+            ${JSON.stringify(e)}
+      `);
+          botState.updateState('status', 'sell');
+        }
+      } else {
+        try {
+          botState.updateState('status', 'isPending');
+          botState.updateState('buyPrice', null);
+          const amount = binance.roundStep(
+            Number(botState.availableCryptoCoin),
+            stepSize,
+          );
+          const order = await marketSell(symbol.toUpperCase(), +amount);
+          botState.updateState('order', order);
+          const { available: refreshedUSDTBalance } = await getBalances('USDT');
+          const currentProfit =
+            Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
+          botState.updateState('currentProfit', currentProfit);
+          botState.updateState('availableUSDT', +refreshedUSDTBalance);
+          botState.updateState(
+            'totalProfit',
+            Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
+          );
+          const { available: refreshedCryptoCoinBalance } = await getBalances(
+            cryptoCoin,
+          );
+          botState.updateState(
+            'availableCryptoCoin',
+            +refreshedCryptoCoinBalance,
+          );
+          await sendToRecipients(`SELL
+                 ${botState.strategy}
                  Deal №: ${botState.dealsCount}
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.order.fills[0].price} USDT
@@ -184,7 +231,7 @@ import { getEmaStream } from './indicators/ema';
                  Current profit: ${
                    botState.currentProfit
                  } USDT (${(currentProfit / botState.cummulativeQuoteQty) *
-          100} %)
+            100} %)
                  Total profit: ${botState.totalProfit} USDT
                  Average deal profit: ${botState.totalProfit /
                    botState.dealsCount} USDT/deal
@@ -196,20 +243,15 @@ import { getEmaStream } from './indicators/ema';
                    DATE_FORMAT,
                  )}
              `);
-        // await sendToRecipients(`Sell
-        //                     ADX STRATEGY
-        //                     symbol: ${symbol.toUpperCase()}
-        //                     price: ${pricesStream[pricesStream.length - 1]}
-        //                     date: ${format(new Date(), DATE_FORMAT)}
-        //       `);
-        botState.dealsCount++;
-        indicatorsData.adxBuySignalVolume = 0;
-        botState.updateState('status', 'buy');
-      } catch (e) {
-        await sendToRecipients(`SELL ERROR
+          botState.dealsCount++;
+          indicatorsData.adxBuySignalVolume = 0;
+          botState.updateState('status', 'buy');
+        } catch (e) {
+          await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
       `);
-        botState.updateState('status', 'sell');
+          botState.updateState('status', 'sell');
+        }
       }
     }
   };
@@ -316,14 +358,23 @@ import { getEmaStream } from './indicators/ema';
   }).subscribe(slowEMA => {
     indicatorsData.slow1mEMA = slowEMA;
   });
-
-  await sendToRecipients(`INIT
+  if (botState.testMode) {
+    console.log(`INIT TEST MODE
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  with using the ADX STRATEGY
+  with using the ${botState.strategy}
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
   `);
+  } else {
+    await sendToRecipients(`INIT
+  Bot started working at: ${format(new Date(), DATE_FORMAT)}
+  with using the ${botState.strategy}
+  Symbol: ${symbol.toUpperCase()}
+  Initial USDT balance: ${initialUSDTBalance} USDT
+  Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
+  `);
+  }
 
   getTradeStream({
     symbol: symbol,
