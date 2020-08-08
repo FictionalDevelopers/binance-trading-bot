@@ -142,10 +142,7 @@ import { marketBuy, marketSell } from './api/order';
       }
     }
 
-    if (
-      botState.status === 'sell' &&
-      (indicatorsData.adxSellSignalVolume > 0 || expectedProfitPercent <= -0.2)
-    ) {
+    if (botState.status === 'sell' && indicatorsData.adxSellSignalVolume > 0) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState('buyPrice', null);
