@@ -146,7 +146,8 @@ import { getEmaStream } from './indicators/ema';
     if (
       botState.status === 'sell' &&
       (indicatorsData.adxSellSignalVolume > 0 ||
-        indicatorsData.middle1mEMA > indicatorsData.fast1mEMA)
+        (indicatorsData.middle1mEMA > indicatorsData.fast1mEMA &&
+          expectedProfitPercent < 1))
     ) {
       try {
         botState.updateState('status', 'isPending');

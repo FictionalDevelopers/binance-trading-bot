@@ -9,6 +9,7 @@ import { getDmiStream } from './indicators/dmi';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
+import { getEmaStream } from './indicators/ema';
 
 const symbol = process.argv[2];
 
@@ -101,7 +102,9 @@ const symbol = process.argv[2];
 
     if (
       botState.status === 'sell' &&
-      (indicatorsData.adxSellSignalVolume > 0 || expectedProfitPercent <= 0)
+      (indicatorsData.adxSellSignalVolume > 0 ||
+        (indicatorsData.middle1mEMA > indicatorsData.fast1mEMA &&
+          expectedProfitPercent < 1))
     ) {
       try {
         botState.updateState('status', 'isPending');
@@ -213,6 +216,30 @@ const symbol = process.argv[2];
     //     indicatorsData.adxSellSignalVolume,
     // );
     indicatorsData.prev1mDmi = dmi;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 7,
+  }).subscribe(fastEMA => {
+    indicatorsData.fast1mEMA = fastEMA;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 25,
+  }).subscribe(middleEMA => {
+    indicatorsData.middle1mEMA = middleEMA;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 99,
+  }).subscribe(slowEMA => {
+    indicatorsData.slow1mEMA = slowEMA;
   });
 
   console.log(`INIT 
