@@ -92,14 +92,7 @@ import { marketBuy, marketSell } from './api/order';
     //             botState.availableUSDT) *
     //             100,
     //       );
-    if (
-      botState.status === 'buy' &&
-      indicatorsData.willPriceGrow &&
-      rsi1mValue !== null &&
-      rsi1mValue < 70 &&
-      rsi1hValue !== null &&
-      rsi1hValue < 70
-    ) {
+    if (botState.status === 'buy' && indicatorsData.willPriceGrow) {
       try {
         botState.updateState('status', 'isPending');
         botState.updateState(
