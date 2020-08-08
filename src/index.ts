@@ -122,6 +122,7 @@ const symbol = process.argv[2];
                             total profit: ${botState.totalProfit}%
               `);
         botState.dealsCount++;
+        indicatorsData.adxBuySignalVolume = 0;
         botState.updateState('status', 'buy');
       } catch (e) {
         await sendToRecipients(`SELL ERROR

@@ -203,6 +203,7 @@ import { getEmaStream } from './indicators/ema';
         //                     date: ${format(new Date(), DATE_FORMAT)}
         //       `);
         botState.dealsCount++;
+        indicatorsData.adxBuySignalVolume = 0;
         botState.updateState('status', 'buy');
       } catch (e) {
         await sendToRecipients(`SELL ERROR
