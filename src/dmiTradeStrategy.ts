@@ -100,7 +100,7 @@ import { getEmaStream } from './indicators/ema';
     //             botState.availableUSDT) *
     //             100,
     //       );
-    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
+    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume > 0) {
       if (botState.testMode) {
         try {
           botState.updateState('status', 'isPending');
