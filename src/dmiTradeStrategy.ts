@@ -5,13 +5,13 @@ import { RESOURCES } from './constants';
 import { DATE_FORMAT } from './constants/date';
 import { getTradeStream } from './api/trades.js';
 import { processSubscriptions, sendToRecipients } from './services/telegram';
-import { getDmiStream } from './indicators/dmi';
-import { getRsiStream } from './indicators/rsi';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketBuy, marketSell, getOrdersList } from './api/order';
 import { getEMASignal } from './components/ema-signals';
+import { getDMISignal } from './components/dmi-signals';
+import { getRSISignal } from './components/rsi-signals';
 
 (async function() {
   await connect();
@@ -274,85 +274,8 @@ import { getEMASignal } from './components/ema-signals';
     }
   };
 
-  // getRsiStream({
-  //   symbol: symbol,
-  //   period: 14,
-  //   interval: '1m',
-  // }).subscribe(rsi => {
-  //   indicatorsData.rsi1mValue = rsi;
-  // });
-  //
-  // getRsiStream({
-  //   symbol: symbol,
-  //   period: 14,
-  //   interval: '1h',
-  // }).subscribe(rsi => {
-  //   indicatorsData.rsi1hValue = rsi;
-  // });
-
-  getDmiStream({
-    symbol: symbol,
-    interval: '1h',
-    period: 14,
-  }).subscribe(dmi => {
-    if (!indicatorsData.prev1mDmi) {
-      indicatorsData.prev1mDmi = dmi;
-      return;
-    }
-    if (dmi.adx > dmi.pdi) indicatorsData.adx1mSignal = -1;
-    if (dmi.pdi > dmi.adx) indicatorsData.adx1mSignal = 1;
-    if (dmi.mdi > dmi.pdi) {
-      if (indicatorsData.trend === 'UP') {
-        indicatorsData.adxBuySignalVolume = 0;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-      indicatorsData.mdi1mSignal = -1;
-      indicatorsData.trend = 'DOWN';
-    }
-    if (dmi.pdi > dmi.mdi) {
-      if (indicatorsData.trend === 'DOWN') {
-        indicatorsData.adxBuySignalVolume = 0;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-      indicatorsData.mdi1mSignal = 1;
-      indicatorsData.trend = 'UP';
-    }
-
-    if (indicatorsData.trend === 'DOWN') {
-      if (indicatorsData.prev1mDmi.adx > dmi.adx) {
-        indicatorsData.adxBuySignalVolume++;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-      if (indicatorsData.prev1mDmi.adx < dmi.adx) {
-        indicatorsData.adxSellSignalVolume++;
-        indicatorsData.adxBuySignalVolume = 0;
-      }
-      if (indicatorsData.prev1mDmi.adx === dmi.adx) {
-        indicatorsData.adxBuySignalVolume = 0;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-    }
-    if (indicatorsData.trend === 'UP') {
-      if (indicatorsData.prev1mDmi.adx > dmi.adx) {
-        indicatorsData.adxSellSignalVolume++;
-        indicatorsData.adxBuySignalVolume = 0;
-      }
-      if (indicatorsData.prev1mDmi.adx < dmi.adx) {
-        indicatorsData.adxBuySignalVolume++;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-      if (indicatorsData.prev1mDmi.adx === dmi.adx) {
-        indicatorsData.adxBuySignalVolume = 0;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-    }
-    if (indicatorsData.adxBuySignalVolume > 0)
-      indicatorsData.willPriceGrow = true;
-    if (indicatorsData.adxSellSignalVolume > 0)
-      indicatorsData.willPriceGrow = false;
-    indicatorsData.prev1mDmi = dmi;
-  });
-
+  getDMISignal(symbol, '1h', indicatorsData);
+  getRSISignal(symbol, '1m', indicatorsData);
   getEMASignal(symbol, '1m', indicatorsData);
   getEMASignal(symbol, '15m', indicatorsData);
   getEMASignal(symbol, '1h', indicatorsData);
