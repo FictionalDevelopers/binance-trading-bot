@@ -184,11 +184,7 @@ import { getRSISignal } from './components/rsi-signals';
         }
       }
     }
-    if (
-      botState.status === 'sell' &&
-      (!indicatorsData.willPriceGrow ||
-        (!summaryEMABuySignal && expectedProfitPercent < 1))
-    ) {
+    if (botState.status === 'sell' && !indicatorsData.willPriceGrow) {
       if (botState.testMode) {
         try {
           botState.updateState('status', 'isPending');
