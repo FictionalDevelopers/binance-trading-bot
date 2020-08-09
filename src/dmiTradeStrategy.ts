@@ -112,7 +112,6 @@ import { getEMASignal } from './components/ema-signals';
     if (
       botState.status === 'buy' &&
       indicatorsData.willPriceGrow &&
-      !indicatorsData.summaryEMABuySignal &&
       summaryEMABuySignal
     ) {
       if (botState.testMode) {
