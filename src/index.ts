@@ -10,7 +10,7 @@ import { getRsiStream } from './indicators/rsi';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
-import { marketBuy, marketSell, getLastOrder } from './api/order';
+import { marketBuy, marketSell, getOrdersList } from './api/order';
 import { getEmaStream } from './indicators/ema';
 
 (async function() {
@@ -21,14 +21,14 @@ import { getEmaStream } from './indicators/ema';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
-  const ordersList = await getLastOrder(symbol.toUpperCase());
+  const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1];
 
   // const symbol = process.argv[2];
 
   const botState = {
     strategy: 'ADX EMA STRATEGY',
-    testMode: true,
+    testMode: false,
     status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
     currentProfit: null,
     totalProfit: null,
@@ -367,22 +367,17 @@ import { getEmaStream } from './indicators/ema';
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   with using the ${botState.strategy}
   Symbol: ${symbol.toUpperCase()}
-  status: ${botState.status}
   `);
   } else {
     await sendToRecipients(`INIT
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   with using the ${botState.strategy}
-  Status: ${botState.status.toUpperCase}
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
-  Initial order: ${
-    botState.initialOrder.side
-  } ${botState.initialOrder.symbol.toUpperCase()} ${format(
-      botState.initialOrder.time,
-      DATE_FORMAT,
-    )}
+  Initial order: ${botState.initialOrder.side} ${
+      botState.initialOrder.symbol
+    } ${format(botState.initialOrder.time, DATE_FORMAT)}
   `);
   }
 
