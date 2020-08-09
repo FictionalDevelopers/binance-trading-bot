@@ -72,6 +72,7 @@ import { getEMASignal } from './components/ema-signals';
     adxBuySignalVolume: 0,
     adxSellSignalVolume: 0,
     willPriceGrow: false,
+    summaryEMABuySignal: false,
   };
 
   const trader = async pricesStream => {
@@ -111,6 +112,7 @@ import { getEMASignal } from './components/ema-signals';
     if (
       botState.status === 'buy' &&
       indicatorsData.willPriceGrow &&
+      !indicatorsData.summaryEMABuySignal &&
       summaryEMABuySignal
     ) {
       if (botState.testMode) {
@@ -127,6 +129,7 @@ import { getEMASignal } from './components/ema-signals';
                              date: ${format(new Date(), DATE_FORMAT)}
               `);
           botState.updateState('status', 'sell');
+          indicatorsData.summaryEMABuySignal = summaryEMABuySignal;
           return;
         } catch (e) {
           await sendToRecipients(`BUY ERROR
@@ -172,6 +175,7 @@ import { getEMASignal } from './components/ema-signals';
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
           botState.updateState('status', 'sell');
+          indicatorsData.summaryEMABuySignal = summaryEMABuySignal;
           return;
         } catch (e) {
           await sendToRecipients(`BUY ERROR
@@ -183,9 +187,8 @@ import { getEMASignal } from './components/ema-signals';
     }
     if (
       botState.status === 'sell' &&
-      (indicatorsData.adxSellSignalVolume > 0 ||
-        (indicatorsData.middle1mEMA > indicatorsData.fast1mEMA &&
-          expectedProfitPercent < 1))
+      (!indicatorsData.willPriceGrow ||
+        (!summaryEMABuySignal && expectedProfitPercent < 1))
     ) {
       if (botState.testMode) {
         try {
