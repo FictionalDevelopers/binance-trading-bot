@@ -27,7 +27,7 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
-    strategy: 'ADX EMA STRATEGY',
+    strategy: 'TREND CATCHER STRATEGY',
     testMode: false,
     status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
     currentProfit: null,

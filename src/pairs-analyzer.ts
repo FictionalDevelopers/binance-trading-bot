@@ -10,7 +10,7 @@ export default binance.prevDay(false, (error, prevDay) => {
   console.info(prevDay); // view all data
   const filteredArr = prevDay
     .filter(elem => elem.symbol.toString().endsWith('USDT'))
-    .filter(elem => Number(elem.quoteVolume) > 12000000);
+    .filter(elem => Number(elem.quoteVolume) > 9000000);
 
   // console.log(filteredArr)
   const resArr = filteredArr.map(({ symbol, quoteVolume }) => [

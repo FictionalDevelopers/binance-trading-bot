@@ -5,18 +5,18 @@ import { RESOURCES } from './constants';
 import { DATE_FORMAT } from './constants/date';
 import { getTradeStream } from './api/trades.js';
 import { processSubscriptions, sendToRecipients } from './services/telegram';
-import { getDmiStream } from './indicators/dmi';
-import { getRsiStream } from './indicators/rsi';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketBuy, marketSell, getOrdersList } from './api/order';
-import { getEmaStream } from './indicators/ema';
+import { getEMASignal } from './components/ema-signals';
+import { getDMISignal } from './components/dmi-signals';
+import { getRSISignal } from './components/rsi-signals';
 
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'erdusdt';
+  const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -28,7 +28,7 @@ import { getEmaStream } from './indicators/ema';
 
   const botState = {
     strategy: 'ADX EMA STRATEGY',
-    testMode: false,
+    testMode: true,
     status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
     currentProfit: null,
     totalProfit: null,
@@ -64,17 +64,37 @@ import { getEmaStream } from './indicators/ema';
     slow1hEMA: 0,
     middle1hEMA: 0,
     fast1hEMA: 0,
+    slow15mEMA: 0,
+    middle15mEMA: 0,
+    fast15mEMA: 0,
     isDownTrend: false,
     trend: null,
     adxBuySignalVolume: 0,
     adxSellSignalVolume: 0,
     willPriceGrow: false,
+    summaryEMABuySignal: false,
   };
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
     const { rsi1mValue, rsi1hValue } = indicatorsData;
     if (botState.status === 'isPending') return;
+    const summaryEMABuySignal =
+      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
+      indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+      indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
+    // console.log(`
+    // EMA DATA      1m: ${indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+    //   indicatorsData.middle1mEMA > indicatorsData.slow1mEMA}
+    //               15m: ${indicatorsData.fast15mEMA >
+    //                 indicatorsData.middle15mEMA}
+    //               1h: ${indicatorsData.fast1hEMA > indicatorsData.middle1hEMA}
+    //               Total: ${summaryEMABuySignal}
+    //
+    // DMI DATA      adxBuySignal: ${indicatorsData.adxBuySignalVolume}
+    //               adxSellSignal: ${indicatorsData.adxSellSignalVolume}
+    // `);
     botState.updateState(
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
@@ -100,7 +120,11 @@ import { getEmaStream } from './indicators/ema';
     //             botState.availableUSDT) *
     //             100,
     //       );
-    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume >= 2) {
+    if (
+      botState.status === 'buy' &&
+      indicatorsData.willPriceGrow &&
+      summaryEMABuySignal
+    ) {
       if (botState.testMode) {
         try {
           botState.updateState('status', 'isPending');
@@ -115,6 +139,7 @@ import { getEmaStream } from './indicators/ema';
                              date: ${format(new Date(), DATE_FORMAT)}
               `);
           botState.updateState('status', 'sell');
+          indicatorsData.summaryEMABuySignal = summaryEMABuySignal;
           return;
         } catch (e) {
           await sendToRecipients(`BUY ERROR
@@ -160,6 +185,7 @@ import { getEmaStream } from './indicators/ema';
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
           botState.updateState('status', 'sell');
+          indicatorsData.summaryEMABuySignal = summaryEMABuySignal;
           return;
         } catch (e) {
           await sendToRecipients(`BUY ERROR
@@ -169,12 +195,7 @@ import { getEmaStream } from './indicators/ema';
         }
       }
     }
-    if (
-      botState.status === 'sell' &&
-      (indicatorsData.adxSellSignalVolume > 0 ||
-        (indicatorsData.middle1mEMA > indicatorsData.fast1mEMA &&
-          expectedProfitPercent < 1))
-    ) {
+    if (botState.status === 'sell' && !indicatorsData.willPriceGrow) {
       if (botState.testMode) {
         try {
           botState.updateState('status', 'isPending');
@@ -260,108 +281,12 @@ import { getEmaStream } from './indicators/ema';
     }
   };
 
-  // getRsiStream({
-  //   symbol: symbol,
-  //   period: 14,
-  //   interval: '1m',
-  // }).subscribe(rsi => {
-  //   indicatorsData.rsi1mValue = rsi;
-  // });
-  //
-  // getRsiStream({
-  //   symbol: symbol,
-  //   period: 14,
-  //   interval: '1h',
-  // }).subscribe(rsi => {
-  //   indicatorsData.rsi1hValue = rsi;
-  // });
+  getDMISignal(symbol, '1h', indicatorsData);
+  getRSISignal(symbol, '1m', indicatorsData);
+  getEMASignal(symbol, '1m', indicatorsData);
+  getEMASignal(symbol, '15m', indicatorsData);
+  getEMASignal(symbol, '1h', indicatorsData);
 
-  getDmiStream({
-    symbol: symbol,
-    interval: '1h',
-    period: 14,
-  }).subscribe(dmi => {
-    if (!indicatorsData.prev1mDmi) {
-      indicatorsData.prev1mDmi = dmi;
-      return;
-    }
-    if (dmi.adx > dmi.pdi) indicatorsData.adx1mSignal = -1;
-    if (dmi.pdi > dmi.adx) indicatorsData.adx1mSignal = 1;
-    if (dmi.mdi > dmi.pdi) {
-      if (indicatorsData.trend === 'UP') {
-        indicatorsData.adxBuySignalVolume = 0;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-      indicatorsData.mdi1mSignal = -1;
-      indicatorsData.trend = 'DOWN';
-    }
-    if (dmi.pdi > dmi.mdi) {
-      if (indicatorsData.trend === 'DOWN') {
-        indicatorsData.adxBuySignalVolume = 0;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-      indicatorsData.mdi1mSignal = 1;
-      indicatorsData.trend = 'UP';
-    }
-
-    if (indicatorsData.trend === 'DOWN') {
-      if (indicatorsData.prev1mDmi.adx > dmi.adx) {
-        indicatorsData.adxBuySignalVolume++;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-      if (indicatorsData.prev1mDmi.adx < dmi.adx) {
-        indicatorsData.adxSellSignalVolume++;
-        indicatorsData.adxBuySignalVolume = 0;
-      }
-      if (indicatorsData.prev1mDmi.adx === dmi.adx) {
-        indicatorsData.adxBuySignalVolume = 0;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-    }
-    if (indicatorsData.trend === 'UP') {
-      if (indicatorsData.prev1mDmi.adx > dmi.adx) {
-        indicatorsData.adxSellSignalVolume++;
-        indicatorsData.adxBuySignalVolume = 0;
-      }
-      if (indicatorsData.prev1mDmi.adx < dmi.adx) {
-        indicatorsData.adxBuySignalVolume++;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-      if (indicatorsData.prev1mDmi.adx === dmi.adx) {
-        indicatorsData.adxBuySignalVolume = 0;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-    }
-    if (indicatorsData.adxBuySignalVolume >= 2)
-      indicatorsData.willPriceGrow = true;
-    if (indicatorsData.adxSellSignalVolume > 0)
-      indicatorsData.willPriceGrow = false;
-    indicatorsData.prev1mDmi = dmi;
-  });
-
-  getEmaStream({
-    symbol: symbol,
-    interval: '1m',
-    period: 7,
-  }).subscribe(fastEMA => {
-    indicatorsData.fast1mEMA = fastEMA;
-  });
-
-  getEmaStream({
-    symbol: symbol,
-    interval: '1m',
-    period: 25,
-  }).subscribe(middleEMA => {
-    indicatorsData.middle1mEMA = middleEMA;
-  });
-
-  getEmaStream({
-    symbol: symbol,
-    interval: '1m',
-    period: 99,
-  }).subscribe(slowEMA => {
-    indicatorsData.slow1mEMA = slowEMA;
-  });
   if (botState.testMode) {
     console.log(`INIT TEST MODE
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
@@ -372,6 +297,7 @@ import { getEmaStream } from './indicators/ema';
     await sendToRecipients(`INIT
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   with using the ${botState.strategy}
+  Status: ${botState.status.toUpperCase()}
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
