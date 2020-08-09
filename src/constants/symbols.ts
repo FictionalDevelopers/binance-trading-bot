@@ -26,6 +26,7 @@ export const SYMBOLS = {
   TRXUSDT: 'trxusdt',
   MATICUSDT: 'maticusdt',
   KNCUSDT: 'kncusdt',
+  ERDUSDT: 'erdusdt',
 };
 
 export const INDICATORS_LIST_SYMBOLS = {
@@ -56,4 +57,5 @@ export const INDICATORS_LIST_SYMBOLS = {
   [SYMBOLS.TRXUSDT]: 'TRX/USDT',
   [SYMBOLS.MATICUSDT]: 'MATIC/USDT',
   [SYMBOLS.KNCUSDT]: 'KNC/USDT',
+  [SYMBOLS.ERDUSDT]: 'ERD/USDT',
 };
