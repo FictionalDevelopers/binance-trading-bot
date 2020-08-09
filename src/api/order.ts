@@ -22,3 +22,13 @@ export const marketSell = (
       return resolve(response);
     });
   });
+
+export const getLastOrder = (symbol: string): Promise<unknown> =>
+  new Promise((resolve, reject) => {
+    binance.allOrders(symbol, (error, orders) => {
+      if (error) {
+        return reject(error);
+      }
+      return resolve(orders);
+    });
+  });

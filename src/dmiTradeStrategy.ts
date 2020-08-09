@@ -10,7 +10,7 @@ import { getRsiStream } from './indicators/rsi';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
-import { marketBuy, marketSell } from './api/order';
+import { marketBuy, marketSell, getLastOrder } from './api/order';
 import { getEmaStream } from './indicators/ema';
 
 (async function() {
@@ -21,12 +21,15 @@ import { getEmaStream } from './indicators/ema';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
+  const ordersList = await getLastOrder(symbol.toUpperCase());
+  const lastOrder = ordersList[ordersList.length - 1];
 
   // const symbol = process.argv[2];
+
   const botState = {
     strategy: 'ADX EMA STRATEGY',
     testMode: false,
-    status: 'buy',
+    status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
     currentProfit: null,
     totalProfit: null,
     tradeAmountPercent: 0.6,
@@ -36,6 +39,7 @@ import { getEmaStream } from './indicators/ema';
     buyPrice: null,
     currentPrice: null,
     order: null,
+    initialOrder: lastOrder,
     avrDealProfit: null,
     dealsCount: 1,
     startTime: new Date().getTime(),
