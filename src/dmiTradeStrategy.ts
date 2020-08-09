@@ -372,7 +372,7 @@ import { getEmaStream } from './indicators/ema';
     await sendToRecipients(`INIT
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   with using the ${botState.strategy}
-  Status: ${botState.status.toUpperCase}
+  Status: ${botState.status.toUpperCase()}
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
