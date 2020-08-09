@@ -23,7 +23,7 @@ export const marketSell = (
     });
   });
 
-export const getLastOrder = (symbol: string): Promise<unknown> =>
+export const getOrdersList = (symbol: string): Promise<unknown> =>
   new Promise((resolve, reject) => {
     binance.allOrders(symbol, (error, orders) => {
       if (error) {

@@ -10,7 +10,7 @@ import { getRsiStream } from './indicators/rsi';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
-import { marketBuy, marketSell, getLastOrder } from './api/order';
+import { marketBuy, marketSell, getOrdersList } from './api/order';
 import { getEmaStream } from './indicators/ema';
 
 (async function() {
@@ -21,7 +21,7 @@ import { getEmaStream } from './indicators/ema';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
-  const ordersList = await getLastOrder(symbol.toUpperCase());
+  const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1];
 
   // const symbol = process.argv[2];
