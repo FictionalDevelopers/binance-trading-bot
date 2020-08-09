@@ -11,7 +11,7 @@ import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketBuy, marketSell, getOrdersList } from './api/order';
-import { getEmaStream } from './indicators/ema';
+import { getEMASignal } from './components/ema-signals';
 
 (async function() {
   await connect();
@@ -64,6 +64,9 @@ import { getEmaStream } from './indicators/ema';
     slow1hEMA: 0,
     middle1hEMA: 0,
     fast1hEMA: 0,
+    slow15mEMA: 0,
+    middle15mEMA: 0,
+    fast15mEMA: 0,
     isDownTrend: false,
     trend: null,
     adxBuySignalVolume: 0,
@@ -75,6 +78,11 @@ import { getEmaStream } from './indicators/ema';
     const { tradeAmountPercent } = botState;
     const { rsi1mValue, rsi1hValue } = indicatorsData;
     if (botState.status === 'isPending') return;
+    const summaryEMABuySignal =
+      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
+      indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+      indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
     botState.updateState(
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
@@ -100,7 +108,11 @@ import { getEmaStream } from './indicators/ema';
     //             botState.availableUSDT) *
     //             100,
     //       );
-    if (botState.status === 'buy' && indicatorsData.adxBuySignalVolume > 0) {
+    if (
+      botState.status === 'buy' &&
+      indicatorsData.willPriceGrow &&
+      summaryEMABuySignal
+    ) {
       if (botState.testMode) {
         try {
           botState.updateState('status', 'isPending');
@@ -332,36 +344,17 @@ import { getEmaStream } from './indicators/ema';
         indicatorsData.adxSellSignalVolume = 0;
       }
     }
-    if (indicatorsData.adxBuySignalVolume >= 2)
+    if (indicatorsData.adxBuySignalVolume > 0)
       indicatorsData.willPriceGrow = true;
     if (indicatorsData.adxSellSignalVolume > 0)
       indicatorsData.willPriceGrow = false;
     indicatorsData.prev1mDmi = dmi;
   });
 
-  getEmaStream({
-    symbol: symbol,
-    interval: '1m',
-    period: 7,
-  }).subscribe(fastEMA => {
-    indicatorsData.fast1mEMA = fastEMA;
-  });
+  getEMASignal(symbol, '1m', indicatorsData);
+  getEMASignal(symbol, '15m', indicatorsData);
+  getEMASignal(symbol, '1h', indicatorsData);
 
-  getEmaStream({
-    symbol: symbol,
-    interval: '1m',
-    period: 25,
-  }).subscribe(middleEMA => {
-    indicatorsData.middle1mEMA = middleEMA;
-  });
-
-  getEmaStream({
-    symbol: symbol,
-    interval: '1m',
-    period: 99,
-  }).subscribe(slowEMA => {
-    indicatorsData.slow1mEMA = slowEMA;
-  });
   if (botState.testMode) {
     console.log(`INIT TEST MODE
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
