@@ -16,7 +16,8 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'linkusdt';
+  // const symbol = 'linkusdt';
+  const symbol = process.argv[2];
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -24,10 +25,8 @@ import { getRSISignal } from './components/rsi-signals';
   const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1];
 
-  // const symbol = process.argv[2];
-
   const botState = {
-    strategy: 'ADX EMA STRATEGY',
+    strategy: 'TRENDS CATCHER STRATEGY',
     testMode: true,
     status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
     currentProfit: null,
