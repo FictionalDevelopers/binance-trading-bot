@@ -14,7 +14,7 @@ export const SYMBOLS = {
   KAVAUSDT: 'kavausdt',
   LINKDOWNUSDT: 'linkdownusdt',
   EOSUSDT: 'eosusdt',
-  ALGOUSDT: 'algousdt',
+  ALGOUSDT: 'algousdt',y
   LTCUSDT: 'ltcusdt',
   ZECUSDT: 'zecusdt',
   MANAUSDT: 'manausdt',
