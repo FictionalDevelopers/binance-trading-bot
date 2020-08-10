@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'kavausdt';
+  const symbol = 'erdusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -184,7 +184,10 @@ import { getRSISignal } from './components/rsi-signals';
         }
       }
     }
-    if (botState.status === 'sell' && !indicatorsData.willPriceGrow) {
+    if (
+      botState.status === 'sell' &&
+      (!indicatorsData.willPriceGrow || expectedProfitPercent <= -1)
+    ) {
       if (botState.testMode) {
         try {
           botState.updateState('status', 'isPending');
@@ -202,7 +205,7 @@ import { getRSISignal } from './components/rsi-signals';
                             total profit: ${botState.totalProfit}%
               `);
           botState.dealsCount++;
-          indicatorsData.adxBuySignalVolume = 0;
+          indicatorsData.willPriceGrow = false;
           botState.updateState('status', 'buy');
         } catch (e) {
           await sendToRecipients(`SELL ERROR
@@ -258,7 +261,7 @@ import { getRSISignal } from './components/rsi-signals';
                  )}
              `);
           botState.dealsCount++;
-          indicatorsData.adxBuySignalVolume = 0;
+          indicatorsData.willPriceGrow = false;
           botState.updateState('status', 'buy');
         } catch (e) {
           await sendToRecipients(`SELL ERROR
