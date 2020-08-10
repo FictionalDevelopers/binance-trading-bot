@@ -7,7 +7,7 @@ export const getRSISignal = (symbol, timeFrame, indicatorsData) => {
     period: 14,
     interval: timeFrame,
   }).subscribe(rsi => {
-    indicatorsData.rsi1mValue = rsi;
+    indicatorsData[`rsi${timeFrame}Value`] = rsi;
   });
 };
 
