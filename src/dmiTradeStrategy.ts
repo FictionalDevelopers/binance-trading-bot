@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'zilusdt';
+  const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -28,7 +28,7 @@ import { getRSISignal } from './components/rsi-signals';
 
   const botState = {
     strategy: 'TRENDS CATCHER STRATEGY',
-    testMode: true,
+    testMode: false,
     // status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
     status: 'buy',
     currentProfit: null,
@@ -81,8 +81,12 @@ import { getRSISignal } from './components/rsi-signals';
       willPriceGrow: false,
       trend: null,
     },
-    rsi1mValue: null,
-    rsi1hValue: null,
+    rsi1m: {
+      rsiValue: null,
+      prevRsi: null,
+      sellNow: false,
+      buyNow: false,
+    },
     slow1mEMA: 0,
     middle1mEMA: 0,
     fast1mEMA: 0,
@@ -131,9 +135,10 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      rsi1mValue <= 68 &&
       indicatorsData.dmi1h.willPriceGrow &&
-      summaryEMABuySignal
+      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
+      // summaryEMABuySignal
     ) {
       if (botState.testMode) {
         try {
@@ -208,8 +213,8 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.status === 'sell' &&
       (!indicatorsData.dmi1h.willPriceGrow ||
-        expectedProfitPercent <= -1 ||
-        (rsi1mValue >= 70 && !indicatorsData.dmi5m.willPriceGrow))
+        expectedProfitPercent <= -0.5 ||
+        (indicatorsData.rsi1m.rsiValue > 70 && indicatorsData.rsi1m.sellNow))
     ) {
       if (botState.testMode) {
         try {
@@ -297,8 +302,8 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   getDMISignal(symbol, '1h', indicatorsData.dmi1h);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  getRSISignal(symbol, '1m', indicatorsData);
+  // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '1m', indicatorsData);
   getEMASignal(symbol, '15m', indicatorsData);
   getEMASignal(symbol, '1h', indicatorsData);

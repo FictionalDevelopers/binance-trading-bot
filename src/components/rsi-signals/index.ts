@@ -7,7 +7,19 @@ export const getRSISignal = (symbol, timeFrame, indicatorsData) => {
     period: 14,
     interval: timeFrame,
   }).subscribe(rsi => {
-    indicatorsData[`rsi${timeFrame}Value`] = rsi;
+    if (!indicatorsData.prevRsi) {
+      indicatorsData.prevRsi = rsi;
+      return;
+    }
+    if (indicatorsData.prevRsi > rsi) {
+      indicatorsData.sellNow = true;
+      indicatorsData.buyNow = false;
+    }
+    if (indicatorsData.prevRsi < rsi) {
+      indicatorsData.sellNow = false;
+      indicatorsData.buyNow = true;
+    }
+    indicatorsData.rsiValue = rsi;
   });
 };
 
