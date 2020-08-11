@@ -209,7 +209,7 @@ import { getRSISignal } from './components/rsi-signals';
       botState.status === 'sell' &&
       (!indicatorsData.dmi1h.willPriceGrow ||
         expectedProfitPercent <= -1 ||
-        (rsi1mValue >= 70 && !indicatorsData.dmi15m.willPriceGrow))
+        (rsi1mValue >= 70 && !indicatorsData.dmi1m.willPriceGrow))
     ) {
       if (botState.testMode) {
         try {
@@ -297,7 +297,7 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   getDMISignal(symbol, '1h', indicatorsData.dmi1h);
-  getDMISignal(symbol, '15m', indicatorsData.dmi15m);
+  getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData);
   getEMASignal(symbol, '1m', indicatorsData);
   getEMASignal(symbol, '15m', indicatorsData);
