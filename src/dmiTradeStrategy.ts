@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'zilusdt';
+  const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -29,8 +29,8 @@ import { getRSISignal } from './components/rsi-signals';
   const botState = {
     strategy: 'TRENDS CATCHER STRATEGY',
     testMode: false,
-    // status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
-    status: 'buy',
+    status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
+    // status: 'buy',
     currentProfit: null,
     totalProfit: null,
     tradeAmountPercent: 0.6,
@@ -234,6 +234,7 @@ import { getRSISignal } from './components/rsi-signals';
               `);
           botState.dealsCount++;
           indicatorsData.dmi1h.willPriceGrow = false;
+          indicatorsData.dmi1h.adxBuySignalVolume = 0;
           botState.updateState('status', 'buy');
         } catch (e) {
           await sendToRecipients(`SELL ERROR
@@ -290,6 +291,7 @@ import { getRSISignal } from './components/rsi-signals';
              `);
           botState.dealsCount++;
           indicatorsData.dmi1h.willPriceGrow = false;
+          indicatorsData.dmi1h.adxBuySignalVolume = 0;
           botState.updateState('status', 'buy');
         } catch (e) {
           await sendToRecipients(`SELL ERROR
