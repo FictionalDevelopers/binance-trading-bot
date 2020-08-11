@@ -317,9 +317,6 @@ import { getRSISignal } from './components/rsi-signals';
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
-  Initial order: ${botState.initialOrder.side} ${
-      botState.initialOrder.symbol
-    } ${format(botState.initialOrder.time, DATE_FORMAT)}
   `);
   }
 
