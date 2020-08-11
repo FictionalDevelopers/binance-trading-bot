@@ -142,7 +142,7 @@ import { getRSISignal } from './components/rsi-signals';
             'buyPrice',
             Number(pricesStream[pricesStream.length - 1]),
           );
-          console.log(`BUY
+          await sendToRecipients(`BUY
                              ${botState.strategy}
                              symbol: ${symbol.toUpperCase()}
                              price: ${botState.buyPrice}
@@ -219,7 +219,7 @@ import { getRSISignal } from './components/rsi-signals';
             'totalProfit',
             (botState.totalProfit += expectedProfitPercent),
           );
-          console.log(`Sell
+          await sendToRecipients(`Sell
                             ${botState.strategy}
                             symbol: ${symbol.toUpperCase()}
                             price: ${pricesStream[pricesStream.length - 1]}
@@ -304,7 +304,7 @@ import { getRSISignal } from './components/rsi-signals';
   getEMASignal(symbol, '1h', indicatorsData);
 
   if (botState.testMode) {
-    console.log(`INIT TEST MODE
+    await sendToRecipients(`INIT TEST MODE
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   with using the ${botState.strategy}
   Symbol: ${symbol.toUpperCase()}
