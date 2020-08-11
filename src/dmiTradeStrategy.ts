@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'linkusdt';
+  const symbol = 'zilusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -213,7 +213,7 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.status === 'sell' &&
       (!indicatorsData.dmi1h.willPriceGrow ||
-        expectedProfitPercent <= -0.5 ||
+        // expectedProfitPercent <= -0.5 ||
         (indicatorsData.rsi1m.rsiValue > 70 && indicatorsData.rsi1m.sellNow))
     ) {
       if (botState.testMode) {
