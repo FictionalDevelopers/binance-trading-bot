@@ -11,6 +11,7 @@ export const getRSISignal = (symbol, timeFrame, indicatorsData) => {
       indicatorsData.prevRsi = rsi;
       return;
     }
+    indicatorsData.rsiValue = rsi;
     if (indicatorsData.prevRsi > rsi) {
       indicatorsData.sellNow = true;
       indicatorsData.buyNow = false;
@@ -20,7 +21,7 @@ export const getRSISignal = (symbol, timeFrame, indicatorsData) => {
       indicatorsData.buyNow = true;
     }
     console.log(`RSI:${rsi} ${indicatorsData.sellNow}`);
-    indicatorsData.rsiValue = rsi;
+    indicatorsData.prevRsi = rsi;
   });
 };
 
