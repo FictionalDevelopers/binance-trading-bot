@@ -33,8 +33,8 @@ getEMASignal(symbol, '1h', indicatorsData);
 
 setInterval(() => {
   const summary1m =
-    indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-    indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
+    indicatorsData.fast1mEMA < indicatorsData.middle1mEMA &&
+    indicatorsData.middle1mEMA < indicatorsData.slow1mEMA;
 
   const summary15m = indicatorsData.fast15mEMA > indicatorsData.middle15mEMA;
   const summary1h = indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;

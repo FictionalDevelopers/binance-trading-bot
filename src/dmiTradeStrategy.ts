@@ -219,7 +219,7 @@ import { getRSISignal } from './components/rsi-signals';
       (!indicatorsData.dmi1h.willPriceGrow ||
         indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
         // expectedProfitPercent <= -0.5 ||
-        (indicatorsData.rsi1m.rsiValue > 70 &&
+        (indicatorsData.rsi1m.rsiValue > 68 &&
           ((botState.prevPrice !== null &&
             botState.currentPrice <= botState.prevPrice * 0.99 &&
             expectedProfitPercent >= 0.5) ||
