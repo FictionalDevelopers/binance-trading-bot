@@ -45,6 +45,8 @@ import { getRSISignal } from './components/rsi-signals';
     dealsCount: 1,
     startTime: new Date().getTime(),
     workDuration: null,
+    stopLoss: null,
+    prevPrice: null,
     updateState: function(fieldName, value) {
       this[`${fieldName}`] = value;
     },
@@ -155,6 +157,7 @@ import { getRSISignal } from './components/rsi-signals';
               `);
           botState.updateState('status', 'sell');
           indicatorsData.summaryEMABuySignal = summaryEMABuySignal;
+          botState.updateState('prevPrice', botState.currentPrice);
           return;
         } catch (e) {
           await sendToRecipients(`BUY ERROR
@@ -201,6 +204,7 @@ import { getRSISignal } from './components/rsi-signals';
              `);
           botState.updateState('status', 'sell');
           indicatorsData.summaryEMABuySignal = summaryEMABuySignal;
+          botState.updateState('prevPrice', botState.currentPrice);
           return;
         } catch (e) {
           await sendToRecipients(`BUY ERROR
@@ -213,7 +217,12 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.status === 'sell' &&
       (!indicatorsData.dmi1h.willPriceGrow ||
+        indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
         // expectedProfitPercent <= -0.5 ||
+        (indicatorsData.rsi1m.rsiValue > 70 &&
+          botState.prevPrice !== null &&
+          botState.currentPrice <= botState.prevPrice * 0.99 &&
+          expectedProfitPercent >= 0.5) ||
         (indicatorsData.rsi1m.rsiValue > 70 && indicatorsData.rsi1m.sellNow))
     ) {
       if (botState.testMode) {
@@ -301,6 +310,7 @@ import { getRSISignal } from './components/rsi-signals';
         }
       }
     }
+    botState.updateState('prevPrice', botState.currentPrice);
   };
 
   getDMISignal(symbol, '1h', indicatorsData.dmi1h);
