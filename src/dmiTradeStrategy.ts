@@ -225,7 +225,7 @@ import { getRSISignal } from './components/rsi-signals';
           expectedProfitPercent >= 0.5) ||
         (indicatorsData.rsi1m.rsiValue > 70 &&
           indicatorsData.rsi1m.sellNow &&
-            (expectedProfitPercent >= 0.5 || expectedProfitPercent <= -1))
+          (expectedProfitPercent >= 0.5 || expectedProfitPercent <= -1)))
     ) {
       if (botState.testMode) {
         try {
