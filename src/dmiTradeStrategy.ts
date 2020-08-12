@@ -223,7 +223,9 @@ import { getRSISignal } from './components/rsi-signals';
           botState.prevPrice !== null &&
           botState.currentPrice <= botState.prevPrice * 0.99 &&
           expectedProfitPercent >= 0.5) ||
-        (indicatorsData.rsi1m.rsiValue > 70 && indicatorsData.rsi1m.sellNow))
+        (indicatorsData.rsi1m.rsiValue > 70 &&
+          indicatorsData.rsi1m.sellNow &&
+          expectedProfitPercent >= 0.5))
     ) {
       if (botState.testMode) {
         try {
