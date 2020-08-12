@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'adausdt';
+  const symbol = 'xrpusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -29,10 +29,11 @@ import { getRSISignal } from './components/rsi-signals';
   const botState = {
     strategy: 'TRENDS CATCHER STRATEGY',
     testMode: false,
-    status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
-    // status: 'buy',
+    // status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
+    status: 'buy',
     currentProfit: null,
     totalProfit: null,
+    totalPercentProfit: null,
     tradeAmountPercent: 0.6,
     availableUSDT: initialUSDTBalance,
     availableCryptoCoin: initialCryptoCoinBalance,
@@ -273,6 +274,11 @@ import { getRSISignal } from './components/rsi-signals';
             'totalProfit',
             Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
           );
+          botState.updateState(
+            'totalPercentProfit',
+            (botState.totalPercentProfit +=
+              (currentProfit / botState.cummulativeQuoteQty) * 100),
+          );
           const { available: refreshedCryptoCoinBalance } = await getBalances(
             cryptoCoin,
           );
@@ -290,7 +296,9 @@ import { getRSISignal } from './components/rsi-signals';
                    botState.currentProfit
                  } USDT (${(currentProfit / botState.cummulativeQuoteQty) *
             100} %)
-                 Total profit: ${botState.totalProfit} USDT
+                 Total profit: ${botState.totalProfit} USDT ${
+            botState.totalPercentProfit
+          } %
                  Average deal profit: ${botState.totalProfit /
                    botState.dealsCount} USDT/deal
                  Stablecoin balance: ${botState.availableUSDT} USDT
