@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'linkusdt';
+  const symbol = 'manausdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -29,8 +29,8 @@ import { getRSISignal } from './components/rsi-signals';
   const botState = {
     strategy: 'TRENDS CATCHER STRATEGY',
     testMode: false,
-    status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
-    // status: 'buy',
+    // status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
+    status: 'buy',
     currentProfit: null,
     totalProfit: null,
     tradeAmountPercent: 0.6,
