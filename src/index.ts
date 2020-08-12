@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'linkusdt';
+  const symbol = 'kavausdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -120,7 +120,10 @@ import { getRSISignal } from './components/rsi-signals';
         : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
       : 0;
     console.log(
-      `Prev price: ${botState.prevPrice} Curr price: ${botState.currentPrice} RSI ${indicatorsData.rsi1m.rsiValue} SELL NOW ${indicatorsData.rsi1m.sellNow}`,
+      `Prev price: ${botState.prevPrice} Curr price: ${botState.currentPrice} RSI ${indicatorsData.rsi1m.rsiValue} SELL NOW ${indicatorsData.rsi1m.sellNow}
+      Buy signal: ${indicatorsData.dmi1h.adxBuySignalVolume}
+      Sell signal: ${indicatorsData.dmi1h.adxBuySignalVolume}
+      `,
     );
     // const expectedStableCoinProfit =
     //   (botState.availableCryptoCoin * botState.currentPrice * 0.999) /
