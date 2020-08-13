@@ -1,6 +1,7 @@
 import { binance } from './api/binance';
 import sortBy from 'lodash/_baseSortBy';
 import { getEMASignal } from './components/ema-signals';
+import { getDMISignal } from './components/dmi-signals';
 
 const symbol = process.argv[2];
 
@@ -50,6 +51,34 @@ const getEMAData = async (symbol, indicatorsData = {}) => {
       ) {
         clearInterval(intervalId);
         res(indicatorsData);
+      }
+    }, 1000);
+  });
+};
+
+const getDMIData = async (
+  symbol,
+  indicators1hData = {},
+  indicators15mData = {},
+) => {
+  return new Promise((res, rej) => {
+    // getEMASignal(symbol, '1m', indicatorsData);
+    getDMISignal(symbol, '15m', indicators15mData);
+    getDMISignal(symbol, '1h', indicators1hData);
+    const intervalId = setInterval(() => {
+      if (
+        indicators15mData.adx &&
+        indicators15mData.mdi &&
+        indicators15mData.pdi &&
+        indicators1hData.adx &&
+        indicators1hData.mdi &&
+        indicators1hData.pdi
+      ) {
+        clearInterval(intervalId);
+        res({
+          dmi1h: indicators1hData,
+          dmi15m: indicators15mData,
+        });
       }
     }, 1000);
   });
@@ -105,14 +134,14 @@ const showData = async () => {
 const showOne = async symbol => {
   const data = await getEMAData(symbol, {});
   if (
-    (data.middle1hEMA >= data.slow1hEMA &&
-      (data.middle1hEMA / data.slow1hEMA) * 100 - 100 <= 2) ||
-    (data.middle15mEMA >= data.slow15mEMA &&
-      (data.middle15mEMA / data.slow15mEMA) * 100 - 100 <= 2)
+    data.fast1hEMA >= data.middle1hEMA &&
+    (data.fast1hEMA / data.middle1hEMA) * 100 - 100 <= 2 &&
+    data.fast15mEMA >= data.middle15mEMA &&
+      (data.fast15mEMA / data.middle15mEMA) * 100 - 100 <= 2
   ) {
     console.log(symbol, data);
-    console.log('1h', (data.middle1hEMA / data.slow1hEMA) * 100 - 100);
-    console.log('15m', (data.middle15mEMA / data.slow15mEMA) * 100 - 100);
+    console.log('1h', (data.fast1hEMA / data.middle1hEMA) * 100 - 100);
+    console.log('15m', (data.fast15mEMA / data.middle15mEMA) * 100 - 100);
   } else console.log(false);
 };
 
