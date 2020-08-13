@@ -33,19 +33,19 @@ export const getPairs = () => {
   });
 };
 
-const getEMAData = async (indicatorsData = {}) => {
+const getEMAData = async (symbol, indicatorsData = {}) => {
   return new Promise((res, rej) => {
-    getEMASignal(symbol, '1m', indicatorsData);
+    // getEMASignal(symbol, '1m', indicatorsData);
     getEMASignal(symbol, '15m', indicatorsData);
     getEMASignal(symbol, '1h', indicatorsData);
     const intervalId = setInterval(() => {
       if (
-        indicatorsData.fast1mEMA &&
-        indicatorsData.middle1mEMA &&
-        indicatorsData.slow1mEMA &&
-        indicatorsData.fast15mEMA &&
-        indicatorsData.middle15mEMA &&
-        indicatorsData.fast1hEMA &&
+        // indicatorsData.fast1mEMA &&
+        // indicatorsData.middle1mEMA &&
+        // indicatorsData.slow1mEMA &&
+        // indicatorsData.fast15mEMA &&
+        // indicatorsData.middle15mEMA &&
+        indicatorsData.slow1hEMA &&
         indicatorsData.middle1hEMA
       ) {
         clearInterval(intervalId);
@@ -71,13 +71,49 @@ const getEMAData = async (indicatorsData = {}) => {
 //   console.log(indicatorsData);
 // }, 1000);
 
-const showData = async () => {
-  const pairs = await getPairs();
-  pairs.forEach(pair => {
-    console.log(pair[0]);
-  });
-  // const res = await getEMAData();
-  // console.log(pairs);
+const checkConclusion = indicatorsData => {
+  // const summary1m =
+  //   indicatorsData.fast1mEMA < indicatorsData.middle1mEMA &&
+  //   indicatorsData.middle1mEMA < indicatorsData.slow1mEMA;
+
+  // const summary15m = indicatorsData.fast15mEMA > indicatorsData.middle15mEMA;
+  // const summary1h = indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
+  const summary1h = indicatorsData.middle1hEMA > indicatorsData.slow1hEMA;
+
+  const summaryEMABuySignal = summary1h;
+  return summaryEMABuySignal;
 };
 
-showData();
+const showData = async () => {
+  try {
+    const pairs = await getPairs();
+    const suitablePairs = [];
+    for (const pair of pairs.slice(0, 2)) {
+      const symbol = pair[0].toLowerCase();
+      const pairEMAData = await getEMAData(symbol, {});
+      console.log(symbol, pairEMAData);
+      const isPairSuitable = checkConclusion(pairEMAData);
+      if (isPairSuitable) pairs.push([symbol]);
+    }
+    console.log(suitablePairs);
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+// showData();
+const showOne = async symbol => {
+  const data = await getEMAData(symbol, {});
+  if (
+    (data.middle1hEMA >= data.slow1hEMA &&
+      (data.middle1hEMA / data.slow1hEMA) * 100 - 100 <= 2) ||
+    (data.middle15mEMA >= data.slow15mEMA &&
+      (data.middle15mEMA / data.slow15mEMA) * 100 - 100 <= 2)
+  ) {
+    console.log(symbol, data);
+    console.log('1h', (data.middle1hEMA / data.slow1hEMA) * 100 - 100);
+    console.log('15m', (data.middle15mEMA / data.slow15mEMA) * 100 - 100);
+  } else console.log(false);
+};
+
+showOne(symbol);
