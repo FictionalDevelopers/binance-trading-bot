@@ -243,7 +243,8 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      !indicatorsData.dmi1h.willPriceGrow
+      (!indicatorsData.dmi1h.willPriceGrow ||
+        indicatorsData.fast1mEMA < indicatorsData.middle1mEMA)
       // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
       // expectedProfitPercent <= -0.5 ||
       // (indicatorsData.rsi1m.rsiValue > 68 &&
