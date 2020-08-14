@@ -39,12 +39,12 @@ import { getRSISignal } from './components/rsi-signals';
     profitLevels: {
       '1': {
         profitPercent: 1.2,
-        amountPercent: 50,
+        amountPercent: 0.5,
         isFilled: false,
       },
       '2': {
         profitPercent: 3,
-        amountPercent: 50,
+        amountPercent: 0.5,
         isFilled: false,
       },
     },
@@ -257,6 +257,7 @@ import { getRSISignal } from './components/rsi-signals';
         stepSize,
         initialUSDTBalance,
       );
+      return;
     }
     if (
       botState.status === 'sell' &&
@@ -273,6 +274,7 @@ import { getRSISignal } from './components/rsi-signals';
         stepSize,
         initialUSDTBalance,
       );
+      return;
     }
     if (
       botState.status === 'sell' &&
@@ -289,6 +291,7 @@ import { getRSISignal } from './components/rsi-signals';
         stepSize,
         initialUSDTBalance,
       );
+      return;
     }
 
     botState.updateState('prevPrice', botState.currentPrice);
@@ -296,7 +299,7 @@ import { getRSISignal } from './components/rsi-signals';
 
   getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '1m', indicatorsData);
   getEMASignal(symbol, '15m', indicatorsData);
   getEMASignal(symbol, '1h', indicatorsData);
