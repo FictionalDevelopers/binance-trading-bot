@@ -104,7 +104,9 @@ export const marketSellAction = async (
       botState.updateState(
         'totalPercentProfit',
         (botState.totalPercentProfit +=
-          (currentProfit / botState.cummulativeQuoteQty) * 100),
+          (currentProfit / botState.cummulativeQuoteQty) *
+          (profitLevel ? profitLevel.amountPercent : 1) *
+          100),
       );
       const { available: refreshedCryptoCoinBalance } = await getBalances(
         cryptoCoin,
@@ -119,6 +121,7 @@ export const marketSellAction = async (
                  Current profit: ${
                    botState.currentProfit
                  } USDT (${(currentProfit / botState.cummulativeQuoteQty) *
+        (profitLevel ? profitLevel.amountPercent : 1) *
         100} %)
                  Total profit: ${botState.totalProfit} USDT ${
         botState.totalPercentProfit
