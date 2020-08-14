@@ -107,8 +107,8 @@ import { getRSISignal } from './components/rsi-signals';
     const { rsi1mValue, rsi1hValue } = indicatorsData;
     if (botState.status === 'isPending') return;
     const summaryEMABuySignal =
-      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
+      // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+      // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
       indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
       indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
     botState.updateState(
@@ -138,10 +138,10 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.dmi1h.willPriceGrow
+      indicatorsData.dmi1h.willPriceGrow &&
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
       // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
-      // summaryEMABuySignal
+      summaryEMABuySignal
     ) {
       if (botState.testMode) {
         try {
