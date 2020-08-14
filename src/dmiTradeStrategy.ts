@@ -138,9 +138,9 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.dmi1h.willPriceGrow &&
-      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
+      indicatorsData.dmi1h.willPriceGrow
+      // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+      // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
       // summaryEMABuySignal
     ) {
       if (botState.testMode) {
@@ -217,14 +217,14 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      (!indicatorsData.dmi1h.willPriceGrow ||
-        indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
-        // expectedProfitPercent <= -0.5 ||
-        (indicatorsData.rsi1m.rsiValue > 68 &&
-          ((botState.prevPrice !== null &&
-            botState.currentPrice <= botState.prevPrice * 0.99 &&
-            expectedProfitPercent >= 0.5) ||
-            expectedProfitPercent <= -1)))
+      !indicatorsData.dmi1h.willPriceGrow
+      // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
+      // expectedProfitPercent <= -0.5 ||
+      // (indicatorsData.rsi1m.rsiValue > 68 &&
+      //   ((botState.prevPrice !== null &&
+      //     botState.currentPrice <= botState.prevPrice * 0.99 &&
+      //     expectedProfitPercent >= 0.5) ||
+      //     expectedProfitPercent <= -1))
       // (indicatorsData.rsi1m.rsiValue > 70 &&
       //   indicatorsData.rsi1m.sellNow &&
       //   (expectedProfitPercent >= 0.5 || expectedProfitPercent <= -1))
