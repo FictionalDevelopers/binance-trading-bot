@@ -3,6 +3,7 @@ import { sendToRecipients } from '../services/telegram';
 import { format } from 'date-fns';
 import { DATE_FORMAT } from '../constants/date';
 import getBalances from './balance';
+import _forEach from 'lodash/forEach';
 
 export const marketBuy = (symbol: string, quantity: number): Promise<unknown> =>
   new Promise((resolve, reject) => {
@@ -68,8 +69,12 @@ export const marketSellAction = async (
       if (profitLevel) profitLevel.isFilled = true;
       indicatorsData.dmi1h.willPriceGrow = false;
       indicatorsData.dmi1h.adxBuySignalVolume = 0;
-      if (!profitLevel) botState.updateState('status', 'buy');
-      else botState.updateState('status', 'sell');
+      if (!profitLevel) {
+        botState.updateState('status', 'buy');
+        _forEach(botState.profitLevels, (val, key) => {
+          botState.profitLevels[key].isFilled = false;
+        });
+      } else botState.updateState('status', 'sell');
     } catch (e) {
       await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
@@ -132,8 +137,12 @@ export const marketSellAction = async (
       if (profitLevel) profitLevel.isFilled = true;
       indicatorsData.dmi1h.willPriceGrow = false;
       indicatorsData.dmi1h.adxBuySignalVolume = 0;
-      if (!profitLevel) botState.updateState('status', 'buy');
-      else botState.updateState('status', 'sell');
+      if (!profitLevel) {
+        botState.updateState('status', 'buy');
+        _forEach(botState.profitLevels, (val, key) => {
+          botState.profitLevels[key].isFilled = false;
+        });
+      } else botState.updateState('status', 'sell');
     } catch (e) {
       await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
