@@ -155,7 +155,11 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.dmi1h.willPriceGrow
+      indicatorsData.dmi1h.willPriceGrow &&
+      ((!botState.profitLevels['1'].isFilled &&
+        !botState.profitLevels['2'].isFilled) ||
+        (botState.profitLevels['1'].isFilled &&
+          botState.profitLevels['2'].isFilled))
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
       // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
       // summaryEMABuySignal
