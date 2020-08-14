@@ -33,7 +33,7 @@ import { getRSISignal } from './components/rsi-signals';
 
   const botState = {
     strategy: 'TRENDS CATCHER STRATEGY',
-    testMode: false,
+    testMode: true,
     status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
     // status: 'buy',
     profitLevels: {
@@ -126,8 +126,11 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.profitLevels['1'].isFilled &&
       botState.profitLevels['2'].isFilled
-    )
+    ) {
+      botState.profitLevels['1'].isFilled = false;
+      botState.profitLevels['2'].isFilled = false;
       botState.updateState('status', 'buy');
+    }
     // const summaryEMABuySignal =
     //   // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
     //   // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
@@ -160,11 +163,7 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.dmi1h.willPriceGrow &&
-      ((!botState.profitLevels['1'].isFilled &&
-        !botState.profitLevels['2'].isFilled) ||
-        (botState.profitLevels['1'].isFilled &&
-          botState.profitLevels['2'].isFilled))
+      indicatorsData.dmi1h.willPriceGrow
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
       // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
       // summaryEMABuySignal
