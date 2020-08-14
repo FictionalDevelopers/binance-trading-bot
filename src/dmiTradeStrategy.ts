@@ -261,7 +261,8 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      expectedProfitPercent >= botState.profitLevels['1'].profitPercent
+      expectedProfitPercent >= botState.profitLevels['1'].profitPercent &&
+      !botState.profitLevels['1'].isFilled
     ) {
       await marketSellAction(
         botState.profitLevels['1'],
@@ -278,7 +279,8 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      expectedProfitPercent >= botState.profitLevels['2'].profitPercent
+      expectedProfitPercent >= botState.profitLevels['2'].profitPercent &&
+      !botState.profitLevels['2'].isFilled
     ) {
       await marketSellAction(
         botState.profitLevels[2],
