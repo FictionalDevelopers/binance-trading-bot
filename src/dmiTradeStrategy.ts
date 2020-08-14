@@ -123,6 +123,11 @@ import { getRSISignal } from './components/rsi-signals';
     const { tradeAmountPercent } = botState;
     // const { rsi1mValue, rsi1hValue } = indicatorsData;
     if (botState.status === 'isPending') return;
+    if (
+      botState.profitLevels['1'].isFilled &&
+      botState.profitLevels['2'].isFilled
+    )
+      botState.updateState('status', 'buy');
     // const summaryEMABuySignal =
     //   // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
     //   // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
