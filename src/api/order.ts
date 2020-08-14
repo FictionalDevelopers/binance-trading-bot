@@ -69,6 +69,7 @@ export const marketSellAction = async (
       indicatorsData.dmi1h.willPriceGrow = false;
       indicatorsData.dmi1h.adxBuySignalVolume = 0;
       if (!profitLevel) botState.updateState('status', 'buy');
+      else botState.updateState('status', 'sell');
     } catch (e) {
       await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
@@ -132,6 +133,7 @@ export const marketSellAction = async (
       indicatorsData.dmi1h.willPriceGrow = false;
       indicatorsData.dmi1h.adxBuySignalVolume = 0;
       if (!profitLevel) botState.updateState('status', 'buy');
+      else botState.updateState('status', 'sell');
     } catch (e) {
       await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
