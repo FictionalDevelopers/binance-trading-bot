@@ -54,7 +54,7 @@ import { getRSISignal } from './components/rsi-signals';
     currentProfit: null,
     totalProfit: null,
     totalPercentProfit: null,
-    tradeAmountPercent: 1,
+    tradeAmountPercent: 0.9,
     availableUSDT: initialUSDTBalance,
     availableCryptoCoin: initialCryptoCoinBalance,
     cummulativeQuoteQty: null,
