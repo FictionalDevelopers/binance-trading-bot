@@ -14,14 +14,14 @@ import {
   getOrdersList,
   marketSellAction,
 } from './api/order';
-// import { getEMASignal } from './components/ema-signals';
+import { getEMASignal } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'erdusdt';
+  const symbol = 'bchusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -38,11 +38,13 @@ import { getRSISignal } from './components/rsi-signals';
     // status: 'buy',
     profitLevels: {
       '1': {
+        id: 1,
         profitPercent: 1.2,
         amountPercent: 0.5,
         isFilled: false,
       },
       '2': {
+        id: 2,
         profitPercent: 3,
         amountPercent: 0.5,
         isFilled: false,
@@ -126,14 +128,16 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.profitLevels['1'].isFilled &&
       botState.profitLevels['2'].isFilled
-    )
+    ) {
+      botState.profitLevels['1'].isFilled = false;
+      botState.profitLevels['2'].isFilled = false;
       botState.updateState('status', 'buy');
+    }
     // const summaryEMABuySignal =
     //   // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
     //   // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
     //   indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
     //   indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
-
     botState.updateState(
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
@@ -161,11 +165,7 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.dmi1h.willPriceGrow &&
-      ((!botState.profitLevels['1'].isFilled &&
-        !botState.profitLevels['2'].isFilled) ||
-        (botState.profitLevels['1'].isFilled &&
-          botState.profitLevels['2'].isFilled))
+      indicatorsData.dmi1h.willPriceGrow
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
       // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
       // summaryEMABuySignal
@@ -266,9 +266,29 @@ import { getRSISignal } from './components/rsi-signals';
         indicatorsData,
         stepSize,
         initialUSDTBalance,
+        'ADX SIGNAL',
       );
       return;
     }
+    if (
+      botState.status === 'sell' &&
+      indicatorsData.fast1mEMA < indicatorsData.middle1mEMA
+    ) {
+      await marketSellAction(
+        null,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        indicatorsData,
+        stepSize,
+        initialUSDTBalance,
+        'EMA SIGNAL',
+      );
+      return;
+    }
+
     if (
       botState.status === 'sell' &&
       expectedProfitPercent >= botState.profitLevels['1'].profitPercent &&
@@ -284,6 +304,7 @@ import { getRSISignal } from './components/rsi-signals';
         indicatorsData,
         stepSize,
         initialUSDTBalance,
+        null,
       );
       return;
     }
@@ -302,6 +323,7 @@ import { getRSISignal } from './components/rsi-signals';
         indicatorsData,
         stepSize,
         initialUSDTBalance,
+        null,
       );
       return;
     }
@@ -309,19 +331,19 @@ import { getRSISignal } from './components/rsi-signals';
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
-  const timer = setInterval(() => {
-    console.log('Level 1: ', botState.profitLevels['1'].isFilled);
-    console.log('Level 2: ', botState.profitLevels['2'].isFilled);
-    console.log('BUY SIGNAL: ', indicatorsData.dmi1h.adxBuySignalVolume);
-    console.log('SELL SIGNAL: ', indicatorsData.dmi1h.adxSellSignalVolume);
-  }, 1000);
-
   getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  // getEMASignal(symbol, '1m', indicatorsData);
-  // getEMASignal(symbol, '15m', indicatorsData);
-  // getEMASignal(symbol, '1h', indicatorsData);
+  getEMASignal(symbol, '1m', indicatorsData);
+  getEMASignal(symbol, '15m', indicatorsData);
+  getEMASignal(symbol, '1h', indicatorsData);
+
+  const timer = setInterval(() => {
+    console.log('Profit level 1: ' + botState.profitLevels['1'].isFilled);
+    console.log(
+      'Profit level 2: ' + botState.profitLevels['2'].isFilled + '\n',
+    );
+  }, 1000);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT TEST MODE
