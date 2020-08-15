@@ -33,7 +33,7 @@ import { getRSISignal } from './components/rsi-signals';
 
   const botState = {
     strategy: 'TRENDS CATCHER STRATEGY',
-    testMode: false,
+    testMode: true,
     useProfitLevels: false,
     status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
     // status: 'buy',
