@@ -48,6 +48,7 @@ export const marketSellAction = async (
   indicatorsData,
   stepSize,
   initialUSDTBalance,
+  sellReason,
 ) => {
   if (botState.testMode) {
     try {
@@ -104,8 +105,9 @@ export const marketSellAction = async (
       botState.updateState(
         'totalPercentProfit',
         (botState.totalPercentProfit +=
-          (currentProfit / botState.cummulativeQuoteQty) *
-          (profitLevel ? profitLevel.amountPercent : 1) *
+          (currentProfit /
+            botState.cummulativeQuoteQty /
+            (profitLevel ? profitLevel.amountPercent : 1)) *
           100),
       );
       const { available: refreshedCryptoCoinBalance } = await getBalances(
@@ -115,13 +117,17 @@ export const marketSellAction = async (
       await sendToRecipients(`SELL
                  ${botState.strategy}
                  Deal №: ${botState.dealsCount}
+                 Sell reason: ${
+                   profitLevel ? 'Profit level: ' + profitLevel.id : sellReason
+                 }
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.order.fills[0].price} USDT
                  Date: ${format(new Date(), DATE_FORMAT)}
                  Current profit: ${
                    botState.currentProfit
-                 } USDT (${(currentProfit / botState.cummulativeQuoteQty) *
-        (profitLevel ? profitLevel.amountPercent : 1) *
+                 } USDT (${(currentProfit /
+        botState.cummulativeQuoteQty /
+        (profitLevel ? profitLevel.amountPercent : 1)) *
         100} %)
                  Total profit: ${botState.totalProfit} USDT ${
         botState.totalPercentProfit

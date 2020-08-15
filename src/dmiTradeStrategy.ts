@@ -244,8 +244,7 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      (!indicatorsData.dmi1h.willPriceGrow ||
-        indicatorsData.fast1mEMA < indicatorsData.middle1mEMA)
+      !indicatorsData.dmi1h.willPriceGrow
       // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
       // expectedProfitPercent <= -0.5 ||
       // (indicatorsData.rsi1m.rsiValue > 68 &&
@@ -267,9 +266,29 @@ import { getRSISignal } from './components/rsi-signals';
         indicatorsData,
         stepSize,
         initialUSDTBalance,
+        'ADX SIGNAL',
       );
       return;
     }
+    if (
+      botState.status === 'sell' &&
+      indicatorsData.fast1mEMA < indicatorsData.middle1mEMA
+    ) {
+      await marketSellAction(
+        null,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        indicatorsData,
+        stepSize,
+        initialUSDTBalance,
+        'EMA SIGNAL',
+      );
+      return;
+    }
+
     if (
       botState.status === 'sell' &&
       expectedProfitPercent >= botState.profitLevels['1'].profitPercent &&
@@ -285,6 +304,7 @@ import { getRSISignal } from './components/rsi-signals';
         indicatorsData,
         stepSize,
         initialUSDTBalance,
+        null,
       );
       return;
     }
@@ -303,6 +323,7 @@ import { getRSISignal } from './components/rsi-signals';
         indicatorsData,
         stepSize,
         initialUSDTBalance,
+        null,
       );
       return;
     }
