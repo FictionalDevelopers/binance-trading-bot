@@ -35,6 +35,7 @@ import { getRSISignal } from './components/rsi-signals';
     strategy: 'TRENDS CATCHER STRATEGY',
     testMode: false,
     useProfitLevels: false,
+    useEMAStopLoss: false,
     status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
     // status: 'buy',
     profitLevels: {
@@ -275,23 +276,25 @@ import { getRSISignal } from './components/rsi-signals';
       );
       return;
     }
-    if (
-      botState.status === 'sell' &&
-      indicatorsData.fast1mEMA < indicatorsData.middle1mEMA
-    ) {
-      await marketSellAction(
-        null,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        indicatorsData,
-        stepSize,
-        initialUSDTBalance,
-        'EMA SIGNAL',
-      );
-      return;
+    if (botState.useEMAStopLoss) {
+      if (
+        botState.status === 'sell' &&
+        indicatorsData.fast1mEMA < indicatorsData.middle1mEMA
+      ) {
+        await marketSellAction(
+          null,
+          symbol,
+          botState,
+          cryptoCoin,
+          expectedProfitPercent,
+          pricesStream,
+          indicatorsData,
+          stepSize,
+          initialUSDTBalance,
+          'EMA SIGNAL',
+        );
+        return;
+      }
     }
 
     if (botState.useProfitLevels) {
