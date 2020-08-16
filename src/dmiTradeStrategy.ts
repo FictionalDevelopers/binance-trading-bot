@@ -21,7 +21,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'bchusdt';
+  const symbol = 'sxpusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -36,8 +36,8 @@ import { getRSISignal } from './components/rsi-signals';
     testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
-    status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
-    // status: 'buy',
+    // status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
+    status: 'buy',
     profitLevels: {
       '1': {
         id: 1,
