@@ -156,6 +156,10 @@ export const marketSellAction = async (
       await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
       `);
+      const { available: refreshedCryptoCoinBalance } = await getBalances(
+        cryptoCoin,
+      );
+      botState.updateState('availableCryptoCoin', +refreshedCryptoCoinBalance);
       botState.updateState('status', 'sell');
     }
   }
