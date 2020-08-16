@@ -35,7 +35,7 @@ import { getRSISignal } from './components/rsi-signals';
     strategy: 'TRENDS CATCHER STRATEGY',
     testMode: false,
     useProfitLevels: false,
-    useEMAStopLoss: false,
+    useEMAStopLoss: true,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
     // status: 'buy',
     profitLevels: {
@@ -281,7 +281,8 @@ import { getRSISignal } from './components/rsi-signals';
     if (botState.useEMAStopLoss) {
       if (
         botState.status === 'sell' &&
-        indicatorsData.fast1mEMA < indicatorsData.middle1mEMA
+        indicatorsData.fast1mEMA < indicatorsData.middle1mEMA &&
+        expectedProfitPercent >= 0.2
       ) {
         await marketSellAction(
           null,
