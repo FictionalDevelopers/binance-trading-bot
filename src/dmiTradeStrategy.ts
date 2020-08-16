@@ -21,13 +21,13 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'sxpusdt';
+  const symbol = 'bchusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
   const ordersList = await getOrdersList(symbol.toUpperCase());
-  const lastOrder = ordersList[ordersList.length - 1];
+  const lastOrder = ordersList[ordersList.length - 1] || null;
 
   // const symbol = process.argv[2];
 
@@ -36,8 +36,8 @@ import { getRSISignal } from './components/rsi-signals';
     testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
-    // status: lastOrder.side === 'SELL' ? 'buy' : 'sell',
-    status: 'buy',
+    status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
+    // status: 'buy',
     profitLevels: {
       '1': {
         id: 1,
@@ -137,11 +137,12 @@ import { getRSISignal } from './components/rsi-signals';
         botState.updateState('status', 'buy');
       }
     }
-    // const summaryEMABuySignal =
-    //   // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-    //   // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
-    //   indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
-    //   indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
+    const summaryEMABuySignal =
+      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
+      indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+      indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
+
     botState.updateState(
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
@@ -169,7 +170,8 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.dmi1h.willPriceGrow
+      indicatorsData.dmi1h.willPriceGrow &&
+      summaryEMABuySignal
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
       // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
       // summaryEMABuySignal

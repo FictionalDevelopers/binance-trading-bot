@@ -38,6 +38,16 @@ export const getOrdersList = (symbol: string): Promise<unknown> =>
     });
   });
 
+export const getTradesHistory = (symbol: string): Promise<unknown> =>
+  new Promise((resolve, reject) => {
+    binance.allOrders(symbol, (error, trades) => {
+      if (error) {
+        return reject(error);
+      }
+      return resolve(trades);
+    });
+  });
+
 export const marketSellAction = async (
   profitLevel,
   symbol,
