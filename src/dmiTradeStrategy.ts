@@ -137,11 +137,11 @@ import { getRSISignal } from './components/rsi-signals';
         botState.updateState('status', 'buy');
       }
     }
-    const summaryEMABuySignal =
-      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
-      indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
-      indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
+    // const summaryEMABuySignal =
+    //   indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+    //   indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
+    //   indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+    //   indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
 
     botState.updateState(
       'currentPrice',
@@ -170,8 +170,7 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.dmi1h.willPriceGrow &&
-      summaryEMABuySignal
+      indicatorsData.dmi1h.willPriceGrow
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
       // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
       // summaryEMABuySignal
