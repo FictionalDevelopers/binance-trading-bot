@@ -35,7 +35,7 @@ import { getRSISignal } from './components/rsi-signals';
     strategy: 'TRENDS CATCHER STRATEGY',
     testMode: false,
     useProfitLevels: false,
-    useEMAStopLoss: false,
+    useEMAStopLoss: true,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
     // status: 'buy',
     profitLevels: {
