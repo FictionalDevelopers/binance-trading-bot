@@ -281,8 +281,7 @@ import { getRSISignal } from './components/rsi-signals';
     if (botState.useEMAStopLoss) {
       if (
         botState.status === 'sell' &&
-        indicatorsData.fast1mEMA < indicatorsData.middle1mEMA &&
-        expectedProfitPercent >= 0.2
+        indicatorsData.fast1mEMA < indicatorsData.middle1mEMA
       ) {
         await marketSellAction(
           null,
