@@ -134,9 +134,8 @@ import { getRSISignal } from './components/rsi-signals';
     }
     const summaryEMABuySignal =
       indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
-    // &&
-    // indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
+      indicatorsData.fast15mEMA >= indicatorsData.middle15mEMA;
     // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
 
     botState.updateState(
