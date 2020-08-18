@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'erdusdt';
+  const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -252,7 +252,7 @@ import { getRSISignal } from './components/rsi-signals';
       (!indicatorsData.dmi1h.willPriceGrow ||
         (indicatorsData.dmi1m.adxSignal === -1 &&
           indicatorsData.rsi1m.rsiValue >= 70 &&
-          expectedProfitPercent >= 0.5))
+          expectedProfitPercent >= 1))
       // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
       // expectedProfitPercent <= -0.5 ||
       // (indicatorsData.rsi1m.rsiValue > 68 &&
