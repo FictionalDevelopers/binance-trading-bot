@@ -8,12 +8,7 @@ import { processSubscriptions, sendToRecipients } from './services/telegram';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
-import {
-  marketBuy,
-  marketSell,
-  getOrdersList,
-  marketSellAction,
-} from './api/order';
+import { marketBuy, getOrdersList, marketSellAction } from './api/order';
 import { getEMASignal } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
@@ -137,11 +132,12 @@ import { getRSISignal } from './components/rsi-signals';
         botState.updateState('status', 'buy');
       }
     }
-    // const summaryEMABuySignal =
-    //   indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-    //   indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
-    //   indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
-    //   indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
+    const summaryEMABuySignal =
+      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
+    // &&
+    // indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+    // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
 
     botState.updateState(
       'currentPrice',
@@ -170,6 +166,7 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
+      summaryEMABuySignal &&
       indicatorsData.dmi1h.willPriceGrow &&
       indicatorsData.rsi1m.rsiValue < 60
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
