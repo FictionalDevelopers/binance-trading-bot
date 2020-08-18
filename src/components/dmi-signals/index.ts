@@ -59,7 +59,7 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
     }
     if (indicatorsData.adxBuySignalVolume >= 2)
       indicatorsData.willPriceGrow = true;
-    if (indicatorsData.adxSellSignalVolume > 0)
+    if (indicatorsData.adxSellSignalVolume >= 2)
       indicatorsData.willPriceGrow = false;
     indicatorsData.prevDmi = dmi;
   });
