@@ -133,8 +133,8 @@ import { getRSISignal } from './components/rsi-signals';
       }
     }
     const summaryEMABuySignal =
-      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
+      indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+      indicatorsData.middle15mEMA > indicatorsData.slow15mEMA;
     // indicatorsData.fast15mEMA >= indicatorsData.middle15mEMA;
     // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
 
@@ -166,8 +166,8 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.status === 'buy' &&
       summaryEMABuySignal &&
-      indicatorsData.dmi1h.willPriceGrow &&
-      indicatorsData.dmi1m.adxSignal === 1
+      indicatorsData.dmi1h.willPriceGrow
+      // indicatorsData.dmi1m.adxSignal === 1
       // &&
       // indicatorsData.rsi1m.rsiValue < 60
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
@@ -250,8 +250,10 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
+      indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
+
       // !indicatorsData.dmi1h.willPriceGrow ||
-      indicatorsData.dmi1m.adxSignal === -1
+      // indicatorsData.dmi1m.adxSignal === -1
       // indicatorsData.rsi1m.rsiValue >= 70 &&
       // expectedProfitPercent >= 1
 
