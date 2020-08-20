@@ -5,7 +5,7 @@ import { getDMISignal } from './components/dmi-signals';
 
 const symbol = process.argv[2];
 
-const indicatorsData = {};
+const data = {};
 
 export const getPairs = () => {
   return new Promise((res, rej) => {
@@ -134,16 +134,13 @@ const showData = async () => {
 const showOne = async symbol => {
   const data = await getEMAData(symbol, {});
   if (
-    // ((data.fast1hEMA >= data.middle1hEMA &&
-    //   (data.fast1hEMA / data.middle1hEMA) * 100 - 100 <= 0.3) ||
-    //   (data.fast1hEMA >= data.slow1hEMA &&
-    //     (data.fast1hEMA / data.slow1hEMA) * 100 - 100 <= 0.3)) &&
-    // ((data.fast15mEMA >= data.middle15mEMA &&
-    //   (data.fast15mEMA / data.middle15mEMA) * 100 - 100 <= 0.5) ||
-    //   (data.fast15mEMA >= data.slow15mEMA &&
-    //     (data.fast15mEMA / data.slow15mEMA) * 100 - 100 <= 0.5))
-    data.fast15mEMA >= data.middle15mEMA &&
-    (data.fast15mEMA / data.middle15mEMA) * 100 - 100 <= 0.5
+      data.fast15mEMA > data.middle15mEMA &&
+      data.middle15mEMA > data.slow15mEMA &&
+      // indicatorsData.fast15mEMA >= indicatorsData.middle15mEMA;
+      // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
+      data.fast1hEMA > data.middle1hEMA &&
+      data.middle1hEMA > data.slow1hEMA;
+
   ) {
     console.log(symbol, data);
     console.log('1h', (data.fast1hEMA / data.middle1hEMA) * 100 - 100);
