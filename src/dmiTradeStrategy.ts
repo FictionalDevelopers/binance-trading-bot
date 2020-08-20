@@ -28,7 +28,7 @@ import { getRSISignal } from './components/rsi-signals';
 
   const botState = {
     strategy: 'TRENDS CATCHER STRATEGY',
-    testMode: true,
+    testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
@@ -250,10 +250,10 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      (!indicatorsData.dmi1h.willPriceGrow ||
-        (indicatorsData.dmi1m.adxSignal === -1 &&
-          indicatorsData.rsi1m.rsiValue >= 70 &&
-          expectedProfitPercent >= 1))
+      // !indicatorsData.dmi1h.willPriceGrow ||
+      indicatorsData.dmi1m.adxSignal === -1
+      // indicatorsData.rsi1m.rsiValue >= 70 &&
+      // expectedProfitPercent >= 1
 
       // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
       // expectedProfitPercent <= -0.5 ||
