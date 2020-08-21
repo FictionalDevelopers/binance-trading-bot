@@ -134,12 +134,13 @@ const showData = async () => {
 const showOne = async symbol => {
   const data = await getEMAData(symbol, {});
   if (
-    data.fast15mEMA > data.middle15mEMA &&
-    data.middle15mEMA > data.slow15mEMA &&
+    // data.fast15mEMA > data.middle15mEMA &&
+    // data.middle15mEMA > data.slow15mEMA &&
     // indicatorsData.fast15mEMA >= indicatorsData.middle15mEMA;
     // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
-    data.fast1hEMA > data.middle1hEMA &&
-    data.middle1hEMA > data.slow1hEMA
+    data.fast1hEMA > data.middle1hEMA
+    // &&
+    // data.middle1hEMA > data.slow1hEMA
   ) {
     console.log(symbol, data);
     console.log('1h', (data.fast1hEMA / data.middle1hEMA) * 100 - 100);
