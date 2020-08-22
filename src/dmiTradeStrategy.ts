@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'linkusdt';
+  const symbol = 'adausdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -172,8 +172,8 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.status === 'buy' &&
       summaryEMABuySignal &&
-      indicatorsData.dmi1h.willPriceGrow &&
-      indicatorsData.dmi1m.adxSignal === 1
+      indicatorsData.dmi1h.willPriceGrow
+      // indicatorsData.dmi1m.adxSignal === 1
       // &&
       // indicatorsData.rsi1m.rsiValue < 60
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
@@ -256,8 +256,9 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
-        (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
+      indicatorsData.fast15mEMA < indicatorsData.middle15mEMA
+      // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
+      //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
 
       // !indicatorsData.dmi1h.willPriceGrow ||
