@@ -20,7 +20,7 @@ export const getRSISignal = (symbol, timeFrame, indicatorsData) => {
       indicatorsData.sellNow = false;
       indicatorsData.buyNow = true;
     }
-    console.log(`RSI:${rsi} ${indicatorsData.sellNow}`);
+    // console.log(`RSI:${rsi} ${indicatorsData.sellNow}`);
     indicatorsData.prevRsi = rsi;
   });
 };
