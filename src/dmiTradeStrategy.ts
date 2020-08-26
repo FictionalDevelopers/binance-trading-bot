@@ -216,7 +216,10 @@ import { getRSISignal } from './components/rsi-signals';
               botState.currentPrice,
             stepSize,
           );
-          const order = await marketBuy(symbol.toUpperCase(), 50);
+          const order = await marketBuy(
+            symbol.toUpperCase(),
+            50 * tradeAmountPercent,
+          );
           botState.updateState('buyPrice', Number(order.fills[0].price));
           botState.updateState('order', order);
           botState.updateState(
