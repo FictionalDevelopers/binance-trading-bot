@@ -212,14 +212,10 @@ import { getRSISignal } from './components/rsi-signals';
           );
 
           const amount = binance.roundStep(
-            (botState.availableUSDT * tradeAmountPercent) /
-              botState.currentPrice,
+            50 / botState.currentPrice,
             stepSize,
           );
-          const order = await marketBuy(
-            symbol.toUpperCase(),
-            50 * tradeAmountPercent,
-          );
+          const order = await marketBuy(symbol.toUpperCase(), +amount);
           botState.updateState('buyPrice', Number(order.fills[0].price));
           botState.updateState('order', order);
           botState.updateState(
