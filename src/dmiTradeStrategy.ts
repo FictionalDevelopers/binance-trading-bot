@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'erdusdt';
+  const symbol = 'adausdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -28,7 +28,7 @@ import { getRSISignal } from './components/rsi-signals';
 
   const botState = {
     strategy: 'TRENDS CATCHER STRATEGY',
-    testMode: true,
+    testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
@@ -100,23 +100,7 @@ import { getRSISignal } from './components/rsi-signals';
       willPriceGrow: false,
       trend: null,
     },
-    dmi15m: {
-      prevDmi: null,
-      dmiMdiSignal: 0,
-      adxSignal: 0,
-      mdiSignal: 0,
-      adxBuySignalVolume: 0,
-      adxSellSignalVolume: 0,
-      willPriceGrow: false,
-      trend: null,
-    },
     rsi1m: {
-      rsiValue: null,
-      prevRsi: null,
-      sellNow: false,
-      buyNow: false,
-    },
-    rsi15m: {
       rsiValue: null,
       prevRsi: null,
       sellNow: false,
@@ -187,12 +171,8 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      // summaryEMABuySignal &&
-      indicatorsData.dmi15m.willPriceGrow &&
-      indicatorsData.rsi15m.rsiValue <= 35 &&
-      indicatorsData.rsi1m.rsiValue <= 35
-      // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA
-
+      summaryEMABuySignal &&
+      indicatorsData.dmi1h.willPriceGrow
       // indicatorsData.dmi1m.adxSignal === 1
       // &&
       // indicatorsData.rsi1m.rsiValue < 60
@@ -232,11 +212,10 @@ import { getRSISignal } from './components/rsi-signals';
           );
 
           const amount = binance.roundStep(
-            (botState.availableUSDT * tradeAmountPercent) /
-              botState.currentPrice,
+            50 / botState.currentPrice,
             stepSize,
           );
-          const order = await marketBuy(symbol.toUpperCase(), 50);
+          const order = await marketBuy(symbol.toUpperCase(), +amount);
           botState.updateState('buyPrice', Number(order.fills[0].price));
           botState.updateState('order', order);
           botState.updateState(
@@ -276,9 +255,7 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA ||
-      !indicatorsData.dmi1h.willPriceGrow
-      // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA
+      indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
       // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
       //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
@@ -378,9 +355,7 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   getDMISignal(symbol, '1h', indicatorsData.dmi1h);
-  getDMISignal(symbol, '15m', indicatorsData.dmi15m);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
+  getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '1m', indicatorsData);
   getEMASignal(symbol, '15m', indicatorsData);
