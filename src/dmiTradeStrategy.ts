@@ -189,7 +189,8 @@ import { getRSISignal } from './components/rsi-signals';
       botState.status === 'buy' &&
       // summaryEMABuySignal &&
       indicatorsData.dmi15m.willPriceGrow &&
-      indicatorsData.rsi15m.rsiValue <= 30
+      indicatorsData.rsi15m.rsiValue <= 35 &&
+      indicatorsData.rsi1m.rsiValue <= 35
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA
 
       // indicatorsData.dmi1m.adxSignal === 1
