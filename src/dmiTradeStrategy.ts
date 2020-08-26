@@ -28,7 +28,7 @@ import { getRSISignal } from './components/rsi-signals';
 
   const botState = {
     strategy: 'TRENDS CATCHER STRATEGY',
-    testMode: true,
+    testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
@@ -91,16 +91,6 @@ import { getRSISignal } from './components/rsi-signals';
       trend: null,
     },
     dmi1m: {
-      prevDmi: null,
-      dmiMdiSignal: 0,
-      adxSignal: 0,
-      mdiSignal: 0,
-      adxBuySignalVolume: 0,
-      adxSellSignalVolume: 0,
-      willPriceGrow: false,
-      trend: null,
-    },
-    dmi15m: {
       prevDmi: null,
       dmiMdiSignal: 0,
       adxSignal: 0,
@@ -181,10 +171,8 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      // summaryEMABuySignal &&
+      summaryEMABuySignal &&
       indicatorsData.dmi1h.willPriceGrow
-      // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA
-
       // indicatorsData.dmi1m.adxSignal === 1
       // &&
       // indicatorsData.rsi1m.rsiValue < 60
@@ -268,9 +256,7 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA ||
-      !indicatorsData.dmi1h.willPriceGrow
-      // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA
+      indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
       // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
       //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
@@ -370,8 +356,7 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   getDMISignal(symbol, '1h', indicatorsData.dmi1h);
-  getDMISignal(symbol, '15m', indicatorsData.dmi15m);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '1m', indicatorsData);
   getEMASignal(symbol, '15m', indicatorsData);
