@@ -63,13 +63,13 @@ const getDMIData = async (
 ) => {
   return new Promise((res, rej) => {
     // getEMASignal(symbol, '1m', indicatorsData);
-    getDMISignal(symbol, '15m', indicators15mData);
+    getDMISignal(symbol, '5m', indicators15mData);
     getDMISignal(symbol, '1h', indicators1hData);
     const intervalId = setInterval(() => {
       if (
-        indicators15mData.adx &&
-        indicators15mData.mdi &&
-        indicators15mData.pdi &&
+        indicators5mData.adx &&
+        indicators5mData.mdi &&
+        indicators5mData.pdi &&
         indicators1hData.adx &&
         indicators1hData.mdi &&
         indicators1hData.pdi
@@ -134,8 +134,8 @@ const showData = async () => {
 const showOne = async symbol => {
   const data = await getEMAData(symbol, {});
   if (
-    data.fast15mEMA > data.middle15mEMA &&
-    data.middle15mEMA > data.slow15mEMA
+    data.fast5mEMA > data.middle5mEMA &&
+    data.middle5mEMA > data.slow5mEMA
     // indicatorsData.fast15mEMA >= indicatorsData.middle15mEMA;
     // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
     // data.fast1hEMA > data.middle1hEMA
@@ -143,8 +143,8 @@ const showOne = async symbol => {
     // data.middle1hEMA > data.slow1hEMA
   ) {
     console.log(symbol, data);
-    console.log('1h', (data.fast1hEMA / data.middle1hEMA) * 100 - 100);
-    console.log('15m', (data.fast15mEMA / data.middle15mEMA) * 100 - 100);
+    // console.log('1h', (data.fast1hEMA / data.middle1hEMA) * 100 - 100);
+    // console.log('15m', (data.fast15mEMA / data.middle15mEMA) * 100 - 100);
   } else console.log(false);
 };
 

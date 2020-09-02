@@ -355,7 +355,7 @@ import { getRSISignal } from './components/rsi-signals';
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
-  // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
+  getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '1m', indicatorsData);
