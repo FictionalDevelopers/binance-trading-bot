@@ -372,7 +372,7 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   getDMISignal(symbol, '1h', indicatorsData.dmi1h);
-  getDMISignal(symbol, '15m', indicatorsData.dmi15m);
+  getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 

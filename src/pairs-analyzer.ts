@@ -37,17 +37,17 @@ export const getPairs = () => {
 const getEMAData = async (symbol, indicatorsData = {}) => {
   return new Promise((res, rej) => {
     // getEMASignal(symbol, '1m', indicatorsData);
-    getEMASignal(symbol, '15m', indicatorsData);
-    getEMASignal(symbol, '1h', indicatorsData);
+    getEMASignal(symbol, '5m', indicatorsData);
+    // getEMASignal(symbol, '1h', indicatorsData);
     const intervalId = setInterval(() => {
       if (
-        // indicatorsData.fast1mEMA &&
-        // indicatorsData.middle1mEMA &&
-        // indicatorsData.slow1mEMA &&
+        indicatorsData.fast5mEMA &&
+        indicatorsData.middle5mEMA &&
+        indicatorsData.slow5mEMA
         // indicatorsData.fast15mEMA &&
         // indicatorsData.middle15mEMA &&
-        indicatorsData.slow1hEMA &&
-        indicatorsData.middle1hEMA
+        // indicatorsData.slow1hEMA &&
+        // indicatorsData.middle1hEMA
       ) {
         clearInterval(intervalId);
         res(indicatorsData);
@@ -59,25 +59,24 @@ const getEMAData = async (symbol, indicatorsData = {}) => {
 const getDMIData = async (
   symbol,
   indicators1hData = {},
-  indicators15mData = {},
+  indicators5mData = {},
 ) => {
   return new Promise((res, rej) => {
     // getEMASignal(symbol, '1m', indicatorsData);
-    getDMISignal(symbol, '5m', indicators15mData);
-    getDMISignal(symbol, '1h', indicators1hData);
+    getDMISignal(symbol, '5m', indicators5mData);
     const intervalId = setInterval(() => {
       if (
         indicators5mData.adx &&
         indicators5mData.mdi &&
-        indicators5mData.pdi &&
-        indicators1hData.adx &&
-        indicators1hData.mdi &&
-        indicators1hData.pdi
+        indicators5mData.pdi
+        // indicators1hData.adx &&
+        // indicators1hData.mdi &&
+        // indicators1hData.pdi
       ) {
         clearInterval(intervalId);
         res({
-          dmi1h: indicators1hData,
-          dmi15m: indicators15mData,
+          // dmi1h: indicators1hData,
+          dmi5m: indicators5mData,
         });
       }
     }, 1000);
