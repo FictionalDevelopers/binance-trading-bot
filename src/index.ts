@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'lendusdt';
+  const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -182,7 +182,8 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.status === 'buy' &&
       // summaryEMABuySignal &&
-      indicatorsData.dmi1h.willPriceGrow
+      indicatorsData.dmi5m.willPriceGrow &&
+      indicatorsData.rsi1m.rsiValue < 68
       // indicatorsData.dmi15m.willPriceGrow
       // indicatorsData.dmi1m.adxSignal === 1
       // &&
@@ -267,7 +268,7 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      !indicatorsData.dmi1h.willPriceGrow
+      !indicatorsData.dmi5m.willPriceGrow
       // expectedProfitPercent < 0
       // &&
       // !indicatorsData.dmi1h.willPriceGrow
@@ -371,12 +372,12 @@ import { getRSISignal } from './components/rsi-signals';
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
-  getDMISignal(symbol, '1h', indicatorsData.dmi1h);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
-  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getEMASignal(symbol, '1m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);
