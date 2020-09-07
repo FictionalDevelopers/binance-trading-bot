@@ -28,7 +28,7 @@ import { getRSISignal } from './components/rsi-signals';
 
   const botState = {
     strategy: 'TRENDS CATCHER STRATEGY',
-    testMode: true,
+    testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
@@ -212,7 +212,7 @@ import { getRSISignal } from './components/rsi-signals';
           );
 
           const amount = binance.roundStep(
-            40 / botState.currentPrice,
+            38 / botState.currentPrice,
             stepSize,
           );
           const order = await marketBuy(symbol.toUpperCase(), +amount);
