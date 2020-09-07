@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'adausdt';
+  const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -212,7 +212,7 @@ import { getRSISignal } from './components/rsi-signals';
           );
 
           const amount = binance.roundStep(
-            38 / botState.currentPrice,
+            33 / botState.currentPrice,
             stepSize,
           );
           const order = await marketBuy(symbol.toUpperCase(), +amount);
