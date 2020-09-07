@@ -260,7 +260,7 @@ import { getRSISignal } from './components/rsi-signals';
       //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
 
-      !indicatorsData.dmi5m.willPriceGrow
+      !indicatorsData.dmi1m.willPriceGrow
       // indicatorsData.rsi1m.rsiValue >= 70 &&
       // expectedProfitPercent >= 1
 
@@ -356,6 +356,7 @@ import { getRSISignal } from './components/rsi-signals';
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getEMASignal(symbol, '1m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
