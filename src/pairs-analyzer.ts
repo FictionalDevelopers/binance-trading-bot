@@ -2,6 +2,7 @@ import { binance } from './api/binance';
 import sortBy from 'lodash/_baseSortBy';
 import { getEMASignal } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
+import { getRSISignal } from './components/rsi-signals';
 
 const symbol = process.argv[2];
 
@@ -49,6 +50,19 @@ const getEMAData = async (symbol, indicatorsData = {}) => {
         // indicatorsData.slow1hEMA &&
         // indicatorsData.middle1hEMA
       ) {
+        clearInterval(intervalId);
+        res(indicatorsData);
+      }
+    }, 1000);
+  });
+};
+const getRSIData = async (symbol, indicatorsData = {}) => {
+  return new Promise((res, rej) => {
+    // getEMASignal(symbol, '1m', indicatorsData);
+    getRSISignal(symbol, '15m', indicatorsData);
+    // getEMASignal(symbol, '1h', indicatorsData);
+    const intervalId = setInterval(() => {
+      if (indicatorsData.rsiValue) {
         clearInterval(intervalId);
         res(indicatorsData);
       }
@@ -131,20 +145,19 @@ const showData = async () => {
 
 // showData();
 const showOne = async symbol => {
-  const data = await getEMAData(symbol, {});
-  if (
-    data.fast5mEMA > data.middle5mEMA &&
-    data.middle5mEMA > data.slow5mEMA
+  const data = await getRSIData(symbol, {});
+  if (data.rsiValue < 34) {
+    // data.fast5mEMA > data.middle5mEMA &&
+    // data.middle5mEMA > data.slow5mEMA
     // indicatorsData.fast15mEMA >= indicatorsData.middle15mEMA;
     // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
     // data.fast1hEMA > data.middle1hEMA
     // &&
     // data.middle1hEMA > data.slow1hEMA
-  ) {
     console.log(symbol, data);
     // console.log('1h', (data.fast1hEMA / data.middle1hEMA) * 100 - 100);
     // console.log('15m', (data.fast15mEMA / data.middle15mEMA) * 100 - 100);
-  } else console.log(false);
+  } else console.log(data.rsiValue);
 };
 
 showOne(symbol);

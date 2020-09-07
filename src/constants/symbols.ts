@@ -27,6 +27,7 @@ export const SYMBOLS = {
   MATICUSDT: 'maticusdt',
   KNCUSDT: 'kncusdt',
   ERDUSDT: 'erdusdt',
+  KEYUSDT: 'keyusdt',
 };
 
 export const INDICATORS_LIST_SYMBOLS = {
@@ -58,4 +59,5 @@ export const INDICATORS_LIST_SYMBOLS = {
   [SYMBOLS.MATICUSDT]: 'MATIC/USDT',
   [SYMBOLS.KNCUSDT]: 'KNC/USDT',
   [SYMBOLS.ERDUSDT]: 'ERD/USDT',
+  [SYMBOLS.KEYUSDT]: 'KEY/USDT',
 };
