@@ -139,11 +139,12 @@ export const marketSellAction = async (
         botState.cummulativeQuoteQty /
         (profitLevel ? profitLevel.amountPercent : 1)) *
         100} %)
-                 Total profit: ${botState.totalProfit} USDT ${
+                 Total profit: ${botState.totalProfit} USDT (${
         botState.totalPercentProfit
-      } %
+      } %)
                  Average deal profit: ${botState.totalProfit /
-                   botState.dealsCount} USDT/deal
+                   botState.dealsCount} USDT/deal (${botState.totalPercentProfit /
+        botState.dealsCount} %)
                  Stablecoin balance: ${botState.availableUSDT} USDT
                  Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}

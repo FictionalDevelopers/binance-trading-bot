@@ -189,6 +189,7 @@ import { getRSISignal } from './components/rsi-signals';
           );
           await sendToRecipients(`BUY
                              ${botState.strategy}
+                             Deal №: ${botState.dealsCount}
                              symbol: ${symbol.toUpperCase()}
                              price: ${botState.buyPrice}
                              date: ${format(new Date(), DATE_FORMAT)}
