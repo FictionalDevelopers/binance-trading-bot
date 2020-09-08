@@ -120,6 +120,10 @@ import { getRSISignal } from './components/rsi-signals';
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
+    console.log(
+      Number(pricesStream[pricesStream.length - 1]) / botState.prevPrice,
+    );
+
     // const { rsi1mValue, rsi1hValue } = indicatorsData;
     if (botState.status === 'isPending') return;
     if (botState.useProfitLevels) {

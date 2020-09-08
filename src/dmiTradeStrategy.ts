@@ -261,7 +261,7 @@ import { getRSISignal } from './components/rsi-signals';
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
 
       (!indicatorsData.dmi1m.willPriceGrow ||
-        (botState.currentPrice / botState.prevPrice <= 0.9 &&
+        (botState.currentPrice / botState.prevPrice <= 0.9995 &&
           expectedProfitPercent >= 0.4))
       // indicatorsData.rsi1m.rsiValue >= 70 &&
       // expectedProfitPercent >= 1
