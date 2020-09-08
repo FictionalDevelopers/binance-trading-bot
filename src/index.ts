@@ -176,10 +176,10 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.status === 'buy' &&
       // summaryEMABuySignal &&
-      indicatorsData.dmi5m.willPriceGrow &&
+      indicatorsData.dmi1m.willPriceGrow
       // indicatorsData.dmi1m.adxSignal === 1
       // &&
-      indicatorsData.rsi1m.rsiValue < 68
+      // indicatorsData.rsi1m.rsiValue < 68
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
       // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
       // summaryEMABuySignal
@@ -264,7 +264,10 @@ import { getRSISignal } from './components/rsi-signals';
       //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
 
-      !indicatorsData.dmi1m.willPriceGrow
+      (!indicatorsData.dmi1m.willPriceGrow ||
+        (Number(pricesStream[pricesStream.length - 1]) / botState.prevPrice <=
+          0.9999 &&
+          expectedProfitPercent >= 0.5))
       // indicatorsData.rsi1m.rsiValue >= 70 &&
       // expectedProfitPercent >= 1
 
