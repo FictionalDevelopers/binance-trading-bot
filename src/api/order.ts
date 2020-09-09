@@ -78,8 +78,8 @@ export const marketSellAction = async (
               `);
       botState.dealsCount++;
       if (profitLevel) profitLevel.isFilled = true;
-      indicatorsData.dmi1h.willPriceGrow = false;
-      indicatorsData.dmi1h.adxBuySignalVolume = 0;
+      indicatorsData.dmi5m.willPriceGrow = false;
+      indicatorsData.dmi5m.adxBuySignalVolume = 0;
       if (!profitLevel) {
         botState.updateState('status', 'buy');
         _forEach(botState.profitLevels, (val, key) => {
@@ -155,8 +155,8 @@ export const marketSellAction = async (
              `);
       botState.dealsCount++;
       if (profitLevel) profitLevel.isFilled = true;
-      indicatorsData.dmi1h.willPriceGrow = false;
-      indicatorsData.dmi1h.adxBuySignalVolume = 0;
+      indicatorsData.dmi5m.willPriceGrow = false;
+      indicatorsData.dmi5m.adxBuySignalVolume = 0;
       if (!profitLevel) {
         botState.updateState('status', 'buy');
         _forEach(botState.profitLevels, (val, key) => {
