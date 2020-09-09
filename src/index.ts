@@ -13,6 +13,58 @@ import { getEMASignal } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 
+export const indicatorsData = {
+  dmi5m: {
+    prevDmi: null,
+    dmiMdiSignal: 0,
+    adxSignal: 0,
+    mdiSignal: 0,
+    adxBuySignalVolume: 0,
+    adxSellSignalVolume: 0,
+    willPriceGrow: false,
+    trend: null,
+  },
+  dmi1h: {
+    prevDmi: null,
+    dmiMdiSignal: 0,
+    adxSignal: 0,
+    mdiSignal: 0,
+    adxBuySignalVolume: 0,
+    adxSellSignalVolume: 0,
+    willPriceGrow: false,
+    trend: null,
+  },
+  dmi1m: {
+    prevDmi: null,
+    dmiMdiSignal: 0,
+    adxSignal: 0,
+    mdiSignal: 0,
+    adxBuySignalVolume: 0,
+    adxSellSignalVolume: 0,
+    willPriceGrow: false,
+    trend: null,
+  },
+  rsi1m: {
+    rsiValue: null,
+    prevRsi: null,
+    sellNow: false,
+    buyNow: false,
+  },
+  slow1mEMA: 0,
+  middle1mEMA: 0,
+  fast1mEMA: 0,
+  slow1hEMA: 0,
+  middle1hEMA: 0,
+  fast1hEMA: 0,
+  slow15mEMA: 0,
+  middle15mEMA: 0,
+  fast15mEMA: 0,
+  summaryEMABuySignal: false,
+  ema25Prev: null,
+  emaSellSignal: false,
+  emaBuySignal: false,
+};
+
 (async function() {
   await connect();
   // await processSubscriptions();
@@ -31,8 +83,8 @@ import { getRSISignal } from './components/rsi-signals';
     testMode: true,
     useProfitLevels: false,
     useEMAStopLoss: false,
-    // status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
-    status: 'buy',
+    status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
+    // status: 'buy',
     profitLevels: {
       '1': {
         id: 1,
@@ -69,61 +121,8 @@ import { getRSISignal } from './components/rsi-signals';
     },
   };
 
-  const indicatorsData = {
-    dmi5m: {
-      prevDmi: null,
-      dmiMdiSignal: 0,
-      adxSignal: 0,
-      mdiSignal: 0,
-      adxBuySignalVolume: 0,
-      adxSellSignalVolume: 0,
-      willPriceGrow: false,
-      trend: null,
-    },
-    dmi1h: {
-      prevDmi: null,
-      dmiMdiSignal: 0,
-      adxSignal: 0,
-      mdiSignal: 0,
-      adxBuySignalVolume: 0,
-      adxSellSignalVolume: 0,
-      willPriceGrow: false,
-      trend: null,
-    },
-    dmi1m: {
-      prevDmi: null,
-      dmiMdiSignal: 0,
-      adxSignal: 0,
-      mdiSignal: 0,
-      adxBuySignalVolume: 0,
-      adxSellSignalVolume: 0,
-      willPriceGrow: false,
-      trend: null,
-    },
-    rsi1m: {
-      rsiValue: null,
-      prevRsi: null,
-      sellNow: false,
-      buyNow: false,
-    },
-    slow1mEMA: 0,
-    middle1mEMA: 0,
-    fast1mEMA: 0,
-    slow1hEMA: 0,
-    middle1hEMA: 0,
-    fast1hEMA: 0,
-    slow15mEMA: 0,
-    middle15mEMA: 0,
-    fast15mEMA: 0,
-    summaryEMABuySignal: false,
-  };
-
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
-    console.log(
-      Number(pricesStream[pricesStream.length - 1]) / botState.prevPrice,
-    );
-
     // const { rsi1mValue, rsi1hValue } = indicatorsData;
     if (botState.status === 'isPending') return;
     if (botState.useProfitLevels) {
@@ -175,10 +174,13 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
+      indicatorsData.emaBuySignal
       // summaryEMABuySignal &&
-      indicatorsData.dmi1m.willPriceGrow &&
+      // indicatorsData.dmi5m.willPriceGrow &&
       // indicatorsData.dmi1m.adxSignal === 1
-      indicatorsData.rsi1m.rsiValue < 68
+      // &&
+      // indicatorsData.rsi1m.rsiValue < 68 &&
+      // indicatorsData.middle1mEMA < indicatorsData.slow1mEMA
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
       // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
       // summaryEMABuySignal
@@ -192,6 +194,7 @@ import { getRSISignal } from './components/rsi-signals';
           );
           await sendToRecipients(`BUY
                              ${botState.strategy}
+                             Deal №: ${botState.dealsCount}
                              symbol: ${symbol.toUpperCase()}
                              price: ${botState.buyPrice}
                              date: ${format(new Date(), DATE_FORMAT)}
@@ -215,7 +218,7 @@ import { getRSISignal } from './components/rsi-signals';
           );
 
           const amount = binance.roundStep(
-            38 / botState.currentPrice,
+            33 / botState.currentPrice,
             stepSize,
           );
           const order = await marketBuy(symbol.toUpperCase(), +amount);
@@ -258,15 +261,18 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
+      indicatorsData.emaSellSignal
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
       // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
       //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
 
-      ((!indicatorsData.dmi1m.willPriceGrow && expectedProfitPercent < 0) ||
-        (Number(pricesStream[pricesStream.length - 1]) / botState.prevPrice <=
-          0.9998 &&
-          expectedProfitPercent >= 0.3))
+      // ((!indicatorsData.dmi5m.willPriceGrow && expectedProfitPercent < 0) ||
+      //   (indicatorsData.rsi1m.rsiValue >= 69 && expectedProfitPercent > 0))
+
+      // ||
+      // (botState.currentPrice / botState.prevPrice <= 0.9999 &&
+      //   expectedProfitPercent >= 0.2)
       // indicatorsData.rsi1m.rsiValue >= 70 &&
       // expectedProfitPercent >= 1
 
@@ -362,9 +368,9 @@ import { getRSISignal } from './components/rsi-signals';
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  getDMISignal(symbol, '1m', indicatorsData.dmi1m);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  // getEMASignal(symbol, '1m', indicatorsData);
+  getEMASignal(symbol, '1m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);
 

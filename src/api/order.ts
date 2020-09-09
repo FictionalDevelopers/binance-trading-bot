@@ -66,14 +66,14 @@ export const marketSellAction = async (
       botState.updateState('buyPrice', null);
       botState.updateState(
         'totalProfit',
-        (botState.totalProfit += expectedProfitPercent),
+        (botState.totalProfit += expectedProfitPercent - 0.15),
       );
       await sendToRecipients(`Sell
                             ${botState.strategy}
                             symbol: ${symbol.toUpperCase()}
                             price: ${pricesStream[pricesStream.length - 1]}
                             date: ${format(new Date(), DATE_FORMAT)}
-                            current profit: ${expectedProfitPercent}%
+                            current profit: ${expectedProfitPercent - 0.15}%
                             total profit: ${botState.totalProfit}%
               `);
       botState.dealsCount++;

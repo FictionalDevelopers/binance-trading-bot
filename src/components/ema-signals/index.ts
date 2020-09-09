@@ -1,4 +1,28 @@
 import { getEmaStream } from '../../indicators/ema';
+import { indicatorsData } from '../../index';
+
+const timer = setInterval(() => {
+  if (!indicatorsData.ema25Prev) {
+    indicatorsData.ema25Prev = Number(indicatorsData.middle1mEMA).toFixed(4);
+    return;
+  }
+
+  if (
+    indicatorsData.ema25Prev < Number(indicatorsData.middle1mEMA).toFixed(4)
+  ) {
+    indicatorsData.emaBuySignal = true;
+    indicatorsData.emaSellSignal = false;
+  } else if (
+    indicatorsData.ema25Prev > Number(indicatorsData.middle1mEMA).toFixed(4)
+  ) {
+    indicatorsData.emaSellSignal = true;
+    indicatorsData.emaBuySignal = false;
+  }
+  console.log('Prev: ' + indicatorsData.ema25Prev);
+  indicatorsData.ema25Prev = Number(indicatorsData.middle1mEMA).toFixed(4);
+
+  console.log('Current: ' + indicatorsData.middle1mEMA);
+}, 60000);
 
 export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
   getEmaStream({
@@ -15,6 +39,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     period: 25,
   }).subscribe(middleEMA => {
     indicatorsData[`middle${timeFrame}EMA`] = middleEMA;
+    console.log(middleEMA);
   });
 
   getEmaStream({
