@@ -83,8 +83,8 @@ export const indicatorsData = {
     testMode: true,
     useProfitLevels: false,
     useEMAStopLoss: false,
-    status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
-    // status: 'buy',
+    // status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
+    status: 'buy',
     profitLevels: {
       '1': {
         id: 1,
