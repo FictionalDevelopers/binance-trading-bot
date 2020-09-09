@@ -55,6 +55,9 @@ export const indicatorsData = {
   fast1mEMA: 0,
   slow1hEMA: 0,
   middle1hEMA: 0,
+  fast5mEMA: 0,
+  slow5mEMA: 0,
+  middle5mEMA: 0,
   fast1hEMA: 0,
   slow15mEMA: 0,
   middle15mEMA: 0,
@@ -371,7 +374,7 @@ export const indicatorsData = {
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  getEMASignal(symbol, '1m', indicatorsData);
+  getEMASignal(symbol, '5m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);
 
