@@ -9,11 +9,12 @@ import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketBuy, getOrdersList, marketSellAction } from './api/order';
-import { getEMASignal } from './components/ema-signals';
+// import { getEMASignal } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
+import { getEmaStream } from './indicators/ema';
 
-export const indicatorsData = {
+const indicatorsData = {
   dmi5m: {
     prevDmi: null,
     dmiMdiSignal: 0,
@@ -55,6 +56,9 @@ export const indicatorsData = {
   fast1mEMA: 0,
   slow1hEMA: 0,
   middle1hEMA: 0,
+  fast5mEMA: 0,
+  slow5mEMA: 0,
+  middle5mEMA: 0,
   fast1hEMA: 0,
   slow15mEMA: 0,
   middle15mEMA: 0,
@@ -63,6 +67,69 @@ export const indicatorsData = {
   ema25Prev: null,
   emaSellSignal: false,
   emaBuySignal: false,
+};
+
+const timer = setInterval(() => {
+  if (!indicatorsData.ema25Prev) {
+    indicatorsData.ema25Prev = Number(indicatorsData.slow1mEMA).toFixed(4);
+    return;
+  }
+
+  if (
+    (Number(indicatorsData.slow1mEMA).toFixed(4) / indicatorsData.ema25Prev) *
+      100 -
+      100 >=
+    0.4
+  ) {
+    indicatorsData.emaBuySignal = true;
+    indicatorsData.emaSellSignal = false;
+  } else if (
+    (indicatorsData.ema25Prev / Number(indicatorsData.slow1mEMA).toFixed(4)) *
+      100 -
+      100 >=
+    0.4
+  ) {
+    indicatorsData.emaSellSignal = true;
+    indicatorsData.emaBuySignal = false;
+  }
+  console.log('Prev: ' + indicatorsData.ema25Prev);
+  // indicatorsData.ema25Prev = Number(indicatorsData.slow1mEMA).toFixed(4);
+
+  console.log('Current: ' + indicatorsData.slow1mEMA);
+  console.log(
+    'Curr/ Prev',
+    (Number(indicatorsData.slow1mEMA).toFixed(4) / indicatorsData.ema25Prev) *
+      100 -
+      100,
+  );
+}, 60000);
+
+export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
+  getEmaStream({
+    symbol: symbol,
+    interval: timeFrame,
+    period: 7,
+  }).subscribe(fastEMA => {
+    indicatorsData[`fast${timeFrame}EMA`] = fastEMA;
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: timeFrame,
+    period: 25,
+  }).subscribe(middleEMA => {
+    indicatorsData[`middle${timeFrame}EMA`] = middleEMA;
+    // console.log(middleEMA);
+  });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: timeFrame,
+    period: 99,
+  }).subscribe(slowEMA => {
+    indicatorsData[`slow${timeFrame}EMA`] = slowEMA;
+    console.log(slowEMA);
+  });
 };
 
 (async function() {
@@ -83,8 +150,8 @@ export const indicatorsData = {
     testMode: true,
     useProfitLevels: false,
     useEMAStopLoss: false,
-    status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
-    // status: 'buy',
+    // status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
+    status: 'buy',
     profitLevels: {
       '1': {
         id: 1,
@@ -174,12 +241,13 @@ export const indicatorsData = {
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.emaBuySignal
+      indicatorsData.emaBuySignal &&
       // summaryEMABuySignal &&
       // indicatorsData.dmi5m.willPriceGrow &&
       // indicatorsData.dmi1m.adxSignal === 1
       // &&
-      // indicatorsData.rsi1m.rsiValue < 68 &&
+      indicatorsData.rsi1m.rsiValue < 68
+      // &&
       // indicatorsData.middle1mEMA < indicatorsData.slow1mEMA
       // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
       // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
@@ -261,7 +329,7 @@ export const indicatorsData = {
     }
     if (
       botState.status === 'sell' &&
-      indicatorsData.emaSellSignal
+      (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
       // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
       //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
@@ -367,7 +435,7 @@ export const indicatorsData = {
   };
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '1m', indicatorsData);
@@ -402,8 +470,7 @@ export const indicatorsData = {
 process.on('unhandledRejection', async (reason: Error) => {
   console.error(reason);
   await sendToRecipients(`ERROR
-    ${reason.message}
-    ${reason.stack}
+    ${JSON.stringify(reason)}
   `);
 
   process.exit(1);
