@@ -15,6 +15,7 @@ import { getRSISignal } from './components/rsi-signals';
 import { getEmaStream } from './indicators/ema';
 
 const indicatorsData = {
+  emaPoints: [],
   dmi5m: {
     prevDmi: null,
     dmiMdiSignal: 0,
@@ -70,28 +71,48 @@ const indicatorsData = {
 };
 
 const timer = setInterval(() => {
-  if (!indicatorsData.ema25Prev) {
-    indicatorsData.ema25Prev = Number(indicatorsData.slow1mEMA).toFixed(4);
+  if (indicatorsData.emaPoints.length === 0) {
+    indicatorsData.emaPoints.push(Number(indicatorsData.slow1mEMA).toFixed(4));
+    // indicatorsData.ema25Prev = Number(indicatorsData.slow1mEMA).toFixed(4);
     return;
   }
 
-  if (
-    (Number(indicatorsData.slow1mEMA).toFixed(4) / indicatorsData.ema25Prev) *
-      100 -
-      100 >=
-    0.4
-  ) {
-    indicatorsData.emaBuySignal = true;
-    indicatorsData.emaSellSignal = false;
-  } else if (
-    (indicatorsData.ema25Prev / Number(indicatorsData.slow1mEMA).toFixed(4)) *
-      100 -
-      100 >=
-    0.4
-  ) {
-    indicatorsData.emaSellSignal = true;
-    indicatorsData.emaBuySignal = false;
+  if (indicatorsData.emaPoints.length < 20) {
+    if (
+      (Number(indicatorsData.slow1mEMA).toFixed(4) /
+        indicatorsData.emaPoints[0]) *
+        100 -
+        100 >=
+      0.4
+    ) {
+      indicatorsData.emaBuySignal = true;
+      indicatorsData.emaSellSignal = false;
+    }
+    indicatorsData.emaPoints.push(Number(indicatorsData.slow1mEMA).toFixed(4));
+  } else {
+    if (
+      (Number(indicatorsData.slow1mEMA).toFixed(4) /
+        indicatorsData.emaPoints[0]) *
+        100 -
+        100 >=
+      0.4
+    ) {
+      indicatorsData.emaBuySignal = true;
+      indicatorsData.emaSellSignal = false;
+    }
+    indicatorsData.emaPoints.length = 0;
+    indicatorsData.emaPoints.push(Number(indicatorsData.slow1mEMA).toFixed(4));
   }
+
+  // else if (
+  //   (indicatorsData.ema25Prev / Number(indicatorsData.slow1mEMA).toFixed(4)) *
+  //     100 -
+  //     100 >=
+  //   0.4
+  // ) {
+  //   indicatorsData.emaSellSignal = true;
+  //   indicatorsData.emaBuySignal = false;
+  // }
   console.log('Prev: ' + indicatorsData.ema25Prev);
   // indicatorsData.ema25Prev = Number(indicatorsData.slow1mEMA).toFixed(4);
 
