@@ -15,6 +15,7 @@ import { getRSISignal } from './components/rsi-signals';
 import { getEmaStream } from './indicators/ema';
 
 const indicatorsData = {
+  emaBuyPoint: null,
   emaPoints: [],
   dmi5m: {
     prevDmi: null,
@@ -68,6 +69,7 @@ const indicatorsData = {
   ema25Prev: null,
   emaSignal: null,
   emaCanIBuy: true,
+  isUpTrend: false,
 };
 
 const timer = setInterval(() => {
@@ -91,6 +93,7 @@ const timer = setInterval(() => {
     indicatorsData.emaPoints[2] > indicatorsData.emaPoints[1]
   ) {
     indicatorsData.emaSignal = 'buy';
+    indicatorsData.emaBuyPoint = Number(indicatorsData.slow1mEMA).toFixed(4);
   }
 
   if (
@@ -100,6 +103,17 @@ const timer = setInterval(() => {
   ) {
     indicatorsData.emaSignal = 'sell';
     indicatorsData.emaCanIBuy = true;
+  }
+
+  if (
+    (Number(indicatorsData.slow1mEMA).toFixed(4) / indicatorsData.emaBuyPoint) *
+      100 -
+      100 >=
+    0.4
+  ) {
+    indicatorsData.isUpTrend = true;
+  } else {
+    indicatorsData.isUpTrend = false;
   }
 
   // else if (
@@ -261,9 +275,10 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.emaSignal === 'buy' &&
-      indicatorsData.rsi1m.rsiValue < 69 &&
-      indicatorsData.emaCanIBuy
+      ((indicatorsData.emaSignal === 'buy' &&
+        indicatorsData.rsi1m.rsiValue < 69 &&
+        indicatorsData.emaCanIBuy) ||
+        (indicatorsData.isUpTrend && indicatorsData.rsi1m.rsiValue <= 55))
       // indicatorsData.emaBuySignal
       // &&
       // summaryEMABuySignal &&
@@ -436,7 +451,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
         initialUSDTBalance,
         'STOP LOSS',
       );
-      indicatorsData.emaCanIBuy = true;
+      indicatorsData.emaCanIBuy = false;
       return;
     }
 
