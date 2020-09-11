@@ -68,8 +68,9 @@ export const marketSellAction = async (
         'totalProfit',
         (botState.totalProfit += expectedProfitPercent - 0.15),
       );
-      await sendToRecipients(`Sell
+      await sendToRecipients(`Sell (LOCAL)
                             ${botState.strategy}
+                            Sell reason: ${sellReason}
                             symbol: ${symbol.toUpperCase()}
                             price: ${pricesStream[pricesStream.length - 1]}
                             date: ${format(new Date(), DATE_FORMAT)}

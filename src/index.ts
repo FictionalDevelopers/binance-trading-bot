@@ -284,7 +284,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
             'buyPrice',
             Number(pricesStream[pricesStream.length - 1]),
           );
-          await sendToRecipients(`BUY
+          await sendToRecipients(`BUY (LOCAL)
                              ${botState.strategy}
                              Deal №: ${botState.dealsCount}
                              symbol: ${symbol.toUpperCase()}
