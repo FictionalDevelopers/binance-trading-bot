@@ -466,6 +466,7 @@ import { getEmaStream } from './indicators/ema';
         'STOP LOSS',
       );
       indicatorsData.emaCanIBuy = false;
+      indicatorsData.isUpTrend = false;
       return;
     }
 
