@@ -112,11 +112,10 @@ import { getEmaStream } from './indicators/ema';
       indicatorsData.emaPoints[2] > indicatorsData.emaPoints[1]
     ) {
       indicatorsData.emaSignal = 'buy';
-      if (botState.status === 'buy' && indicatorsData.emaCanIBuy)
+      if (botState.status === 'buy' && indicatorsData.emaBuyPoint === null)
         indicatorsData.emaBuyPoint = Number(indicatorsData.slow1mEMA).toFixed(
           4,
         );
-      indicatorsData.emaCanIBuy = false;
     }
 
     if (
@@ -422,6 +421,7 @@ import { getEmaStream } from './indicators/ema';
         'EMA SIGNAL',
       );
       indicatorsData.emaCanIBuy = true;
+      indicatorsData.emaBuyPoint = null;
       return;
     }
     if (
