@@ -465,7 +465,7 @@ import { getEmaStream } from './indicators/ema';
         initialUSDTBalance,
         'STOP LOSS',
       );
-      indicatorsData.emaCanIBuy = false;
+      indicatorsData.emaCanIBuy = true;
       indicatorsData.isUpTrend = false;
       return;
     }
