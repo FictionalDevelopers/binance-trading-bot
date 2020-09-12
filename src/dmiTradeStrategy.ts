@@ -436,7 +436,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
         initialUSDTBalance,
         'STOP LOSS',
       );
-      indicatorsData.emaCanIBuy = true;
+      indicatorsData.emaCanIBuy = false;
       return;
     }
 
