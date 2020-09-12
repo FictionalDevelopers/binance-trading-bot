@@ -68,6 +68,7 @@ const indicatorsData = {
   ema25Prev: null,
   emaSignal: null,
   emaCanIBuy: true,
+  preventSelling: false,
 };
 
 const timer = setInterval(() => {
@@ -100,6 +101,7 @@ const timer = setInterval(() => {
   ) {
     indicatorsData.emaSignal = 'sell';
     indicatorsData.emaCanIBuy = true;
+    indicatorsData.preventSelling = false;
   }
 
   // else if (
@@ -264,7 +266,9 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
       ((indicatorsData.emaSignal === 'buy' &&
         indicatorsData.rsi1m.rsiValue < 69 &&
         indicatorsData.emaCanIBuy) ||
-        (indicatorsData.rsi1m.rsiValue <= 60 && !indicatorsData.emaCanIBuy))
+        (indicatorsData.rsi1m.rsiValue <= 60 &&
+          !indicatorsData.emaCanIBuy &&
+          !indicatorsData.preventSelling))
       // indicatorsData.emaBuySignal
       // &&
       // summaryEMABuySignal &&
@@ -438,6 +442,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
         'STOP LOSS',
       );
       indicatorsData.emaCanIBuy = false;
+      indicatorsData.preventSelling = true;
       return;
     }
 
@@ -483,6 +488,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
         'RSI SIGNAL',
       );
       indicatorsData.emaCanIBuy = false;
+      indicatorsData.preventSelling = false;
       return;
     }
 
