@@ -263,12 +263,14 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     //       );
     if (
       botState.status === 'buy' &&
-      ((indicatorsData.emaSignal === 'buy' &&
-        indicatorsData.rsi1m.rsiValue < 69 &&
-        indicatorsData.emaCanIBuy) ||
-        (indicatorsData.rsi1m.rsiValue <= 60 &&
-          !indicatorsData.emaCanIBuy &&
-          !indicatorsData.preventSelling))
+      indicatorsData.emaSignal === 'buy' &&
+      indicatorsData.rsi1m.rsiValue < 69 &&
+      indicatorsData.emaCanIBuy
+      // ||
+      // (indicatorsData.rsi1m.rsiValue <= 60 &&
+      //   !indicatorsData.emaCanIBuy &&
+      //   !indicatorsData.preventSelling)
+
       // indicatorsData.emaBuySignal
       // &&
       // summaryEMABuySignal &&
@@ -448,7 +450,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
 
     if (
       botState.status === 'sell' &&
-      indicatorsData.rsi1m.rsiValue >= 70
+      (indicatorsData.rsi1m.rsiValue >= 70 || expectedProfitPercent >= 0.6)
       // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
       // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
