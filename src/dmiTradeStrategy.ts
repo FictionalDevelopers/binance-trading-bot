@@ -261,9 +261,10 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.emaSignal === 'buy' &&
-      indicatorsData.rsi1m.rsiValue < 69 &&
-      indicatorsData.emaCanIBuy
+      ((indicatorsData.emaSignal === 'buy' &&
+        indicatorsData.rsi1m.rsiValue < 69 &&
+        indicatorsData.emaCanIBuy) ||
+        (indicatorsData.rsi1m.rsiValue <= 60 && !indicatorsData.emaCanIBuy))
       // indicatorsData.emaBuySignal
       // &&
       // summaryEMABuySignal &&
