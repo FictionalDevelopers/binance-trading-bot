@@ -15,6 +15,8 @@ import { getRSISignal } from './components/rsi-signals';
 import { getEmaStream } from './indicators/ema';
 
 const indicatorsData = {
+  prev1sPrice: null,
+  emaPoints: [],
   dmi5m: {
     prevDmi: null,
     dmiMdiSignal: 0,
@@ -64,48 +66,81 @@ const indicatorsData = {
   middle15mEMA: 0,
   fast15mEMA: 0,
   summaryEMABuySignal: false,
-  enterPoint: null,
-  emaSellSignal: false,
-  emaBuySignal: false,
+  ema25Prev: null,
+  emaSignal: null,
+  emaCanIBuy: true,
+  preventSelling: false,
+  currentPrice: null,
 };
 
+// const pricesTimer = setInterval(() => {
+//   if (indicatorsData.prev1sPrice === null) {
+//     indicatorsData.prev1sPrice = indicatorsData.currentPrice;
+//   }
+//   if (indicatorsData.currentPrice / indicatorsData.prev1sPrice <= 0.9995)
+//     console.log('DOWN');
+//   indicatorsData.prev1sPrice = indicatorsData.currentPrice;
+// });
+
 const timer = setInterval(() => {
-  if (!indicatorsData.enterPoint) {
-    indicatorsData.enterPoint = Number(indicatorsData.slow1mEMA).toFixed(4);
+  if (indicatorsData.emaPoints.length === 0) {
+    indicatorsData.emaCanIBuy = true;
+    indicatorsData.emaPoints.push(
+      Number(indicatorsData.middle1mEMA).toFixed(4),
+    );
+    // indicatorsData.ema25Prev = Number(indicatorsData.slow1mEMA).toFixed(4);
     return;
   }
 
-  if (
-    (Number(indicatorsData.slow1mEMA).toFixed(4) / indicatorsData.enterPoint) *
-      100 -
-      100 >=
-    0.4
-  ) {
-    indicatorsData.emaBuySignal = true;
-    indicatorsData.emaSellSignal = false;
-  } else if (
-    (indicatorsData.enterPoint / Number(indicatorsData.slow1mEMA).toFixed(4)) *
-      100 -
-      100 >=
-    0.4
-  ) {
-    indicatorsData.emaSellSignal = true;
-    indicatorsData.emaBuySignal = false;
+  if (indicatorsData.emaPoints.length < 3) {
+    indicatorsData.emaPoints.push(
+      Number(indicatorsData.middle1mEMA).toFixed(4),
+    );
+  } else {
+    indicatorsData.emaPoints.length = 0;
+    indicatorsData.emaPoints.push(
+      Number(indicatorsData.middle1mEMA).toFixed(4),
+    );
   }
-  console.log('Prev: ' + indicatorsData.enterPoint);
-  // indicatorsData.ema25Prev = Number(indicatorsData.slow1mEMA).toFixed(4);
 
-  console.log('Current: ' + indicatorsData.slow1mEMA);
+  if (
+    indicatorsData.emaPoints.length === 3 &&
+    indicatorsData.emaPoints[1] > indicatorsData.emaPoints[0] &&
+    indicatorsData.emaPoints[2] > indicatorsData.emaPoints[1]
+  ) {
+    indicatorsData.emaSignal = 'buy';
+  }
+
+  if (
+    indicatorsData.emaPoints.length === 3 &&
+    indicatorsData.emaPoints[2] < indicatorsData.emaPoints[1] &&
+    indicatorsData.emaPoints[1] < indicatorsData.emaPoints[0]
+  ) {
+    indicatorsData.emaSignal = 'sell';
+    indicatorsData.emaCanIBuy = true;
+    indicatorsData.preventSelling = false;
+  }
+
+  // else if (
+  //   (indicatorsData.ema25Prev / Number(indicatorsData.slow1mEMA).toFixed(4)) *
+  //     100 -
+  //     100 >=
+  //   0.4
+  // ) {
+  //   indicatorsData.emaSellSignal = true;
+  //   indicatorsData.emaBuySignal = false;
+  // }
+  // console.log('Prev: ' + indicatorsData.ema25Prev);
+  // indicatorsData.ema25Prev = Number(indicatorsData.slow1mEMA).toFixed(4);
+  // console.log('Current: ' + indicatorsData.slow1mEMA);
+  console.log(indicatorsData.emaPoints);
   console.log(
     'Curr/ Prev',
-    (Number(indicatorsData.slow1mEMA).toFixed(4) / indicatorsData.enterPoint) *
+    (Number(indicatorsData.middle1mEMA).toFixed(4) /
+      indicatorsData.emaPoints[0]) *
       100 -
       100,
   );
-
-  if (indicatorsData.enterPoint > Number(indicatorsData.slow1mEMA).toFixed(4))
-    indicatorsData.enterPoint = Number(indicatorsData.slow1mEMA).toFixed(4);
-  console.log('Enter point: ', indicatorsData.enterPoint);
 }, 60000);
 
 export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
@@ -123,7 +158,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     period: 25,
   }).subscribe(middleEMA => {
     indicatorsData[`middle${timeFrame}EMA`] = middleEMA;
-    // console.log(middleEMA);
+    console.log(middleEMA);
   });
 
   getEmaStream({
@@ -132,7 +167,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     period: 99,
   }).subscribe(slowEMA => {
     indicatorsData[`slow${timeFrame}EMA`] = slowEMA;
-    console.log(slowEMA);
+    // console.log(slowEMA);
   });
 };
 
@@ -206,10 +241,13 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
         botState.updateState('status', 'buy');
       }
     }
-    const summaryEMABuySignal =
-      indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
-      indicatorsData.middle15mEMA > indicatorsData.slow15mEMA &&
-      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+    // const summaryEMABuySignal =
+    //   indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+    //   indicatorsData.middle15mEMA > indicatorsData.slow15mEMA &&
+    //   indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+    //   indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
+
+    const isMiddleEmaHigherThanSlowEma =
       indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
 
     // indicatorsData.fast15mEMA >= indicatorsData.middle15mEMA;
@@ -222,6 +260,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
     );
+    // indicatorsData.currentPrice = Number(pricesStream[pricesStream.length - 1]);
     const expectedProfitPercent = botState.buyPrice
       ? botState.currentPrice / botState.buyPrice > 1
         ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
@@ -245,8 +284,15 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.emaBuySignal &&
-      indicatorsData.rsi1m.rsiValue < 69
+      indicatorsData.emaSignal === 'buy' &&
+      indicatorsData.rsi1m.rsiValue < 69 &&
+      indicatorsData.emaCanIBuy
+      // ||
+      // (indicatorsData.rsi1m.rsiValue <= 60 &&
+      //   !indicatorsData.emaCanIBuy &&
+      //   !indicatorsData.preventSelling)
+
+      // indicatorsData.emaBuySignal
       // &&
       // summaryEMABuySignal &&
       // indicatorsData.dmi5m.willPriceGrow &&
@@ -266,7 +312,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
             'buyPrice',
             Number(pricesStream[pricesStream.length - 1]),
           );
-          await sendToRecipients(`BUY
+          await sendToRecipients(`BUY (LOCAL)
                              ${botState.strategy}
                              Deal №: ${botState.dealsCount}
                              symbol: ${symbol.toUpperCase()}
@@ -335,6 +381,98 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     }
     if (
       botState.status === 'sell' &&
+      indicatorsData.emaSignal === 'sell' &&
+      !isMiddleEmaHigherThanSlowEma
+      // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
+      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
+      // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
+      //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
+      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
+
+      // ((!indicatorsData.dmi5m.willPriceGrow && expectedProfitPercent < 0) ||
+      //   (indicatorsData.rsi1m.rsiValue >= 69 && expectedProfitPercent > 0))
+
+      // ||
+      // (botState.currentPrice / botState.prevPrice <= 0.9999 &&
+      //   expectedProfitPercent >= 0.2)
+      // indicatorsData.rsi1m.rsiValue >= 70 &&
+      // expectedProfitPercent >= 1
+
+      // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
+      // expectedProfitPercent <= -0.5 ||
+      // (indicatorsData.rsi1m.rsiValue > 68 &&
+      //   ((botState.prevPrice !== null &&
+      //     botState.currentPrice <= botState.prevPrice * 0.99 &&
+      //     expectedProfitPercent >= 0.5) ||
+      //     expectedProfitPercent <= -1))
+      // (indicatorsData.rsi1m.rsiValue > 70 &&
+      //   indicatorsData.rsi1m.sellNow &&
+      //   (expectedProfitPercent >= 0.5 || expectedProfitPercent <= -1))
+    ) {
+      await marketSellAction(
+        null,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        indicatorsData,
+        stepSize,
+        initialUSDTBalance,
+        'EMA SIGNAL',
+      );
+      indicatorsData.emaCanIBuy = true;
+      return;
+    }
+    if (
+      botState.status === 'sell' &&
+      expectedProfitPercent <= -0.5
+      // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
+      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
+      // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
+      //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
+      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
+
+      // ((!indicatorsData.dmi5m.willPriceGrow && expectedProfitPercent < 0) ||
+      //   (indicatorsData.rsi1m.rsiValue >= 69 && expectedProfitPercent > 0))
+
+      // ||
+      // (botState.currentPrice / botState.prevPrice <= 0.9999 &&
+      //   expectedProfitPercent >= 0.2)
+      // indicatorsData.rsi1m.rsiValue >= 70 &&
+      // expectedProfitPercent >= 1
+
+      // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
+      // expectedProfitPercent <= -0.5 ||
+      // (indicatorsData.rsi1m.rsiValue > 68 &&
+      //   ((botState.prevPrice !== null &&
+      //     botState.currentPrice <= botState.prevPrice * 0.99 &&
+      //     expectedProfitPercent >= 0.5) ||
+      //     expectedProfitPercent <= -1))
+      // (indicatorsData.rsi1m.rsiValue > 70 &&
+      //   indicatorsData.rsi1m.sellNow &&
+      //   (expectedProfitPercent >= 0.5 || expectedProfitPercent <= -1))
+    ) {
+      await marketSellAction(
+        null,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        indicatorsData,
+        stepSize,
+        initialUSDTBalance,
+        'STOP LOSS',
+      );
+      indicatorsData.emaCanIBuy = false;
+      indicatorsData.preventSelling = true;
+      return;
+    }
+
+    if (
+      botState.status === 'sell' &&
+      // indicatorsData.rsi1m.rsiValue >= 70 ||
       expectedProfitPercent >= 3
       // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
@@ -372,10 +510,13 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
         indicatorsData,
         stepSize,
         initialUSDTBalance,
-        'ADX SIGNAL',
+        'RSI SIGNAL',
       );
+      indicatorsData.emaCanIBuy = false;
+      indicatorsData.preventSelling = false;
       return;
     }
+
     if (botState.useEMAStopLoss) {
       if (
         botState.status === 'sell' &&
