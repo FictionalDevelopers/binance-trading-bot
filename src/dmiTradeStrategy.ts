@@ -15,7 +15,6 @@ import { getRSISignal } from './components/rsi-signals';
 import { getEmaStream } from './indicators/ema';
 
 const indicatorsData = {
-  prev1sPrice: null,
   emaPoints: [],
   dmi5m: {
     prevDmi: null,
@@ -70,37 +69,21 @@ const indicatorsData = {
   emaSignal: null,
   emaCanIBuy: true,
   preventSelling: false,
-  currentPrice: null,
 };
-
-// const pricesTimer = setInterval(() => {
-//   if (indicatorsData.prev1sPrice === null) {
-//     indicatorsData.prev1sPrice = indicatorsData.currentPrice;
-//   }
-//   if (indicatorsData.currentPrice / indicatorsData.prev1sPrice <= 0.9995)
-//     console.log('DOWN');
-//   indicatorsData.prev1sPrice = indicatorsData.currentPrice;
-// });
 
 const timer = setInterval(() => {
   if (indicatorsData.emaPoints.length === 0) {
     indicatorsData.emaCanIBuy = true;
-    indicatorsData.emaPoints.push(
-      Number(indicatorsData.middle1mEMA).toFixed(4),
-    );
+    indicatorsData.emaPoints.push(Number(indicatorsData.slow1mEMA).toFixed(4));
     // indicatorsData.ema25Prev = Number(indicatorsData.slow1mEMA).toFixed(4);
     return;
   }
 
   if (indicatorsData.emaPoints.length < 3) {
-    indicatorsData.emaPoints.push(
-      Number(indicatorsData.middle1mEMA).toFixed(4),
-    );
+    indicatorsData.emaPoints.push(Number(indicatorsData.slow1mEMA).toFixed(4));
   } else {
     indicatorsData.emaPoints.length = 0;
-    indicatorsData.emaPoints.push(
-      Number(indicatorsData.middle1mEMA).toFixed(4),
-    );
+    indicatorsData.emaPoints.push(Number(indicatorsData.slow1mEMA).toFixed(4));
   }
 
   if (
@@ -136,7 +119,7 @@ const timer = setInterval(() => {
   console.log(indicatorsData.emaPoints);
   console.log(
     'Curr/ Prev',
-    (Number(indicatorsData.middle1mEMA).toFixed(4) /
+    (Number(indicatorsData.slow1mEMA).toFixed(4) /
       indicatorsData.emaPoints[0]) *
       100 -
       100,
@@ -158,7 +141,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     period: 25,
   }).subscribe(middleEMA => {
     indicatorsData[`middle${timeFrame}EMA`] = middleEMA;
-    console.log(middleEMA);
+    // console.log(middleEMA);
   });
 
   getEmaStream({
@@ -167,7 +150,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     period: 99,
   }).subscribe(slowEMA => {
     indicatorsData[`slow${timeFrame}EMA`] = slowEMA;
-    // console.log(slowEMA);
+    console.log(slowEMA);
   });
 };
 
@@ -247,9 +230,6 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     //   indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
     //   indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
 
-    const isMiddleEmaHigherThanSlowEma =
-      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
-
     // indicatorsData.fast15mEMA >= indicatorsData.middle15mEMA;
     // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
 
@@ -260,7 +240,6 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
     );
-    // indicatorsData.currentPrice = Number(pricesStream[pricesStream.length - 1]);
     const expectedProfitPercent = botState.buyPrice
       ? botState.currentPrice / botState.buyPrice > 1
         ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
@@ -381,8 +360,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     }
     if (
       botState.status === 'sell' &&
-      indicatorsData.emaSignal === 'sell' &&
-      !isMiddleEmaHigherThanSlowEma
+      indicatorsData.emaSignal === 'sell'
       // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
       // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
@@ -472,8 +450,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
 
     if (
       botState.status === 'sell' &&
-      // indicatorsData.rsi1m.rsiValue >= 70 ||
-      expectedProfitPercent >= 3
+      (indicatorsData.rsi1m.rsiValue >= 70 || expectedProfitPercent >= 0.6)
       // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
       // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
