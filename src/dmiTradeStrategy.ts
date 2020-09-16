@@ -450,7 +450,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
 
     if (
       botState.status === 'sell' &&
-      !indicatorsData.dmi5m.adxSellSignalVolume > 0
+      indicatorsData.dmi5m.adxSellSignalVolume > 0
       // (indicatorsData.rsi1m.rsiValue >= 70 || expectedProfitPercent >= 0.6)
 
       // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
