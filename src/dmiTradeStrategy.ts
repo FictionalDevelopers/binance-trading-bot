@@ -358,50 +358,50 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
         }
       }
     }
-    if (
-      botState.status === 'sell' &&
-      indicatorsData.emaSignal === 'sell'
-      // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
-      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
-      // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
-      //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
-      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
-
-      // ((!indicatorsData.dmi5m.willPriceGrow && expectedProfitPercent < 0) ||
-      //   (indicatorsData.rsi1m.rsiValue >= 69 && expectedProfitPercent > 0))
-
-      // ||
-      // (botState.currentPrice / botState.prevPrice <= 0.9999 &&
-      //   expectedProfitPercent >= 0.2)
-      // indicatorsData.rsi1m.rsiValue >= 70 &&
-      // expectedProfitPercent >= 1
-
-      // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
-      // expectedProfitPercent <= -0.5 ||
-      // (indicatorsData.rsi1m.rsiValue > 68 &&
-      //   ((botState.prevPrice !== null &&
-      //     botState.currentPrice <= botState.prevPrice * 0.99 &&
-      //     expectedProfitPercent >= 0.5) ||
-      //     expectedProfitPercent <= -1))
-      // (indicatorsData.rsi1m.rsiValue > 70 &&
-      //   indicatorsData.rsi1m.sellNow &&
-      //   (expectedProfitPercent >= 0.5 || expectedProfitPercent <= -1))
-    ) {
-      await marketSellAction(
-        null,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        indicatorsData,
-        stepSize,
-        initialUSDTBalance,
-        'EMA SIGNAL',
-      );
-      indicatorsData.emaCanIBuy = true;
-      return;
-    }
+    // if (
+    //   botState.status === 'sell' &&
+    //   indicatorsData.emaSignal === 'sell'
+    //   // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
+    //   // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
+    //   // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
+    //   //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
+    //   // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
+    //
+    //   // ((!indicatorsData.dmi5m.willPriceGrow && expectedProfitPercent < 0) ||
+    //   //   (indicatorsData.rsi1m.rsiValue >= 69 && expectedProfitPercent > 0))
+    //
+    //   // ||
+    //   // (botState.currentPrice / botState.prevPrice <= 0.9999 &&
+    //   //   expectedProfitPercent >= 0.2)
+    //   // indicatorsData.rsi1m.rsiValue >= 70 &&
+    //   // expectedProfitPercent >= 1
+    //
+    //   // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
+    //   // expectedProfitPercent <= -0.5 ||
+    //   // (indicatorsData.rsi1m.rsiValue > 68 &&
+    //   //   ((botState.prevPrice !== null &&
+    //   //     botState.currentPrice <= botState.prevPrice * 0.99 &&
+    //   //     expectedProfitPercent >= 0.5) ||
+    //   //     expectedProfitPercent <= -1))
+    //   // (indicatorsData.rsi1m.rsiValue > 70 &&
+    //   //   indicatorsData.rsi1m.sellNow &&
+    //   //   (expectedProfitPercent >= 0.5 || expectedProfitPercent <= -1))
+    // ) {
+    //   await marketSellAction(
+    //     null,
+    //     symbol,
+    //     botState,
+    //     cryptoCoin,
+    //     expectedProfitPercent,
+    //     pricesStream,
+    //     indicatorsData,
+    //     stepSize,
+    //     initialUSDTBalance,
+    //     'EMA SIGNAL',
+    //   );
+    //   indicatorsData.emaCanIBuy = true;
+    //   return;
+    // }
     // if (
     //   botState.status === 'sell' &&
     //   expectedProfitPercent <= -0.5
@@ -450,7 +450,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
 
     if (
       botState.status === 'sell' &&
-      !indicatorsData.dmi5m.willPriceGrow
+      !indicatorsData.dmi5m.adxSellSignalVolume > 0
       // (indicatorsData.rsi1m.rsiValue >= 70 || expectedProfitPercent >= 0.6)
 
       // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
