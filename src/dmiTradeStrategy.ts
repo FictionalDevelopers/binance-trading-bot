@@ -74,16 +74,16 @@ const indicatorsData = {
 const timer = setInterval(() => {
   if (indicatorsData.emaPoints.length === 0) {
     indicatorsData.emaCanIBuy = true;
-    indicatorsData.emaPoints.push(Number(indicatorsData.slow1mEMA).toFixed(4));
+    indicatorsData.emaPoints.push(Number(indicatorsData.fast1mEMA).toFixed(4));
     // indicatorsData.ema25Prev = Number(indicatorsData.slow1mEMA).toFixed(4);
     return;
   }
 
   if (indicatorsData.emaPoints.length < 3) {
-    indicatorsData.emaPoints.push(Number(indicatorsData.slow1mEMA).toFixed(4));
+    indicatorsData.emaPoints.push(Number(indicatorsData.fast1mEMA).toFixed(4));
   } else {
     indicatorsData.emaPoints.length = 0;
-    indicatorsData.emaPoints.push(Number(indicatorsData.slow1mEMA).toFixed(4));
+    indicatorsData.emaPoints.push(Number(indicatorsData.fast1mEMA).toFixed(4));
   }
 
   if (
@@ -119,7 +119,7 @@ const timer = setInterval(() => {
   console.log(indicatorsData.emaPoints);
   console.log(
     'Curr/ Prev',
-    (Number(indicatorsData.slow1mEMA).toFixed(4) /
+    (Number(indicatorsData.fast1mEMA).toFixed(4) /
       indicatorsData.emaPoints[0]) *
       100 -
       100,
