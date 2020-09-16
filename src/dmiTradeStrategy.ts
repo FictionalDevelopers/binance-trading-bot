@@ -402,9 +402,57 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
       indicatorsData.emaCanIBuy = true;
       return;
     }
+    // if (
+    //   botState.status === 'sell' &&
+    //   expectedProfitPercent <= -0.5
+    //   // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
+    //   // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
+    //   // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
+    //   //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
+    //   // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
+    //
+    //   // ((!indicatorsData.dmi5m.willPriceGrow && expectedProfitPercent < 0) ||
+    //   //   (indicatorsData.rsi1m.rsiValue >= 69 && expectedProfitPercent > 0))
+    //
+    //   // ||
+    //   // (botState.currentPrice / botState.prevPrice <= 0.9999 &&
+    //   //   expectedProfitPercent >= 0.2)
+    //   // indicatorsData.rsi1m.rsiValue >= 70 &&
+    //   // expectedProfitPercent >= 1
+    //
+    //   // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
+    //   // expectedProfitPercent <= -0.5 ||
+    //   // (indicatorsData.rsi1m.rsiValue > 68 &&
+    //   //   ((botState.prevPrice !== null &&
+    //   //     botState.currentPrice <= botState.prevPrice * 0.99 &&
+    //   //     expectedProfitPercent >= 0.5) ||
+    //   //     expectedProfitPercent <= -1))
+    //   // (indicatorsData.rsi1m.rsiValue > 70 &&
+    //   //   indicatorsData.rsi1m.sellNow &&
+    //   //   (expectedProfitPercent >= 0.5 || expectedProfitPercent <= -1))
+    // ) {
+    //   await marketSellAction(
+    //     null,
+    //     symbol,
+    //     botState,
+    //     cryptoCoin,
+    //     expectedProfitPercent,
+    //     pricesStream,
+    //     indicatorsData,
+    //     stepSize,
+    //     initialUSDTBalance,
+    //     'STOP LOSS',
+    //   );
+    //   indicatorsData.emaCanIBuy = false;
+    //   indicatorsData.preventSelling = true;
+    //   return;
+    // }
+
     if (
       botState.status === 'sell' &&
-      expectedProfitPercent <= -0.5
+      !indicatorsData.dmi5m.willPriceGrow
+      // (indicatorsData.rsi1m.rsiValue >= 70 || expectedProfitPercent >= 0.6)
+
       // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
       // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
@@ -441,53 +489,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
         indicatorsData,
         stepSize,
         initialUSDTBalance,
-        'STOP LOSS',
-      );
-      indicatorsData.emaCanIBuy = false;
-      indicatorsData.preventSelling = true;
-      return;
-    }
-
-    if (
-      botState.status === 'sell' &&
-      (indicatorsData.rsi1m.rsiValue >= 70 || expectedProfitPercent >= 0.6)
-      // (indicatorsData.emaSellSignal || indicatorsData.rsi1m.rsiValue >= 70)
-      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
-      // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
-      //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
-      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
-
-      // ((!indicatorsData.dmi5m.willPriceGrow && expectedProfitPercent < 0) ||
-      //   (indicatorsData.rsi1m.rsiValue >= 69 && expectedProfitPercent > 0))
-
-      // ||
-      // (botState.currentPrice / botState.prevPrice <= 0.9999 &&
-      //   expectedProfitPercent >= 0.2)
-      // indicatorsData.rsi1m.rsiValue >= 70 &&
-      // expectedProfitPercent >= 1
-
-      // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
-      // expectedProfitPercent <= -0.5 ||
-      // (indicatorsData.rsi1m.rsiValue > 68 &&
-      //   ((botState.prevPrice !== null &&
-      //     botState.currentPrice <= botState.prevPrice * 0.99 &&
-      //     expectedProfitPercent >= 0.5) ||
-      //     expectedProfitPercent <= -1))
-      // (indicatorsData.rsi1m.rsiValue > 70 &&
-      //   indicatorsData.rsi1m.sellNow &&
-      //   (expectedProfitPercent >= 0.5 || expectedProfitPercent <= -1))
-    ) {
-      await marketSellAction(
-        null,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        indicatorsData,
-        stepSize,
-        initialUSDTBalance,
-        'RSI SIGNAL',
+        'ADX SIGNAL',
       );
       indicatorsData.emaCanIBuy = false;
       indicatorsData.preventSelling = false;
@@ -564,6 +566,8 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '1m', indicatorsData);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);
 
