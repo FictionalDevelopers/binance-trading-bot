@@ -9,14 +9,14 @@ import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketBuy, getOrdersList, marketSellAction } from './api/order';
-import { getEMASignal } from './components/ema-signals';
+import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'bzrxusdt';
+  const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -27,7 +27,7 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
-    strategy: 'TRENDS CATCHER STRATEGY',
+    strategy: 'FAST EMA STRATEGY',
     testMode: true,
     useProfitLevels: false,
     useEMAStopLoss: false,
@@ -70,6 +70,8 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   const indicatorsData = {
+    emaSignal: null,
+    emaPoints: [],
     dmi5m: {
       prevDmi: null,
       dmiMdiSignal: 0,
@@ -117,6 +119,8 @@ import { getRSISignal } from './components/rsi-signals';
     fast15mEMA: 0,
     summaryEMABuySignal: false,
   };
+
+  runEMAInterval(indicatorsData);
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
@@ -171,8 +175,9 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
+      indicatorsData.emaSignal === 'buy'
       // summaryEMABuySignal &&
-      indicatorsData.dmi1h.willPriceGrow
+      // indicatorsData.dmi1h.willPriceGrow
       // indicatorsData.dmi1m.adxSignal === 1
       // &&
       // indicatorsData.rsi1m.rsiValue < 68
@@ -256,12 +261,13 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
+      indicatorsData.emaSignal === 'sell'
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
       // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
       //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
       // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
 
-      !indicatorsData.dmi1h.willPriceGrow
+      // !indicatorsData.dmi1h.willPriceGrow
       // ||
       // (botState.currentPrice / botState.prevPrice <= 0.9999 &&
       //   expectedProfitPercent >= 0.2)
@@ -362,7 +368,7 @@ import { getRSISignal } from './components/rsi-signals';
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  // getEMASignal(symbol, '1m', indicatorsData);
+  getEMASignal(symbol, '1h', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);
 
