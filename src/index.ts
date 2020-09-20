@@ -9,7 +9,7 @@ import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketBuy, getOrdersList, marketSellAction } from './api/order';
-import { getEMASignal, runEMAInterval } from './components/ema-signals';
+import { getEMASignal } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 
@@ -27,7 +27,7 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
-    strategy: 'FAST EMA STRATEGY',
+    strategy: 'EMA STRATEGY',
     testMode: true,
     useProfitLevels: false,
     useEMAStopLoss: false,
@@ -70,8 +70,8 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   const indicatorsData = {
+    emaStartPoint: null,
     emaSignal: null,
-    emaPoints: [],
     dmi5m: {
       prevDmi: null,
       dmiMdiSignal: 0,
@@ -119,8 +119,6 @@ import { getRSISignal } from './components/rsi-signals';
     fast15mEMA: 0,
     summaryEMABuySignal: false,
   };
-
-  runEMAInterval(indicatorsData);
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
@@ -175,15 +173,8 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.emaSignal === 'buy'
-      // summaryEMABuySignal &&
-      // indicatorsData.dmi1h.willPriceGrow
-      // indicatorsData.dmi1m.adxSignal === 1
-      // &&
-      // indicatorsData.rsi1m.rsiValue < 68
-      // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-      // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
-      // summaryEMABuySignal
+      indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+      indicatorsData.rsi1m.rsiValue <= 45
     ) {
       if (botState.testMode) {
         try {
@@ -261,29 +252,8 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      indicatorsData.emaSignal === 'sell'
-      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
-      // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
-      //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
-      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
-
-      // !indicatorsData.dmi1h.willPriceGrow
-      // ||
-      // (botState.currentPrice / botState.prevPrice <= 0.9999 &&
-      //   expectedProfitPercent >= 0.2)
-      // indicatorsData.rsi1m.rsiValue >= 70 &&
-      // expectedProfitPercent >= 1
-
-      // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
-      // expectedProfitPercent <= -0.5 ||
-      // (indicatorsData.rsi1m.rsiValue > 68 &&
-      //   ((botState.prevPrice !== null &&
-      //     botState.currentPrice <= botState.prevPrice * 0.99 &&
-      //     expectedProfitPercent >= 0.5) ||
-      //     expectedProfitPercent <= -1))
-      // (indicatorsData.rsi1m.rsiValue > 70 &&
-      //   indicatorsData.rsi1m.sellNow &&
-      //   (expectedProfitPercent >= 0.5 || expectedProfitPercent <= -1))
+      (indicatorsData.fast15mEMA < indicatorsData.middle15mEMA ||
+        indicatorsData.rsi1m.rsiValue >= 60)
     ) {
       await marketSellAction(
         null,
@@ -364,11 +334,11 @@ import { getRSISignal } from './components/rsi-signals';
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
-  getDMISignal(symbol, '1h', indicatorsData.dmi1h);
+  // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  getEMASignal(symbol, '1h', indicatorsData);
+  getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);
 

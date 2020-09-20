@@ -27,8 +27,8 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
-    strategy: 'TRENDS CATCHER STRATEGY',
-    testMode: false,
+    strategy: 'EMA RSI STRATEGY',
+    testMode: true,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
@@ -70,6 +70,8 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   const indicatorsData = {
+    emaStartPoint: null,
+    emaSignal: null,
     dmi5m: {
       prevDmi: null,
       dmiMdiSignal: 0,
@@ -106,7 +108,6 @@ import { getRSISignal } from './components/rsi-signals';
       sellNow: false,
       buyNow: false,
     },
-    fast1mEMA: 0,
     slow1mEMA: 0,
     middle1mEMA: 0,
     fast1mEMA: 0,
@@ -133,11 +134,11 @@ import { getRSISignal } from './components/rsi-signals';
         botState.updateState('status', 'buy');
       }
     }
-    // const summaryEMABuySignal =
-    //   indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
-    //   indicatorsData.middle15mEMA > indicatorsData.slow15mEMA &&
-    //   indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-    //   indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
+    const summaryEMABuySignal =
+      indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+      indicatorsData.middle15mEMA > indicatorsData.slow15mEMA &&
+      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
 
     // indicatorsData.fast15mEMA >= indicatorsData.middle15mEMA;
     // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
@@ -172,14 +173,8 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      // summaryEMABuySignal &&
-      indicatorsData.dmi1h.willPriceGrow
-      // indicatorsData.dmi1m.adxSignal === 1
-      // &&
-      // indicatorsData.rsi1m.rsiValue < 68
-      // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-      // indicatorsData.middle1mEMA > indicatorsData.slow1mEMA
-      // summaryEMABuySignal
+      indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+      indicatorsData.rsi1m.rsiValue <= 45
     ) {
       if (botState.testMode) {
         try {
@@ -257,29 +252,8 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
-      // (indicatorsData.middle1mEMA < indicatorsData.slow1mEMA ||
-      //   (indicatorsData.dmi1m.adxSignal === -1 && expectedProfitPercent >= 0))
-      // indicatorsData.middle15mEMA < indicatorsData.slow15mEMA
-
-      (!indicatorsData.dmi1h.willPriceGrow ||
-        indicatorsData.fast1mEMA < indicatorsData.middle1mEMA)
-      // ||
-      // (botState.currentPrice / botState.prevPrice <= 0.9999 &&
-      //   expectedProfitPercent >= 0.2)
-      // indicatorsData.rsi1m.rsiValue >= 70 &&
-      // expectedProfitPercent >= 1
-
-      // indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
-      // expectedProfitPercent <= -0.5 ||
-      // (indicatorsData.rsi1m.rsiValue > 68 &&
-      //   ((botState.prevPrice !== null &&
-      //     botState.currentPrice <= botState.prevPrice * 0.99 &&
-      //     expectedProfitPercent >= 0.5) ||
-      //     expectedProfitPercent <= -1))
-      // (indicatorsData.rsi1m.rsiValue > 70 &&
-      //   indicatorsData.rsi1m.sellNow &&
-      //   (expectedProfitPercent >= 0.5 || expectedProfitPercent <= -1))
+      (indicatorsData.fast15mEMA < indicatorsData.middle15mEMA ||
+        indicatorsData.rsi1m.rsiValue >= 60)
     ) {
       await marketSellAction(
         null,
@@ -360,11 +334,11 @@ import { getRSISignal } from './components/rsi-signals';
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
-  getDMISignal(symbol, '1h', indicatorsData.dmi1h);
+  // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  getEMASignal(symbol, '1m', indicatorsData);
+  getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);
 
