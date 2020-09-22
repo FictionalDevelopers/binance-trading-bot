@@ -174,6 +174,7 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.status === 'buy' &&
       indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+      indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
       indicatorsData.rsi1m.rsiValue <= 45
     ) {
       if (botState.testMode) {
@@ -253,7 +254,9 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.status === 'sell' &&
       (indicatorsData.fast15mEMA < indicatorsData.middle15mEMA ||
-        indicatorsData.rsi1m.rsiValue >= 60)
+        (indicatorsData.rsi1m.rsiValue >= 60 &&
+          indicatorsData.fast1mEMA > indicatorsData.slow1mEMA &&
+          expectedProfitPercent > 0))
     ) {
       await marketSellAction(
         null,
@@ -339,6 +342,7 @@ import { getRSISignal } from './components/rsi-signals';
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '15m', indicatorsData);
+  getEMASignal(symbol, '1m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);
 

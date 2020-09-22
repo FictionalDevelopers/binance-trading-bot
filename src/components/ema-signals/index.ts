@@ -54,11 +54,11 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     // console.log(middleEMA);
   });
 
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: timeFrame,
-  //   period: 99,
-  // }).subscribe(slowEMA => {
-  //   indicatorsData[`slow${timeFrame}EMA`] = slowEMA;
-  // });
+  getEmaStream({
+    symbol: symbol,
+    interval: timeFrame,
+    period: 99,
+  }).subscribe(slowEMA => {
+    indicatorsData[`slow${timeFrame}EMA`] = slowEMA;
+  });
 };
