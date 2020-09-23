@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'kavausdt';
+  const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -174,8 +174,8 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.status === 'buy' &&
       indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
-      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-      indicatorsData.rsi1m.rsiValue <= 55
+      indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
+      indicatorsData.rsi1m.rsiValue <= 45
     ) {
       if (botState.testMode) {
         try {
@@ -253,9 +253,10 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      // indicatorsData.fast15mEMA < indicatorsData.middle15mEMA ||
-      (indicatorsData.fast1mEMA < indicatorsData.middle1mEMA ||
-        (indicatorsData.rsi1m.rsiValue >= 65 && expectedProfitPercent > 0))
+      (indicatorsData.fast15mEMA < indicatorsData.middle15mEMA ||
+        (indicatorsData.rsi1m.rsiValue >= 60 &&
+          indicatorsData.fast1mEMA > indicatorsData.slow1mEMA &&
+          expectedProfitPercent > 0))
     ) {
       await marketSellAction(
         null,
