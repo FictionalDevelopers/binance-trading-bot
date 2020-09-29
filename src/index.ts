@@ -16,7 +16,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'linkusdt';
+  const symbol = 'manausdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -27,7 +27,7 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
-    strategy: 'EMA STRATEGY',
+    strategy: 'EMA RSI STRATEGY',
     testMode: true,
     useProfitLevels: false,
     useEMAStopLoss: false,
@@ -120,6 +120,14 @@ import { getRSISignal } from './components/rsi-signals';
     summaryEMABuySignal: false,
   };
 
+  setInterval(() => {
+    console.log('status: ', botState.status);
+    console.log(
+      (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
+    );
+    console.log(indicatorsData.rsi1m.rsiValue);
+  }, 1000);
+
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
     // const { rsi1mValue, rsi1hValue } = indicatorsData;
@@ -173,8 +181,11 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
-      indicatorsData.rsi1m.rsiValue <= 45
+      (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100 >=
+        0.1 &&
+      indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
+      // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA &&
+      indicatorsData.rsi1m.rsiValue < 35
     ) {
       if (botState.testMode) {
         try {
@@ -209,7 +220,7 @@ import { getRSISignal } from './components/rsi-signals';
           );
 
           const amount = binance.roundStep(
-            33 / botState.currentPrice,
+            65 / botState.currentPrice,
             stepSize,
           );
           const order = await marketBuy(symbol.toUpperCase(), +amount);
@@ -252,8 +263,11 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      (indicatorsData.fast15mEMA < indicatorsData.middle15mEMA ||
-        indicatorsData.rsi1m.rsiValue >= 60)
+      ((indicatorsData.middle15mEMA / indicatorsData.fast15mEMA) * 100 - 100 >=
+        0.1 ||
+        (indicatorsData.rsi1m.rsiValue >= 67 &&
+          indicatorsData.fast1mEMA > indicatorsData.slow1mEMA &&
+          expectedProfitPercent > 0))
     ) {
       await marketSellAction(
         null,
@@ -339,6 +353,8 @@ import { getRSISignal } from './components/rsi-signals';
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '15m', indicatorsData);
+  getEMASignal(symbol, '1m', indicatorsData);
+  // getEMASignal(symbol, '1h', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);
 

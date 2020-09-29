@@ -173,8 +173,9 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100 >=
-        0.1 &&
+      Number(
+        (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
+      ) >= 0.1 &&
       indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
       // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA &&
       indicatorsData.rsi1m.rsiValue < 35
@@ -255,8 +256,9 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      ((indicatorsData.middle15mEMA / indicatorsData.fast15mEMA) * 100 - 100 >=
-        0.1 ||
+      (Number(
+        (indicatorsData.middle15mEMA / indicatorsData.fast15mEMA) * 100 - 100,
+      ) >= 0.1 ||
         (indicatorsData.rsi1m.rsiValue >= 67 &&
           indicatorsData.fast1mEMA > indicatorsData.slow1mEMA &&
           expectedProfitPercent > 0))
