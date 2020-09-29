@@ -176,7 +176,7 @@ import { getRSISignal } from './components/rsi-signals';
       (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100 >=
         0.1 &&
       indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
-      indicatorsData.fast1hEMA > indicatorsData.middle1hEMA &&
+      // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA &&
       indicatorsData.rsi1m.rsiValue < 35
     ) {
       if (botState.testMode) {
@@ -346,7 +346,7 @@ import { getRSISignal } from './components/rsi-signals';
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '15m', indicatorsData);
   getEMASignal(symbol, '1m', indicatorsData);
-  getEMASignal(symbol, '1h', indicatorsData);
+  // getEMASignal(symbol, '1h', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);
 
