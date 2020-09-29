@@ -38,13 +38,13 @@ export const getPairs = () => {
 const getEMAData = async (symbol, indicatorsData = {}) => {
   return new Promise((res, rej) => {
     // getEMASignal(symbol, '1m', indicatorsData);
-    getEMASignal(symbol, '5m', indicatorsData);
+    getEMASignal(symbol, '15m', indicatorsData);
     // getEMASignal(symbol, '1h', indicatorsData);
     const intervalId = setInterval(() => {
       if (
-        indicatorsData.fast5mEMA &&
-        indicatorsData.middle5mEMA &&
-        indicatorsData.slow5mEMA
+        indicatorsData.fast15mEMA &&
+        indicatorsData.middle15mEMA &&
+        indicatorsData.slow15mEMA
         // indicatorsData.fast15mEMA &&
         // indicatorsData.middle15mEMA &&
         // indicatorsData.slow1hEMA &&
@@ -145,8 +145,8 @@ const showData = async () => {
 
 // showData();
 const showOne = async symbol => {
-  const data = await getRSIData(symbol, {});
-  if (data.rsiValue < 34) {
+  const data = await getEMAData(symbol, {});
+  if ((data.fast15mEMA / data.middle15mEMA) * 100 - 100 >= 0.1) {
     // data.fast5mEMA > data.middle5mEMA &&
     // data.middle5mEMA > data.slow5mEMA
     // indicatorsData.fast15mEMA >= indicatorsData.middle15mEMA;
@@ -157,7 +157,7 @@ const showOne = async symbol => {
     console.log(symbol, data);
     // console.log('1h', (data.fast1hEMA / data.middle1hEMA) * 100 - 100);
     // console.log('15m', (data.fast15mEMA / data.middle15mEMA) * 100 - 100);
-  } else console.log(data.rsiValue);
+  } else console.log(false);
 };
 
 showOne(symbol);
