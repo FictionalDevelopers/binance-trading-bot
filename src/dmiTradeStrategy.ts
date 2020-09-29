@@ -175,7 +175,7 @@ import { getRSISignal } from './components/rsi-signals';
       botState.status === 'buy' &&
       indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
       indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
-      indicatorsData.rsi1m.rsiValue <= 30
+      indicatorsData.rsi1m.rsiValue < 35
     ) {
       if (botState.testMode) {
         try {
@@ -254,7 +254,7 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.status === 'sell' &&
       (indicatorsData.fast15mEMA < indicatorsData.middle15mEMA ||
-        (indicatorsData.rsi1m.rsiValue >= 70 &&
+        (indicatorsData.rsi1m.rsiValue >= 69 &&
           indicatorsData.fast1mEMA > indicatorsData.slow1mEMA &&
           expectedProfitPercent > 0))
     ) {
