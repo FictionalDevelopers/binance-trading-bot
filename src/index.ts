@@ -9,14 +9,14 @@ import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketBuy, getOrdersList, marketSellAction } from './api/order';
-import { getEMASignal } from './components/ema-signals';
+import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'manausdt';
+  const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -120,13 +120,7 @@ import { getRSISignal } from './components/rsi-signals';
     summaryEMABuySignal: false,
   };
 
-  setInterval(() => {
-    console.log('status: ', botState.status);
-    console.log(
-      (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
-    );
-    console.log(indicatorsData.rsi1m.rsiValue);
-  }, 1000);
+  runEMAInterval(indicatorsData);
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
@@ -181,10 +175,11 @@ import { getRSISignal } from './components/rsi-signals';
     //       );
     if (
       botState.status === 'buy' &&
-      (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100 >=
-        0.1 &&
+      Number(
+        (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
+      ) >= 0.1 &&
       indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
-      // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA &&
+      indicatorsData.fast1hEMA > indicatorsData.middle1hEMA &&
       indicatorsData.rsi1m.rsiValue < 35
     ) {
       if (botState.testMode) {
@@ -263,8 +258,7 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      ((indicatorsData.middle15mEMA / indicatorsData.fast15mEMA) * 100 - 100 >=
-        0.1 ||
+      (indicatorsData.middle15mEMA > indicatorsData.fast15mEMA ||
         (indicatorsData.rsi1m.rsiValue >= 67 &&
           indicatorsData.fast1mEMA > indicatorsData.slow1mEMA &&
           expectedProfitPercent > 0))
@@ -352,7 +346,7 @@ import { getRSISignal } from './components/rsi-signals';
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  getEMASignal(symbol, '15m', indicatorsData);
+  // getEMASignal(symbol, '15m', indicatorsData);
   getEMASignal(symbol, '1m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);

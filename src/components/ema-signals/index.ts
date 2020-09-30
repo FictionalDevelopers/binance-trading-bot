@@ -3,36 +3,35 @@ import { getEmaStream } from '../../indicators/ema';
 
 export const runEMAInterval = indicatorsData => {
   setInterval(() => {
-    if (!indicatorsData.emaStartPoint && indicatorsData.middle15mEMA) {
-      indicatorsData.emaStartPoint = Number(
-        indicatorsData.middle15mEMA,
-      ).toFixed(4);
+    if (!indicatorsData.emaStartPoint && indicatorsData.slow1mEMA) {
+      indicatorsData.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(
+        4,
+      );
       return;
     }
 
     if (
-      indicatorsData.emaStartPoint >
-      Number(indicatorsData.middle15mEMA).toFixed(4)
+      indicatorsData.emaStartPoint > Number(indicatorsData.slow1mEMA).toFixed(4)
     ) {
-      indicatorsData.emaStartPoint = Number(
-        indicatorsData.middle15mEMA,
-      ).toFixed(4);
+      indicatorsData.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(
+        4,
+      );
       indicatorsData.emaSignal = 'sell';
     } else if (
-      indicatorsData.emaStartPoint <
-      Number(indicatorsData.middle15mEMA).toFixed(4)
+      indicatorsData.emaStartPoint <=
+      Number(indicatorsData.slow1mEMA).toFixed(4)
     ) {
       indicatorsData.emaSignal = 'buy';
     }
     console.log(
-      'Prev / Curr: ',
+      'Start Point / Curr: ',
       (indicatorsData.emaStartPoint /
-        Number(indicatorsData.middle15mEMA).toFixed(4)) *
+        Number(indicatorsData.slow1mEMA).toFixed(4)) *
         100,
     );
     console.log('Ema Start Point: ', indicatorsData.emaStartPoint);
-    console.log(indicatorsData.middle15mEMA);
-  }, 1000);
+    console.log('Current: ', indicatorsData.slow1mEMA);
+  }, 60000);
 };
 
 export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
