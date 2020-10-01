@@ -178,9 +178,9 @@ import { getRSISignal } from './components/rsi-signals';
       Number(
         (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
       ) >= 0.1 &&
-      indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
+      // indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
       // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA &&
-      indicatorsData.rsi1m.rsiValue < 35
+      indicatorsData.rsi1m.rsiValue < 45
     ) {
       if (botState.testMode) {
         try {
@@ -261,7 +261,7 @@ import { getRSISignal } from './components/rsi-signals';
       (indicatorsData.middle15mEMA > indicatorsData.fast15mEMA ||
         (indicatorsData.rsi1m.rsiValue >= 67 &&
           indicatorsData.fast1mEMA > indicatorsData.slow1mEMA &&
-          expectedProfitPercent > 0))
+          expectedProfitPercent > 0.3))
     ) {
       await marketSellAction(
         null,
