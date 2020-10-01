@@ -180,7 +180,8 @@ import { getRSISignal } from './components/rsi-signals';
       ) >= 0.1 &&
       // indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
       // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA &&
-      indicatorsData.rsi1m.rsiValue < 45
+      indicatorsData.rsi1m.rsiValue < 45 &&
+      indicatorsData.rsi1m.rsiValue !== null
     ) {
       if (botState.testMode) {
         try {
