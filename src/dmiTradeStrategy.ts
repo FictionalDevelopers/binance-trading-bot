@@ -29,7 +29,7 @@ import { getRSISignal } from './components/rsi-signals';
   const botState = {
     strategy: 'EMA RSI STRATEGY',
     testMode: true,
-    useProfitLevels: false,
+    useProfitLevels: true,
     useEMAStopLoss: false,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
     // status: 'buy',
@@ -282,25 +282,25 @@ import { getRSISignal } from './components/rsi-signals';
       );
       return;
     }
-    if (
-      botState.status === 'sell' &&
-      indicatorsData.dmi5m.adxSignal === -1 &&
-      expectedProfitPercent > 0
-    ) {
-      await marketSellAction(
-        null,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        indicatorsData,
-        stepSize,
-        initialUSDTBalance,
-        'ADX SIGNAL',
-      );
-      return;
-    }
+    // if (
+    //   botState.status === 'sell' &&
+    //   indicatorsData.dmi5m.adxSignal === -1 &&
+    //   expectedProfitPercent > 0
+    // ) {
+    //   await marketSellAction(
+    //     null,
+    //     symbol,
+    //     botState,
+    //     cryptoCoin,
+    //     expectedProfitPercent,
+    //     pricesStream,
+    //     indicatorsData,
+    //     stepSize,
+    //     initialUSDTBalance,
+    //     'ADX SIGNAL',
+    //   );
+    //   return;
+    // }
     if (botState.useEMAStopLoss) {
       if (
         botState.status === 'sell' &&
