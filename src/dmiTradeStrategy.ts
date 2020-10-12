@@ -181,7 +181,8 @@ import { getRSISignal } from './components/rsi-signals';
       botState.status === 'buy' &&
       Number(
         (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-      ) >= 0.1
+      ) >= 0.1 &&
+      indicatorsData.rebuy
       // indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
       // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA &&
       // indicatorsData.rsi1m.rsiValue < 45 &&
