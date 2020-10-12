@@ -10,8 +10,8 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
       indicatorsData.prevDmi = dmi;
       return;
     }
-    if (dmi.adx > dmi.pdi) indicatorsData.adxSignal = -1;
-    if (dmi.pdi > dmi.adx) indicatorsData.adxSignal = 1;
+    if ((dmi.adx / dmi.pdi) * 100 - 100 >= 2.5) indicatorsData.adxSignal = -1;
+    if ((dmi.pdi / dmi.adx) * 100 - 100 >= 2.5) indicatorsData.adxSignal = 1;
     if (dmi.mdi > dmi.pdi) {
       if (indicatorsData.trend === 'UP') {
         indicatorsData.adxBuySignalVolume = 0;

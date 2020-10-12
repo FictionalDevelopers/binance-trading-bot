@@ -70,6 +70,7 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   const indicatorsData = {
+    rebuy: true,
     emaStartPoint: null,
     emaSignal: null,
     dmi5m: {
@@ -139,11 +140,11 @@ import { getRSISignal } from './components/rsi-signals';
         botState.updateState('status', 'buy');
       }
     }
-    const summaryEMABuySignal =
-      indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
-      indicatorsData.middle15mEMA > indicatorsData.slow15mEMA &&
-      indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-      indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
+    // const summaryEMABuySignal =
+    //   indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
+    //   indicatorsData.middle15mEMA > indicatorsData.slow15mEMA &&
+    //   indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+    //   indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
 
     // indicatorsData.fast15mEMA >= indicatorsData.middle15mEMA;
     // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
@@ -180,11 +181,11 @@ import { getRSISignal } from './components/rsi-signals';
       botState.status === 'buy' &&
       Number(
         (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-      ) >= 0.1 &&
+      ) >= 0.1
       // indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
       // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA &&
-      indicatorsData.rsi1m.rsiValue < 45 &&
-      indicatorsData.rsi1m.rsiValue !== null
+      // indicatorsData.rsi1m.rsiValue < 45 &&
+      // indicatorsData.rsi1m.rsiValue !== null
     ) {
       if (botState.testMode) {
         try {
@@ -203,6 +204,7 @@ import { getRSISignal } from './components/rsi-signals';
           botState.updateState('status', 'sell');
           // indicatorsData.summaryEMABuySignal = summaryEMABuySignal;
           botState.updateState('prevPrice', botState.currentPrice);
+          indicatorsData.rebuy = false;
           return;
         } catch (e) {
           await sendToRecipients(`BUY ERROR
@@ -249,6 +251,7 @@ import { getRSISignal } from './components/rsi-signals';
           botState.updateState('status', 'sell');
           // indicatorsData.summaryEMABuySignal = summaryEMABuySignal;
           botState.updateState('prevPrice', botState.currentPrice);
+          indicatorsData.rebuy = false;
           return;
         } catch (e) {
           await sendToRecipients(`BUY ERROR
@@ -262,10 +265,9 @@ import { getRSISignal } from './components/rsi-signals';
     }
     if (
       botState.status === 'sell' &&
-      (indicatorsData.middle5mEMA > indicatorsData.fast5mEMA ||
-        (indicatorsData.rsi1m.rsiValue >= 67 &&
-          indicatorsData.fast1mEMA > indicatorsData.slow1mEMA &&
-          expectedProfitPercent > 0.3))
+      Number(
+        (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
+      ) >= 0.1
     ) {
       await marketSellAction(
         null,
@@ -279,6 +281,27 @@ import { getRSISignal } from './components/rsi-signals';
         initialUSDTBalance,
         'ADX SIGNAL',
       );
+      indicatorsData.rebuy = true;
+      return;
+    }
+    if (
+      botState.status === 'sell' &&
+      indicatorsData.dmi5m.adxSignal === -1 &&
+      expectedProfitPercent > 0
+    ) {
+      await marketSellAction(
+        null,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        indicatorsData,
+        stepSize,
+        initialUSDTBalance,
+        'ADX SIGNAL',
+      );
+      indicatorsData.rebuy = false;
       return;
     }
     if (botState.useEMAStopLoss) {
@@ -347,7 +370,7 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '5m', indicatorsData);
