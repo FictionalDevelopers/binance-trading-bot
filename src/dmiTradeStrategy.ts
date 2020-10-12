@@ -42,7 +42,7 @@ import { getRSISignal } from './components/rsi-signals';
       },
       '2': {
         id: 2,
-        profitPercent: 3,
+        profitPercent: 1.5,
         amountPercent: 0.5,
         isFilled: false,
       },
