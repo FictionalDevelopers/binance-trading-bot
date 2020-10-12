@@ -70,7 +70,7 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   const indicatorsData = {
-    rebuy: true,
+    rebuy: false,
     emaStartPoint: null,
     emaSignal: null,
     dmi5m: {
@@ -205,7 +205,6 @@ import { getRSISignal } from './components/rsi-signals';
           botState.updateState('status', 'sell');
           // indicatorsData.summaryEMABuySignal = summaryEMABuySignal;
           botState.updateState('prevPrice', botState.currentPrice);
-          indicatorsData.rebuy = false;
           return;
         } catch (e) {
           await sendToRecipients(`BUY ERROR
@@ -252,7 +251,6 @@ import { getRSISignal } from './components/rsi-signals';
           botState.updateState('status', 'sell');
           // indicatorsData.summaryEMABuySignal = summaryEMABuySignal;
           botState.updateState('prevPrice', botState.currentPrice);
-          indicatorsData.rebuy = false;
           return;
         } catch (e) {
           await sendToRecipients(`BUY ERROR
@@ -282,7 +280,6 @@ import { getRSISignal } from './components/rsi-signals';
         initialUSDTBalance,
         'ADX SIGNAL',
       );
-      indicatorsData.rebuy = true;
       return;
     }
     if (
@@ -302,7 +299,6 @@ import { getRSISignal } from './components/rsi-signals';
         initialUSDTBalance,
         'ADX SIGNAL',
       );
-      indicatorsData.rebuy = false;
       return;
     }
     if (botState.useEMAStopLoss) {
@@ -375,7 +371,7 @@ import { getRSISignal } from './components/rsi-signals';
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '5m', indicatorsData);
-  getEMASignal(symbol, '1m', indicatorsData);
+  // getEMASignal(symbol, '1m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1h', indicatorsData);

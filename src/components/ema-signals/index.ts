@@ -11,6 +11,22 @@ export const runEMAInterval = indicatorsData => {
     }
 
     if (
+      Number(
+        (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
+      ) >= 0.1
+    ) {
+      indicatorsData.rebuy = true;
+    }
+
+    if (
+      Number(
+        (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+      ) >= 0.1
+    ) {
+      indicatorsData.rebuy = false;
+    }
+
+    if (
       indicatorsData.emaStartPoint > Number(indicatorsData.slow1mEMA).toFixed(4)
     ) {
       indicatorsData.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(
