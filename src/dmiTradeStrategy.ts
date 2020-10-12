@@ -36,7 +36,7 @@ import { getRSISignal } from './components/rsi-signals';
     profitLevels: {
       '1': {
         id: 1,
-        profitPercent: 1.2,
+        profitPercent: 1,
         amountPercent: 0.5,
         isFilled: false,
       },
@@ -70,7 +70,7 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   const indicatorsData = {
-    rebuy: false,
+    rebuy: true,
     emaStartPoint: null,
     emaSignal: null,
     dmi5m: {
