@@ -348,7 +348,7 @@ import { getRSISignal } from './components/rsi-signals';
         !botState.profitLevels['2'].isFilled
       ) {
         await marketSellAction(
-          botState.profitLevels[2],
+          botState.profitLevels['2'],
           symbol,
           botState,
           cryptoCoin,
