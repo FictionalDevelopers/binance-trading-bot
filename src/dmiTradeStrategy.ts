@@ -217,7 +217,7 @@ import { getRSISignal } from './components/rsi-signals';
              `);
 
           const limitSellOrderAmount = binance.roundStep(
-            Number(botState.availableCryptoCoin) * 0.3,
+            Number(botState.availableCryptoCoin) * 0.3333,
             stepSize,
           );
 
