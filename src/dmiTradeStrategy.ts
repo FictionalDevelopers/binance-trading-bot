@@ -13,6 +13,7 @@ import {
   getOrdersList,
   marketSellAction,
   limitSell,
+  cancelAllOpenOrders,
 } from './api/order';
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
@@ -260,6 +261,7 @@ import { getRSISignal } from './components/rsi-signals';
         (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
       ) >= 0.1
     ) {
+      await cancelAllOpenOrders(symbol.toUpperCase());
       await marketSellAction(
         true,
         symbol,
