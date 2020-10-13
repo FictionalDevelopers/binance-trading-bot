@@ -25,7 +25,7 @@ const cryptoCoin = symbol.toUpperCase().slice(0, -4);
 export default {
   strategy: 'MIXED STRATEGY',
   currentStrategy: '',
-  testMode: false,
+  testMode: true,
   useProfitLevels: false,
   useEMAStopLoss: false,
   status: openOrders ? (openOrders.length === 0 ? 'buy' : 'sell') : 'buy',
