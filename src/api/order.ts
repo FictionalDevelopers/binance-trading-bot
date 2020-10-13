@@ -63,7 +63,7 @@ export const getTradesHistory = (symbol: string): Promise<unknown> =>
   });
 
 export const marketSellAction = async (
-  profitLevel,
+  profitLevels,
   symbol,
   botState,
   cryptoCoin,
@@ -92,15 +92,7 @@ export const marketSellAction = async (
                             total profit: ${botState.totalProfit}%
               `);
       botState.dealsCount++;
-      if (profitLevel) profitLevel.isFilled = true;
-      indicatorsData.dmi1h.willPriceGrow = false;
-      indicatorsData.dmi1h.adxBuySignalVolume = 0;
-      if (!profitLevel) {
-        botState.updateState('status', 'buy');
-        _forEach(botState.profitLevels, (val, key) => {
-          botState.profitLevels[key].isFilled = false;
-        });
-      } else botState.updateState('status', 'sell');
+      botState.updateState('status', 'buy');
     } catch (e) {
       await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
@@ -111,13 +103,26 @@ export const marketSellAction = async (
     try {
       botState.updateState('status', 'isPending');
       botState.updateState('buyPrice', null);
-      const amount = binance.roundStep(
-        Number(botState.availableCryptoCoin) *
-          (profitLevel ? profitLevel.amountPercent : 1),
-        stepSize,
-      );
-      const order = await marketSell(symbol.toUpperCase(), +amount);
-      botState.updateState('order', order);
+
+      if (profitLevels) {
+        const { available: beforeSellCryptoCoinBalance } = await getBalances(
+          cryptoCoin,
+        );
+        const amount = binance.roundStep(
+          Number(beforeSellCryptoCoinBalance),
+          stepSize,
+        );
+        const order = await marketSell(symbol.toUpperCase(), +amount);
+        botState.updateState('order', order);
+      } else {
+        const amount = binance.roundStep(
+          Number(botState.availableCryptoCoin),
+          stepSize,
+        );
+        const order = await marketSell(symbol.toUpperCase(), +amount);
+        botState.updateState('order', order);
+      }
+
       const { available: refreshedUSDTBalance } = await getBalances('USDT');
       const currentProfit =
         Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
@@ -130,29 +135,22 @@ export const marketSellAction = async (
       botState.updateState(
         'totalPercentProfit',
         (botState.totalPercentProfit +=
-          (currentProfit /
-            botState.cummulativeQuoteQty /
-            (profitLevel ? profitLevel.amountPercent : 1)) *
-          100),
+          (currentProfit / botState.cummulativeQuoteQty) * 100),
       );
-      const { available: refreshedCryptoCoinBalance } = await getBalances(
+      const { available: afterSellCryptoCoinBalance } = await getBalances(
         cryptoCoin,
       );
-      botState.updateState('availableCryptoCoin', +refreshedCryptoCoinBalance);
+      botState.updateState('availableCryptoCoin', +afterSellCryptoCoinBalance);
       await sendToRecipients(`SELL
                  ${botState.strategy}
                  Deal №: ${botState.dealsCount}
-                 Sell reason: ${
-                   profitLevel ? 'Profit level: ' + profitLevel.id : sellReason
-                 }
+                 Sell reason: ${sellReason}
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.order.fills[0].price} USDT
                  Date: ${format(new Date(), DATE_FORMAT)}
                  Current profit: ${
                    botState.currentProfit
-                 } USDT (${(currentProfit /
-        botState.cummulativeQuoteQty /
-        (profitLevel ? profitLevel.amountPercent : 1)) *
+                 } USDT (${(currentProfit / botState.cummulativeQuoteQt) *
         100} %)
                  Total profit: ${botState.totalProfit} USDT (${
         botState.totalPercentProfit
@@ -169,15 +167,7 @@ export const marketSellAction = async (
                  )}
              `);
       botState.dealsCount++;
-      if (profitLevel) profitLevel.isFilled = true;
-      indicatorsData.dmi1h.willPriceGrow = false;
-      indicatorsData.dmi1h.adxBuySignalVolume = 0;
-      if (!profitLevel) {
-        botState.updateState('status', 'buy');
-        _forEach(botState.profitLevels, (val, key) => {
-          botState.profitLevels[key].isFilled = false;
-        });
-      } else botState.updateState('status', 'sell');
+      botState.updateState('status', 'buy');
     } catch (e) {
       await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}

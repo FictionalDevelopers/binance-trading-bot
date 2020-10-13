@@ -4,11 +4,16 @@ import { connect } from './db/connection';
 import { RESOURCES } from './constants';
 import { DATE_FORMAT } from './constants/date';
 import { getTradeStream } from './api/trades.js';
-import { processSubscriptions, sendToRecipients } from './services/telegram';
+import { sendToRecipients } from './services/telegram';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
-import { marketBuy, getOrdersList, marketSellAction } from './api/order';
+import {
+  marketBuy,
+  getOrdersList,
+  marketSellAction,
+  limitSell,
+} from './api/order';
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
@@ -29,7 +34,7 @@ import { getRSISignal } from './components/rsi-signals';
   const botState = {
     strategy: 'EMA RSI STRATEGY',
     testMode: true,
-    useProfitLevels: true,
+    useProfitLevels: false,
     useEMAStopLoss: false,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
     // status: 'buy',
@@ -42,7 +47,13 @@ import { getRSISignal } from './components/rsi-signals';
       },
       '2': {
         id: 2,
-        profitPercent: 1.5,
+        profitPercent: 2,
+        amountPercent: 0.5,
+        isFilled: false,
+      },
+      '3': {
+        id: 3,
+        profitPercent: 4,
         amountPercent: 0.5,
         isFilled: false,
       },
@@ -128,30 +139,7 @@ import { getRSISignal } from './components/rsi-signals';
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
-    // const { rsi1mValue, rsi1hValue } = indicatorsData;
     if (botState.status === 'isPending') return;
-    if (botState.useProfitLevels) {
-      if (
-        botState.profitLevels['1'].isFilled &&
-        botState.profitLevels['2'].isFilled
-      ) {
-        botState.profitLevels['1'].isFilled = false;
-        botState.profitLevels['2'].isFilled = false;
-        botState.updateState('status', 'buy');
-      }
-    }
-    // const summaryEMABuySignal =
-    //   indicatorsData.fast15mEMA > indicatorsData.middle15mEMA &&
-    //   indicatorsData.middle15mEMA > indicatorsData.slow15mEMA &&
-    //   indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-    //   indicatorsData.middle1mEMA > indicatorsData.slow1mEMA;
-
-    // indicatorsData.fast15mEMA >= indicatorsData.middle15mEMA;
-    // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
-
-    // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA;
-    // indicatorsData.middle1hEMA > indicatorsData.slow1hEMA;
-
     botState.updateState(
       'currentPrice',
       Number(pricesStream[pricesStream.length - 1]),
@@ -161,32 +149,13 @@ import { getRSISignal } from './components/rsi-signals';
         ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
         : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
       : 0;
-    // const expectedStableCoinProfit =
-    //   (botState.availableCryptoCoin * botState.currentPrice * 0.999) /
-    //     botState.availableUSDT >
-    //   1
-    //     ? Number(
-    //         ((botState.availableCryptoCoin * botState.currentPrice) /
-    //           botState.availableUSDT) *
-    //           100 -
-    //           100,
-    //       )
-    //     : Number(
-    //         100 -
-    //           ((botState.availableCryptoCoin * botState.currentPrice) /
-    //             botState.availableUSDT) *
-    //             100,
-    //       );
+
     if (
       botState.status === 'buy' &&
       Number(
         (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
       ) >= 0.1 &&
       indicatorsData.rebuy
-      // indicatorsData.fast1mEMA < indicatorsData.slow1mEMA &&
-      // indicatorsData.fast1hEMA > indicatorsData.middle1hEMA &&
-      // indicatorsData.rsi1m.rsiValue < 45 &&
-      // indicatorsData.rsi1m.rsiValue !== null
     ) {
       if (botState.testMode) {
         try {
@@ -202,8 +171,8 @@ import { getRSISignal } from './components/rsi-signals';
                              price: ${botState.buyPrice}
                              date: ${format(new Date(), DATE_FORMAT)}
               `);
+
           botState.updateState('status', 'sell');
-          // indicatorsData.summaryEMABuySignal = summaryEMABuySignal;
           botState.updateState('prevPrice', botState.currentPrice);
           return;
         } catch (e) {
@@ -221,7 +190,7 @@ import { getRSISignal } from './components/rsi-signals';
           );
 
           const amount = binance.roundStep(
-            65 / botState.currentPrice,
+            35 / botState.currentPrice,
             stepSize,
           );
           const order = await marketBuy(symbol.toUpperCase(), +amount);
@@ -248,8 +217,31 @@ import { getRSISignal } from './components/rsi-signals';
                  Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
+
+          const limitSellOrderAmount = binance.roundStep(
+            Number(botState.availableCryptoCoin) * 0.3333,
+            stepSize,
+          );
+
+          await limitSell(
+            symbol.toUpperCase(),
+            +limitSellOrderAmount,
+            botState.buyPrice *
+              (1 + botState.profitLevels['1'].profitPercent / 100),
+          );
+          await limitSell(
+            symbol.toUpperCase(),
+            +limitSellOrderAmount,
+            botState.buyPrice *
+              (1 + botState.profitLevels['2'].profitPercent / 100),
+          );
+          await limitSell(
+            symbol.toUpperCase(),
+            +limitSellOrderAmount,
+            botState.buyPrice *
+              (1 + botState.profitLevels['3'].profitPercent / 100),
+          );
           botState.updateState('status', 'sell');
-          // indicatorsData.summaryEMABuySignal = summaryEMABuySignal;
           botState.updateState('prevPrice', botState.currentPrice);
           return;
         } catch (e) {
@@ -269,7 +261,7 @@ import { getRSISignal } from './components/rsi-signals';
       ) >= 0.1
     ) {
       await marketSellAction(
-        null,
+        true,
         symbol,
         botState,
         cryptoCoin,
@@ -278,103 +270,17 @@ import { getRSISignal } from './components/rsi-signals';
         indicatorsData,
         stepSize,
         initialUSDTBalance,
-        'ADX SIGNAL',
+        'EMA STOP LOSS',
       );
       return;
-    }
-    // if (
-    //   botState.status === 'sell' &&
-    //   indicatorsData.dmi5m.adxSignal === -1 &&
-    //   expectedProfitPercent > 0
-    // ) {
-    //   await marketSellAction(
-    //     null,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     indicatorsData,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'ADX SIGNAL',
-    //   );
-    //   return;
-    // }
-    if (botState.useEMAStopLoss) {
-      if (
-        botState.status === 'sell' &&
-        indicatorsData.fast1mEMA < indicatorsData.middle1mEMA
-      ) {
-        await marketSellAction(
-          null,
-          symbol,
-          botState,
-          cryptoCoin,
-          expectedProfitPercent,
-          pricesStream,
-          indicatorsData,
-          stepSize,
-          initialUSDTBalance,
-          'EMA SIGNAL',
-        );
-        return;
-      }
-    }
-
-    if (botState.useProfitLevels) {
-      if (
-        botState.status === 'sell' &&
-        expectedProfitPercent >= botState.profitLevels['1'].profitPercent &&
-        !botState.profitLevels['1'].isFilled
-      ) {
-        await marketSellAction(
-          botState.profitLevels['1'],
-          symbol,
-          botState,
-          cryptoCoin,
-          expectedProfitPercent,
-          pricesStream,
-          indicatorsData,
-          stepSize,
-          initialUSDTBalance,
-          null,
-        );
-        return;
-      }
-      if (
-        botState.status === 'sell' &&
-        expectedProfitPercent >= botState.profitLevels['2'].profitPercent &&
-        !botState.profitLevels['2'].isFilled
-      ) {
-        await marketSellAction(
-          botState.profitLevels['2'],
-          symbol,
-          botState,
-          cryptoCoin,
-          expectedProfitPercent,
-          pricesStream,
-          indicatorsData,
-          stepSize,
-          initialUSDTBalance,
-          null,
-        );
-        return;
-      }
     }
 
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
-  // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '5m', indicatorsData);
-  // getEMASignal(symbol, '1m', indicatorsData);
-  // getEMASignal(symbol, '1h', indicatorsData);
-  // getEMASignal(symbol, '15m', indicatorsData);
-  // getEMASignal(symbol, '1h', indicatorsData);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT TEST MODE
