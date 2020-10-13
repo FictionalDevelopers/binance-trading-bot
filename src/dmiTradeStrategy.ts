@@ -225,17 +225,17 @@ import { getRSISignal } from './components/rsi-signals';
           );
 
           await Promise.all([
-            await limitSell(
+            limitSell(
               symbol.toUpperCase(),
               +limitSellOrderAmount,
               +Number(botState.buyPrice * 1.01).toPrecision(4),
             ),
-            await limitSell(
+            limitSell(
               symbol.toUpperCase(),
               +limitSellOrderAmount,
               +Number(botState.buyPrice * 1.02).toPrecision(4),
             ),
-            await limitSell(
+            limitSell(
               symbol.toUpperCase(),
               +limitSellOrderAmount,
               +Number(botState.buyPrice * 1.04).toPrecision(4),
