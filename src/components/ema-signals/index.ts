@@ -19,7 +19,7 @@ export const runEMAInterval = (indicatorsData, botState) => {
       botState.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(4);
       indicatorsData.emaSignal = 'sell';
     } else if (
-      Number(indicatorsData.emaStartPoint) <=
+      Number(botState.emaStartPoint) <=
       +Number(indicatorsData.slow1mEMA).toFixed(4)
     ) {
       indicatorsData.emaSignal = 'buy';
