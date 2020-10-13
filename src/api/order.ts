@@ -44,7 +44,7 @@ export const limitSell = (
 
 export const getOrdersList = (symbol: string): Promise<unknown> =>
   new Promise((resolve, reject) => {
-    binance.openOrders(symbol, (error, orders) => {
+    binance.allOrders(symbol, (error, orders) => {
       if (error) {
         return reject(error);
       }
