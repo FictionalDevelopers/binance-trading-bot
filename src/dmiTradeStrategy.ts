@@ -42,7 +42,7 @@ import { getRSISignal } from './components/rsi-signals';
     testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
-    status: 'sell',
+    status: openOrders ? 'sell' : 'buy',
     // status: 'buy',
     profitLevels: {
       '1': {
@@ -74,7 +74,6 @@ import { getRSISignal } from './components/rsi-signals';
     buyPrice: null,
     currentPrice: null,
     order: null,
-    initialOrder: lastOrder,
     avrDealProfit: null,
     dealsCount: 1,
     startTime: new Date().getTime(),
