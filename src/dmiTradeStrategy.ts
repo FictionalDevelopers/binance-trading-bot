@@ -28,8 +28,12 @@ import { getRSISignal } from './components/rsi-signals';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
-  const ordersList = await getOrdersList(symbol.toUpperCase());
-  const lastOrder = ordersList[ordersList.length - 1] || null;
+  let openOrders;
+  try {
+    openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+  } catch (e) {
+    openOrders = null;
+  }
 
   // const symbol = process.argv[2];
 
@@ -38,7 +42,7 @@ import { getRSISignal } from './components/rsi-signals';
     testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
-    status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'buy',
+    status: openOrders ? 'sell' : 'buy',
     // status: 'buy',
     profitLevels: {
       '1': {
@@ -319,6 +323,7 @@ import { getRSISignal } from './components/rsi-signals';
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
+  Open orders: ${JSON.stringify(openOrders)}
   `);
   }
 

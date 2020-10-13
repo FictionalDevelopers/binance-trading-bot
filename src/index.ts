@@ -8,7 +8,12 @@ import { processSubscriptions, sendToRecipients } from './services/telegram';
 import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
-import { marketBuy, getOrdersList, marketSellAction } from './api/order';
+import {
+  marketBuy,
+  getOrdersList,
+  marketSellAction,
+  checkAllOpenOrders,
+} from './api/order';
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
@@ -23,6 +28,12 @@ import { getRSISignal } from './components/rsi-signals';
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
   const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1] || null;
+  let openOrders;
+  try {
+    openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+  } catch (e) {
+    openOrders = null;
+  }
 
   // const symbol = process.argv[2];
 
@@ -357,6 +368,7 @@ import { getRSISignal } from './components/rsi-signals';
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   with using the ${botState.strategy}
   Symbol: ${symbol.toUpperCase()}
+  Open orders: ${JSON.stringify(openOrders)}
   `);
   } else {
     await sendToRecipients(`INIT
