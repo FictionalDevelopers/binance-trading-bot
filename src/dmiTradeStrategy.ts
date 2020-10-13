@@ -266,29 +266,35 @@ import { getRSISignal } from './components/rsi-signals';
         (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
       ) >= 0.1
     ) {
-      botState.updateState('status', 'isPending');
-      const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
-      if (openOrders.length === 0) {
-        const { available: refreshedUSDTBalance } = await getBalances('USDT');
-        botState.updateState('availableUSDT', +refreshedUSDTBalance);
-        botState.dealsCount++;
-        botState.updateState('status', 'buy');
-        return;
-      } else {
-        await cancelAllOpenOrders(symbol.toUpperCase());
-        await marketSellAction(
-          true,
-          symbol,
-          botState,
-          cryptoCoin,
-          expectedProfitPercent,
-          pricesStream,
-          indicatorsData,
-          stepSize,
-          initialUSDTBalance,
-          'EMA STOP LOSS',
-        );
-        return;
+      try {
+        botState.updateState('status', 'isPending');
+        const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+        if (openOrders.length === 0) {
+          const { available: refreshedUSDTBalance } = await getBalances('USDT');
+          botState.updateState('availableUSDT', +refreshedUSDTBalance);
+          botState.dealsCount++;
+          botState.updateState('status', 'buy');
+          return;
+        } else {
+          await cancelAllOpenOrders(symbol.toUpperCase());
+          await marketSellAction(
+            true,
+            symbol,
+            botState,
+            cryptoCoin,
+            expectedProfitPercent,
+            pricesStream,
+            indicatorsData,
+            stepSize,
+            initialUSDTBalance,
+            'EMA STOP LOSS',
+          );
+          return;
+        }
+      } catch (e) {
+        await sendToRecipients(`SELL ERROR
+            ${JSON.stringify(e)}
+      `);
       }
     }
 
