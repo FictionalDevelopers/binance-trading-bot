@@ -10,7 +10,6 @@ import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import {
   marketBuy,
-  getOrdersList,
   marketSellAction,
   limitSell,
   cancelAllOpenOrders,
@@ -19,6 +18,7 @@ import {
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
+import botState from './components/botState';
 
 (async function() {
   await connect();
@@ -33,31 +33,33 @@ import { getRSISignal } from './components/rsi-signals';
 
   const botState = {
     strategy: 'MIXED STRATEGY',
+    currentStrategy: '',
     testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: openOrders ? (openOrders.length === 0 ? 'buy' : 'sell') : 'buy',
     // status: 'buy',
-    profitLevels: {
-      '1': {
+    profitLevels: [
+      {
         id: 1,
         profitPercent: 1,
         amountPercent: 0.5,
         isFilled: false,
       },
-      '2': {
+      {
         id: 2,
         profitPercent: 2,
         amountPercent: 0.5,
         isFilled: false,
       },
-      '3': {
+      {
         id: 3,
         profitPercent: 4,
         amountPercent: 0.5,
         isFilled: false,
       },
-    },
+    ],
+    rebuy: true,
     currentProfit: null,
     totalProfit: null,
     totalPercentProfit: null,
@@ -80,8 +82,6 @@ import { getRSISignal } from './components/rsi-signals';
   };
 
   const indicatorsData = {
-    rebuy: true,
-    emaStartPoint: null,
     emaSignal: null,
     dmi5m: {
       prevDmi: null,
@@ -134,7 +134,7 @@ import { getRSISignal } from './components/rsi-signals';
     summaryEMABuySignal: false,
   };
 
-  // runEMAInterval(indicatorsData);
+  runEMAInterval(indicatorsData, botState);
 
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
@@ -154,7 +154,7 @@ import { getRSISignal } from './components/rsi-signals';
       Number(
         (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
       ) >= 0.1 &&
-      indicatorsData.rebuy
+      botState.rebuy
     ) {
       if (botState.testMode) {
         try {
@@ -222,23 +222,18 @@ import { getRSISignal } from './components/rsi-signals';
             stepSize,
           );
 
-          await Promise.all([
-            limitSell(
-              symbol.toUpperCase(),
-              +limitSellOrderAmount,
-              +Number(botState.buyPrice * 1.01).toPrecision(4),
-            ),
-            limitSell(
-              symbol.toUpperCase(),
-              +limitSellOrderAmount,
-              +Number(botState.buyPrice * 1.02).toPrecision(4),
-            ),
-            limitSell(
-              symbol.toUpperCase(),
-              +limitSellOrderAmount,
-              +Number(botState.buyPrice * 1.04).toPrecision(4),
-            ),
-          ]);
+          const limitSellOrdersPromisesArray = botState.profitLevels.map(
+            ({ profitPercent }) =>
+              limitSell(
+                symbol.toUpperCase(),
+                +limitSellOrderAmount,
+                +Number(
+                  botState.buyPrice * (1 + profitPercent / 100),
+                ).toPrecision(4),
+              ),
+          );
+
+          await Promise.all(limitSellOrdersPromisesArray);
 
           botState.updateState('status', 'sell');
           botState.updateState('prevPrice', botState.currentPrice);

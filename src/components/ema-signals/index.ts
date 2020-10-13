@@ -1,12 +1,10 @@
 import { getEmaStream } from '../../indicators/ema';
 // import { indicatorsData } from '../../index';
 
-export const runEMAInterval = indicatorsData => {
+export const runEMAInterval = (indicatorsData, botState) => {
   setInterval(() => {
-    if (!indicatorsData.emaStartPoint && indicatorsData.slow1mEMA) {
-      indicatorsData.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(
-        4,
-      );
+    if (!botState.emaStartPoint && indicatorsData.slow1mEMA) {
+      botState.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(4);
       return;
     }
 
@@ -15,7 +13,7 @@ export const runEMAInterval = indicatorsData => {
         (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
       ) >= 0.1
     ) {
-      indicatorsData.rebuy = true;
+      botState.rebuy = true;
     }
 
     if (
@@ -23,15 +21,11 @@ export const runEMAInterval = indicatorsData => {
         (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
       ) >= 0.1
     ) {
-      indicatorsData.rebuy = false;
+      botState.rebuy = false;
     }
 
-    if (
-      indicatorsData.emaStartPoint > Number(indicatorsData.slow1mEMA).toFixed(4)
-    ) {
-      indicatorsData.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(
-        4,
-      );
+    if (botState.emaStartPoint > Number(indicatorsData.slow1mEMA).toFixed(4)) {
+      botState.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(4);
       indicatorsData.emaSignal = 'sell';
     } else if (
       indicatorsData.emaStartPoint <=
@@ -41,11 +35,10 @@ export const runEMAInterval = indicatorsData => {
     }
     console.log(
       'Start Point / Curr: ',
-      (indicatorsData.emaStartPoint /
-        Number(indicatorsData.slow1mEMA).toFixed(4)) *
+      (botState.emaStartPoint / Number(indicatorsData.slow1mEMA).toFixed(4)) *
         100,
     );
-    console.log('Ema Start Point: ', indicatorsData.emaStartPoint);
+    console.log('Ema Start Point: ', botState.emaStartPoint);
     console.log('Current: ', indicatorsData.slow1mEMA);
   }, 60000);
 };
