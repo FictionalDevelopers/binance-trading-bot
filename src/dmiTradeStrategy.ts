@@ -227,12 +227,12 @@ import { getRSISignal } from './components/rsi-signals';
           await limitSell(
             symbol.toUpperCase(),
             +limitSellOrderAmount,
-            botState.buyPrice * 1.01,
+            +Number(botState.buyPrice * 1.01).toPrecision(4),
           );
           await limitSell(
             symbol.toUpperCase(),
             +limitSellOrderAmount,
-            botState.buyPrice * 1.02,
+            +Number(botState.buyPrice * 1.02).toPrecision(4),
           );
           // await limitSell(
           //   symbol.toUpperCase(),
