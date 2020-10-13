@@ -44,7 +44,7 @@ export const limitSell = (
 
 export const getOrdersList = (symbol: string): Promise<unknown> =>
   new Promise((resolve, reject) => {
-    binance.allOrders(symbol, (error, orders) => {
+    binance.openOrders(symbol, (error, orders) => {
       if (error) {
         return reject(error);
       }
@@ -52,19 +52,19 @@ export const getOrdersList = (symbol: string): Promise<unknown> =>
     });
   });
 
-export const getTradesHistory = (symbol: string): Promise<unknown> =>
-  new Promise((resolve, reject) => {
-    binance.allOrders(symbol, (error, trades) => {
-      if (error) {
-        return reject(error);
-      }
-      return resolve(trades);
-    });
-  });
-
 export const cancelAllOpenOrders = (symbol: string): Promise<unknown> =>
   new Promise((resolve, reject) => {
     binance.cancelAll(symbol, (error, orders) => {
+      if (error) {
+        return reject(error);
+      }
+      return resolve(orders);
+    });
+  });
+
+export const checkAllOpenOrders = (symbol: string): Promise<unknown> =>
+  new Promise((resolve, reject) => {
+    binance.openOrders(symbol, (error, orders) => {
       if (error) {
         return reject(error);
       }

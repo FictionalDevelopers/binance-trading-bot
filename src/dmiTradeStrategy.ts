@@ -14,6 +14,7 @@ import {
   marketSellAction,
   limitSell,
   cancelAllOpenOrders,
+  checkAllOpenOrders,
 } from './api/order';
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
@@ -261,20 +262,29 @@ import { getRSISignal } from './components/rsi-signals';
         (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
       ) >= 0.1
     ) {
-      await cancelAllOpenOrders(symbol.toUpperCase());
-      await marketSellAction(
-        true,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        indicatorsData,
-        stepSize,
-        initialUSDTBalance,
-        'EMA STOP LOSS',
-      );
-      return;
+      const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+      if (openOrders.length === 0) {
+        const { available: refreshedUSDTBalance } = await getBalances('USDT');
+        botState.updateState('availableUSDT', +refreshedUSDTBalance);
+        botState.dealsCount++;
+        botState.updateState('status', 'buy');
+        return;
+      } else {
+        await cancelAllOpenOrders(symbol.toUpperCase());
+        await marketSellAction(
+          true,
+          symbol,
+          botState,
+          cryptoCoin,
+          expectedProfitPercent,
+          pricesStream,
+          indicatorsData,
+          stepSize,
+          initialUSDTBalance,
+          'EMA STOP LOSS',
+        );
+        return;
+      }
     }
 
     botState.updateState('prevPrice', botState.currentPrice);
