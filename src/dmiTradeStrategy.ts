@@ -42,7 +42,7 @@ import { getRSISignal } from './components/rsi-signals';
     testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
-    status: openOrders ? 'sell' : 'buy',
+    status: 'sell',
     // status: 'buy',
     profitLevels: {
       '1': {
