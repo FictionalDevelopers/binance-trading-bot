@@ -34,7 +34,7 @@ import { getRSISignal } from './components/rsi-signals';
 
   const botState = {
     strategy: 'REAL MODE',
-    testMode: false,
+    testMode: true,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
@@ -227,21 +227,19 @@ import { getRSISignal } from './components/rsi-signals';
           await limitSell(
             symbol.toUpperCase(),
             +limitSellOrderAmount,
-            botState.buyPrice *
-              (1 + botState.profitLevels['1'].profitPercent / 100),
+            botState.buyPrice * 1.01,
           );
           await limitSell(
             symbol.toUpperCase(),
             +limitSellOrderAmount,
-            botState.buyPrice *
-              (1 + botState.profitLevels['2'].profitPercent / 100),
+            botState.buyPrice * 1.02,
           );
-          await limitSell(
-            symbol.toUpperCase(),
-            +limitSellOrderAmount,
-            botState.buyPrice *
-              (1 + botState.profitLevels['3'].profitPercent / 100),
-          );
+          // await limitSell(
+          //   symbol.toUpperCase(),
+          //   +limitSellOrderAmount,
+          //   botState.buyPrice *
+          //     (1 + botState.profitLevels['3'].profitPercent / 100),
+          // );
           botState.updateState('status', 'sell');
           botState.updateState('prevPrice', botState.currentPrice);
           return;
@@ -312,8 +310,7 @@ import { getRSISignal } from './components/rsi-signals';
 process.on('unhandledRejection', async (reason: Error) => {
   console.error(reason);
   await sendToRecipients(`ERROR
-    ${reason.message}
-    ${reason.stack}
+    ${JSON.stringify(reason)};
   `);
 
   process.exit(1);
