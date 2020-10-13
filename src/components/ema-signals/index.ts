@@ -3,39 +3,28 @@ import { getEmaStream } from '../../indicators/ema';
 
 export const runEMAInterval = (indicatorsData, botState) => {
   setInterval(() => {
+    console.log(JSON.stringify(botState), '\n');
+    console.log(JSON.stringify(indicatorsData), '\n');
     if (!botState.emaStartPoint && indicatorsData.slow1mEMA) {
       botState.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(4);
       return;
     }
 
     if (
-      Number(
-        (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
-      ) >= 0.1
+      Number(botState.emaStartPoint) >
+      +Number(indicatorsData.slow1mEMA).toFixed(4)
     ) {
-      botState.rebuy = true;
-    }
-
-    if (
-      Number(
-        (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-      ) >= 0.1
-    ) {
-      botState.rebuy = false;
-    }
-
-    if (botState.emaStartPoint > Number(indicatorsData.slow1mEMA).toFixed(4)) {
       botState.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(4);
       indicatorsData.emaSignal = 'sell';
     } else if (
-      indicatorsData.emaStartPoint <=
-      Number(indicatorsData.slow1mEMA).toFixed(4)
+      Number(indicatorsData.emaStartPoint) <=
+      +Number(indicatorsData.slow1mEMA).toFixed(4)
     ) {
       indicatorsData.emaSignal = 'buy';
     }
     console.log(
       'Start Point / Curr: ',
-      (botState.emaStartPoint / Number(indicatorsData.slow1mEMA).toFixed(4)) *
+      (botState.emaStartPoint / +Number(indicatorsData.slow1mEMA).toFixed(4)) *
         100,
     );
     console.log('Ema Start Point: ', botState.emaStartPoint);

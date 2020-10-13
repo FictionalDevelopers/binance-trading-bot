@@ -13,6 +13,7 @@ import {
   limitSell,
   cancelAllOpenOrders,
   checkAllOpenOrders,
+  setLimitSellOrders,
 } from './api/order';
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
@@ -150,6 +151,22 @@ import indicatorsData from './components/indicators-data';
       : 0;
 
     if (
+      Number(
+        (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
+      ) >= 0.1
+    ) {
+      botState.rebuy = true;
+    }
+
+    if (
+      Number(
+        (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+      ) >= 0.1
+    ) {
+      botState.rebuy = false;
+    }
+
+    if (
       botState.status === 'buy' &&
       Number(
         (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
@@ -233,7 +250,7 @@ import indicatorsData from './components/indicators-data';
               ),
           );
 
-          await Promise.all(limitSellOrdersPromisesArray);
+          await setLimitSellOrders(limitSellOrdersPromisesArray);
 
           botState.updateState('status', 'sell');
           botState.updateState('prevPrice', botState.currentPrice);
@@ -296,6 +313,7 @@ import indicatorsData from './components/indicators-data';
   getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '5m', indicatorsData);
+  getEMASignal(symbol, '1m', indicatorsData);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT TEST MODE

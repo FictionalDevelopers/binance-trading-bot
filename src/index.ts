@@ -150,6 +150,22 @@ import indicatorsData from './components/indicators-data';
       : 0;
 
     if (
+      Number(
+        (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
+      ) >= 0.1
+    ) {
+      botState.rebuy = true;
+    }
+
+    if (
+      Number(
+        (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+      ) >= 0.1
+    ) {
+      botState.rebuy = false;
+    }
+
+    if (
       botState.status === 'buy' &&
       Number(
         (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,

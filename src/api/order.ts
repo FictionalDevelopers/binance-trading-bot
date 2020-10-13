@@ -28,6 +28,9 @@ export const marketSell = (
     });
   });
 
+export const setLimitSellOrders = (orders: any): Promise<unknown> =>
+  Promise.all(orders);
+
 export const limitSell = (
   symbol: string,
   quantity: number,
