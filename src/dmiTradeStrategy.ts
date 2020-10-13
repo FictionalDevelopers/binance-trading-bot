@@ -32,7 +32,7 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
-    strategy: 'REAL MODE',
+    strategy: 'MIXED STRATEGY',
     testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
