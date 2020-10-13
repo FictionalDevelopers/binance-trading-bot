@@ -38,8 +38,8 @@ import { getRSISignal } from './components/rsi-signals';
     testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
-    status: openOrders ? (openOrders.length === 0 ? 'buy' : 'sell') : 'buy',
-    // status: 'buy',
+    // status: openOrders ? (openOrders.length === 0 ? 'buy' : 'sell') : 'buy',
+    status: 'sell',
     profitLevels: {
       '1': {
         id: 1,
@@ -319,6 +319,7 @@ import { getRSISignal } from './components/rsi-signals';
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
+  Open orders: ${openOrders}
   `);
   }
 
