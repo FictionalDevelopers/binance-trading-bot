@@ -28,6 +28,20 @@ export const marketSell = (
     });
   });
 
+export const limitSell = (
+  symbol: string,
+  quantity: number,
+  price: number,
+): Promise<unknown> =>
+  new Promise((resolve, reject) => {
+    binance.sell(symbol, quantity, price, (error, response) => {
+      if (error) {
+        return reject(error);
+      }
+      return resolve(response);
+    });
+  });
+
 export const getOrdersList = (symbol: string): Promise<unknown> =>
   new Promise((resolve, reject) => {
     binance.allOrders(symbol, (error, orders) => {
