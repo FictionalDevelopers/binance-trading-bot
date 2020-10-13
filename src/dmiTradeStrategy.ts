@@ -33,8 +33,8 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
-    strategy: 'EMA RSI STRATEGY',
-    testMode: true,
+    strategy: 'REAL MODE',
+    testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
