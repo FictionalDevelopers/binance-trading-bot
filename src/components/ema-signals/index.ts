@@ -1,4 +1,6 @@
 import { getEmaStream } from '../../indicators/ema';
+import indicatorsData from '../indicators-data';
+import botState from '../botState';
 // import { indicatorsData } from '../../index';
 
 export const runEMAInterval = (indicatorsData, botState) => {
@@ -39,6 +41,21 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     period: 7,
   }).subscribe(fastEMA => {
     indicatorsData[`fast${timeFrame}EMA`] = fastEMA;
+    if (
+      Number(
+        (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
+      ) >= 0.1
+    ) {
+      botState.rebuy = true;
+    }
+
+    if (
+      Number(
+        (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+      ) >= 0.1
+    ) {
+      botState.rebuy = false;
+    }
     // console.log(fastEMA);
   });
 

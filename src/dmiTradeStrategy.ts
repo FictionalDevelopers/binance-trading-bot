@@ -13,6 +13,7 @@ import {
   limitSell,
   cancelAllOpenOrders,
   checkAllOpenOrders,
+  setLimitSellOrders,
 } from './api/order';
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
@@ -150,22 +151,6 @@ import indicatorsData from './components/indicators-data';
       : 0;
 
     if (
-      Number(
-        (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
-      ) >= 0.1
-    ) {
-      botState.rebuy = true;
-    }
-
-    if (
-      Number(
-        (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-      ) >= 0.1
-    ) {
-      botState.rebuy = false;
-    }
-
-    if (
       botState.status === 'buy' &&
       Number(
         (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
@@ -238,23 +223,18 @@ import indicatorsData from './components/indicators-data';
             botState.stepSize,
           );
 
-          await Promise.all([
-            limitSell(
-              symbol.toUpperCase(),
-              +limitSellOrderAmount,
-              +Number(botState.buyPrice * 1.01).toPrecision(4),
-            ),
-            limitSell(
-              symbol.toUpperCase(),
-              +limitSellOrderAmount,
-              +Number(botState.buyPrice * 1.02).toPrecision(4),
-            ),
-            limitSell(
-              symbol.toUpperCase(),
-              +limitSellOrderAmount,
-              +Number(botState.buyPrice * 1.04).toPrecision(4),
-            ),
-          ]);
+          const limitSellOrdersPromisesArray = botState.profitLevels.map(
+            ({ profitPercent }) =>
+              limitSell(
+                symbol.toUpperCase(),
+                +limitSellOrderAmount,
+                +Number(
+                  botState.buyPrice * (1 + profitPercent / 100),
+                ).toPrecision(4),
+              ),
+          );
+
+          await setLimitSellOrders(limitSellOrdersPromisesArray);
 
           botState.updateState('status', 'sell');
           botState.updateState('prevPrice', botState.currentPrice);
