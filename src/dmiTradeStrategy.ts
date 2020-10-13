@@ -262,6 +262,7 @@ import { getRSISignal } from './components/rsi-signals';
         (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
       ) >= 0.1
     ) {
+      botState.updateState('status', 'isPending');
       const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
       if (openOrders.length === 0) {
         const { available: refreshedUSDTBalance } = await getBalances('USDT');
