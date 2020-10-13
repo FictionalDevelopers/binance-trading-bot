@@ -219,6 +219,9 @@ import { getRSISignal } from './components/rsi-signals';
                  Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
+          await sendToRecipients(`BOT STATE
+                 ${JSON.stringify(botState)}
+             `);
 
           const limitSellOrderAmount = binance.roundStep(
             Number(botState.availableCryptoCoin) * 0.3333,
