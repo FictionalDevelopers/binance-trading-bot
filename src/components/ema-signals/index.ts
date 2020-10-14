@@ -5,8 +5,8 @@ import botState from '../botState';
 
 export const runEMAInterval = (indicatorsData, botState) => {
   setInterval(() => {
-    console.log(JSON.stringify(botState), '\n');
-    console.log(JSON.stringify(indicatorsData), '\n');
+    // console.log(JSON.stringify(botState), '\n');
+    // console.log(JSON.stringify(indicatorsData), '\n');
     if (!botState.emaStartPoint && indicatorsData.slow1mEMA) {
       botState.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(4);
       return;
