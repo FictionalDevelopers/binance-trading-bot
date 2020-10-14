@@ -159,7 +159,8 @@ import { getRSISignal } from './components/rsi-signals';
     if (
       botState.status === 'buy' &&
       indicatorsData.emaSignal === 'buy' &&
-      indicatorsData.rsi1m.rsiValue < 35
+      indicatorsData.rsi1m.rsiValue < 35 &&
+      indicatorsData.rsi1m.rsiValue !== null
     ) {
       if (botState.testMode) {
         try {
