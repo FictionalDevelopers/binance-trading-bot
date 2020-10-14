@@ -10,7 +10,6 @@ import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import {
   marketBuy,
-  getOrdersList,
   marketSellAction,
   limitSell,
   cancelAllOpenOrders,
@@ -23,7 +22,7 @@ import { getRSISignal } from './components/rsi-signals';
 (async function() {
   await connect();
   // await processSubscriptions();
-  const symbol = 'btcusdt';
+  const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
@@ -35,7 +34,7 @@ import { getRSISignal } from './components/rsi-signals';
     emaStartPoint: null,
     rebuy: true,
     strategy: 'REAL MODE',
-    testMode: false,
+    testMode: true,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: openOrders ? (openOrders.length === 0 ? 'buy' : 'sell') : 'buy',
@@ -218,7 +217,7 @@ import { getRSISignal } from './components/rsi-signals';
              `);
 
           const limitSellOrderAmount = binance.roundStep(
-            Number(botState.availableCryptoCoin) * 0.3,
+            Number(botState.availableCryptoCoin) * 0.3333,
             stepSize,
           );
 
