@@ -31,6 +31,7 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
+    sellError: false,
     emaStartPoint: null,
     rebuy: true,
     strategy: 'REAL MODE',
@@ -267,14 +268,16 @@ import { getRSISignal } from './components/rsi-signals';
       try {
         botState.updateState('status', 'isPending');
         const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
-        if (openOrders.length === 0) {
+        if (openOrders.length === 0 && !botState.sellError) {
           const { available: refreshedUSDTBalance } = await getBalances('USDT');
           botState.updateState('availableUSDT', +refreshedUSDTBalance);
           botState.dealsCount++;
           botState.updateState('status', 'buy');
           return;
         } else {
-          await cancelAllOpenOrders(symbol.toUpperCase());
+          if (openOrders.length !== 0) {
+            await cancelAllOpenOrders(symbol.toUpperCase());
+          }
           await marketSellAction(
             true,
             symbol,
@@ -287,6 +290,7 @@ import { getRSISignal } from './components/rsi-signals';
             initialUSDTBalance,
             'EMA STOP LOSS',
           );
+          botState.sellError = false;
           return;
         }
       } catch (e) {
@@ -300,6 +304,7 @@ import { getRSISignal } from './components/rsi-signals';
           'availableCryptoCoin',
           +refreshedCryptoCoinBalance,
         );
+        botState.sellError = true;
         botState.updateState('status', 'sell');
       }
     }
