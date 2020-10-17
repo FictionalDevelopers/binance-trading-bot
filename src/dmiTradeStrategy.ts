@@ -35,7 +35,7 @@ import { getRSISignal } from './components/rsi-signals';
     emaStartPoint: null,
     rebuy: true,
     strategy: 'REAL MODE',
-    testMode: false,
+    testMode: true,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: openOrders ? (openOrders.length === 0 ? 'buy' : 'sell') : 'buy',
