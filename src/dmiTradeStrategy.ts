@@ -35,7 +35,7 @@ import { getRSISignal } from './components/rsi-signals';
     emaStartPoint: null,
     rebuy: true,
     strategy: 'REAL MODE',
-    testMode: true,
+    testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: openOrders ? (openOrders.length === 0 ? 'buy' : 'sell') : 'buy',
@@ -63,7 +63,7 @@ import { getRSISignal } from './components/rsi-signals';
     currentProfit: null,
     totalProfit: null,
     totalPercentProfit: null,
-    tradeAmountPercent: 0.9,
+    tradeAmountPercent: 0.95,
     availableUSDT: initialUSDTBalance,
     availableCryptoCoin: initialCryptoCoinBalance,
     cummulativeQuoteQty: null,
@@ -189,7 +189,7 @@ import { getRSISignal } from './components/rsi-signals';
           );
 
           const amount = binance.roundStep(
-            40 / botState.currentPrice,
+            500 / botState.currentPrice,
             stepSize,
           );
           const order = await marketBuy(symbol.toUpperCase(), +amount);
