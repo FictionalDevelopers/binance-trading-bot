@@ -127,7 +127,7 @@ export const marketSellAction = async (
         'totalProfit',
         (botState.totalProfit += expectedProfitPercent - 0.15),
       );
-      await sendToRecipients(`Sell 
+      await sendToRecipients(`SELL 
                             Strategy: ${strategy}
                             Sell reason: ${sellReason}
                             symbol: ${symbol.toUpperCase()}
@@ -245,7 +245,7 @@ export const marketBuyAction = async (
         Number(pricesStream[pricesStream.length - 1]),
       );
       await sendToRecipients(`BUY
-                             STRATEGY:${strategy}
+                             Strategy:${strategy}
                              Reason: ${buyReason}
                              Deal №: ${botState.dealsCount}
                              symbol: ${symbol.toUpperCase()}
@@ -286,7 +286,7 @@ export const marketBuyAction = async (
       );
       botState.updateState('availableCryptoCoin', refreshedCryptoCoinBalance);
       await sendToRecipients(`BUY
-                 STRATEGY: ${strategy}
+                 Strategy: ${strategy}
                  Reason: ${buyReason}
                  ${botState.strategy}
                  Deal №: ${botState.dealsCount}
