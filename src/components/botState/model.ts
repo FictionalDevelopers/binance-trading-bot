@@ -7,6 +7,10 @@ export interface BotState extends Document {
 }
 
 const schema = new Schema({
+  status: {
+    type: String,
+    required: true,
+  },
   emaStartPoint: {
     type: Number,
     required: true,
@@ -20,6 +24,16 @@ const schema = new Schema({
   dealsCount: {
     type: Number,
     default: 1,
+  },
+  enabledLimits: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
+  boughtBeforeResistanceLevel: {
+    type: Boolean,
+    default: false,
+    required: true,
   },
 });
 
