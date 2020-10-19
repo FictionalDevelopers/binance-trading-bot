@@ -30,6 +30,7 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
+    enabledLimits: false,
     boughtBeforeResistanceLevel: false,
     sellError: false,
     emaStartPoint: null,
@@ -194,6 +195,7 @@ import { getRSISignal } from './components/rsi-signals';
               ) >= 0.05)),
         flatTakeProfit:
           botState.status === 'sell' &&
+          !botState.enabledLimits &&
           indicatorsData.rsi1m.rsiValue >= 68 &&
           expectedProfitPercent > 0,
       },
@@ -276,6 +278,7 @@ import { getRSISignal } from './components/rsi-signals';
               'STOP LOSS',
             );
             botState.sellError = false;
+            botState.enabledLimits = false;
             return;
           }
         }

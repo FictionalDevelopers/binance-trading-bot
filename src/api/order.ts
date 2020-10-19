@@ -298,7 +298,8 @@ export const marketBuyAction = async (
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
       if (profitLevels) {
-        setLimitSellOrders(symbol, botState, stepSize);
+        await setLimitSellOrders(symbol, botState, stepSize);
+        botState.enabledLimits = true;
       }
       botState.updateState('status', 'sell');
       botState.updateState('prevPrice', botState.currentPrice);
