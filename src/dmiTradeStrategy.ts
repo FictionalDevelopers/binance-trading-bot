@@ -11,9 +11,9 @@ import { getExchangeInfo } from './api/exchangeInfo';
 import {
   marketBuy,
   marketSellAction,
-  limitSell,
   cancelAllOpenOrders,
   checkAllOpenOrders,
+  marketBuyAction,
 } from './api/order';
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
@@ -31,6 +31,8 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
+    sellLimitsEnabled: false,
+    boughtBeforeResistanceLevel: false,
     sellError: false,
     emaStartPoint: null,
     rebuy: true,
@@ -149,116 +151,86 @@ import { getRSISignal } from './components/rsi-signals';
         : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
       : 0;
 
-    if (
-      botState.status === 'buy' &&
-      Number(
-        (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-      ) >= 0.05 &&
-      botState.rebuy
-    ) {
-      if (botState.testMode) {
-        try {
-          botState.updateState('status', 'isPending');
-          botState.updateState(
-            'buyPrice',
-            Number(pricesStream[pricesStream.length - 1]),
-          );
-          await sendToRecipients(`BUY
-                             ${botState.strategy}
-                             Deal №: ${botState.dealsCount}
-                             symbol: ${symbol.toUpperCase()}
-                             price: ${botState.buyPrice}
-                             date: ${format(new Date(), DATE_FORMAT)}
-              `);
+    const conditions = {
+      buy: {
+        totalResistanceLevel:
+          botState.status === 'buy' &&
+          Number(
+            (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 -
+              100,
+          ) >= 0.05 &&
+          Number(
+            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+          ) >= 0.05 &&
+          botState.rebuy,
+        flatBuyBefore5mResistanceLevel:
+          botState.status === 'buy' &&
+          indicatorsData.fast5mEMA < indicatorsData.middle5mEMA &&
+          indicatorsData.emaSignal === 'buy' &&
+          indicatorsData.rsi1m.rsiValue < 35 &&
+          indicatorsData.rsi1m.rsiValue !== null &&
+          indicatorsData.fast5mEMA < indicatorsData.middle5mEMA,
+        flatBuyAfter5mResistanceLevel:
+          botState.status === 'buy' &&
+          indicatorsData.fast5mEMA < indicatorsData.middle5mEMA &&
+          indicatorsData.emaSignal === 'buy' &&
+          indicatorsData.rsi1m.rsiValue < 35 &&
+          indicatorsData.rsi1m.rsiValue !== null &&
+          indicatorsData.fast5mEMA > indicatorsData.middle5mEMA,
+      },
 
-          botState.updateState('status', 'sell');
-          botState.updateState('prevPrice', botState.currentPrice);
-          return;
-        } catch (e) {
-          await sendToRecipients(`BUY ERROR
-            ${JSON.stringify(e)}
-      `);
-          botState.updateState('status', 'buy');
-        }
-      } else {
-        try {
-          botState.updateState('status', 'isPending');
-          botState.updateState(
-            'buyPrice',
-            Number(pricesStream[pricesStream.length - 1]),
-          );
+      sell: {},
+    };
 
-          const amount = binance.roundStep(
-            500 / botState.currentPrice,
-            stepSize,
-          );
-          const order = await marketBuy(symbol.toUpperCase(), +amount);
-          botState.updateState('buyPrice', Number(order.fills[0].price));
-          botState.updateState('order', order);
-          botState.updateState(
-            'cummulativeQuoteQty',
-            Number(order.cummulativeQuoteQty),
-          );
-          const { available: refreshedCryptoCoinBalance } = await getBalances(
-            cryptoCoin,
-          );
-          botState.updateState(
-            'availableCryptoCoin',
-            refreshedCryptoCoinBalance,
-          );
-          await sendToRecipients(`BUY
-                 ${botState.strategy}
-                 Deal №: ${botState.dealsCount}
-                 Symbol: ${symbol.toUpperCase()}
-                 Price: ${botState.buyPrice} USDT
-                 Date: ${format(new Date(), DATE_FORMAT)}
-                 Prebuy stablecoin balance: ${botState.availableUSDT} USDT
-                 Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
-                 OrderInfo: ${JSON.stringify(botState.order)}
-             `);
+    /** **********************BUY ACTIONS***************************/
 
-          const limitSellOrderAmount = binance.roundStep(
-            Number(botState.availableCryptoCoin) * 0.3333,
-            stepSize,
-          );
-
-          try {
-            const data = Promise.all([
-              limitSell(
-                symbol.toUpperCase(),
-                +limitSellOrderAmount,
-                +Number(botState.buyPrice * 1.01).toPrecision(4),
-              ),
-              limitSell(
-                symbol.toUpperCase(),
-                +limitSellOrderAmount,
-                +Number(botState.buyPrice * 1.02).toPrecision(4),
-              ),
-              limitSell(
-                symbol.toUpperCase(),
-                +limitSellOrderAmount,
-                +Number(botState.buyPrice * 1.04).toPrecision(4),
-              ),
-            ]);
-            console.log(data);
-            botState.updateState('status', 'sell');
-            botState.updateState('prevPrice', botState.currentPrice);
-            return;
-          } catch (e) {
-            await sendToRecipients(`LIMIT SELL ORDER ERROR
-            ${JSON.stringify(e)}
-      `);
-          }
-        } catch (e) {
-          await sendToRecipients(`BUY ERROR
-            ${JSON.stringify(e)}
-      `);
-          const { available: refreshedUSDTBalance } = await getBalances('USDT');
-          botState.updateState('availableUSDT', +refreshedUSDTBalance);
-          botState.updateState('status', 'buy');
-        }
-      }
+    if (conditions.buy.totalResistanceLevel) {
+      await marketBuyAction(
+        true,
+        symbol,
+        botState,
+        cryptoCoin,
+        pricesStream,
+        stepSize,
+        'TRENDS CATCHER',
+        500,
+        'RESISTANCE LEVEL',
+      );
+      return;
     }
+
+    if (conditions.buy.flatBuyBefore5mResistanceLevel) {
+      await marketBuyAction(
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        pricesStream,
+        stepSize,
+        'WAVES CATCHER',
+        500,
+        'BEFORE RESISTANCE LEVEL',
+      );
+      return;
+    }
+
+    if (conditions.buy.flatBuyAfter5mResistanceLevel) {
+      await marketBuyAction(
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        pricesStream,
+        stepSize,
+        'WAVES CATCHER',
+        500,
+        'AFTER RESISTANCE LEVEL',
+      );
+      return;
+    }
+
+    /** *********************SELL ACTIONS***********************/
+
     if (
       botState.status === 'sell' &&
       Number(
@@ -267,16 +239,16 @@ import { getRSISignal } from './components/rsi-signals';
     ) {
       if (botState.testMode) {
         await marketSellAction(
+          'TRENDS CATCHER',
           true,
           symbol,
           botState,
           cryptoCoin,
           expectedProfitPercent,
           pricesStream,
-          indicatorsData,
           stepSize,
           initialUSDTBalance,
-          'EMA STOP LOSS',
+          'STOP LOSS',
         );
         return;
       } else {
@@ -294,22 +266,76 @@ import { getRSISignal } from './components/rsi-signals';
           } else {
             if (openOrders.length !== 0) {
               await cancelAllOpenOrders(symbol.toUpperCase());
+              await marketSellAction(
+                'TRENDS CATCHER',
+                true,
+                symbol,
+                botState,
+                cryptoCoin,
+                expectedProfitPercent,
+                pricesStream,
+                stepSize,
+                initialUSDTBalance,
+                'STOP LOSS',
+              );
+              botState.sellError = false;
+              return;
             }
-            await marketSellAction(
-              true,
-              symbol,
-              botState,
-              cryptoCoin,
-              expectedProfitPercent,
-              pricesStream,
-              indicatorsData,
-              stepSize,
-              initialUSDTBalance,
-              'EMA STOP LOSS',
-            );
-            botState.sellError = false;
-            return;
           }
+        } catch (e) {
+          await sendToRecipients(`SELL ERROR
+            ${JSON.stringify(e)}
+      `);
+          const { available: refreshedCryptoCoinBalance } = await getBalances(
+            cryptoCoin,
+          );
+          botState.updateState(
+            'availableCryptoCoin',
+            +refreshedCryptoCoinBalance,
+          );
+          botState.sellError = true;
+          botState.updateState('status', 'sell');
+        }
+      }
+    }
+
+    if (
+      botState.status === 'sell' &&
+      botState.boughtBeforeResistanceLevel &&
+      (indicatorsData.emaSignal === 'sell' ||
+        (indicatorsData.rsi1m.rsiValue >= 68 && expectedProfitPercent > 0))
+    ) {
+      if (botState.testMode) {
+        await marketSellAction(
+          'WAVES CATCHER',
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          expectedProfitPercent,
+          pricesStream,
+          stepSize,
+          initialUSDTBalance,
+          'STOP LOSS OR TAKE PROFIT',
+        );
+        return;
+      } else {
+        try {
+          botState.updateState('status', 'isPending');
+          await marketSellAction(
+            'WAVES CATCHER',
+            false,
+            symbol,
+            botState,
+            cryptoCoin,
+            expectedProfitPercent,
+            pricesStream,
+            stepSize,
+            initialUSDTBalance,
+            'STOP LOSS OR TAKE PROFIT',
+          );
+          botState.sellError = false;
+          return;
         } catch (e) {
           await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
@@ -333,6 +359,7 @@ import { getRSISignal } from './components/rsi-signals';
   getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getEMASignal(symbol, '5m', indicatorsData);
+  getEMASignal(symbol, '15m', indicatorsData);
   getEMASignal(symbol, '1m', indicatorsData);
 
   if (botState.testMode) {
