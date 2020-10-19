@@ -26,6 +26,7 @@ import { getRSISignal } from './components/rsi-signals';
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
   const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+  const workingDeposit = 500;
   // const symbol = process.argv[2];
 
   const botState = {
@@ -209,7 +210,7 @@ import { getRSISignal } from './components/rsi-signals';
         pricesStream,
         stepSize,
         'TRENDS CATCHER',
-        500,
+        workingDeposit,
         'RESISTANCE LEVEL',
       );
       return;
@@ -224,7 +225,7 @@ import { getRSISignal } from './components/rsi-signals';
         pricesStream,
         stepSize,
         'WAVES CATCHER',
-        500,
+        workingDeposit,
         'BEFORE RESISTANCE LEVEL',
       );
       botState.boughtBeforeResistanceLevel = true;
@@ -240,7 +241,7 @@ import { getRSISignal } from './components/rsi-signals';
         pricesStream,
         stepSize,
         'WAVES CATCHER',
-        500,
+        workingDeposit,
         'AFTER RESISTANCE LEVEL',
       );
       botState.boughtBeforeResistanceLevel = false;
