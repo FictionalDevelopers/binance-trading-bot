@@ -127,7 +127,7 @@ export const marketSellAction = async (
         'totalProfit',
         (botState.totalProfit += expectedProfitPercent - 0.15),
       );
-      await sendToRecipients(`Sell (LOCAL)
+      await sendToRecipients(`Sell 
                             ${strategy}
                             Sell reason: ${sellReason}
                             symbol: ${symbol.toUpperCase()}
