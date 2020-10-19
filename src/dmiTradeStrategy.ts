@@ -5,11 +5,9 @@ import { RESOURCES } from './constants';
 import { DATE_FORMAT } from './constants/date';
 import { getTradeStream } from './api/trades.js';
 import { sendToRecipients } from './services/telegram';
-import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import {
-  marketBuy,
   marketSellAction,
   cancelAllOpenOrders,
   checkAllOpenOrders,
@@ -36,7 +34,7 @@ import { getRSISignal } from './components/rsi-signals';
     emaStartPoint: null,
     rebuy: true,
     strategy: 'MIXED STRATEGY',
-    testMode: false,
+    testMode: true,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: openOrders ? (openOrders.length === 0 ? 'buy' : 'sell') : 'buy',
