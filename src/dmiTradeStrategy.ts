@@ -153,7 +153,7 @@ import { getRSISignal } from './components/rsi-signals';
       botState.status === 'buy' &&
       Number(
         (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-      ) >= 0.1 &&
+      ) >= 0.05 &&
       botState.rebuy
     ) {
       if (botState.testMode) {
@@ -263,7 +263,7 @@ import { getRSISignal } from './components/rsi-signals';
       botState.status === 'sell' &&
       Number(
         (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
-      ) >= 0.1
+      ) >= 0.05
     ) {
       if (botState.testMode) {
         await marketSellAction(
