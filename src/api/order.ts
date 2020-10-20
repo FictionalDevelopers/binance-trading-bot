@@ -272,7 +272,6 @@ export const marketBuyAction = async (
 
       botState.updateState('status', 'sell');
       botState.updateState('prevPrice', botState.currentPrice);
-      return;
     } catch (e) {
       await sendToRecipients(`BUY ERROR
             ${JSON.stringify(e)}
