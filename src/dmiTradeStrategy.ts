@@ -181,6 +181,7 @@ import { getRSISignal } from './components/rsi-signals';
       sell: {
         resistanceLevel:
           botState.status === 'sell' &&
+          !botState.boughtBeforeResistanceLevel &&
           Number(
             (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
           ) >= 0.05,
@@ -215,6 +216,7 @@ import { getRSISignal } from './components/rsi-signals';
         workingDeposit,
         'RESISTANCE LEVEL',
       );
+      botState.boughtBeforeResistanceLevel = false;
       return;
     }
 
