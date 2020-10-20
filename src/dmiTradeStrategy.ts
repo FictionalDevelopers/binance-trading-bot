@@ -258,7 +258,11 @@ import { getRSISignal } from './components/rsi-signals';
       try {
         botState.updateState('status', 'isPending');
         const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
-        if (openOrders.length === 0 && !botState.sellError) {
+        if (
+          openOrders.length === 0 &&
+          !botState.sellError &&
+          botState.enabledLimits
+        ) {
           const { available: refreshedUSDTBalance } = await getBalances('USDT');
           botState.updateState('availableUSDT', +refreshedUSDTBalance);
           botState.dealsCount++;

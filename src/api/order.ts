@@ -3,7 +3,7 @@ import { sendToRecipients } from '../services/telegram';
 import { format } from 'date-fns';
 import { DATE_FORMAT } from '../constants/date';
 import getBalances from './balance';
-import _forEach from 'lodash/forEach';
+// import _forEach from 'lodash/forEach';
 
 export const marketBuy = (symbol: string, quantity: number): Promise<unknown> =>
   new Promise((resolve, reject) => {
@@ -66,14 +66,12 @@ export const setLimitSellOrders = async (symbol, botState, stepSize) => {
         +Number(botState.buyPrice * 1.04).toPrecision(4),
       ),
     ]);
-    botState.sellLimitsEnabled = true;
-
-    return;
+    botState.enabledLimits = true;
   } catch (e) {
     await sendToRecipients(`LIMIT SELL ORDER ERROR
             ${JSON.stringify(e)}
       `);
-    botState.sellLimitsEnabled = false;
+    botState.enabledLimits = false;
   }
 };
 
@@ -315,7 +313,6 @@ export const marketBuyAction = async (
              `);
       if (profitLevels) {
         await setLimitSellOrders(symbol, botState, stepSize);
-        botState.enabledLimits = true;
       }
       botState.updateState('status', 'sell');
       botState.updateState('prevPrice', botState.currentPrice);
