@@ -291,6 +291,21 @@ import { getRSISignal } from './components/rsi-signals';
             botState.enabledLimits = false;
             return;
           }
+          await marketSellAction(
+            'WAVES CATCHER',
+            false,
+            symbol,
+            botState,
+            cryptoCoin,
+            expectedProfitPercent,
+            pricesStream,
+            stepSize,
+            initialUSDTBalance,
+            'STOP LOSS',
+          );
+          botState.sellError = false;
+          botState.enabledLimits = false;
+          return;
         }
       } catch (e) {
         await sendToRecipients(`SELL ERROR
