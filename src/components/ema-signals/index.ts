@@ -47,7 +47,6 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData, botState) => {
       ) >= 0.1
     ) {
       botState.rebuy = true;
-      botState.emaStartPoint = +Number(indicatorsData.slow1mEMA).toFixed(4);
     }
 
     if (
@@ -56,7 +55,6 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData, botState) => {
       ) >= 0.1
     ) {
       botState.rebuy = false;
-      botState.emaStartPoint = +Number(indicatorsData.slow1mEMA).toFixed(4);
     }
     // console.log(fastEMA);
   });
