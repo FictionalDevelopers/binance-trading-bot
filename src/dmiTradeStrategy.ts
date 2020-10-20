@@ -260,6 +260,10 @@ import { getRSISignal } from './components/rsi-signals';
           const { available: refreshedUSDTBalance } = await getBalances('USDT');
           botState.updateState('availableUSDT', +refreshedUSDTBalance);
           botState.dealsCount++;
+          await sendToRecipients(`INFO
+          No open limit sell orders found
+          Bot was switched to the BUY
+      `);
           botState.updateState('status', 'buy');
           return;
         } else {
