@@ -334,9 +334,9 @@ import { getRSISignal } from './components/rsi-signals';
 
   getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  getEMASignal(symbol, '5m', indicatorsData);
-  getEMASignal(symbol, '15m', indicatorsData);
-  getEMASignal(symbol, '1m', indicatorsData);
+  getEMASignal(symbol, '5m', indicatorsData, botState);
+  getEMASignal(symbol, '15m', indicatorsData, botState);
+  getEMASignal(symbol, '1m', indicatorsData, botState);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)
