@@ -181,6 +181,7 @@ import { getRSISignal } from './components/rsi-signals';
       sell: {
         resistanceLevel:
           botState.status === 'sell' &&
+          !botState.boughtBeforeResistanceLevel &&
           Number(
             (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
           ) >= 0.05,
@@ -215,6 +216,7 @@ import { getRSISignal } from './components/rsi-signals';
         workingDeposit,
         'RESISTANCE LEVEL',
       );
+      botState.boughtBeforeResistanceLevel = false;
       return;
     }
 
@@ -256,10 +258,18 @@ import { getRSISignal } from './components/rsi-signals';
       try {
         botState.updateState('status', 'isPending');
         const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
-        if (openOrders.length === 0 && !botState.sellError) {
+        if (
+          openOrders.length === 0 &&
+          !botState.sellError &&
+          botState.enabledLimits
+        ) {
           const { available: refreshedUSDTBalance } = await getBalances('USDT');
           botState.updateState('availableUSDT', +refreshedUSDTBalance);
           botState.dealsCount++;
+          await sendToRecipients(`INFO
+          No open limit sell orders found
+          Bot was switched to the BUY
+      `);
           botState.updateState('status', 'buy');
           return;
         } else {
