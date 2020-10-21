@@ -5,86 +5,366 @@ import { RESOURCES } from './constants';
 import { DATE_FORMAT } from './constants/date';
 import { getTradeStream } from './api/trades.js';
 import { sendToRecipients } from './services/telegram';
+import { binance } from './api/binance';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
-import { checkAllOpenOrders } from './api/order';
+import {
+  marketBuy,
+  marketSellAction,
+  limitSell,
+  cancelAllOpenOrders,
+  checkAllOpenOrders,
+} from './api/order';
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
-import indicatorsData from './components/indicators-data';
-import mixTrader from './components/traders/mixTrader';
-
-export const sharedData = {
-  symbol: null,
-  cryptoCoin: null,
-  initialUSDTBalance: null,
-  initialCryptoCoinBalance: null,
-  stepSize: null,
-  openOrders: null,
-  workingDeposit: null,
-};
 
 (async function() {
   await connect();
   // await processSubscriptions();
-  sharedData.symbol = 'linkusdt';
-  sharedData.cryptoCoin = sharedData.symbol.toUpperCase().slice(0, -4);
+  const symbol = 'linkusdt';
+  const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
-  sharedData.initialUSDTBalance = initialUSDTBalance;
-  const { available: initialCryptoCoinBalance } = await getBalances(
-    sharedData.cryptoCoin,
-  );
-  sharedData.initialCryptoCoinBalance = initialCryptoCoinBalance;
-  const { stepSize } = await getExchangeInfo(
-    sharedData.symbol.toUpperCase(),
-    'LOT_SIZE',
-  );
-  sharedData.stepSize = stepSize;
-  sharedData.openOrders = await checkAllOpenOrders(
-    sharedData.symbol.toUpperCase(),
-  );
-  sharedData.workingDeposit = 500;
-
+  const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
+  const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
+  const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
   // const symbol = process.argv[2];
 
-  const traders = [mixTrader];
+  const botState = {
+    sellError: false,
+    emaStartPoint: null,
+    rebuy: true,
+    strategy: 'REAL MODE',
+    testMode: false,
+    useProfitLevels: false,
+    useEMAStopLoss: false,
+    status: openOrders ? (openOrders.length === 0 ? 'buy' : 'sell') : 'buy',
+    // status: 'buy',
+    profitLevels: {
+      '1': {
+        id: 1,
+        profitPercent: 1,
+        amountPercent: 0.5,
+        isFilled: false,
+      },
+      '2': {
+        id: 2,
+        profitPercent: 2,
+        amountPercent: 0.5,
+        isFilled: false,
+      },
+      '3': {
+        id: 3,
+        profitPercent: 4,
+        amountPercent: 0.5,
+        isFilled: false,
+      },
+    },
+    currentProfit: null,
+    totalProfit: null,
+    totalPercentProfit: null,
+    tradeAmountPercent: 0.95,
+    availableUSDT: initialUSDTBalance,
+    availableCryptoCoin: initialCryptoCoinBalance,
+    cummulativeQuoteQty: null,
+    buyPrice: null,
+    currentPrice: null,
+    order: null,
+    avrDealProfit: null,
+    dealsCount: 1,
+    startTime: new Date().getTime(),
+    workDuration: null,
+    stopLoss: null,
+    prevPrice: null,
+    updateState: function(fieldName, value) {
+      this[`${fieldName}`] = value;
+    },
+  };
 
-  traders.forEach(async ({ trader, botState }) => {
-    if (botState.testMode) {
-      await sendToRecipients(`INIT (TEST MODE)
-  Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  Trader: ${botState.strategy}    
-  with using the ${botState.strategy}
-  Symbol: ${sharedData.symbol.toUpperCase()}
-  `);
-    } else {
-      await sendToRecipients(`INIT
-  Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  Trader: ${botState.strategy}
-  Status: ${botState.status.toUpperCase()}
-  Symbol: ${sharedData.symbol.toUpperCase()}
-  Initial USDT balance: ${initialUSDTBalance} USDT
-  Initial ${sharedData.cryptoCoin} balance: ${initialCryptoCoinBalance} ${
-        sharedData.cryptoCoin
+  const indicatorsData = {
+    emaSignal: null,
+    dmi5m: {
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      adxSignal: 0,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+    },
+    dmi1h: {
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      adxSignal: 0,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+    },
+    dmi1m: {
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      adxSignal: 0,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+    },
+    rsi1m: {
+      rsiValue: null,
+      prevRsi: null,
+      sellNow: false,
+      buyNow: false,
+    },
+    slow1mEMA: 0,
+    middle1mEMA: 0,
+    fast1mEMA: 0,
+    slow5mEMA: 0,
+    middle5mEMA: 0,
+    fast5mEMA: 0,
+    slow1hEMA: 0,
+    middle1hEMA: 0,
+    fast1hEMA: 0,
+    slow15mEMA: 0,
+    middle15mEMA: 0,
+    fast15mEMA: 0,
+    summaryEMABuySignal: false,
+  };
+
+  runEMAInterval(indicatorsData, botState);
+
+  const trader = async pricesStream => {
+    const { tradeAmountPercent } = botState;
+    if (botState.status === 'isPending') return;
+    botState.updateState(
+      'currentPrice',
+      Number(pricesStream[pricesStream.length - 1]),
+    );
+    const expectedProfitPercent = botState.buyPrice
+      ? botState.currentPrice / botState.buyPrice > 1
+        ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
+        : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
+      : 0;
+
+    if (
+      botState.status === 'buy' &&
+      Number(
+        (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+      ) >= 0.1 &&
+      Number(
+        (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
+      ) >= 0.1 &&
+      botState.rebuy
+    ) {
+      if (botState.testMode) {
+        try {
+          botState.updateState('status', 'isPending');
+          botState.updateState(
+            'buyPrice',
+            Number(pricesStream[pricesStream.length - 1]),
+          );
+          await sendToRecipients(`BUY
+                             ${botState.strategy}
+                             Deal №: ${botState.dealsCount}
+                             symbol: ${symbol.toUpperCase()}
+                             price: ${botState.buyPrice}
+                             date: ${format(new Date(), DATE_FORMAT)}
+              `);
+
+          botState.updateState('status', 'sell');
+          botState.updateState('prevPrice', botState.currentPrice);
+          return;
+        } catch (e) {
+          await sendToRecipients(`BUY ERROR
+            ${JSON.stringify(e)}
+      `);
+          botState.updateState('status', 'buy');
+        }
+      } else {
+        try {
+          botState.updateState('status', 'isPending');
+          botState.updateState(
+            'buyPrice',
+            Number(pricesStream[pricesStream.length - 1]),
+          );
+
+          const amount = binance.roundStep(
+            490 / botState.currentPrice,
+            stepSize,
+          );
+          const order = await marketBuy(symbol.toUpperCase(), +amount);
+          botState.updateState('buyPrice', Number(order.fills[0].price));
+          botState.updateState('order', order);
+          botState.updateState(
+            'cummulativeQuoteQty',
+            Number(order.cummulativeQuoteQty),
+          );
+          const { available: refreshedCryptoCoinBalance } = await getBalances(
+            cryptoCoin,
+          );
+          botState.updateState(
+            'availableCryptoCoin',
+            refreshedCryptoCoinBalance,
+          );
+          await sendToRecipients(`BUY
+                 ${botState.strategy}
+                 Deal №: ${botState.dealsCount}
+                 Symbol: ${symbol.toUpperCase()}
+                 Price: ${botState.buyPrice} USDT
+                 Date: ${format(new Date(), DATE_FORMAT)}
+                 Prebuy stablecoin balance: ${botState.availableUSDT} USDT
+                 Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
+                 OrderInfo: ${JSON.stringify(botState.order)}
+             `);
+
+          const limitSellOrderAmount = binance.roundStep(
+            Number(botState.availableCryptoCoin) * 0.33,
+            stepSize,
+          );
+
+          try {
+            const data = Promise.all([
+              limitSell(
+                symbol.toUpperCase(),
+                +limitSellOrderAmount,
+                +Number(botState.buyPrice * 1.01).toPrecision(4),
+              ),
+              limitSell(
+                symbol.toUpperCase(),
+                +limitSellOrderAmount,
+                +Number(botState.buyPrice * 1.02).toPrecision(4),
+              ),
+              limitSell(
+                symbol.toUpperCase(),
+                +limitSellOrderAmount,
+                +Number(botState.buyPrice * 1.04).toPrecision(4),
+              ),
+            ]);
+            // console.log(data);
+            botState.updateState('status', 'sell');
+            botState.updateState('prevPrice', botState.currentPrice);
+            botState.rebuy = false;
+            return;
+          } catch (e) {
+            await sendToRecipients(`LIMIT SELL ORDER ERROR
+            ${JSON.stringify(e)}
+      `);
+          }
+        } catch (e) {
+          await sendToRecipients(`BUY ERROR
+            ${JSON.stringify(e)}
+      `);
+          const { available: refreshedUSDTBalance } = await getBalances('USDT');
+          botState.updateState('availableUSDT', +refreshedUSDTBalance);
+          botState.updateState('status', 'buy');
+        }
       }
-  Open orders: ${JSON.stringify(sharedData.openOrders)}
-  `);
+    }
+    if (
+      botState.status === 'sell' &&
+      Number(
+        (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
+      ) >= 0.1
+    ) {
+      if (botState.testMode) {
+        await marketSellAction(
+          true,
+          symbol,
+          botState,
+          cryptoCoin,
+          expectedProfitPercent,
+          pricesStream,
+          indicatorsData,
+          stepSize,
+          initialUSDTBalance,
+          'EMA STOP LOSS',
+        );
+        botState.rebuy = true;
+        return;
+      } else {
+        try {
+          botState.updateState('status', 'isPending');
+          const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+          if (openOrders.length === 0 && !botState.sellError) {
+            const { available: refreshedUSDTBalance } = await getBalances(
+              'USDT',
+            );
+            botState.updateState('availableUSDT', +refreshedUSDTBalance);
+            botState.dealsCount++;
+            botState.updateState('status', 'buy');
+            return;
+          } else {
+            if (openOrders.length !== 0) {
+              await cancelAllOpenOrders(symbol.toUpperCase());
+            }
+            await marketSellAction(
+              true,
+              symbol,
+              botState,
+              cryptoCoin,
+              expectedProfitPercent,
+              pricesStream,
+              indicatorsData,
+              stepSize,
+              initialUSDTBalance,
+              'EMA STOP LOSS',
+            );
+            botState.sellError = false;
+            return;
+          }
+        } catch (e) {
+          await sendToRecipients(`SELL ERROR
+            ${JSON.stringify(e)}
+      `);
+          const { available: refreshedCryptoCoinBalance } = await getBalances(
+            cryptoCoin,
+          );
+          botState.updateState(
+            'availableCryptoCoin',
+            +refreshedCryptoCoinBalance,
+          );
+          botState.sellError = true;
+          botState.updateState('status', 'sell');
+        }
+      }
     }
 
-    getTradeStream({
-      symbol: sharedData.symbol,
-      resource: RESOURCES.TRADE,
-    })
-      .pipe(pluck('price'), bufferCount(1, 1))
-      .subscribe(trader);
-  });
+    botState.updateState('prevPrice', botState.currentPrice);
+  };
 
-  runEMAInterval(indicatorsData, mixTrader.botState);
-  getDMISignal(sharedData.symbol, '5m', indicatorsData.dmi5m);
-  getRSISignal(sharedData.symbol, '1m', indicatorsData.rsi1m);
-  getEMASignal(sharedData.symbol, '5m', indicatorsData);
-  getEMASignal(sharedData.symbol, '15m', indicatorsData);
-  getEMASignal(sharedData.symbol, '1m', indicatorsData);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  getEMASignal(symbol, '5m', indicatorsData);
+  getEMASignal(symbol, '15m', indicatorsData);
+  getEMASignal(symbol, '1m', indicatorsData);
+
+  if (botState.testMode) {
+    await sendToRecipients(`INIT TEST MODE
+  Bot started working at: ${format(new Date(), DATE_FORMAT)}
+  with using the ${botState.strategy}
+  Symbol: ${symbol.toUpperCase()}
+  `);
+  } else {
+    await sendToRecipients(`INIT
+  Bot started working at: ${format(new Date(), DATE_FORMAT)}
+  with using the ${botState.strategy}
+  Status: ${botState.status.toUpperCase()}
+  Symbol: ${symbol.toUpperCase()}
+  Initial USDT balance: ${initialUSDTBalance} USDT
+  Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
+  Open orders: ${JSON.stringify(openOrders)}
+  `);
+  }
+
+  getTradeStream({
+    symbol: symbol,
+    resource: RESOURCES.TRADE,
+  })
+    .pipe(pluck('price'), bufferCount(1, 1))
+    .subscribe(trader);
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {

@@ -49,6 +49,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     period: 25,
   }).subscribe(middleEMA => {
     indicatorsData[`middle${timeFrame}EMA`] = middleEMA;
+    // console.log(middleEMA);
   });
 
   getEmaStream({
