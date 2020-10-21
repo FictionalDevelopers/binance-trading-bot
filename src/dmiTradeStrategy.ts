@@ -172,7 +172,7 @@ import { getRSISignal } from './components/rsi-signals';
           botState.status === 'buy' &&
           indicatorsData.fast5mEMA > indicatorsData.middle5mEMA &&
           // indicatorsData.emaSignal === 'buy' &&
-          indicatorsData.rsi1m.rsiValue <= 40 &&
+          indicatorsData.rsi1m.rsiValue <= 45 &&
           indicatorsData.rsi1m.rsiValue !== null,
       },
 
