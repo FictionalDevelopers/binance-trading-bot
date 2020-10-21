@@ -176,6 +176,7 @@ import { getRSISignal } from './components/rsi-signals';
 
           botState.updateState('status', 'sell');
           botState.updateState('prevPrice', botState.currentPrice);
+          botState.rebuy = false;
           return;
         } catch (e) {
           await sendToRecipients(`BUY ERROR
@@ -313,6 +314,7 @@ import { getRSISignal } from './components/rsi-signals';
               'EMA STOP LOSS',
             );
             botState.sellError = false;
+            botState.rebuy = true;
             return;
           }
         } catch (e) {
