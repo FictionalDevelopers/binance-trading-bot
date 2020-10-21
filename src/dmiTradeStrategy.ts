@@ -243,9 +243,10 @@ import { getRSISignal } from './components/rsi-signals';
                 +Number(botState.buyPrice * 1.04).toPrecision(4),
               ),
             ]);
-            console.log(data);
+            // console.log(data);
             botState.updateState('status', 'sell');
             botState.updateState('prevPrice', botState.currentPrice);
+            botState.rebuy = false;
             return;
           } catch (e) {
             await sendToRecipients(`LIMIT SELL ORDER ERROR
@@ -281,6 +282,7 @@ import { getRSISignal } from './components/rsi-signals';
           initialUSDTBalance,
           'EMA STOP LOSS',
         );
+        botState.rebuy = true;
         return;
       } else {
         try {
