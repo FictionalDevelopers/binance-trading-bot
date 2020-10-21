@@ -44,7 +44,7 @@ export const limitSell = (
 
 export const setLimitSellOrders = async (symbol, botState, stepSize) => {
   const limitSellOrderAmount = binance.roundStep(
-    Number(botState.availableCryptoCoin) * 0.3333,
+    Number(botState.availableCryptoCoin) * 0.33,
     stepSize,
   );
 
