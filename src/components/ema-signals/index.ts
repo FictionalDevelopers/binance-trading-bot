@@ -34,7 +34,7 @@ export const runEMAInterval = (indicatorsData, botState) => {
   }, 60000);
 };
 
-export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
+export const getEMASignal = (symbol, timeFrame, indicatorsData, botState) => {
   getEmaStream({
     symbol: symbol,
     interval: timeFrame,
@@ -49,7 +49,6 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     period: 25,
   }).subscribe(middleEMA => {
     indicatorsData[`middle${timeFrame}EMA`] = middleEMA;
-    // console.log(middleEMA);
   });
 
   getEmaStream({
