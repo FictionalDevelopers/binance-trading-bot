@@ -34,7 +34,7 @@ export const runEMAInterval = (indicatorsData, botState) => {
   }, 60000);
 };
 
-export const getEMASignal = (symbol, timeFrame, indicatorsData, botState) => {
+export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
   getEmaStream({
     symbol: symbol,
     interval: timeFrame,
