@@ -220,6 +220,7 @@ import { getRSISignal } from './components/rsi-signals';
       );
       botState.boughtBeforeResistanceLevel = false;
       botState.rebuy = false;
+      botState.enabledLimits = true;
       return;
     }
 

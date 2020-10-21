@@ -66,7 +66,7 @@ export const setLimitSellOrders = async (symbol, botState, stepSize) => {
         +Number(botState.buyPrice * 1.04).toPrecision(4),
       ),
     ]);
-    botState.enabledLimits = true;
+    // botState.enabledLimits = true;
   } catch (e) {
     await sendToRecipients(`LIMIT SELL ORDER ERROR
             ${JSON.stringify(e)}
