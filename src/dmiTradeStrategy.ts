@@ -267,7 +267,7 @@ import { getRSISignal } from './components/rsi-signals';
     if (conditions.sell.resistanceLevel) {
       await marketSellAction(
         'TRENDS CATCHER',
-        false,
+        true,
         symbol,
         botState,
         cryptoCoin,
