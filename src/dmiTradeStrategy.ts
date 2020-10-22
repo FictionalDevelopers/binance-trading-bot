@@ -119,6 +119,12 @@ import { getRSISignal } from './components/rsi-signals';
       sellNow: false,
       buyNow: false,
     },
+    rsi5m: {
+      rsiValue: null,
+      prevRsi: null,
+      sellNow: false,
+      buyNow: false,
+    },
     slow1mEMA: 0,
     middle1mEMA: 0,
     fast1mEMA: 0,
@@ -159,7 +165,9 @@ import { getRSISignal } from './components/rsi-signals';
           ) >= 0.1 &&
           Number(
             (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-          ) >= 0.1,
+          ) >= 0.1 &&
+          indicatorsData.rsi5m.rsiValue !== null &&
+          indicatorsData.rsi5m.rsiValue <= 68,
 
         // flatBuyBefore5mResistanceLevel:
         //   botState.status === 'buy' &&
@@ -311,6 +319,7 @@ import { getRSISignal } from './components/rsi-signals';
 
   getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   getEMASignal(symbol, '5m', indicatorsData, botState);
   getEMASignal(symbol, '15m', indicatorsData, botState);
   getEMASignal(symbol, '1m', indicatorsData, botState);
