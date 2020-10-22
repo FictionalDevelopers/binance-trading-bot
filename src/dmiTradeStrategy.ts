@@ -7,12 +7,7 @@ import { getTradeStream } from './api/trades.js';
 import { sendToRecipients } from './services/telegram';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
-import {
-  marketSellAction,
-  cancelAllOpenOrders,
-  checkAllOpenOrders,
-  marketBuyAction,
-} from './api/order';
+import { marketSellAction, marketBuyAction, getOrdersList } from './api/order';
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
@@ -25,7 +20,9 @@ import { getRSISignal } from './components/rsi-signals';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
-  const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+  // const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+  const ordersList = await getOrdersList(symbol.toUpperCase());
+  const lastOrder = ordersList[ordersList.length - 1] || null;
   const workingDeposit = 500;
   // const symbol = process.argv[2];
 
@@ -35,10 +32,10 @@ import { getRSISignal } from './components/rsi-signals';
     sellError: false,
     emaStartPoint: null,
     strategy: 'MIXED STRATEGY',
-    testMode: true,
+    testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
-    status: openOrders ? (openOrders.length === 0 ? 'buy' : 'sell') : 'buy',
+    status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
     // status: 'buy',
     profitLevels: {
       '1': {
@@ -283,46 +280,47 @@ import { getRSISignal } from './components/rsi-signals';
       return;
     }
 
-    if (conditions.sell.flatTakeProfit) {
-      await marketSellAction(
-        'WAVES CATCHER',
-        false,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        stepSize,
-        initialUSDTBalance,
-        'TAKE PROFIT',
-      );
-      return;
-    }
+    // if (conditions.sell.flatTakeProfit) {
+    //   await marketSellAction(
+    //     'WAVES CATCHER',
+    //     false,
+    //     symbol,
+    //     botState,
+    //     cryptoCoin,
+    //     expectedProfitPercent,
+    //     pricesStream,
+    //     stepSize,
+    //     initialUSDTBalance,
+    //     'TAKE PROFIT',
+    //   );
+    //   return;
+    // }
+    //
+    // if (conditions.sell.flatStopLoss) {
+    //   await marketSellAction(
+    //     'WAVES CATCHER',
+    //     false,
+    //     symbol,
+    //     botState,
+    //     cryptoCoin,
+    //     expectedProfitPercent,
+    //     pricesStream,
+    //     stepSize,
+    //     initialUSDTBalance,
+    //     'STOP LOSS',
+    //   );
+    //   return;
+    // }
 
-    if (conditions.sell.flatStopLoss) {
-      await marketSellAction(
-        'WAVES CATCHER',
-        false,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        stepSize,
-        initialUSDTBalance,
-        'STOP LOSS',
-      );
-      return;
-    }
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
   getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  getEMASignal(symbol, '5m', indicatorsData, botState);
-  getEMASignal(symbol, '15m', indicatorsData, botState);
-  getEMASignal(symbol, '1m', indicatorsData, botState);
+  getEMASignal(symbol, '5m', indicatorsData);
+  getEMASignal(symbol, '15m', indicatorsData);
+  getEMASignal(symbol, '1m', indicatorsData);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)
@@ -338,7 +336,6 @@ import { getRSISignal } from './components/rsi-signals';
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
-  Open orders: ${JSON.stringify(openOrders)}
   `);
   }
 
