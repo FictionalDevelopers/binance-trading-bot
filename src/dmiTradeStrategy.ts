@@ -32,7 +32,7 @@ import { getRSISignal } from './components/rsi-signals';
     sellError: false,
     emaStartPoint: null,
     strategy: 'MIXED STRATEGY',
-    testMode: false,
+    testMode: true,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
