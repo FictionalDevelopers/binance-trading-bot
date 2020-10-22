@@ -31,10 +31,9 @@ import { getRSISignal } from './components/rsi-signals';
 
   const botState = {
     enabledLimits: false,
-    boughtBeforeResistanceLevel: false,
+    boughtByTotalResistanceLevel: false,
     sellError: false,
     emaStartPoint: null,
-    rebuy: true,
     strategy: 'MIXED STRATEGY',
     testMode: true,
     useProfitLevels: false,
@@ -160,14 +159,15 @@ import { getRSISignal } from './components/rsi-signals';
           ) >= 0.1 &&
           Number(
             (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-          ) >= 0.1 &&
-          botState.rebuy,
-        flatBuyBefore5mResistanceLevel:
-          botState.status === 'buy' &&
-          indicatorsData.fast5mEMA < indicatorsData.middle5mEMA &&
-          indicatorsData.emaSignal === 'buy' &&
-          indicatorsData.rsi1m.rsiValue <= 35 &&
-          indicatorsData.rsi1m.rsiValue !== null,
+          ) >= 0.1,
+
+        // flatBuyBefore5mResistanceLevel:
+        //   botState.status === 'buy' &&
+        //   indicatorsData.fast5mEMA < indicatorsData.middle5mEMA &&
+        //   indicatorsData.emaSignal === 'buy' &&
+        //   indicatorsData.rsi1m.rsiValue <= 35 &&
+        //   indicatorsData.rsi1m.rsiValue !== null,
+
         flatBuyAfter5mResistanceLevel:
           botState.status === 'buy' &&
           indicatorsData.fast5mEMA > indicatorsData.middle5mEMA &&
@@ -179,28 +179,31 @@ import { getRSISignal } from './components/rsi-signals';
       sell: {
         resistanceLevel:
           botState.status === 'sell' &&
-          !botState.boughtBeforeResistanceLevel &&
           Number(
             (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
           ) >= 0.05,
+
         flatStopLoss:
           botState.status === 'sell' &&
-          ((botState.boughtBeforeResistanceLevel &&
-            indicatorsData.emaSignal === 'sell') ||
-            (!botState.boughtBeforeResistanceLevel &&
-              Number(
-                (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-                  100,
-              ) >= 0.05) ||
+          !botState.boughtByTotalResistanceLevel &&
+          (Number(
+            (indicatorsData.slow1mEMA / indicatorsData.middle1mEMA) * 100 - 100,
+          ) >= 0.05 ||
             Number(
-              (indicatorsData.slow1mEMA / indicatorsData.middle1mEMA) * 100 -
+              (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                 100,
             ) >= 0.05),
         flatTakeProfit:
           botState.status === 'sell' &&
-          !botState.enabledLimits &&
           indicatorsData.rsi1m.rsiValue >= 68 &&
-          expectedProfitPercent > 0,
+          expectedProfitPercent > 0 &&
+          Number(
+            (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 -
+              100,
+          ) < 0.1 &&
+          Number(
+            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+          ) < 0.1,
       },
     };
 
@@ -208,7 +211,7 @@ import { getRSISignal } from './components/rsi-signals';
 
     if (conditions.buy.totalResistanceLevel) {
       await marketBuyAction(
-        true,
+        false,
         symbol,
         botState,
         cryptoCoin,
@@ -218,9 +221,7 @@ import { getRSISignal } from './components/rsi-signals';
         workingDeposit,
         'RESISTANCE LEVEL',
       );
-      botState.boughtBeforeResistanceLevel = false;
-      botState.rebuy = false;
-      botState.enabledLimits = true;
+      botState.boughtByTotalResistanceLevel = true;
       return;
     }
 
@@ -252,80 +253,26 @@ import { getRSISignal } from './components/rsi-signals';
         workingDeposit,
         'AFTER RESISTANCE LEVEL',
       );
-      botState.boughtBeforeResistanceLevel = false;
+      botState.boughtByTotalResistanceLevel = false;
       return;
     }
 
     /** *********************SELL ACTIONS***********************/
 
     if (conditions.sell.resistanceLevel) {
-      try {
-        botState.updateState('status', 'isPending');
-        const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
-        if (
-          openOrders.length === 0 &&
-          !botState.sellError &&
-          botState.enabledLimits
-        ) {
-          const { available: refreshedUSDTBalance } = await getBalances('USDT');
-          botState.updateState('availableUSDT', +refreshedUSDTBalance);
-          botState.dealsCount++;
-          await sendToRecipients(`INFO
-          No open limit sell orders found
-          Bot was switched to the BUY
-      `);
-          botState.updateState('status', 'buy');
-          return;
-        } else {
-          if (openOrders.length !== 0) {
-            await cancelAllOpenOrders(symbol.toUpperCase());
-            await marketSellAction(
-              'TRENDS CATCHER',
-              true,
-              symbol,
-              botState,
-              cryptoCoin,
-              expectedProfitPercent,
-              pricesStream,
-              stepSize,
-              initialUSDTBalance,
-              'STOP LOSS',
-            );
-            botState.sellError = false;
-            botState.enabledLimits = false;
-            return;
-          }
-          await marketSellAction(
-            'WAVES CATCHER',
-            false,
-            symbol,
-            botState,
-            cryptoCoin,
-            expectedProfitPercent,
-            pricesStream,
-            stepSize,
-            initialUSDTBalance,
-            'STOP LOSS',
-          );
-          botState.sellError = false;
-          botState.enabledLimits = false;
-          botState.rebuy = true;
-          return;
-        }
-      } catch (e) {
-        await sendToRecipients(`SELL ERROR
-            ${JSON.stringify(e)}
-      `);
-        const { available: refreshedCryptoCoinBalance } = await getBalances(
-          cryptoCoin,
-        );
-        botState.updateState(
-          'availableCryptoCoin',
-          +refreshedCryptoCoinBalance,
-        );
-        botState.sellError = true;
-        botState.updateState('status', 'sell');
-      }
+      await marketSellAction(
+        'TRENDS CATCHER',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'STOP LOSS',
+      );
+      return;
     }
 
     if (conditions.sell.flatTakeProfit) {
