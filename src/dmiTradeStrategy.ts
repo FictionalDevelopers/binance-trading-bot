@@ -280,37 +280,37 @@ import { getRSISignal } from './components/rsi-signals';
       return;
     }
 
-    // if (conditions.sell.flatTakeProfit) {
-    //   await marketSellAction(
-    //     'WAVES CATCHER',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'TAKE PROFIT',
-    //   );
-    //   return;
-    // }
-    //
-    // if (conditions.sell.flatStopLoss) {
-    //   await marketSellAction(
-    //     'WAVES CATCHER',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'STOP LOSS',
-    //   );
-    //   return;
-    // }
+    if (conditions.sell.flatTakeProfit) {
+      await marketSellAction(
+        'WAVES CATCHER',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'TAKE PROFIT',
+      );
+      return;
+    }
+
+    if (conditions.sell.flatStopLoss) {
+      await marketSellAction(
+        'WAVES CATCHER',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'STOP LOSS',
+      );
+      return;
+    }
 
     botState.updateState('prevPrice', botState.currentPrice);
   };
