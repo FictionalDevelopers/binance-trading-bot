@@ -27,7 +27,6 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
-    rebuy: true,
     enabledLimits: false,
     boughtByTotalResistanceLevel: false,
     boughtBeforeResistanceLevel: null,
@@ -158,9 +157,12 @@ import { getRSISignal } from './components/rsi-signals';
       buy: {
         totalResistanceLevel:
           botState.status === 'buy' &&
-          botState.rebuy &&
           Number(
             (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+          ) >= 0.1 &&
+          Number(
+            (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 -
+              100,
           ) >= 0.1 &&
           indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
           indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
@@ -186,10 +188,9 @@ import { getRSISignal } from './components/rsi-signals';
         resistanceLevel:
           botState.status === 'sell' &&
           botState.boughtByTotalResistanceLevel &&
-          (Number(
+          Number(
             (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
-          ) >= 0.05 ||
-            expectedProfitPercent >= 1),
+          ) >= 0.05,
 
         flatAfterResistanceLevelStopLoss:
           botState.status === 'sell' &&
@@ -202,12 +203,14 @@ import { getRSISignal } from './components/rsi-signals';
               (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                 100,
             ) >= 0.05),
+
         flatBeforeResistanceLevelStopLoss:
           botState.status === 'sell' &&
           !botState.boughtByTotalResistanceLevel &&
           botState.boughtBeforeResistanceLevel === true &&
           (indicatorsData.emaSignal === 'sell' ||
             expectedProfitPercent <= -0.5),
+
         flatTakeProfit:
           botState.status === 'sell' &&
           !botState.boughtByTotalResistanceLevel &&
@@ -238,7 +241,6 @@ import { getRSISignal } from './components/rsi-signals';
         'RESISTANCE LEVEL',
       );
       botState.boughtByTotalResistanceLevel = true;
-      botState.rebuy = false;
       return;
     }
 
@@ -291,12 +293,6 @@ import { getRSISignal } from './components/rsi-signals';
         initialUSDTBalance,
         'STOP LOSS',
       );
-      if (
-        Number(
-          (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
-        ) >= 0.05
-      )
-        botState.rebuy = true;
       return;
     }
 
@@ -329,6 +325,8 @@ import { getRSISignal } from './components/rsi-signals';
         initialUSDTBalance,
         'BEFORE RESISTANCE LEVEL STOP LOSS',
       );
+      botState.emaStartPoint = indicatorsData.slow1mEMA;
+      indicatorsData.emaSignal = 'sell';
       return;
     }
 
