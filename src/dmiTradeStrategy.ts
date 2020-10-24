@@ -27,6 +27,7 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
+    rebuy: true,
     enabledLimits: false,
     boughtByTotalResistanceLevel: false,
     sellError: false,
@@ -156,13 +157,8 @@ import { getRSISignal } from './components/rsi-signals';
       buy: {
         totalResistanceLevel:
           botState.status === 'buy' &&
-          Number(
-            (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 -
-              100,
-          ) >= 0.1 &&
-          Number(
-            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-          ) >= 0.1 &&
+          botState.rebuy &&
+          indicatorsData.fast5mEMA >= indicatorsData.middle5mEMA &&
           indicatorsData.rsi5m.rsiValue !== null &&
           indicatorsData.rsi5m.rsiValue <= 68,
 
@@ -183,10 +179,12 @@ import { getRSISignal } from './components/rsi-signals';
 
       sell: {
         resistanceLevel:
-          botState.status === 'sell' &&
-          Number(
-            (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
-          ) >= 0.05,
+          (botState.status === 'sell' &&
+            Number(
+              (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
+                100,
+            ) >= 0.05) ||
+          (expectedProfitPercent >= 1 && botState.boughtByTotalResistanceLevel),
 
         flatStopLoss:
           botState.status === 'sell' &&
@@ -227,6 +225,7 @@ import { getRSISignal } from './components/rsi-signals';
         'RESISTANCE LEVEL',
       );
       botState.boughtByTotalResistanceLevel = true;
+      botState.rebuy = false;
       return;
     }
 
@@ -277,6 +276,12 @@ import { getRSISignal } from './components/rsi-signals';
         initialUSDTBalance,
         'STOP LOSS',
       );
+      if (
+        Number(
+          (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
+        ) >= 0.05
+      )
+        botState.rebuy = true;
       return;
     }
 
