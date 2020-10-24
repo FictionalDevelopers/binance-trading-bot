@@ -162,6 +162,8 @@ import { getRSISignal } from './components/rsi-signals';
           Number(
             (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
           ) >= 0.1 &&
+          indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+          indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
           indicatorsData.rsi5m.rsiValue !== null &&
           indicatorsData.rsi5m.rsiValue <= 68,
 
