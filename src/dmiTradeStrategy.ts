@@ -182,13 +182,12 @@ import { getRSISignal } from './components/rsi-signals';
 
       sell: {
         resistanceLevel:
-          (botState.status === 'sell' &&
-            botState.boughtByTotalResistanceLevel &&
-            Number(
-              (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-                100,
-            ) >= 0.05) ||
-          expectedProfitPercent >= 1,
+          botState.status === 'sell' &&
+          botState.boughtByTotalResistanceLevel &&
+          (Number(
+            (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
+          ) >= 0.05 ||
+            expectedProfitPercent >= 1),
 
         flatAfterResistanceLevelStopLoss:
           botState.status === 'sell' &&
