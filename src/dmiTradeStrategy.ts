@@ -167,7 +167,9 @@ import { getRSISignal } from './components/rsi-signals';
           indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
           indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
           indicatorsData.rsi5m.rsiValue !== null &&
-          indicatorsData.rsi5m.rsiValue <= 68,
+          indicatorsData.rsi5m.rsiValue <= 68 &&
+          indicatorsData.rsi1m.rsiValue !== null &&
+          indicatorsData.rsi1m.rsiValue < 69,
 
         flatBuyBefore5mResistanceLevel:
           botState.status === 'buy' &&
