@@ -209,6 +209,7 @@ import { getRSISignal } from './components/rsi-signals';
             expectedProfitPercent <= -0.5),
         flatTakeProfit:
           botState.status === 'sell' &&
+          !botState.boughtByTotalResistanceLevel &&
           indicatorsData.rsi1m.rsiValue >= 68 &&
           expectedProfitPercent > 0,
         // Number(
