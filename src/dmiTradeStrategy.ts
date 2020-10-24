@@ -202,11 +202,11 @@ import { getRSISignal } from './components/rsi-signals';
                 100,
             ) >= 0.05),
         flatBeforeResistanceLevelStopLoss:
-          (botState.status === 'sell' &&
-            !botState.boughtByTotalResistanceLevel &&
-            botState.boughtBeforeResistanceLevel === true &&
-            indicatorsData.emaSignal === 'sell') ||
-          expectedProfitPercent <= 0.5,
+          botState.status === 'sell' &&
+          !botState.boughtByTotalResistanceLevel &&
+          botState.boughtBeforeResistanceLevel === true &&
+          (indicatorsData.emaSignal === 'sell' ||
+            expectedProfitPercent <= -0.5),
         flatTakeProfit:
           botState.status === 'sell' &&
           indicatorsData.rsi1m.rsiValue >= 68 &&
