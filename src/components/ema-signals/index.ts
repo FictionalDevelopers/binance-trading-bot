@@ -1,10 +1,11 @@
 import { getEmaStream } from '../../indicators/ema';
 import indicatorsData from '../indicators-data';
 import botState from '../botState';
+import { sendToRecipients } from '../../services/telegram';
 // import { indicatorsData } from '../../index';
 
 export const runEMAInterval = (indicatorsData, botState) => {
-  setInterval(() => {
+  setInterval(async () => {
     // console.log(JSON.stringify(botState), '\n');
     // console.log(JSON.stringify(indicatorsData), '\n');
     if (!botState.emaStartPoint && indicatorsData.slow1mEMA) {
@@ -18,11 +19,13 @@ export const runEMAInterval = (indicatorsData, botState) => {
     ) {
       botState.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(4);
       indicatorsData.emaSignal = 'sell';
+      await sendToRecipients(`DOWN`);
     } else if (
       Number(botState.emaStartPoint) <=
       +Number(indicatorsData.slow1mEMA).toFixed(4)
     ) {
       indicatorsData.emaSignal = 'buy';
+      await sendToRecipients(`UP`);
     }
     console.log(
       'Start Point / Curr: ',
