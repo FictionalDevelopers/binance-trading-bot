@@ -175,14 +175,14 @@ import { getRSISignal } from './components/rsi-signals';
           botState.status === 'buy' &&
           indicatorsData.fast5mEMA < indicatorsData.middle5mEMA &&
           indicatorsData.emaSignal === 'buy' &&
-          indicatorsData.rsi1m.rsiValue <= 35 &&
+          indicatorsData.rsi1m.rsiValue <= 43 &&
           indicatorsData.rsi1m.rsiValue !== null,
 
         flatBuyAfter5mResistanceLevel:
           botState.status === 'buy' &&
           indicatorsData.fast5mEMA > indicatorsData.middle5mEMA &&
           indicatorsData.emaSignal === 'buy' &&
-          indicatorsData.rsi1m.rsiValue <= 45 &&
+          indicatorsData.rsi1m.rsiValue <= 50 &&
           indicatorsData.rsi1m.rsiValue !== null,
       },
 
@@ -216,7 +216,7 @@ import { getRSISignal } from './components/rsi-signals';
         flatTakeProfit:
           botState.status === 'sell' &&
           !botState.boughtByTotalResistanceLevel &&
-          indicatorsData.rsi1m.rsiValue >= 68 &&
+          indicatorsData.rsi1m.rsiValue >= 60 &&
           expectedProfitPercent > 0,
         // Number(
         //   (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 -
