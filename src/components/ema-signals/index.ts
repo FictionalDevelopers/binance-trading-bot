@@ -18,14 +18,14 @@ export const runEMAInterval = (indicatorsData, botState) => {
       +Number(indicatorsData.slow1mEMA).toFixed(4)
     ) {
       botState.emaStartPoint = Number(indicatorsData.slow1mEMA).toFixed(4);
+      if (indicatorsData.emaSignal === 'buy') await sendToRecipients(`DOWN`);
       indicatorsData.emaSignal = 'sell';
-      await sendToRecipients(`DOWN`);
     } else if (
       Number(botState.emaStartPoint) <=
       +Number(indicatorsData.slow1mEMA).toFixed(4)
     ) {
+      if (indicatorsData.emaSignal === 'sell') await sendToRecipients(`UP`);
       indicatorsData.emaSignal = 'buy';
-      await sendToRecipients(`UP`);
     }
     console.log(
       'Start Point / Curr: ',
