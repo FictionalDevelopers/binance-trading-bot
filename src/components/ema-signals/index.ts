@@ -37,13 +37,27 @@ export const runEMAInterval = (indicatorsData, botState) => {
   }, 60000);
 };
 
-export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
+export const getEMASignal = (symbol, timeFrame, indicatorsData, botState) => {
   getEmaStream({
     symbol: symbol,
     interval: timeFrame,
     period: 7,
   }).subscribe(fastEMA => {
     indicatorsData[`fast${timeFrame}EMA`] = fastEMA;
+
+    if (
+      Number(
+        (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
+      ) >= 0.1
+    )
+      botState.rebuy = true;
+
+    if (
+      Number(
+        (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+      ) >= 0.1
+    )
+      botState.rebuy = false;
   });
 
   getEmaStream({
