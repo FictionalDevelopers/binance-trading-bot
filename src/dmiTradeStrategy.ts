@@ -230,21 +230,21 @@ import { getRSISignal } from './components/rsi-signals';
 
     /** **********************BUY ACTIONS***************************/
 
-    if (conditions.buy.totalResistanceLevel) {
-      await marketBuyAction(
-        false,
-        symbol,
-        botState,
-        cryptoCoin,
-        pricesStream,
-        stepSize,
-        'TRENDS CATCHER',
-        workingDeposit,
-        'RESISTANCE LEVEL',
-      );
-      botState.boughtByTotalResistanceLevel = true;
-      return;
-    }
+    // if (conditions.buy.totalResistanceLevel) {
+    //   await marketBuyAction(
+    //     false,
+    //     symbol,
+    //     botState,
+    //     cryptoCoin,
+    //     pricesStream,
+    //     stepSize,
+    //     'TRENDS CATCHER',
+    //     workingDeposit,
+    //     'RESISTANCE LEVEL',
+    //   );
+    //   botState.boughtByTotalResistanceLevel = true;
+    //   return;
+    // }
 
     if (conditions.buy.flatBuyBefore5mResistanceLevel) {
       await marketBuyAction(
@@ -282,21 +282,21 @@ import { getRSISignal } from './components/rsi-signals';
 
     /** *********************SELL ACTIONS***********************/
 
-    if (conditions.sell.resistanceLevel) {
-      await marketSellAction(
-        'TRENDS CATCHER',
-        true,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        stepSize,
-        initialUSDTBalance,
-        'STOP LOSS',
-      );
-      return;
-    }
+    // if (conditions.sell.resistanceLevel) {
+    //   await marketSellAction(
+    //     'TRENDS CATCHER',
+    //     true,
+    //     symbol,
+    //     botState,
+    //     cryptoCoin,
+    //     expectedProfitPercent,
+    //     pricesStream,
+    //     stepSize,
+    //     initialUSDTBalance,
+    //     'STOP LOSS',
+    //   );
+    //   return;
+    // }
 
     if (conditions.sell.flatTakeProfit) {
       await marketSellAction(
