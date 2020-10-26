@@ -217,14 +217,7 @@ import { getRSISignal } from './components/rsi-signals';
           botState.status === 'sell' &&
           !botState.boughtByTotalResistanceLevel &&
           indicatorsData.rsi1m.rsiValue >= 69 &&
-          expectedProfitPercent > 0 &&
-          Number(
-            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-          ) < 0.1 &&
-          Number(
-            (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 -
-              100,
-          ) < 0.1,
+          expectedProfitPercent > 0,
         // Number(
         //   (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 -
         //     100,
