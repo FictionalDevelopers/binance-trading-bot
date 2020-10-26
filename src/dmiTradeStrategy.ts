@@ -345,6 +345,8 @@ import { getRSISignal } from './components/rsi-signals';
         initialUSDTBalance,
         'AFTER RESISTANCE LEVEL STOP LOSS',
       );
+      botState.emaStartPoint = indicatorsData.slow1mEMA;
+      indicatorsData.emaSignal = 'sell';
       return;
     }
 
