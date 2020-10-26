@@ -27,9 +27,8 @@ import { getRSISignal } from './components/rsi-signals';
   // const symbol = process.argv[2];
 
   const botState = {
+    buyReason: null,
     enabledLimits: false,
-    boughtByTotalResistanceLevel: false,
-    boughtBeforeResistanceLevel: null,
     sellError: false,
     emaStartPoint: null,
     strategy: 'MIXED STRATEGY',
@@ -186,20 +185,36 @@ import { getRSISignal } from './components/rsi-signals';
           indicatorsData.emaSignal === 'buy' &&
           indicatorsData.rsi1m.rsiValue <= 50 &&
           indicatorsData.rsi1m.rsiValue !== null,
+
+        downTrendCorrection:
+          botState.status === 'buy' &&
+          indicatorsData.fast5mEMA < indicatorsData.middle5mEMA &&
+          indicatorsData.middle5mEMA < indicatorsData.slow5mEMA &&
+          indicatorsData.fast1mEMA < indicatorsData.middle1mEMA &&
+          indicatorsData.middle1mEMA < indicatorsData.slow1mEMA &&
+          indicatorsData.rsi1m.rsiValue >= 41 &&
+          indicatorsData.rsi5m.rsiValue >= 41,
       },
 
       sell: {
         resistanceLevel:
           botState.status === 'sell' &&
-          botState.boughtByTotalResistanceLevel &&
+          botState.buyReason === 'boughtByTotalResistanceLevel' &&
           Number(
             (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 - 100,
           ) >= 0.05,
 
+        downTrendCorrectionStopLoss:
+          botState.status === 'sell' &&
+          botState.buyReason === 'boughtByDownTrendCorrection' &&
+          indicatorsData.rsi1m.rsiValue !== null &&
+          indicatorsData.rsi1m.rsiValue < 39 &&
+          indicatorsData.rsi5m.rsiValue !== null &&
+          indicatorsData.rsi5m.rsiValue < 39,
+
         flatAfterResistanceLevelStopLoss:
           botState.status === 'sell' &&
-          !botState.boughtByTotalResistanceLevel &&
-          botState.boughtBeforeResistanceLevel === false &&
+          botState.buyReason === 'boughtBeforeResistanceLevel' &&
           (Number(
             (indicatorsData.slow1mEMA / indicatorsData.middle1mEMA) * 100 - 100,
           ) >= 0.05 ||
@@ -210,14 +225,14 @@ import { getRSISignal } from './components/rsi-signals';
 
         flatBeforeResistanceLevelStopLoss:
           botState.status === 'sell' &&
-          !botState.boughtByTotalResistanceLevel &&
-          botState.boughtBeforeResistanceLevel === true &&
+          botState.buyReason === 'boughtBeforeResistanceLevel' &&
           (indicatorsData.emaSignal === 'sell' ||
             expectedProfitPercent <= -0.5),
 
         flatTakeProfit:
           botState.status === 'sell' &&
-          !botState.boughtByTotalResistanceLevel &&
+          (botState.buyReason === 'boughtBeforeResistanceLevel' ||
+            botState.buyReason === 'boughtAfterResistanceLevel') &&
           indicatorsData.rsi1m.rsiValue >= 69 &&
           expectedProfitPercent > 0,
         // Number(
@@ -227,6 +242,12 @@ import { getRSISignal } from './components/rsi-signals';
         // Number(
         //   (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
         // ) < 0.1,
+
+        downTrendCorrectionTakeProfit:
+          botState.status === 'sell' &&
+          botState.buyReason === 'boughtByDownTrendCorrection' &&
+          indicatorsData.rsi1m.rsiValue >= 59 &&
+          expectedProfitPercent > 0,
       },
     };
 
@@ -244,7 +265,7 @@ import { getRSISignal } from './components/rsi-signals';
         workingDeposit,
         'RESISTANCE LEVEL',
       );
-      botState.boughtByTotalResistanceLevel = true;
+      botState.buyReason = 'boughtByTotalResistanceLevel';
       return;
     }
 
@@ -277,8 +298,23 @@ import { getRSISignal } from './components/rsi-signals';
         workingDeposit,
         'AFTER RESISTANCE LEVEL',
       );
-      botState.boughtBeforeResistanceLevel = false;
-      botState.boughtByTotalResistanceLevel = false;
+      botState.buyReason = 'boughtAfterResistanceLevel';
+      return;
+    }
+
+    if (conditions.buy.downTrendCorrection) {
+      await marketBuyAction(
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        pricesStream,
+        stepSize,
+        'WAVES CATCHER',
+        workingDeposit,
+        'AFTER RESISTANCE LEVEL',
+      );
+      botState.buyReason = 'boughtByDownTrendCorrection';
       return;
     }
 
@@ -309,8 +345,7 @@ import { getRSISignal } from './components/rsi-signals';
           (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
         ) >= 0.1
       ) {
-        botState.boughtBeforeResistanceLevel = false;
-        botState.boughtByTotalResistanceLevel = true;
+        botState.buyReason = 'boughtByTotalResistanceLevel';
         await sendToRecipients(` INFO
                      Bot was switched to the TRENDS CATCHER strategy!
         `);
@@ -365,6 +400,38 @@ import { getRSISignal } from './components/rsi-signals';
       );
       botState.emaStartPoint = indicatorsData.slow1mEMA;
       indicatorsData.emaSignal = 'sell';
+      return;
+    }
+
+    if (conditions.sell.downTrendCorrectionStopLoss) {
+      await marketSellAction(
+        'WAVES CATCHER',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'DOWNTREND CORRECTION STOP LOSS',
+      );
+      return;
+    }
+
+    if (conditions.sell.downTrendCorrectionTakeProfit) {
+      await marketSellAction(
+        'WAVES CATCHER',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'DOWNTREND CORRECTION TAKE PROFIT',
+      );
       return;
     }
 
