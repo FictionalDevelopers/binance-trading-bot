@@ -193,6 +193,8 @@ import { getRSISignal } from './components/rsi-signals';
           indicatorsData.fast1mEMA < indicatorsData.middle1mEMA &&
           indicatorsData.middle1mEMA < indicatorsData.slow1mEMA &&
           indicatorsData.rsi1m.rsiValue >= 41 &&
+          indicatorsData.rsi1m.rsiValue !== null &&
+          indicatorsData.rsi1m.rsiValue < 45 &&
           indicatorsData.rsi5m.rsiValue >= 41,
       },
 
