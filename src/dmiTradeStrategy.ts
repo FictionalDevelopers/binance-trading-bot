@@ -135,6 +135,23 @@ import { getRSISignal } from './components/rsi-signals';
     middle15mEMA: 0,
     fast15mEMA: 0,
     summaryEMABuySignal: false,
+    rsiRebuy: {
+      rebuyChecker: function() {
+        if (
+          indicatorsData.rsi1m.rsiValue !== null &&
+          indicatorsData.rsi1m.rsiValue < 39 &&
+          indicatorsData.rsi5m.rsiValue !== null &&
+          indicatorsData.rsi5m.rsiValue < 39
+        )
+          return true;
+        if (
+          indicatorsData.rsi1m.rsiValue >= 41 &&
+          indicatorsData.rsi5m.rsiValue >= 41
+        )
+          return false;
+      },
+      value: null,
+    },
   };
 
   // runEMAInterval(indicatorsData, botState);
@@ -183,11 +200,8 @@ import { getRSISignal } from './components/rsi-signals';
       downTrend: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.fast5mEMA < indicatorsData.middle5mEMA &&
-          indicatorsData.middle5mEMA < indicatorsData.slow5mEMA &&
+          indicatorsData.rsiRebuy.value &&
           indicatorsData.rsi1m.rsiValue >= 41 &&
-          indicatorsData.rsi1m.rsiValue !== null &&
-          indicatorsData.rsi1m.rsiValue < 45 &&
           indicatorsData.rsi5m.rsiValue >= 41,
         sell: {
           takeProfit:
@@ -202,6 +216,22 @@ import { getRSISignal } from './components/rsi-signals';
             indicatorsData.rsi1m.rsiValue < 39 &&
             indicatorsData.rsi5m.rsiValue !== null &&
             indicatorsData.rsi5m.rsiValue < 39,
+        },
+        rebuy: () => {
+          if (
+            indicatorsData.rsi1m.rsiValue >= 41 &&
+            indicatorsData.rsi5m.rsiValue >= 41
+          ) {
+            return false;
+          }
+          if (
+            indicatorsData.rsi1m.rsiValue !== null &&
+            indicatorsData.rsi1m.rsiValue < 39 &&
+            indicatorsData.rsi5m.rsiValue !== null &&
+            indicatorsData.rsi5m.rsiValue < 39
+          ) {
+            return true;
+          }
         },
       },
       upFlat: {
@@ -276,21 +306,22 @@ import { getRSISignal } from './components/rsi-signals';
 
     /** *********************DOWN TREND***********************/
 
-    // if (conditions.downTrend.buy) {
-    //   await marketBuyAction(
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     pricesStream,
-    //     stepSize,
-    //     'WAVES CATCHER',
-    //     workingDeposit,
-    //     'AFTER RESISTANCE LEVEL',
-    //   );
-    //   botState.buyReason = 'boughtByDownTrendCorrection';
-    //   return;
-    // }
+    if (conditions.downTrend.buy) {
+      await marketBuyAction(
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        pricesStream,
+        stepSize,
+        'WAVES CATCHER',
+        workingDeposit,
+        'AFTER RESISTANCE LEVEL',
+      );
+      botState.buyReason = 'boughtByDownTrendCorrection';
+      indicatorsData.rsiRebuy.value = false;
+      return;
+    }
 
     /** *********************UP FLAT***********************/
 
@@ -350,37 +381,39 @@ import { getRSISignal } from './components/rsi-signals';
 
     /** *********************DOWN TREND***********************/
 
-    // if (conditions.downTrend.sell.takeProfit) {
-    //   await marketSellAction(
-    //     'WAVES CATCHER',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'DOWNTREND CORRECTION TAKE PROFIT',
-    //   );
-    //   return;
-    // }
-    //
-    // if (conditions.downTrend.sell.stopLoss) {
-    //   await marketSellAction(
-    //     'WAVES CATCHER',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'DOWNTREND CORRECTION STOP LOSS',
-    //   );
-    //   return;
-    // }
+    if (conditions.downTrend.sell.takeProfit) {
+      await marketSellAction(
+        'WAVES CATCHER',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'DOWNTREND CORRECTION TAKE PROFIT',
+      );
+      indicatorsData.rsiRebuy.value = false;
+      return;
+    }
+
+    if (conditions.downTrend.sell.stopLoss) {
+      await marketSellAction(
+        'WAVES CATCHER',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'DOWNTREND CORRECTION STOP LOSS',
+      );
+      indicatorsData.rsiRebuy.value = true;
+      return;
+    }
 
     /** *********************UP FLAT***********************/
 
@@ -468,7 +501,7 @@ import { getRSISignal } from './components/rsi-signals';
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   getEMASignal(symbol, '5m', indicatorsData);
