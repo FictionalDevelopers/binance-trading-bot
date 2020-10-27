@@ -258,21 +258,21 @@ import { getRSISignal } from './components/rsi-signals';
     /** ******************************************BUY ACTIONS********************************************************/
 
     /** *********************UP TREND***********************/
-    if (conditions.upTrend.buy) {
-      await marketBuyAction(
-        false,
-        symbol,
-        botState,
-        cryptoCoin,
-        pricesStream,
-        stepSize,
-        'TRENDS CATCHER',
-        workingDeposit,
-        'RESISTANCE LEVEL',
-      );
-      botState.buyReason = 'boughtByTotalResistanceLevel';
-      return;
-    }
+    // if (conditions.upTrend.buy) {
+    //   await marketBuyAction(
+    //     false,
+    //     symbol,
+    //     botState,
+    //     cryptoCoin,
+    //     pricesStream,
+    //     stepSize,
+    //     'TRENDS CATCHER',
+    //     workingDeposit,
+    //     'RESISTANCE LEVEL',
+    //   );
+    //   botState.buyReason = 'boughtByTotalResistanceLevel';
+    //   return;
+    // }
 
     /** *********************DOWN TREND***********************/
 
@@ -312,21 +312,21 @@ import { getRSISignal } from './components/rsi-signals';
 
     /** *********************DOWN FLAT***********************/
 
-    if (conditions.downFlat.buy) {
-      await marketBuyAction(
-        false,
-        symbol,
-        botState,
-        cryptoCoin,
-        pricesStream,
-        stepSize,
-        'WAVES CATCHER',
-        workingDeposit,
-        'BEFORE RESISTANCE LEVEL',
-      );
-      botState.buyReason = 'boughtBeforeResistanceLevel';
-      return;
-    }
+    // if (conditions.downFlat.buy) {
+    //   await marketBuyAction(
+    //     false,
+    //     symbol,
+    //     botState,
+    //     cryptoCoin,
+    //     pricesStream,
+    //     stepSize,
+    //     'WAVES CATCHER',
+    //     workingDeposit,
+    //     'BEFORE RESISTANCE LEVEL',
+    //   );
+    //   botState.buyReason = 'boughtBeforeResistanceLevel';
+    //   return;
+    // }
 
     /** *****************************************SELL ACTIONS********************************************************/
 
