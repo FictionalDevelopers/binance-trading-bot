@@ -352,6 +352,7 @@ import { getRSISignal } from './components/rsi-signals';
         initialUSDTBalance,
         'STOP LOSS OR TAKE PROFIT',
       );
+      indicatorsData.rsiRebuy.value = true;
       return;
     }
 
@@ -406,6 +407,7 @@ import { getRSISignal } from './components/rsi-signals';
         await sendToRecipients(` INFO
                      Bot was switched to the TRENDS CATCHER strategy!
         `);
+        indicatorsData.rsiRebuy.value = true;
         return;
       } else {
         await marketSellAction(
@@ -420,6 +422,7 @@ import { getRSISignal } from './components/rsi-signals';
           initialUSDTBalance,
           'UP FLAT TAKE PROFIT',
         );
+        indicatorsData.rsiRebuy.value = true;
         return;
       }
     }
@@ -437,6 +440,7 @@ import { getRSISignal } from './components/rsi-signals';
         initialUSDTBalance,
         'UP FLAT STOP LOSS',
       );
+      indicatorsData.rsiRebuy.value = true;
       return;
     }
 
@@ -455,6 +459,7 @@ import { getRSISignal } from './components/rsi-signals';
         initialUSDTBalance,
         'DOWN FLAT TAKE PROFIT',
       );
+      indicatorsData.rsiRebuy.value = true;
       return;
     }
 
@@ -471,6 +476,7 @@ import { getRSISignal } from './components/rsi-signals';
         initialUSDTBalance,
         'DOWN FLAT LEVEL STOP LOSS',
       );
+      indicatorsData.rsiRebuy.value = true;
       return;
     }
 
