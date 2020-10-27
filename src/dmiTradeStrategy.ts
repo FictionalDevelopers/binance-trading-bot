@@ -136,21 +136,7 @@ import { getRSISignal } from './components/rsi-signals';
     fast15mEMA: 0,
     summaryEMABuySignal: false,
     rsiRebuy: {
-      rebuyChecker: function() {
-        if (
-          indicatorsData.rsi1m.rsiValue !== null &&
-          indicatorsData.rsi1m.rsiValue < 39 &&
-          indicatorsData.rsi5m.rsiValue !== null &&
-          indicatorsData.rsi5m.rsiValue < 39
-        )
-          return true;
-        if (
-          indicatorsData.rsi1m.rsiValue >= 41 &&
-          indicatorsData.rsi5m.rsiValue >= 41
-        )
-          return false;
-      },
-      value: null,
+      value: true,
     },
   };
 

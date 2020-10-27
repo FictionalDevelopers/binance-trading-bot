@@ -21,18 +21,18 @@ export const getRSISignal = (symbol, timeFrame, indicatorsData) => {
       indicatorsData.buyNow = true;
     }
 
-    if (
-      indicatorsData.rsi1m.rsiValue !== null &&
-      indicatorsData.rsi1m.rsiValue < 39 &&
-      indicatorsData.rsi5m.rsiValue !== null &&
-      indicatorsData.rsi5m.rsiValue < 39
-    )
-      indicatorsData.rsiRebuy.value = true;
-    if (
-      indicatorsData.rsi1m.rsiValue >= 41 &&
-      indicatorsData.rsi5m.rsiValue >= 41
-    )
-      indicatorsData.rsiRebuy.value = false;
+    // if (
+    //   indicatorsData.rsi1m.rsiValue !== null &&
+    //   indicatorsData.rsi1m.rsiValue < 39 &&
+    //   indicatorsData.rsi5m.rsiValue !== null &&
+    //   indicatorsData.rsi5m.rsiValue < 39
+    // )
+    //   indicatorsData.rsiRebuy.value = true;
+    // if (
+    //   indicatorsData.rsi1m.rsiValue >= 41 &&
+    //   indicatorsData.rsi5m.rsiValue >= 41
+    // )
+    //   indicatorsData.rsiRebuy.value = false;
 
     // console.log(`RSI:${rsi} ${indicatorsData.sellNow}`);
     indicatorsData.prevRsi = rsi;
