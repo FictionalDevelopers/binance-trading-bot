@@ -193,8 +193,12 @@ import { getRSISignal } from './components/rsi-signals';
           takeProfit:
             botState.status === 'sell' &&
             botState.buyReason === 'boughtByDownTrendCorrection' &&
-            indicatorsData.rsi1m.rsiValue >= 59 &&
-            expectedProfitPercent > 0,
+            // indicatorsData.rsi1m.rsiValue >= 59 &&
+            Number(
+              (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
+                100,
+            ) >= 0.1 &&
+            expectedProfitPercent > 0.5,
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'boughtByDownTrendCorrection' &&
