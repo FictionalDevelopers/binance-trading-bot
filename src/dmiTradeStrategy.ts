@@ -215,6 +215,7 @@ import { getRSISignal } from './components/rsi-signals';
           Number(
             (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
           ) >= 0.1 &&
+          indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
           // indicatorsData.emaSignal === 'buy' &&
           indicatorsData.rsi1m.rsiValue < 55 &&
           indicatorsData.rsi1m.rsiValue !== null,
@@ -228,9 +229,9 @@ import { getRSISignal } from './components/rsi-signals';
             botState.status === 'sell' &&
             botState.buyReason === 'upFlat' &&
             (Number(
-              (indicatorsData.slow1mEMA / indicatorsData.middle1mEMA) * 100 -
+              (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
                 100,
-            ) >= 0.05 ||
+            ) >= 0.1 ||
               Number(
                 (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                   100,
