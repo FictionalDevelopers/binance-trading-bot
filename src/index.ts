@@ -80,6 +80,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   };
 
   const indicatorsData = {
+    stochRsiSignal: null,
     emaSignal: null,
     dmi5m: {
       prevDmi: null,
@@ -517,7 +518,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   };
 
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  getStochRSISignal(symbol, '5m', {});
+  getStochRSISignal(symbol, '5m', indicatorsData);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   getEMASignal(symbol, '5m', indicatorsData);
