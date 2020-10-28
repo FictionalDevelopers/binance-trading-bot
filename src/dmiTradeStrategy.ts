@@ -200,33 +200,44 @@ import { getRSISignal } from './components/rsi-signals';
       downTrend: {
         buy:
           botState.status === 'buy' &&
-          // indicatorsData.rsiRebuy.value &&
-          indicatorsData.middle1mEMA < indicatorsData.slow1mEMA &&
-          indicatorsData.rsi1m.rsiValue !== null &&
-          // indicatorsData.rsi1m.rsiValue >= 41 &&
-          indicatorsData.rsi1m.rsiValue <= 40 &&
-          indicatorsData.rsi5m.rsiValue !== null &&
-          indicatorsData.rsi5m.rsiValue >= 41 &&
-          indicatorsData.rsi5m.rsiValue <= 45,
+          indicatorsData.rsi1m.rsiValue >= 62 &&
+          Number(
+            (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 - 100,
+          ) >= 0.1,
+
+        // indicatorsData.rsiRebuy.value &&
+        // indicatorsData.middle1mEMA < indicatorsData.slow1mEMA &&
+        // indicatorsData.rsi1m.rsiValue !== null &&
+        // indicatorsData.rsi1m.rsiValue >= 41 &&
+        // indicatorsData.rsi1m.rsiValue <= 40 &&
+        // indicatorsData.rsi5m.rsiValue !== null &&
+        // indicatorsData.rsi5m.rsiValue >= 41 &&
+        // indicatorsData.rsi5m.rsiValue <= 45,
 
         sell: {
           takeProfit:
             botState.status === 'sell' &&
             botState.buyReason === 'downTrend' &&
-            // indicatorsData.rsi1m.rsiValue >= 59 &&
-            ((Number(
-              (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
-                100,
-            ) >= 0.1 &&
-              expectedProfitPercent > 0.5) ||
-              expectedProfitPercent >= 0.7),
+            expectedProfitPercent >= 0.7,
+
+          // // indicatorsData.rsi1m.rsiValue >= 59 &&
+          // ((Number(
+          //   (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
+          //     100,
+          // ) >= 0.1 &&
+          //   expectedProfitPercent > 0.5) ||
+          //   expectedProfitPercent >= 0.7),
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'downTrend' &&
-            indicatorsData.rsi1m.rsiValue !== null &&
-            indicatorsData.rsi1m.rsiValue < 39 &&
-            indicatorsData.rsi5m.rsiValue !== null &&
-            indicatorsData.rsi5m.rsiValue < 39,
+            Number(
+              (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
+                100,
+            ) >= 0.1,
+          // indicatorsData.rsi1m.rsiValue !== null &&
+          // indicatorsData.rsi1m.rsiValue < 39 &&
+          // indicatorsData.rsi5m.rsiValue !== null &&
+          // indicatorsData.rsi5m.rsiValue < 39,
         },
       },
       upFlat: {
@@ -321,21 +332,21 @@ import { getRSISignal } from './components/rsi-signals';
 
     /** *********************UP FLAT***********************/
 
-    if (conditions.upFlat.buy) {
-      await marketBuyAction(
-        false,
-        symbol,
-        botState,
-        cryptoCoin,
-        pricesStream,
-        stepSize,
-        'WAVES CATCHER',
-        workingDeposit,
-        'UP FLAT ',
-      );
-      botState.buyReason = 'upFlat';
-      return;
-    }
+    // if (conditions.upFlat.buy) {
+    //   await marketBuyAction(
+    //     false,
+    //     symbol,
+    //     botState,
+    //     cryptoCoin,
+    //     pricesStream,
+    //     stepSize,
+    //     'WAVES CATCHER',
+    //     workingDeposit,
+    //     'UP FLAT ',
+    //   );
+    //   botState.buyReason = 'upFlat';
+    //   return;
+    // }
 
     /** *********************DOWN FLAT***********************/
 
