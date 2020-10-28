@@ -23,7 +23,7 @@ import { getRSISignal } from './components/rsi-signals';
   // const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
   const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1] || null;
-  const workingDeposit = 500;
+  const workingDeposit = 470;
   // const symbol = process.argv[2];
 
   const botState = {
@@ -32,7 +32,7 @@ import { getRSISignal } from './components/rsi-signals';
     sellError: false,
     emaStartPoint: null,
     strategy: 'MIXED STRATEGY',
-    testMode: true,
+    testMode: false,
     useProfitLevels: false,
     useEMAStopLoss: false,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
@@ -176,16 +176,17 @@ import { getRSISignal } from './components/rsi-signals';
           Number(
             (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
           ) >= 0.1 &&
-          Number(
-            (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 -
-              100,
-          ) >= 0.1 &&
+          // Number(
+          //   (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 -
+          //     100,
+          // ) >= 0.1 &&
           indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
           indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
           indicatorsData.rsi5m.rsiValue !== null &&
           indicatorsData.rsi5m.rsiValue <= 68 &&
+          indicatorsData.rsi5m.rsiValue >= 61 &&
           indicatorsData.rsi1m.rsiValue !== null &&
-          indicatorsData.rsi1m.rsiValue < 69,
+          indicatorsData.rsi1m.rsiValue < 68,
         sell: {
           takeProfit:
             botState.status === 'sell' &&
@@ -295,25 +296,7 @@ import { getRSISignal } from './components/rsi-signals';
     /** ******************************************BUY ACTIONS********************************************************/
 
     /** *********************UP TREND***********************/
-    // if (conditions.upTrend.buy) {
-    //   await marketBuyAction(
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     pricesStream,
-    //     stepSize,
-    //     'TRENDS CATCHER',
-    //     workingDeposit,
-    //     'RESISTANCE LEVEL',
-    //   );
-    //   botState.buyReason = 'upTrend';
-    //   return;
-    // }
-
-    /** *********************DOWN TREND***********************/
-
-    if (conditions.downTrend.buy) {
+    if (conditions.upTrend.buy) {
       await marketBuyAction(
         false,
         symbol,
@@ -321,14 +304,32 @@ import { getRSISignal } from './components/rsi-signals';
         cryptoCoin,
         pricesStream,
         stepSize,
-        'WAVES CATCHER',
+        'TRENDS CATCHER',
         workingDeposit,
-        'DOWN TREND CORRECTION LEVEL',
+        'RESISTANCE LEVEL',
       );
-      botState.buyReason = 'downTrend';
-      indicatorsData.rsiRebuy.value = false;
+      botState.buyReason = 'upTrend';
       return;
     }
+
+    /** *********************DOWN TREND***********************/
+
+    // if (conditions.downTrend.buy) {
+    //   await marketBuyAction(
+    //     false,
+    //     symbol,
+    //     botState,
+    //     cryptoCoin,
+    //     pricesStream,
+    //     stepSize,
+    //     'WAVES CATCHER',
+    //     workingDeposit,
+    //     'DOWN TREND CORRECTION LEVEL',
+    //   );
+    //   botState.buyReason = 'downTrend';
+    //   indicatorsData.rsiRebuy.value = false;
+    //   return;
+    // }
 
     /** *********************UP FLAT***********************/
 
