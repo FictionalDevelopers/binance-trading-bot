@@ -204,7 +204,7 @@ import { getRSISignal } from './components/rsi-signals';
           indicatorsData.middle1mEMA < indicatorsData.slow1mEMA &&
           indicatorsData.rsi1m.rsiValue !== null &&
           indicatorsData.rsi1m.rsiValue >= 41 &&
-          indicatorsData.rsi1m.rsiValue <= 45 &&
+          indicatorsData.rsi1m.rsiValue < 50 &&
           indicatorsData.rsi5m.rsiValue !== null &&
           indicatorsData.rsi5m.rsiValue >= 41 &&
           indicatorsData.rsi5m.rsiValue <= 45,
