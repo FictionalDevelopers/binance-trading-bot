@@ -142,6 +142,20 @@ import { getRSISignal } from './components/rsi-signals';
 
   // runEMAInterval(indicatorsData, botState);
 
+  const rsiRebuyChecker = setInterval(() => {
+    if (
+      indicatorsData.rsi1m.rsiValue !== null &&
+      indicatorsData.rsi5m.rsiValue !== null &&
+      indicatorsData.rsi5m.rsiValue <= 33
+    )
+      indicatorsData.rsiRebuy.value = true;
+    if (
+      indicatorsData.rsi1m.rsiValue >= 41 &&
+      indicatorsData.rsi5m.rsiValue >= 41
+    )
+      if (botState.status) indicatorsData.rsiRebuy.value = false;
+  }, 1000);
+
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
     if (botState.status === 'isPending') return;
@@ -186,20 +200,26 @@ import { getRSISignal } from './components/rsi-signals';
       downTrend: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.rsiRebuy.value &&
+          // indicatorsData.rsiRebuy.value &&
           indicatorsData.middle1mEMA < indicatorsData.slow1mEMA &&
+          indicatorsData.rsi1m.rsiValue !== null &&
           indicatorsData.rsi1m.rsiValue >= 41 &&
-          indicatorsData.rsi5m.rsiValue >= 41,
+          indicatorsData.rsi1m.rsiValue <= 45 &&
+          indicatorsData.rsi5m.rsiValue !== null &&
+          indicatorsData.rsi5m.rsiValue >= 41 &&
+          indicatorsData.rsi5m.rsiValue <= 45,
+
         sell: {
           takeProfit:
             botState.status === 'sell' &&
             botState.buyReason === 'downTrend' &&
             // indicatorsData.rsi1m.rsiValue >= 59 &&
-            Number(
+            ((Number(
               (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
                 100,
             ) >= 0.1 &&
-            expectedProfitPercent > 0.5,
+              expectedProfitPercent > 0.5) ||
+              expectedProfitPercent >= 0.7),
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'downTrend' &&
