@@ -1,15 +1,15 @@
 import * as service from './service';
-import { getStochRsiStream } from '../../indicators/stochRSI';
+import { getStochStream } from '../../indicators/stoch';
 
-export const getStochRSISignal = (symbol, timeFrame, indicatorsData) => {
-  getStochRsiStream({
+export const getStochSignal = (symbol, timeFrame, indicatorsData) => {
+  getStochStream({
     symbol: symbol,
     interval: timeFrame,
   }).subscribe(stochRsi => {
-    if (Number(stochRsi.k) - Number(stochRsi.d) >= 2)
+    if (Number((Number(stochRsi.k) / Number(stochRsi.d)) * 100 - 100) >= 5)
       indicatorsData.stochRsiSignal = 'buy';
 
-    if (Number(stochRsi.d) - Number(stochRsi.k) >= 2)
+    if (Number((Number(stochRsi.d) / Number(stochRsi.k)) * 100 - 100) >= 5)
       indicatorsData.stochRsiSignal = 'sell';
     console.log(`StochRSI:${JSON.stringify(stochRsi)}`);
     console.log(`Signal: ${indicatorsData.stochRsiSignal} \n`);
