@@ -116,6 +116,7 @@ export const marketSellAction = async (
   stepSize,
   initialUSDTBalance,
   sellReason,
+  stopLoss = false,
 ) => {
   if (botState.testMode) {
     try {
@@ -144,7 +145,8 @@ export const marketSellAction = async (
                             total profit: ${botState.totalProfit}%
               `);
       botState.dealsCount++;
-      botState.updateState('status', 'buy');
+      if (!stopLoss) botState.updateState('status', 'buy');
+      else botState.strategies.stochRsi.stopLoss = true;
     } catch (e) {
       await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
@@ -219,7 +221,8 @@ export const marketSellAction = async (
                  )}
              `);
       botState.dealsCount++;
-      botState.updateState('status', 'buy');
+      if (!stopLoss) botState.updateState('status', 'buy');
+      else botState.strategies.stochRsi.stopLoss = true;
     } catch (e) {
       await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
