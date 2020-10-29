@@ -11,8 +11,9 @@ export const getStochRSISignal = (symbol, timeFrame, indicatorsData) => {
 
     if (Number(stochRsi.d) - Number(stochRsi.k) >= 2)
       indicatorsData.stochRsiSignal = 'sell';
-    console.log(`StochRSI:${JSON.stringify(stochRsi)}`);
-    console.log(`Signal: ${indicatorsData.stochRsiSignal} \n`);
+    // console.log(`StochRSI:${JSON.stringify(stochRsi)}`);
+    // console.log(`Signal: ${indicatorsData.stochRsiSignal}`);
+    // console.log(`Diff: ${Number(stochRsi.k) - Number(stochRsi.d)} \n`);
   });
 };
 
