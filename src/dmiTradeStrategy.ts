@@ -28,6 +28,16 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // const symbol = process.argv[2];
 
   const botState = {
+    strategies: {
+      upTrend: {},
+      downTrend: {},
+      upFlat: {},
+      downFlat: {},
+      stochRsi: {
+        enabled: true,
+        stopLoss: false,
+      },
+    },
     buyReason: null,
     enabledLimits: false,
     sellError: false,
@@ -80,7 +90,10 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   };
 
   const indicatorsData = {
-    stochRsiSignal: null,
+    stochRsiSignal: {
+      stoch1m: null,
+      stoch5m: null,
+    },
     emaSignal: null,
     dmi5m: {
       prevDmi: null,
@@ -296,15 +309,19 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
+          !botState.strategies.stochRsi.stopLoss &&
           indicatorsData.rsi5m.rsiValue >= 41 &&
-          indicatorsData.stochRsiSignal === 'buy',
+          indicatorsData.stochRsiSignal.stoch5m === 'buy',
         sell: {
           takeProfit:
             botState.status === 'sell' &&
-            (indicatorsData.stochRsiSignal === 'sell' ||
+            indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
+            expectedProfitPercent >= 0.6,
+          stopLoss:
+            botState.status === 'sell' &&
+            (indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
               (indicatorsData.rsi5m.rsiValue !== null &&
                 indicatorsData.rsi5m.rsiValue < 39)),
-          stopLoss: null,
         },
       },
     };
@@ -557,8 +574,28 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         pricesStream,
         stepSize,
         initialUSDTBalance,
-        'STOCH RSI SIGNAL',
+        'STOCH RSI TAKE PROFIT',
       );
+      botState.strategies.stochRsi.stopLoss = false;
+
+      // botState.buyReason = 'downFlat';
+      return;
+    }
+
+    if (conditions.stochRsiStrategy.sell.stopLoss) {
+      await marketSellAction(
+        'STOCH RSI',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'STOCH RSI STOP LOSS',
+      );
+      botState.strategies.stochRsi.stopLoss = true;
       // botState.buyReason = 'downFlat';
       return;
     }
@@ -568,6 +605,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
 
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   getStochRSISignal(symbol, '5m', indicatorsData);
+  getStochRSISignal(symbol, '1m', indicatorsData);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   getEMASignal(symbol, '5m', indicatorsData);
