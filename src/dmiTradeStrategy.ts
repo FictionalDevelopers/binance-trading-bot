@@ -31,15 +31,19 @@ import { getStochRSISignal } from './components/stochRSI-signals';
     strategies: {
       upTrend: {
         enabled: false,
+        stopLoss: false,
       },
       downTrend: {
         enabled: false,
+        stopLoss: false,
       },
       upFlat: {
         enabled: true,
+        stopLoss: false,
       },
       downFlat: {
         enabled: false,
+        stopLoss: false,
       },
       stochRsi: {
         enabled: false,
@@ -454,7 +458,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
 
     if (conditions.upTrend.sell.takeProfit) {
       await marketSellAction(
-        'TRENDS CATCHER',
+        'upTrend',
         true,
         symbol,
         botState,
@@ -473,7 +477,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
 
     if (conditions.downTrend.sell.takeProfit) {
       await marketSellAction(
-        'WAVES CATCHER',
+        'downTrend',
         false,
         symbol,
         botState,
@@ -490,7 +494,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
 
     if (conditions.downTrend.sell.stopLoss) {
       await marketSellAction(
-        'WAVES CATCHER',
+        'downTrend',
         false,
         symbol,
         botState,
@@ -524,7 +528,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         return;
       } else {
         await marketSellAction(
-          'WAVES CATCHER',
+          'upFlat',
           false,
           symbol,
           botState,
@@ -542,7 +546,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
     //
     if (conditions.upFlat.sell.stopLoss) {
       await marketSellAction(
-        'WAVES CATCHER',
+        'upFlat',
         false,
         symbol,
         botState,
@@ -561,7 +565,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
 
     if (conditions.downFlat.sell.takeProfit) {
       await marketSellAction(
-        'WAVES CATCHER',
+        'downFlat',
         false,
         symbol,
         botState,
@@ -578,7 +582,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
 
     if (conditions.downFlat.sell.stopLoss) {
       await marketSellAction(
-        'WAVES CATCHER',
+        'downFlat',
         false,
         symbol,
         botState,
@@ -598,7 +602,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       !botState.strategies.stochRsi.stopLoss
     ) {
       await marketSellAction(
-        'STOCH RSI',
+        'stochRsi',
         false,
         symbol,
         botState,
@@ -610,13 +614,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         'STOCH RSI TAKE PROFIT',
         true,
       );
-      // botState.buyReason = 'downFlat';
       return;
     }
 
     if (conditions.stochRsiStrategy.sell.stopLoss) {
       await marketSellAction(
-        'STOCH RSI',
+        'stochRsi',
         false,
         symbol,
         botState,
@@ -628,8 +631,6 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         'STOCH RSI STOP LOSS',
         false,
       );
-      botState.strategies.stochRsi.stopLoss = false;
-      // botState.buyReason = 'downFlat';
       return;
     }
 

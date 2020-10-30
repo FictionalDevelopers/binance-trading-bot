@@ -119,83 +119,99 @@ export const marketSellAction = async (
   stopLoss = false,
 ) => {
   if (botState.testMode) {
-    try {
+    if (!botState.strategies[`${strategy}`].stopLoss) {
+      try {
+        botState.updateState('status', 'isPending');
+        botState.updateState('buyPrice', null);
+        botState.updateState(
+          'totalProfit',
+          (botState.totalProfit += expectedProfitPercent - 0.15),
+        );
+        await sendToRecipients(`SELL 
+                                  Strategy: ${strategy}
+                                  Sell reason: ${sellReason}
+                                  symbol: ${symbol.toUpperCase()}
+                                  price: ${
+                                    pricesStream[pricesStream.length - 1]
+                                  }
+                                  date: ${format(new Date(), DATE_FORMAT)}
+                                  current profit: ${expectedProfitPercent -
+                                    0.15}%
+                                  total profit: ${botState.totalProfit}%
+                    `);
+        console.log(`SELL 
+                                  Strategy: ${strategy}
+                                  Sell reason: ${sellReason}
+                                  symbol: ${symbol.toUpperCase()}
+                                  price: ${
+                                    pricesStream[pricesStream.length - 1]
+                                  }
+                                  date: ${format(new Date(), DATE_FORMAT)}
+                                  current profit: ${expectedProfitPercent -
+                                    0.15}%
+                                  total profit: ${botState.totalProfit}%
+                    `);
+        botState.dealsCount++;
+        if (!stopLoss) botState.updateState('status', 'buy');
+        else botState.strategies[`${strategy}`].stopLoss = true;
+      } catch (e) {
+        await sendToRecipients(`SELL ERROR
+                  ${JSON.stringify(e)}
+            `);
+        botState.updateState('status', 'sell');
+      }
+    } else {
       botState.updateState('status', 'isPending');
-      botState.updateState('buyPrice', null);
-      botState.updateState(
-        'totalProfit',
-        (botState.totalProfit += expectedProfitPercent - 0.15),
-      );
-      await sendToRecipients(`SELL 
-                            Strategy: ${strategy}
-                            Sell reason: ${sellReason}
-                            symbol: ${symbol.toUpperCase()}
-                            price: ${pricesStream[pricesStream.length - 1]}
-                            date: ${format(new Date(), DATE_FORMAT)}
-                            current profit: ${expectedProfitPercent - 0.15}%
-                            total profit: ${botState.totalProfit}%
-              `);
-      console.log(`SELL 
-                            Strategy: ${strategy}
-                            Sell reason: ${sellReason}
-                            symbol: ${symbol.toUpperCase()}
-                            price: ${pricesStream[pricesStream.length - 1]}
-                            date: ${format(new Date(), DATE_FORMAT)}
-                            current profit: ${expectedProfitPercent - 0.15}%
-                            total profit: ${botState.totalProfit}%
-              `);
-      botState.dealsCount++;
-      if (!stopLoss) botState.updateState('status', 'buy');
-      else botState.strategies.stochRsi.stopLoss = true;
-    } catch (e) {
-      await sendToRecipients(`SELL ERROR
-            ${JSON.stringify(e)}
-      `);
-      botState.updateState('status', 'sell');
+      botState.strategies[`${strategy}`].stopLoss = false;
+      botState.updateState('status', 'buy');
     }
   } else {
-    try {
-      botState.updateState('status', 'isPending');
-      botState.updateState('buyPrice', null);
+    if (!botState.strategies[`${strategy}`].stopLoss) {
+      try {
+        botState.updateState('status', 'isPending');
+        botState.updateState('buyPrice', null);
 
-      if (profitLevels) {
-        const { available: beforeSellCryptoCoinBalance } = await getBalances(
+        if (profitLevels) {
+          const { available: beforeSellCryptoCoinBalance } = await getBalances(
+            cryptoCoin,
+          );
+          const amount = binance.roundStep(
+            Number(beforeSellCryptoCoinBalance),
+            stepSize,
+          );
+          const order = await marketSell(symbol.toUpperCase(), +amount);
+          botState.updateState('order', order);
+        } else {
+          const amount = binance.roundStep(
+            Number(botState.availableCryptoCoin),
+            stepSize,
+          );
+          const order = await marketSell(symbol.toUpperCase(), +amount);
+          botState.updateState('order', order);
+        }
+
+        const { available: refreshedUSDTBalance } = await getBalances('USDT');
+        const currentProfit =
+          Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
+        botState.updateState('currentProfit', currentProfit);
+        botState.updateState('availableUSDT', +refreshedUSDTBalance);
+        botState.updateState(
+          'totalProfit',
+          Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
+        );
+        botState.updateState(
+          'totalPercentProfit',
+          (botState.totalPercentProfit +=
+            (currentProfit / botState.cummulativeQuoteQty) * 100),
+        );
+        const { available: afterSellCryptoCoinBalance } = await getBalances(
           cryptoCoin,
         );
-        const amount = binance.roundStep(
-          Number(beforeSellCryptoCoinBalance),
-          stepSize,
+        botState.updateState(
+          'availableCryptoCoin',
+          +afterSellCryptoCoinBalance,
         );
-        const order = await marketSell(symbol.toUpperCase(), +amount);
-        botState.updateState('order', order);
-      } else {
-        const amount = binance.roundStep(
-          Number(botState.availableCryptoCoin),
-          stepSize,
-        );
-        const order = await marketSell(symbol.toUpperCase(), +amount);
-        botState.updateState('order', order);
-      }
-
-      const { available: refreshedUSDTBalance } = await getBalances('USDT');
-      const currentProfit =
-        Number(refreshedUSDTBalance) - Number(botState.availableUSDT);
-      botState.updateState('currentProfit', currentProfit);
-      botState.updateState('availableUSDT', +refreshedUSDTBalance);
-      botState.updateState(
-        'totalProfit',
-        Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
-      );
-      botState.updateState(
-        'totalPercentProfit',
-        (botState.totalPercentProfit +=
-          (currentProfit / botState.cummulativeQuoteQty) * 100),
-      );
-      const { available: afterSellCryptoCoinBalance } = await getBalances(
-        cryptoCoin,
-      );
-      botState.updateState('availableCryptoCoin', +afterSellCryptoCoinBalance);
-      await sendToRecipients(`SELL
+        await sendToRecipients(`SELL
                  Strategy: ${strategy}
                  Reason: ${sellReason}
                  Deal №: ${botState.dealsCount}
@@ -205,13 +221,13 @@ export const marketSellAction = async (
                  Current profit: ${
                    botState.currentProfit
                  } USDT (${(currentProfit / botState.cummulativeQuoteQt) *
-        100} %)
+          100} %)
                  Total profit: ${botState.totalProfit} USDT (${
-        botState.totalPercentProfit
-      } %)
+          botState.totalPercentProfit
+        } %)
                  Average deal profit: ${botState.totalProfit /
                    botState.dealsCount} USDT/deal (${botState.totalPercentProfit /
-        botState.dealsCount} %)
+          botState.dealsCount} %)
                  Stablecoin balance: ${botState.availableUSDT} USDT
                  Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}
@@ -220,18 +236,26 @@ export const marketSellAction = async (
                    DATE_FORMAT,
                  )}
              `);
-      botState.dealsCount++;
-      if (!stopLoss) botState.updateState('status', 'buy');
-      else botState.strategies.stochRsi.stopLoss = true;
-    } catch (e) {
-      await sendToRecipients(`SELL ERROR
+        botState.dealsCount++;
+        if (!stopLoss) botState.updateState('status', 'buy');
+        else botState.strategies[`${strategy}`].stopLoss = true;
+      } catch (e) {
+        await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
       `);
-      const { available: refreshedCryptoCoinBalance } = await getBalances(
-        cryptoCoin,
-      );
-      botState.updateState('availableCryptoCoin', +refreshedCryptoCoinBalance);
-      botState.updateState('status', 'sell');
+        const { available: refreshedCryptoCoinBalance } = await getBalances(
+          cryptoCoin,
+        );
+        botState.updateState(
+          'availableCryptoCoin',
+          +refreshedCryptoCoinBalance,
+        );
+        botState.updateState('status', 'sell');
+      }
+    } else {
+      botState.updateState('status', 'isPending');
+      botState.strategies[`${strategy}`].stopLoss = false;
+      botState.updateState('status', 'buy');
     }
   }
 };
