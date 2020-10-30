@@ -6,7 +6,7 @@ export const getStochRSISignal = (symbol, timeFrame, indicatorsData) => {
     symbol: symbol,
     interval: timeFrame,
   }).subscribe(stochRsi => {
-    if (Number(stochRsi.k) - Number(stochRsi.d) >= 1.5)
+    if (Number(stochRsi.k) - Number(stochRsi.d) >= 0.1)
       indicatorsData.stochRsiSignal[`stoch${timeFrame}`] = 'buy';
 
     if (Number(stochRsi.d) - Number(stochRsi.k) >= 1.5)
