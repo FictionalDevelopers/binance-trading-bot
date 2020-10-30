@@ -153,7 +153,10 @@ export const marketSellAction = async (
                     `);
         botState.dealsCount++;
         if (!stopLoss) botState.updateState('status', 'buy');
-        else botState.strategies[`${strategy}`].stopLoss = true;
+        else {
+          botState.strategies[`${strategy}`].stopLoss = true;
+          botState.updateState('status', 'sell');
+        }
       } catch (e) {
         await sendToRecipients(`SELL ERROR
                   ${JSON.stringify(e)}
@@ -164,6 +167,8 @@ export const marketSellAction = async (
       botState.updateState('status', 'isPending');
       botState.strategies[`${strategy}`].stopLoss = false;
       botState.updateState('status', 'buy');
+      console.log('status', botState.status);
+      console.log('stopLoss', botState.strategies[`${strategy}`].stopLoss);
     }
   } else {
     if (!botState.strategies[`${strategy}`].stopLoss) {
@@ -238,7 +243,10 @@ export const marketSellAction = async (
              `);
         botState.dealsCount++;
         if (!stopLoss) botState.updateState('status', 'buy');
-        else botState.strategies[`${strategy}`].stopLoss = true;
+        else {
+          botState.strategies[`${strategy}`].stopLoss = true;
+          botState.updateState('status', 'sell');
+        }
       } catch (e) {
         await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}

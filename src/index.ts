@@ -28,6 +28,28 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // const symbol = process.argv[2];
 
   const botState = {
+    strategies: {
+      upTrend: {
+        enabled: false,
+        stopLoss: false,
+      },
+      downTrend: {
+        enabled: false,
+        stopLoss: false,
+      },
+      upFlat: {
+        enabled: false,
+        stopLoss: false,
+      },
+      downFlat: {
+        enabled: false,
+        stopLoss: false,
+      },
+      stochRsi: {
+        enabled: true,
+        stopLoss: false,
+      },
+    },
     buyReason: null,
     enabledLimits: false,
     sellError: false,
@@ -80,7 +102,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   };
 
   const indicatorsData = {
-    stochRsiSignal: null,
+    stochRsiSignal: {
+      stoch1m: null,
+      stoch5m: null,
+      stoch15m: null,
+      stoch1h: null,
+    },
     emaSignal: null,
     dmi5m: {
       prevDmi: null,
@@ -119,6 +146,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       buyNow: false,
     },
     rsi5m: {
+      rsiValue: null,
+      prevRsi: null,
+      sellNow: false,
+      buyNow: false,
+    },
+    rsi15m: {
       rsiValue: null,
       prevRsi: null,
       sellNow: false,
@@ -192,7 +225,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         sell: {
           takeProfit:
             botState.status === 'sell' &&
-            // botState.buyReason === 'upTrend' &&
+            botState.buyReason === 'upTrend' &&
             Number(
               (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                 100,
@@ -249,7 +282,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           Number(
             (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
           ) >= 0.1 &&
-          indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
+          // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
           // indicatorsData.emaSignal === 'buy' &&
           indicatorsData.rsi1m.rsiValue < 55 &&
           indicatorsData.rsi1m.rsiValue !== null,
@@ -296,15 +329,23 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.rsi5m.rsiValue >= 41 &&
-          indicatorsData.stochRsiSignal === 'buy',
+          // indicatorsData.rsi5m.rsiValue >= 41 &&
+          // indicatorsData.rsi15m.rsiValue >= 41 &&
+          // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
+          indicatorsData.stochRsiSignal.stoch1m === 'buy',
         sell: {
           takeProfit:
             botState.status === 'sell' &&
-            (indicatorsData.stochRsiSignal === 'sell' ||
-              (indicatorsData.rsi5m.rsiValue !== null &&
-                indicatorsData.rsi5m.rsiValue < 39)),
-          stopLoss: null,
+            botState.buyReason === 'stochRsi' &&
+            // indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
+            expectedProfitPercent >= 0.2,
+          stopLoss:
+            botState.status === 'sell' &&
+            botState.buyReason === 'stochRsi' &&
+            indicatorsData.stochRsiSignal.stoch1m === 'sell',
+          // ||
+          // (indicatorsData.rsi5m.rsiValue !== null &&
+          //   indicatorsData.rsi5m.rsiValue < 39)),)
         },
       },
     };
@@ -312,243 +353,131 @@ import { getStochRSISignal } from './components/stochRSI-signals';
     /** ******************************************BUY ACTIONS********************************************************/
 
     /** *********************UP TREND***********************/
-    // if (conditions.upTrend.buy) {
-    //   await marketBuyAction(
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     pricesStream,
-    //     stepSize,
-    //     'TRENDS CATCHER',
-    //     workingDeposit,
-    //     'RESISTANCE LEVEL',
-    //   );
-    //   botState.buyReason = 'upTrend';
-    //   return;
-    // }
+    if (botState.strategies.upTrend.enabled) {
+      if (conditions.upTrend.buy) {
+        await marketBuyAction(
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          pricesStream,
+          stepSize,
+          'TRENDS CATCHER',
+          workingDeposit,
+          'RESISTANCE LEVEL',
+        );
+        botState.buyReason = 'upTrend';
+        return;
+      }
+    }
 
     /** *********************DOWN TREND***********************/
 
-    // if (conditions.downTrend.buy) {
-    //   await marketBuyAction(
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     pricesStream,
-    //     stepSize,
-    //     'WAVES CATCHER',
-    //     workingDeposit,
-    //     'DOWN TREND CORRECTION LEVEL',
-    //   );
-    //   botState.buyReason = 'downTrend';
-    //   indicatorsData.rsiRebuy.value = false;
-    //   return;
-    // }
+    if (botState.strategies.downTrend.enabled) {
+      if (conditions.downTrend.buy) {
+        await marketBuyAction(
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          pricesStream,
+          stepSize,
+          'WAVES CATCHER',
+          workingDeposit,
+          'DOWN TREND CORRECTION LEVEL',
+        );
+        botState.buyReason = 'downTrend';
+        indicatorsData.rsiRebuy.value = false;
+        return;
+      }
+    }
 
     /** *********************UP FLAT***********************/
 
-    // if (conditions.upFlat.buy) {
-    //   await marketBuyAction(
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     pricesStream,
-    //     stepSize,
-    //     'WAVES CATCHER',
-    //     workingDeposit,
-    //     'UP FLAT ',
-    //   );
-    //   botState.buyReason = 'upFlat';
-    //   return;
-    // }
+    if (botState.strategies.upFlat.enabled) {
+      if (conditions.upFlat.buy) {
+        await marketBuyAction(
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          pricesStream,
+          stepSize,
+          'WAVES CATCHER',
+          workingDeposit,
+          'UP FLAT ',
+        );
+        botState.buyReason = 'upFlat';
+        return;
+      }
+    }
 
     /** *********************DOWN FLAT***********************/
 
-    // if (conditions.downFlat.buy) {
-    //   await marketBuyAction(
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     pricesStream,
-    //     stepSize,
-    //     'WAVES CATCHER',
-    //     workingDeposit,
-    //     'DOWN FLAT',
-    //   );
-    //   botState.buyReason = 'downFlat';
-    //   return;
-    // }
+    if (botState.strategies.downFlat.enabled) {
+      if (conditions.downFlat.buy) {
+        await marketBuyAction(
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          pricesStream,
+          stepSize,
+          'WAVES CATCHER',
+          workingDeposit,
+          'DOWN FLAT',
+        );
+        botState.buyReason = 'downFlat';
+        return;
+      }
+    }
 
     /** *********************StochRSI Strategy***********************/
 
-    if (conditions.stochRsiStrategy.buy) {
-      await marketBuyAction(
-        false,
-        symbol,
-        botState,
-        cryptoCoin,
-        pricesStream,
-        stepSize,
-        'STOCH RSI',
-        workingDeposit,
-        'STOCH RSI SIGNAL',
-      );
-      // botState.buyReason = 'downFlat';
-      return;
+    if (botState.strategies.stochRsi.enabled) {
+      if (conditions.stochRsiStrategy.buy) {
+        await marketBuyAction(
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          pricesStream,
+          stepSize,
+          'STOCH RSI',
+          workingDeposit,
+          'STOCH RSI SIGNAL',
+        );
+        botState.buyReason = 'stochRsi';
+        return;
+      }
     }
 
     /** *****************************************SELL ACTIONS********************************************************/
 
     /** *********************UP TREND***********************/
 
-    // if (conditions.upTrend.sell.takeProfit) {
-    //   await marketSellAction(
-    //     'TRENDS CATCHER',
-    //     true,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'STOP LOSS OR TAKE PROFIT',
-    //   );
-    //   indicatorsData.rsiRebuy.value = true;
-    //   return;
-    // }
+    if (conditions.upTrend.sell.takeProfit) {
+      await marketSellAction(
+        'upTrend',
+        true,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'STOP LOSS OR TAKE PROFIT',
+      );
+      indicatorsData.rsiRebuy.value = true;
+      return;
+    }
 
     /** *********************DOWN TREND***********************/
 
-    // if (conditions.downTrend.sell.takeProfit) {
-    //   await marketSellAction(
-    //     'WAVES CATCHER',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'DOWNTREND CORRECTION TAKE PROFIT',
-    //   );
-    //   indicatorsData.rsiRebuy.value = false;
-    //   return;
-    // }
-
-    // if (conditions.downTrend.sell.stopLoss) {
-    //   await marketSellAction(
-    //     'WAVES CATCHER',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'DOWNTREND CORRECTION STOP LOSS',
-    //   );
-    //   indicatorsData.rsiRebuy.value = true;
-    //   return;
-    // }
-
-    /** *********************UP FLAT***********************/
-
-    // if (conditions.upFlat.sell.takeProfit) {
-    //   if (
-    //     Number(
-    //       (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-    //     ) >= 0.1 &&
-    //     Number(
-    //       (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
-    //     ) >= 0.1
-    //   ) {
-    //     botState.buyReason = 'upTrend';
-    //     await sendToRecipients(` INFO
-    //                  Bot was switched to the TRENDS CATCHER strategy!
-    //     `);
-    //     indicatorsData.rsiRebuy.value = true;
-    //     return;
-    //   } else {
-    //     await marketSellAction(
-    //       'WAVES CATCHER',
-    //       false,
-    //       symbol,
-    //       botState,
-    //       cryptoCoin,
-    //       expectedProfitPercent,
-    //       pricesStream,
-    //       stepSize,
-    //       initialUSDTBalance,
-    //       'UP FLAT TAKE PROFIT',
-    //     );
-    //     indicatorsData.rsiRebuy.value = true;
-    //     return;
-    //   }
-    // }
-
-    // if (conditions.upFlat.sell.stopLoss) {
-    //   await marketSellAction(
-    //     'WAVES CATCHER',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'UP FLAT STOP LOSS',
-    //   );
-    //   indicatorsData.rsiRebuy.value = true;
-    //   return;
-    // }
-
-    /** *********************DOWN FLAT***********************/
-
-    // if (conditions.downFlat.sell.takeProfit) {
-    //   await marketSellAction(
-    //     'WAVES CATCHER',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'DOWN FLAT TAKE PROFIT',
-    //   );
-    //   indicatorsData.rsiRebuy.value = true;
-    //   return;
-    // }
-
-    // if (conditions.downFlat.sell.stopLoss) {
-    //   await marketSellAction(
-    //     'WAVES CATCHER',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'DOWN FLAT LEVEL STOP LOSS',
-    //   );
-    //   indicatorsData.rsiRebuy.value = true;
-    //   return;
-    // }
-
-    if (conditions.stochRsiStrategy.sell.takeProfit) {
+    if (conditions.downTrend.sell.takeProfit) {
       await marketSellAction(
-        'STOCH RSI',
+        'downTrend',
         false,
         symbol,
         botState,
@@ -557,9 +486,151 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         pricesStream,
         stepSize,
         initialUSDTBalance,
-        'STOCH RSI SIGNAL',
+        'DOWNTREND CORRECTION TAKE PROFIT',
       );
-      // botState.buyReason = 'downFlat';
+      indicatorsData.rsiRebuy.value = false;
+      return;
+    }
+
+    if (conditions.downTrend.sell.stopLoss) {
+      await marketSellAction(
+        'downTrend',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'DOWNTREND CORRECTION STOP LOSS',
+      );
+      indicatorsData.rsiRebuy.value = true;
+      return;
+    }
+
+    /** *********************UP FLAT***********************/
+
+    if (conditions.upFlat.sell.takeProfit) {
+      if (
+        Number(
+          (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+        ) >= 0.1 &&
+        Number(
+          (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
+        ) >= 0.1
+      ) {
+        botState.buyReason = 'upTrend';
+        await sendToRecipients(` INFO
+                     Bot was switched to the TRENDS CATCHER strategy!
+        `);
+        indicatorsData.rsiRebuy.value = true;
+        return;
+      } else {
+        await marketSellAction(
+          'upFlat',
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          expectedProfitPercent,
+          pricesStream,
+          stepSize,
+          initialUSDTBalance,
+          'UP FLAT TAKE PROFIT',
+        );
+        indicatorsData.rsiRebuy.value = true;
+        return;
+      }
+    }
+    //
+    if (conditions.upFlat.sell.stopLoss) {
+      await marketSellAction(
+        'upFlat',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'UP FLAT STOP LOSS',
+      );
+      indicatorsData.rsiRebuy.value = true;
+      return;
+    }
+
+    /** *********************DOWN FLAT***********************/
+
+    if (conditions.downFlat.sell.takeProfit) {
+      await marketSellAction(
+        'downFlat',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'DOWN FLAT TAKE PROFIT',
+      );
+      indicatorsData.rsiRebuy.value = true;
+      return;
+    }
+
+    if (conditions.downFlat.sell.stopLoss) {
+      await marketSellAction(
+        'downFlat',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'DOWN FLAT LEVEL STOP LOSS',
+      );
+      indicatorsData.rsiRebuy.value = true;
+      return;
+    }
+
+    if (
+      conditions.stochRsiStrategy.sell.takeProfit &&
+      !botState.strategies.stochRsi.stopLoss
+    ) {
+      await marketSellAction(
+        'stochRsi',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'STOCH RSI TAKE PROFIT',
+        true,
+      );
+      return;
+    }
+
+    if (conditions.stochRsiStrategy.sell.stopLoss) {
+      await marketSellAction(
+        'stochRsi',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'STOCH RSI STOP LOSS',
+        false,
+      );
       return;
     }
 
@@ -567,13 +638,15 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   };
 
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  // getStochRSISignal(symbol, '5m', indicatorsData.stochRsiSignal);
-  getStochRSISignal(symbol, '5m', indicatorsData);
-  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  getEMASignal(symbol, '5m', indicatorsData);
-  getEMASignal(symbol, '15m', indicatorsData);
-  getEMASignal(symbol, '1m', indicatorsData);
+  getStochRSISignal(symbol, '1m', indicatorsData);
+  // getStochRSISignal(symbol, '5m', indicatorsData);
+  // getStochRSISignal(symbol, '15m', indicatorsData);
+  // getStochRSISignal(symbol, '1h', indicatorsData);
+  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
+  // getEMASignal(symbol, '5m', indicatorsData);
+  // getEMASignal(symbol, '15m', indicatorsData);
+  // getEMASignal(symbol, '1m', indicatorsData);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)
