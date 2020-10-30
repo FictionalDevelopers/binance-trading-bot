@@ -38,7 +38,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         stopLoss: false,
       },
       upFlat: {
-        enabled: true,
+        enabled: false,
         stopLoss: false,
       },
       downFlat: {
@@ -46,7 +46,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         stopLoss: false,
       },
       stochRsi: {
-        enabled: false,
+        enabled: true,
         stopLoss: false,
       },
     },
