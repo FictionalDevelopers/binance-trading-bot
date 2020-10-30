@@ -49,6 +49,10 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         enabled: true,
         stopLoss: false,
       },
+      trendsCatcher: {
+        enabled: false,
+        stopLoss: false,
+      },
     },
     buyReason: null,
     enabledLimits: false,
@@ -348,6 +352,25 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           //   indicatorsData.rsi5m.rsiValue < 39)),)
         },
       },
+      trendsCatcher: {
+        buy:
+          botState.status === 'buy' &&
+          indicatorsData.dmi1h.willPriceGrow &&
+          Number(
+            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+          ) >= 0.1,
+        sell: {
+          takeProfit: null,
+          stopLoss:
+            botState.status === 'sell' &&
+            botState.buyReason === 'trendsCatcher' &&
+            (Number(
+              (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
+                100,
+            ) >= 0.5 ||
+              !indicatorsData.dmi1h.willPriceGrow),
+        },
+      },
     };
 
     /** ******************************************BUY ACTIONS********************************************************/
@@ -448,6 +471,26 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           'STOCH RSI SIGNAL',
         );
         botState.buyReason = 'stochRsi';
+        return;
+      }
+    }
+
+    /** ******************** TRENDS CATHCER ***********************/
+
+    if (botState.strategies.trendsCatcher.enabled) {
+      if (conditions.trendsCatcher.buy) {
+        await marketBuyAction(
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          pricesStream,
+          stepSize,
+          'TRENDS CATCHER',
+          workingDeposit,
+          'ADX SIGNAL',
+        );
+        botState.buyReason = 'trendsCatcher';
         return;
       }
     }
@@ -597,6 +640,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       return;
     }
 
+    /** *********************STOCH RSI ***********************/
+
     if (
       conditions.stochRsiStrategy.sell.takeProfit &&
       !botState.strategies.stochRsi.stopLoss
@@ -630,6 +675,24 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         initialUSDTBalance,
         'STOCH RSI STOP LOSS',
         false,
+      );
+      return;
+    }
+
+    /** *********************TRENDS CATCHER***********************/
+
+    if (conditions.trendsCatcher.sell.stopLoss) {
+      await marketSellAction(
+        'trendsCatcher',
+        true,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'STOP LOSS',
       );
       return;
     }
