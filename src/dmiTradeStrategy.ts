@@ -617,6 +617,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   };
 
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  getStochRSISignal(symbol, '1m', indicatorsData);
   getStochRSISignal(symbol, '5m', indicatorsData);
   getStochRSISignal(symbol, '15m', indicatorsData);
   // getStochRSISignal(symbol, '1h', indicatorsData);
