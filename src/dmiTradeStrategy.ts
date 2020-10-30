@@ -331,7 +331,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           botState.status === 'buy' &&
           // indicatorsData.rsi5m.rsiValue >= 41 &&
           // indicatorsData.rsi15m.rsiValue >= 41 &&
-          // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
+          indicatorsData.stochRsiSignal.stoch15m === 'buy' &&
           indicatorsData.stochRsiSignal.stoch5m === 'buy',
         sell: {
           takeProfit:
@@ -640,7 +640,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   getStochRSISignal(symbol, '1m', indicatorsData);
   getStochRSISignal(symbol, '5m', indicatorsData);
-  // getStochRSISignal(symbol, '15m', indicatorsData);
+  getStochRSISignal(symbol, '15m', indicatorsData);
   // getStochRSISignal(symbol, '1h', indicatorsData);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   getRSISignal(symbol, '15m', indicatorsData.rsi15m);
