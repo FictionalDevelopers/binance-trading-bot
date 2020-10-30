@@ -597,25 +597,25 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       return;
     }
 
-    if (
-      conditions.stochRsiStrategy.sell.takeProfit &&
-      !botState.strategies.stochRsi.stopLoss
-    ) {
-      await marketSellAction(
-        'stochRsi',
-        false,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        stepSize,
-        initialUSDTBalance,
-        'STOCH RSI TAKE PROFIT',
-        true,
-      );
-      return;
-    }
+    // if (
+    //   conditions.stochRsiStrategy.sell.takeProfit &&
+    //   !botState.strategies.stochRsi.stopLoss
+    // ) {
+    //   await marketSellAction(
+    //     'stochRsi',
+    //     false,
+    //     symbol,
+    //     botState,
+    //     cryptoCoin,
+    //     expectedProfitPercent,
+    //     pricesStream,
+    //     stepSize,
+    //     initialUSDTBalance,
+    //     'STOCH RSI TAKE PROFIT',
+    //     true,
+    //   );
+    //   return;
+    // }
 
     if (conditions.stochRsiStrategy.sell.stopLoss) {
       await marketSellAction(
