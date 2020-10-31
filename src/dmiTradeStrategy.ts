@@ -12,6 +12,8 @@ import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 import { getStochRSISignal } from './components/stochRSI-signals';
+import { service as botStateService } from './components/botState';
+import { trackBotState } from './components/botState/service';
 
 (async function() {
   await connect();
@@ -26,79 +28,32 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   const lastOrder = ordersList[ordersList.length - 1] || null;
   const workingDeposit = 470;
   // const symbol = process.argv[2];
+  let botState;
 
-  const botState = {
-    strategies: {
-      upTrend: {
-        enabled: true,
-        stopLoss: false,
+  try {
+    await botStateService.getBotState();
+    process.exit(1);
+  } catch (e) {
+    process.exit(1);
+  }
+
+  try {
+    const initialState = await botStateService.getBotState();
+    botState = {
+      ...initialState,
+      availableUSDT: initialUSDTBalance,
+      availableCryptoCoin: initialCryptoCoinBalance,
+      updateState: function(fieldName, value) {
+        this[`${fieldName}`] = value;
       },
-      downTrend: {
-        enabled: false,
-        stopLoss: false,
-      },
-      upFlat: {
-        enabled: false,
-        stopLoss: false,
-      },
-      downFlat: {
-        enabled: false,
-        stopLoss: false,
-      },
-      stochRsi: {
-        enabled: false,
-        stopLoss: false,
-      },
-      trendsCatcher: {
-        enabled: false,
-        stopLoss: false,
-      },
-    },
-    buyReason: null,
-    enabledLimits: false,
-    sellError: false,
-    emaStartPoint: null,
-    strategy: 'ee057f3aa0e01866ba44fa9a24b9cc505e3f5945',
-    testMode: true,
-    status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
-    // status: 'buy',
-    profitLevels: {
-      '1': {
-        id: 1,
-        profitPercent: 1,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-      '2': {
-        id: 2,
-        profitPercent: 2,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-      '3': {
-        id: 3,
-        profitPercent: 4,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-    },
-    currentProfit: null,
-    totalProfit: null,
-    totalPercentProfit: null,
-    tradeAmountPercent: 0.95,
-    availableUSDT: initialUSDTBalance,
-    availableCryptoCoin: initialCryptoCoinBalance,
-    cummulativeQuoteQty: null,
-    buyPrice: null,
-    currentPrice: null,
-    order: null,
-    avrDealProfit: null,
-    dealsCount: 1,
-    prevPrice: null,
-    updateState: function(fieldName, value) {
-      this[`${fieldName}`] = value;
-    },
-  };
+    };
+  } catch (e) {
+    await sendToRecipients(`ERROR
+    ${JSON.stringify(e)};
+  `);
+
+    process.exit(1);
+  }
 
   const indicatorsData = {
     priceGrowArea: false,
