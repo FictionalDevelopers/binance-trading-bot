@@ -106,6 +106,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   };
 
   const indicatorsData = {
+    priceGrowArea: false,
     stochRsiSignal: {
       stoch1m: null,
       stoch5m: null,
@@ -333,9 +334,9 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          // indicatorsData.rsi5m.rsiValue >= 41 &&
+          indicatorsData.rsi5m.rsiValue >= 41 &&
           // indicatorsData.rsi15m.rsiValue >= 41 &&
-          indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
+          // indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
           indicatorsData.stochRsiSignal.stoch5m === 'buy',
         sell: {
           takeProfit: null,
@@ -347,8 +348,14 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            (indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
-              indicatorsData.stochRsiSignal.stoch1m === 'sell'),
+            ((indicatorsData.stochRsiSignal.stoch5m === 'sell' &&
+              !indicatorsData.priceGrowArea) ||
+              (indicatorsData.priceGrowArea &&
+                Number(
+                  (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
+                    100 -
+                    100,
+                ) >= 0.5)),
 
           // (indicatorsData.rsi5m.rsiValue !== null &&
           //   indicatorsData.rsi5m.rsiValue < 39)),)
@@ -678,6 +685,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         'STOCH RSI STOP LOSS',
         false,
       );
+      indicatorsData.priceGrowArea = false;
       return;
     }
 
@@ -707,7 +715,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '15m', indicatorsData);
   // getStochRSISignal(symbol, '1h', indicatorsData);
-  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   getEMASignal(symbol, '5m', indicatorsData);
   getEMASignal(symbol, '15m', indicatorsData);

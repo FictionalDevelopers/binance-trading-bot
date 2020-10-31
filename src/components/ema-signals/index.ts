@@ -44,6 +44,14 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     period: 7,
   }).subscribe(fastEMA => {
     indicatorsData[`fast${timeFrame}EMA`] = fastEMA;
+
+    if (
+      Number(
+        (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+      ) >= 0.1
+    ) {
+      if (!indicatorsData.priceGrowArea) indicatorsData.priceGrowArea = true;
+    }
   });
 
   getEmaStream({
