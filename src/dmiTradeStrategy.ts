@@ -216,9 +216,9 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           indicatorsData.priceGrowArea &&
           Number(
             (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-          ) >= 0.1,
-        // indicatorsData.rsi5m.rsiValue !== null &&
-        // indicatorsData.rsi5m.rsiValue <= 68 &&
+          ) >= 0.1 &&
+          indicatorsData.rsi5m.rsiValue !== null &&
+          indicatorsData.rsi5m.rsiValue <= 65,
         // indicatorsData.rsi5m.rsiValue >= 61 &&
         // indicatorsData.rsi1m.rsiValue !== null &&
         // indicatorsData.rsi1m.rsiValue < 68,
