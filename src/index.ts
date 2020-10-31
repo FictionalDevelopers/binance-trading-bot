@@ -14,6 +14,7 @@ import { getRSISignal } from './components/rsi-signals';
 import { getStochRSISignal } from './components/stochRSI-signals';
 import { service as botStateService } from './components/botState';
 import { trackBotState } from './components/botState/service';
+import _head from 'lodash/head';
 
 (async function() {
   await connect();
@@ -31,7 +32,9 @@ import { trackBotState } from './components/botState/service';
   let botState;
 
   try {
-    const initialState = await botStateService.getBotState();
+    const response = await botStateService.getBotState();
+    const initialState = JSON.parse(JSON.stringify(_head(response)));
+
     botState = {
       ...initialState,
       availableUSDT: initialUSDTBalance,
@@ -40,6 +43,7 @@ import { trackBotState } from './components/botState/service';
         this[`${fieldName}`] = value;
       },
     };
+    console.log(botState);
   } catch (e) {
     await sendToRecipients(`ERROR
     ${JSON.stringify(e)};

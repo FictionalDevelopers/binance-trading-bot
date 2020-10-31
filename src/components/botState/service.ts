@@ -27,6 +27,7 @@ export async function trackBotState(botState: {
     },
     botState,
     {
+      rawResult: false,
       new: true,
       upsert: true,
       setDefaultsOnInsert: true,
@@ -34,8 +35,8 @@ export async function trackBotState(botState: {
   );
 }
 
-export async function getBotState(): Promise<BotState> {
-  return BotStateModel.findById({
+export async function getBotState(): Promise<Array<BotState>> {
+  return BotStateModel.find({
     strategyId: 1,
   });
 }
