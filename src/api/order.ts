@@ -158,6 +158,13 @@ export const marketSellAction = async (
           botState.strategies[`${strategy}`].stopLoss = true;
           botState.updateState('status', 'sell');
         }
+        await botStateService.trackBotState(
+          _omit(botState, [
+            'availableUSDT',
+            'availableCryptoCoin',
+            'updateState',
+          ]),
+        );
       } catch (e) {
         await sendToRecipients(`SELL ERROR
                   ${JSON.stringify(e)}
@@ -313,6 +320,13 @@ export const marketBuyAction = async (
 
       botState.updateState('status', 'sell');
       botState.updateState('prevPrice', botState.currentPrice);
+      await botStateService.trackBotState(
+        _omit(botState, [
+          'availableUSDT',
+          'availableCryptoCoin',
+          'updateState',
+        ]),
+      );
     } catch (e) {
       await sendToRecipients(`BUY ERROR
             ${JSON.stringify(e)}
