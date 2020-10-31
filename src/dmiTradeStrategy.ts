@@ -58,10 +58,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
     enabledLimits: false,
     sellError: false,
     emaStartPoint: null,
-    strategy: 'MIXED STRATEGY',
+    strategy: 'ee057f3aa0e01866ba44fa9a24b9cc505e3f5945',
     testMode: true,
-    useProfitLevels: false,
-    useEMAStopLoss: false,
     status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
     // status: 'buy',
     profitLevels: {
@@ -96,9 +94,6 @@ import { getStochRSISignal } from './components/stochRSI-signals';
     order: null,
     avrDealProfit: null,
     dealsCount: 1,
-    startTime: new Date().getTime(),
-    workDuration: null,
-    stopLoss: null,
     prevPrice: null,
     updateState: function(fieldName, value) {
       this[`${fieldName}`] = value;

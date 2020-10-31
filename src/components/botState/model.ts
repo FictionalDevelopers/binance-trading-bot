@@ -1,25 +1,25 @@
 import { model, Schema, Document } from 'mongoose';
 
 export interface BotState extends Document {
+  strategies: any;
+  buyReason: string;
+  enabledLimits: boolean;
+  sellError: boolean;
   emaStartPoint: number;
+  testMode: boolean;
+  status: string;
+  currentProfit: number;
+  totalProfit: number;
+  tradeAmountPercent: number;
+  totalPercentProfit: number;
   buyPrice: number;
+  currentPrice: number;
   dealsCount: number;
+  cummulativeQuoteQty: number;
+  order: any;
+  avrDealProfit: number;
+  prevPrice: number;
 }
-
-const botState = {
-  cummulativeQuoteQty: null,
-  order: null,
-  avrDealProfit: null,
-  dealsCount: 1,
-  startTime: new Date().getTime(),
-  workDuration: null,
-  stopLoss: null,
-  prevPrice: null,
-  updateState: function(fieldName, value) {
-    this[`${fieldName}`] = value;
-  },
-};
-
 const schema = new Schema({
   strategies: {
     upTrend: {
@@ -134,6 +134,22 @@ const schema = new Schema({
   dealsCount: {
     type: Number,
     default: 1,
+  },
+  cummulativeQuoteQty: {
+    type: Number,
+    default: null,
+  },
+  order: {
+    type: Object,
+    default: null,
+  },
+  avrDealProfit: {
+    type: Number,
+    default: null,
+  },
+  prevPrice: {
+    type: Number,
+    default: null,
   },
 });
 
