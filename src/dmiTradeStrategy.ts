@@ -505,10 +505,10 @@ import { getStochRSISignal } from './components/stochRSI-signals';
 
     /** *********************UP TREND***********************/
 
-    if (conditions.upTrend.sell.takeProfit) {
+    if (conditions.upTrend.sell.stopLoss) {
       await marketSellAction(
         'upTrend',
-        true,
+        false,
         symbol,
         botState,
         cryptoCoin,
