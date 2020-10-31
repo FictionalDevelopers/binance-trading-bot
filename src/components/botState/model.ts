@@ -6,34 +6,134 @@ export interface BotState extends Document {
   dealsCount: number;
 }
 
+const botState = {
+  cummulativeQuoteQty: null,
+  order: null,
+  avrDealProfit: null,
+  dealsCount: 1,
+  startTime: new Date().getTime(),
+  workDuration: null,
+  stopLoss: null,
+  prevPrice: null,
+  updateState: function(fieldName, value) {
+    this[`${fieldName}`] = value;
+  },
+};
+
 const schema = new Schema({
-  status: {
+  strategies: {
+    upTrend: {
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+      stopLoss: {
+        type: Boolean,
+        default: false,
+      },
+    },
+    downTrend: {
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+      stopLoss: {
+        type: Boolean,
+        default: false,
+      },
+    },
+    upFlat: {
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+      stopLoss: {
+        type: Boolean,
+        default: false,
+      },
+    },
+    downFlat: {
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+      stopLoss: {
+        type: Boolean,
+        default: false,
+      },
+    },
+    stochRsi: {
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+      stopLoss: {
+        type: Boolean,
+        default: false,
+      },
+    },
+    trendsCatcher: {
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+      stopLoss: {
+        type: Boolean,
+        default: false,
+      },
+    },
+  },
+  buyReason: {
     type: String,
-    required: true,
+    default: null,
+  },
+  enabledLimits: {
+    type: Boolean,
+    default: false,
+  },
+  sellError: {
+    type: Boolean,
+    default: false,
   },
   emaStartPoint: {
     type: Number,
-    required: true,
+    default: null,
+  },
+  testMode: {
+    type: Boolean,
+    default: true,
+  },
+  status: {
+    type: String,
+    default: 'buy',
+  },
+  currentProfit: {
+    type: Number,
+    default: null,
+  },
+  totalProfit: {
+    type: Number,
+    default: null,
+  },
+  tradeAmountPercent: {
+    type: Number,
+    default: 0.95,
+  },
+  totalPercentProfit: {
+    type: Number,
     default: null,
   },
   buyPrice: {
     type: Number,
     default: null,
-    required: true,
+  },
+  currentPrice: {
+    type: Number,
+    default: null,
   },
   dealsCount: {
     type: Number,
     default: 1,
-  },
-  enabledLimits: {
-    type: Boolean,
-    default: false,
-    required: true,
-  },
-  boughtBeforeResistanceLevel: {
-    type: Boolean,
-    default: false,
-    required: true,
   },
 });
 
