@@ -18,6 +18,7 @@ import _head from 'lodash/head';
 (async function() {
   await connect();
   // await processSubscriptions();
+  const revisionNumber = 'ffa2bef39307f7d13bf20d5b92ebaafe4115b081';
   const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
@@ -666,13 +667,13 @@ import _head from 'lodash/head';
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  with using the ${botState.strategy}
+  Revision N: ${revisionNumber}
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
     await sendToRecipients(`INIT
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  with using the ${botState.strategy}
+  Revision N: ${revisionNumber}
   Status: ${botState.status.toUpperCase()}
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
