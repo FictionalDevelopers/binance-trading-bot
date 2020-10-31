@@ -214,11 +214,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         buy:
           botState.status === 'buy' &&
           indicatorsData.priceGrowArea &&
-          Number(
-            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-          ) >= 0.1 &&
-          indicatorsData.rsi5m.rsiValue !== null &&
-          indicatorsData.rsi5m.rsiValue <= 65,
+          indicatorsData.stochRsiSignal.stoch5m === 'buy',
+
+        // Number(
+        //   (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+        // ) >= 0.1 &&
+        // indicatorsData.rsi5m.rsiValue !== null &&
+        // indicatorsData.rsi5m.rsiValue <= 65,
         // indicatorsData.rsi5m.rsiValue >= 61 &&
         // indicatorsData.rsi1m.rsiValue !== null &&
         // indicatorsData.rsi1m.rsiValue < 68,
@@ -227,10 +229,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'upTrend' &&
-            Number(
+            (Number(
               (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                 100,
-            ) >= 0.05,
+            ) >= 0.1 ||
+              (indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
+                expectedProfitPercent >= 1)),
         },
       },
       downTrend: {
