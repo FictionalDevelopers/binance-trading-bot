@@ -30,7 +30,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   const botState = {
     strategies: {
       upTrend: {
-        enabled: false,
+        enabled: true,
         stopLoss: false,
       },
       downTrend: {
@@ -46,7 +46,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         stopLoss: false,
       },
       stochRsi: {
-        enabled: true,
+        enabled: false,
         stopLoss: false,
       },
       trendsCatcher: {
@@ -213,29 +213,24 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       upTrend: {
         buy:
           botState.status === 'buy' &&
+          indicatorsData.priceGrowArea &&
           Number(
             (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-          ) >= 0.1 &&
-          // Number(
-          //   (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 -
-          //     100,
-          // ) >= 0.1 &&
-          indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-          indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
-          indicatorsData.rsi5m.rsiValue !== null &&
-          indicatorsData.rsi5m.rsiValue <= 68 &&
-          indicatorsData.rsi5m.rsiValue >= 61 &&
-          indicatorsData.rsi1m.rsiValue !== null &&
-          indicatorsData.rsi1m.rsiValue < 68,
+          ) >= 0.1,
+        // indicatorsData.rsi5m.rsiValue !== null &&
+        // indicatorsData.rsi5m.rsiValue <= 68 &&
+        // indicatorsData.rsi5m.rsiValue >= 61 &&
+        // indicatorsData.rsi1m.rsiValue !== null &&
+        // indicatorsData.rsi1m.rsiValue < 68,
         sell: {
-          takeProfit:
+          takeProfit: null,
+          stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'upTrend' &&
             Number(
               (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                 100,
             ) >= 0.05,
-          stopLoss: null,
         },
       },
       downTrend: {
@@ -685,7 +680,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         'STOCH RSI STOP LOSS',
         false,
       );
-      indicatorsData.priceGrowArea = false;
+      // indicatorsData.priceGrowArea = false;
       return;
     }
 

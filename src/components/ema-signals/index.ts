@@ -47,10 +47,18 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
 
     if (
       Number(
-        (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+        (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
       ) >= 0.1
     ) {
       if (!indicatorsData.priceGrowArea) indicatorsData.priceGrowArea = true;
+    }
+
+    if (
+      Number(
+        (indicatorsData.middle15mEMA / indicatorsData.fast15mEMA) * 100 - 100,
+      ) >= 0.5
+    ) {
+      if (indicatorsData.priceGrowArea) indicatorsData.priceGrowArea = false;
     }
   });
 
