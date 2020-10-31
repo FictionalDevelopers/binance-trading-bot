@@ -347,8 +347,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           stopLoss:
             (botState.status === 'sell' &&
               botState.buyReason === 'stochRsi' &&
-              indicatorsData.stochRsiSignal.stoch5m === 'sell') ||
-            indicatorsData.stochRsiSignal.stoch1m === 'sell',
+              (indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
+            indicatorsData.stochRsiSignal.stoch1m === 'sell'),
 
           // (indicatorsData.rsi5m.rsiValue !== null &&
           //   indicatorsData.rsi5m.rsiValue < 39)),)
