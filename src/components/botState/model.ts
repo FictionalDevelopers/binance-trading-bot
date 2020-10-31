@@ -1,6 +1,7 @@
 import { model, Schema, Document } from 'mongoose';
 
 export interface BotState extends Document {
+  strategyId: number;
   strategies: any;
   buyReason: string;
   enabledLimits: boolean;
@@ -21,6 +22,11 @@ export interface BotState extends Document {
   prevPrice: number;
 }
 const schema = new Schema({
+  strategyId: {
+    type: Number,
+    default: 1,
+    required: true,
+  },
   strategies: {
     upTrend: {
       enabled: {

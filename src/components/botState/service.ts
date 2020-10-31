@@ -1,19 +1,31 @@
-import TelegramSubscriptionModel, { TelegramSubscription } from './model';
+import BotStateModel, { BotState } from './model';
 
-export async function trackTelegramSubscription(telegramSubscription: {
-  chatId: number;
-  firstName: string;
-  lastName: string;
-  username: string;
-  type: string;
-  date: Date;
-  subscribed: boolean;
-}): Promise<TelegramSubscription> {
-  return TelegramSubscriptionModel.findOneAndUpdate(
+export async function trackBotState(botState: {
+  strategyId: number;
+  strategies: any;
+  buyReason: string;
+  enabledLimits: boolean;
+  sellError: boolean;
+  emaStartPoint: number;
+  testMode: boolean;
+  status: string;
+  currentProfit: number;
+  totalProfit: number;
+  tradeAmountPercent: number;
+  totalPercentProfit: number;
+  buyPrice: number;
+  currentPrice: number;
+  dealsCount: number;
+  cummulativeQuoteQty: number;
+  order: any;
+  avrDealProfit: number;
+  prevPrice: number;
+}): Promise<BotState> {
+  return BotStateModel.findOneAndUpdate(
     {
-      chatId: telegramSubscription.chatId,
+      strategyId: 1,
     },
-    telegramSubscription,
+    botState,
     {
       new: true,
       upsert: true,
@@ -22,23 +34,8 @@ export async function trackTelegramSubscription(telegramSubscription: {
   );
 }
 
-export async function getTelegramSubscriptions(): Promise<
-  Array<TelegramSubscription>
-> {
-  return TelegramSubscriptionModel.find({
-    subscribed: true,
+export async function getBotState(): Promise<BotState> {
+  return BotStateModel.findById({
+    strategyId: 1,
   });
-}
-
-export async function unsubscribe(
-  chatId: number,
-): Promise<TelegramSubscription> {
-  return TelegramSubscriptionModel.updateOne(
-    {
-      chatId,
-    },
-    {
-      subscribed: false,
-    },
-  );
 }
