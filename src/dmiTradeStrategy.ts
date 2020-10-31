@@ -13,7 +13,6 @@ import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 import { getStochRSISignal } from './components/stochRSI-signals';
 import { service as botStateService } from './components/botState';
-import { trackBotState } from './components/botState/service';
 
 (async function() {
   await connect();
@@ -31,13 +30,6 @@ import { trackBotState } from './components/botState/service';
   let botState;
 
   try {
-    await botStateService.getBotState();
-    process.exit(1);
-  } catch (e) {
-    process.exit(1);
-  }
-
-  try {
     const initialState = await botStateService.getBotState();
     botState = {
       ...initialState,
@@ -48,7 +40,7 @@ import { trackBotState } from './components/botState/service';
       },
     };
   } catch (e) {
-    await sendToRecipients(`ERROR
+    await sendToRecipients(`DATABASE ERROR
     ${JSON.stringify(e)};
   `);
 

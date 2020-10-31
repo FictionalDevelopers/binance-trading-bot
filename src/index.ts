@@ -12,6 +12,8 @@ import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 import { getStochRSISignal } from './components/stochRSI-signals';
+import { service as botStateService } from './components/botState';
+import { trackBotState } from './components/botState/service';
 
 (async function() {
   await connect();
@@ -26,82 +28,28 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   const lastOrder = ordersList[ordersList.length - 1] || null;
   const workingDeposit = 470;
   // const symbol = process.argv[2];
+  let botState;
 
-  const botState = {
-    strategies: {
-      upTrend: {
-        enabled: false,
-        stopLoss: false,
+  try {
+    const initialState = await botStateService.getBotState();
+    botState = {
+      ...initialState,
+      availableUSDT: initialUSDTBalance,
+      availableCryptoCoin: initialCryptoCoinBalance,
+      updateState: function(fieldName, value) {
+        this[`${fieldName}`] = value;
       },
-      downTrend: {
-        enabled: false,
-        stopLoss: false,
-      },
-      upFlat: {
-        enabled: false,
-        stopLoss: false,
-      },
-      downFlat: {
-        enabled: false,
-        stopLoss: false,
-      },
-      stochRsi: {
-        enabled: true,
-        stopLoss: false,
-      },
-    },
-    buyReason: null,
-    enabledLimits: false,
-    sellError: false,
-    emaStartPoint: null,
-    strategy: 'MIXED STRATEGY',
-    testMode: true,
-    useProfitLevels: false,
-    useEMAStopLoss: false,
-    status: lastOrder ? (lastOrder.side === 'SELL' ? 'buy' : 'sell') : 'BUY',
-    // status: 'buy',
-    profitLevels: {
-      '1': {
-        id: 1,
-        profitPercent: 1,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-      '2': {
-        id: 2,
-        profitPercent: 2,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-      '3': {
-        id: 3,
-        profitPercent: 4,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-    },
-    currentProfit: null,
-    totalProfit: null,
-    totalPercentProfit: null,
-    tradeAmountPercent: 0.95,
-    availableUSDT: initialUSDTBalance,
-    availableCryptoCoin: initialCryptoCoinBalance,
-    cummulativeQuoteQty: null,
-    buyPrice: null,
-    currentPrice: null,
-    order: null,
-    avrDealProfit: null,
-    dealsCount: 1,
-    startTime: new Date().getTime(),
-    workDuration: null,
-    stopLoss: null,
-    prevPrice: null,
-    updateState: function(fieldName, value) {
-      this[`${fieldName}`] = value;
-    },
-  };
+    };
+  } catch (e) {
+    await sendToRecipients(`ERROR
+    ${JSON.stringify(e)};
+  `);
+
+    process.exit(1);
+  }
 
   const indicatorsData = {
+    priceGrowArea: false,
     stochRsiSignal: {
       stoch1m: null,
       stoch5m: null,
@@ -208,29 +156,26 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       upTrend: {
         buy:
           botState.status === 'buy' &&
-          Number(
-            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-          ) >= 0.1 &&
-          // Number(
-          //   (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 -
-          //     100,
-          // ) >= 0.1 &&
-          indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-          indicatorsData.middle1mEMA > indicatorsData.slow1mEMA &&
-          indicatorsData.rsi5m.rsiValue !== null &&
-          indicatorsData.rsi5m.rsiValue <= 68 &&
-          indicatorsData.rsi5m.rsiValue >= 61 &&
-          indicatorsData.rsi1m.rsiValue !== null &&
-          indicatorsData.rsi1m.rsiValue < 68,
+          indicatorsData.priceGrowArea &&
+          indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
+          indicatorsData.fast5mEMA > indicatorsData.middle5mEMA,
+
+        // indicatorsData.rsi5m.rsiValue !== null &&
+        // indicatorsData.rsi5m.rsiValue <= 65,
+        // indicatorsData.rsi5m.rsiValue >= 61 &&
+        // indicatorsData.rsi1m.rsiValue !== null &&
+        // indicatorsData.rsi1m.rsiValue < 68,
         sell: {
-          takeProfit:
+          takeProfit: null,
+          stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'upTrend' &&
-            Number(
+            (Number(
               (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                 100,
-            ) >= 0.05,
-          stopLoss: null,
+            ) >= 0.05 ||
+              (indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
+                expectedProfitPercent >= 0.6)),
         },
       },
       downTrend: {
@@ -329,23 +274,50 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          // indicatorsData.rsi5m.rsiValue >= 41 &&
+          indicatorsData.rsi5m.rsiValue >= 41 &&
           // indicatorsData.rsi15m.rsiValue >= 41 &&
-          // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-          indicatorsData.stochRsiSignal.stoch1m === 'buy',
+          // indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
+          indicatorsData.stochRsiSignal.stoch5m === 'buy',
         sell: {
-          takeProfit:
-            botState.status === 'sell' &&
-            botState.buyReason === 'stochRsi' &&
-            // indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
-            expectedProfitPercent >= 0.2,
+          takeProfit: null,
+          // botState.status === 'sell' &&
+          // botState.buyReason === 'stochRsi' &&
+          // indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
+          // expectedProfitPercent >= 0.6,
+
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            indicatorsData.stochRsiSignal.stoch1m === 'sell',
-          // ||
+            ((indicatorsData.stochRsiSignal.stoch5m === 'sell' &&
+              !indicatorsData.priceGrowArea) ||
+              (indicatorsData.priceGrowArea &&
+                Number(
+                  (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
+                    100 -
+                    100,
+                ) >= 0.5)),
+
           // (indicatorsData.rsi5m.rsiValue !== null &&
           //   indicatorsData.rsi5m.rsiValue < 39)),)
+        },
+      },
+      trendsCatcher: {
+        buy:
+          botState.status === 'buy' &&
+          indicatorsData.dmi1h.willPriceGrow &&
+          Number(
+            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+          ) >= 0.1,
+        sell: {
+          takeProfit: null,
+          stopLoss:
+            botState.status === 'sell' &&
+            botState.buyReason === 'trendsCatcher' &&
+            (Number(
+              (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
+                100,
+            ) >= 0.5 ||
+              !indicatorsData.dmi1h.willPriceGrow),
         },
       },
     };
@@ -452,14 +424,34 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       }
     }
 
+    /** ******************** TRENDS CATHCER ***********************/
+
+    if (botState.strategies.trendsCatcher.enabled) {
+      if (conditions.trendsCatcher.buy) {
+        await marketBuyAction(
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          pricesStream,
+          stepSize,
+          'TRENDS CATCHER',
+          workingDeposit,
+          'ADX SIGNAL',
+        );
+        botState.buyReason = 'trendsCatcher';
+        return;
+      }
+    }
+
     /** *****************************************SELL ACTIONS********************************************************/
 
     /** *********************UP TREND***********************/
 
-    if (conditions.upTrend.sell.takeProfit) {
+    if (conditions.upTrend.sell.stopLoss) {
       await marketSellAction(
         'upTrend',
-        true,
+        false,
         symbol,
         botState,
         cryptoCoin,
@@ -597,6 +589,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       return;
     }
 
+    /** *********************STOCH RSI ***********************/
+
     if (
       conditions.stochRsiStrategy.sell.takeProfit &&
       !botState.strategies.stochRsi.stopLoss
@@ -631,6 +625,25 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         'STOCH RSI STOP LOSS',
         false,
       );
+      // indicatorsData.priceGrowArea = false;
+      return;
+    }
+
+    /** *********************TRENDS CATCHER***********************/
+
+    if (conditions.trendsCatcher.sell.stopLoss) {
+      await marketSellAction(
+        'trendsCatcher',
+        true,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'STOP LOSS',
+      );
       return;
     }
 
@@ -639,14 +652,14 @@ import { getStochRSISignal } from './components/stochRSI-signals';
 
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   getStochRSISignal(symbol, '1m', indicatorsData, 1.5, 1.5);
-  // getStochRSISignal(symbol, '5m', indicatorsData);
+  getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '15m', indicatorsData);
   // getStochRSISignal(symbol, '1h', indicatorsData);
-  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
-  // getEMASignal(symbol, '5m', indicatorsData);
-  // getEMASignal(symbol, '15m', indicatorsData);
-  // getEMASignal(symbol, '1m', indicatorsData);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
+  getEMASignal(symbol, '5m', indicatorsData);
+  getEMASignal(symbol, '15m', indicatorsData);
+  getEMASignal(symbol, '1m', indicatorsData);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)

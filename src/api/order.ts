@@ -3,7 +3,8 @@ import { sendToRecipients } from '../services/telegram';
 import { format } from 'date-fns';
 import { DATE_FORMAT } from '../constants/date';
 import getBalances from './balance';
-// import _forEach from 'lodash/forEach';
+import { service as botStateService } from '../components/botState';
+import _omit from 'lodash/omit';
 
 export const marketBuy = (symbol: string, quantity: number): Promise<unknown> =>
   new Promise((resolve, reject) => {
@@ -247,6 +248,13 @@ export const marketSellAction = async (
           botState.strategies[`${strategy}`].stopLoss = true;
           botState.updateState('status', 'sell');
         }
+        await botStateService.trackBotState(
+          _omit(botState, [
+            'availableUSDT',
+            'availableCryptoCoin',
+            'updateState',
+          ]),
+        );
       } catch (e) {
         await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
@@ -351,6 +359,13 @@ export const marketBuyAction = async (
       }
       botState.updateState('status', 'sell');
       botState.updateState('prevPrice', botState.currentPrice);
+      await botStateService.trackBotState(
+        _omit(botState, [
+          'availableUSDT',
+          'availableCryptoCoin',
+          'updateState',
+        ]),
+      );
     } catch (e) {
       await sendToRecipients(`BUY ERROR
             ${JSON.stringify(e)}
