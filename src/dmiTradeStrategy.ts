@@ -30,7 +30,7 @@ import { service as botStateService } from './components/botState';
   let botState;
 
   try {
-    const initialState = await botStateService.getBotState();
+    const initialState = await botStateService.getBotState({});
     botState = {
       ...initialState,
       availableUSDT: initialUSDTBalance,
