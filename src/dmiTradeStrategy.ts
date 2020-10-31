@@ -338,16 +338,18 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
           indicatorsData.stochRsiSignal.stoch5m === 'buy',
         sell: {
-          takeProfit:
-            botState.status === 'sell' &&
-            botState.buyReason === 'stochRsi' &&
-            indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
-            expectedProfitPercent >= 0.6,
+          takeProfit: null,
+          // botState.status === 'sell' &&
+          // botState.buyReason === 'stochRsi' &&
+          // indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
+          // expectedProfitPercent >= 0.6,
+
           stopLoss:
-            botState.status === 'sell' &&
-            botState.buyReason === 'stochRsi' &&
-            indicatorsData.stochRsiSignal.stoch5m === 'sell',
-          // ||
+            (botState.status === 'sell' &&
+              botState.buyReason === 'stochRsi' &&
+              indicatorsData.stochRsiSignal.stoch5m === 'sell') ||
+            indicatorsData.stochRsiSignal.stoch1m === 'sell',
+
           // (indicatorsData.rsi5m.rsiValue !== null &&
           //   indicatorsData.rsi5m.rsiValue < 39)),)
         },
