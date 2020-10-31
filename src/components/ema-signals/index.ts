@@ -56,7 +56,7 @@ export const getEMASignal = (symbol, timeFrame, indicatorsData) => {
     if (
       Number(
         (indicatorsData.middle15mEMA / indicatorsData.fast15mEMA) * 100 - 100,
-      ) >= 0.5
+      ) >= 0.05
     ) {
       if (indicatorsData.priceGrowArea) indicatorsData.priceGrowArea = false;
     }

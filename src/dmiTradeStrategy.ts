@@ -230,7 +230,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             (Number(
               (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                 100,
-            ) >= 0.1 ||
+            ) >= 0.05 ||
               (indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
                 expectedProfitPercent >= 0.6)),
         },
