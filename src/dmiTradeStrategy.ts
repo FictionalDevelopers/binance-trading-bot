@@ -232,25 +232,25 @@ import _head from 'lodash/head';
           ) >= 0.1 &&
           // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
           // indicatorsData.emaSignal === 'buy' &&
-          indicatorsData.rsi1m.rsiValue < 55 &&
+          indicatorsData.rsi1m.rsiValue <= 50 &&
           indicatorsData.rsi1m.rsiValue !== null,
         sell: {
           takeProfit:
             botState.status === 'sell' &&
             botState.buyReason === 'upFlat' &&
-            indicatorsData.rsi1m.rsiValue >= 69 &&
+            indicatorsData.rsi1m.rsiValue >= 65 &&
             expectedProfitPercent > 0,
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'upFlat' &&
-            (Number(
-              (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
+            Number(
+              (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                 100,
-            ) >= 0.1 ||
-              Number(
-                (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-                  100,
-              ) >= 0.05),
+            ) >= 0.05,
+          // (Number(
+          //   (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
+          //     100,
+          // ) >= 0.1 ||
         },
       },
       downFlat: {
@@ -657,11 +657,11 @@ import _head from 'lodash/head';
   };
 
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  getStochRSISignal(symbol, '1m', indicatorsData, 1.5, 1.5);
-  getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
+  // getStochRSISignal(symbol, '1m', indicatorsData, 1.5, 1.5);
+  // getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '15m', indicatorsData);
   // getStochRSISignal(symbol, '1h', indicatorsData);
-  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   getEMASignal(symbol, '5m', indicatorsData);
   getEMASignal(symbol, '15m', indicatorsData);
