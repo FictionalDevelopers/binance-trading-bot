@@ -279,26 +279,29 @@ import _head from 'lodash/head';
           botState.status === 'buy' &&
           indicatorsData.rsi5m.rsiValue >= 41 &&
           // indicatorsData.rsi15m.rsiValue >= 41 &&
-          // indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
+          indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
           indicatorsData.stochRsiSignal.stoch5m === 'buy',
         sell: {
           takeProfit: null,
           // botState.status === 'sell' &&
           // botState.buyReason === 'stochRsi' &&
           // indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
-          // expectedProfitPercent >= 0.6,
+          // expectedProfitPercent >= 0.5,
 
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            ((indicatorsData.stochRsiSignal.stoch5m === 'sell' &&
-              !indicatorsData.priceGrowArea) ||
-              (indicatorsData.priceGrowArea &&
-                Number(
-                  (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
-                    100 -
-                    100,
-                ) >= 0.5)),
+            (indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
+              expectedProfitPercent >= 0.5),
+
+          // ((indicatorsData.stochRsiSignal.stoch5m === 'sell' &&
+          //   !indicatorsData.priceGrowArea) ||
+          //   (indicatorsData.priceGrowArea &&
+          //     Number(
+          //       (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
+          //         100 -
+          //         100,
+          //     ) >= 0.5)),
 
           // (indicatorsData.rsi5m.rsiValue !== null &&
           //   indicatorsData.rsi5m.rsiValue < 39)),)
