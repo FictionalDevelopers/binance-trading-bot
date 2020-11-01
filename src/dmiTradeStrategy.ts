@@ -224,9 +224,7 @@ import _head from 'lodash/head';
       upFlat: {
         buy:
           botState.status === 'buy' &&
-          Number(
-            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-          ) >= 0.1 &&
+          indicatorsData.fast5mEMA > indicatorsData.middle5mEMA &&
           // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
           // indicatorsData.emaSignal === 'buy' &&
           indicatorsData.rsi1m.rsiValue <= 50 &&
@@ -235,7 +233,7 @@ import _head from 'lodash/head';
           takeProfit:
             botState.status === 'sell' &&
             botState.buyReason === 'upFlat' &&
-            indicatorsData.rsi1m.rsiValue >= 65 &&
+            indicatorsData.rsi1m.rsiValue >= 69 &&
             expectedProfitPercent > 0,
           stopLoss:
             botState.status === 'sell' &&
