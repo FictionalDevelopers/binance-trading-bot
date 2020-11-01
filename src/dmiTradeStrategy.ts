@@ -159,26 +159,23 @@ import _head from 'lodash/head';
       upTrend: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.priceGrowArea &&
-          indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
-          indicatorsData.fast5mEMA > indicatorsData.middle5mEMA,
-
-        // indicatorsData.rsi5m.rsiValue !== null &&
-        // indicatorsData.rsi5m.rsiValue <= 65,
-        // indicatorsData.rsi5m.rsiValue >= 61 &&
-        // indicatorsData.rsi1m.rsiValue !== null &&
-        // indicatorsData.rsi1m.rsiValue < 68,
+          Number(
+            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+          ) >= 0.1 &&
+          indicatorsData.rsi5m.rsiValue !== null &&
+          indicatorsData.rsi5m.rsiValue <= 67 &&
+          // indicatorsData.rsi5m.rsiValue >= 61 &&
+          indicatorsData.rsi1m.rsiValue !== null &&
+          indicatorsData.rsi1m.rsiValue < 68,
         sell: {
           takeProfit: null,
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'upTrend' &&
-            (Number(
+            Number(
               (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                 100,
-            ) >= 0.05 ||
-              (indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
-                expectedProfitPercent >= 0.6)),
+            ) >= 0.05,
         },
       },
       downTrend: {
@@ -663,7 +660,7 @@ import _head from 'lodash/head';
   // getStochRSISignal(symbol, '15m', indicatorsData);
   // getStochRSISignal(symbol, '1h', indicatorsData);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   getEMASignal(symbol, '5m', indicatorsData);
   getEMASignal(symbol, '15m', indicatorsData);
   getEMASignal(symbol, '1m', indicatorsData);
