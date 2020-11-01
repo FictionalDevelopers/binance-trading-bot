@@ -511,12 +511,13 @@ import _head from 'lodash/head';
 
     if (conditions.upFlat.sell.takeProfit) {
       if (
-        Number(
-          (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-        ) >= 0.1 &&
-        Number(
-          (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
-        ) >= 0.1
+        false
+        // Number(
+        //   (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+        // ) >= 0.1 &&
+        // Number(
+        //   (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
+        // ) >= 0.1
       ) {
         botState.buyReason = 'upTrend';
         await sendToRecipients(` INFO
