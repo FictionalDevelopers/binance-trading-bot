@@ -12,21 +12,22 @@ import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 import { getStochRSISignal } from './components/stochRSI-signals';
+import { getForceIndexSignal } from './components/forceIndex';
 import { service as botStateService } from './components/botState';
-import { trackBotState } from './components/botState/service';
 import _head from 'lodash/head';
 
 (async function() {
   await connect();
   // await processSubscriptions();
+  const revisionNumber = 'ffa2bef39307f7d13bf20d5b92ebaafe4115b081';
   const symbol = 'linkusdt';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
   // const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
-  const ordersList = await getOrdersList(symbol.toUpperCase());
-  const lastOrder = ordersList[ordersList.length - 1] || null;
+  // const ordersList = await getOrdersList(symbol.toUpperCase());
+  // const lastOrder = ordersList[ordersList.length - 1] || null;
   const workingDeposit = 470;
   // const symbol = process.argv[2];
   let botState;
@@ -43,7 +44,6 @@ import _head from 'lodash/head';
         this[`${fieldName}`] = value;
       },
     };
-    console.log(botState);
   } catch (e) {
     await sendToRecipients(`ERROR
     ${JSON.stringify(e)};
@@ -160,26 +160,23 @@ import _head from 'lodash/head';
       upTrend: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.priceGrowArea &&
-          indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
-          indicatorsData.fast5mEMA > indicatorsData.middle5mEMA,
-
-        // indicatorsData.rsi5m.rsiValue !== null &&
-        // indicatorsData.rsi5m.rsiValue <= 65,
-        // indicatorsData.rsi5m.rsiValue >= 61 &&
-        // indicatorsData.rsi1m.rsiValue !== null &&
-        // indicatorsData.rsi1m.rsiValue < 68,
+          Number(
+            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+          ) >= 0.1 &&
+          indicatorsData.rsi5m.rsiValue !== null &&
+          indicatorsData.rsi5m.rsiValue <= 67 &&
+          // indicatorsData.rsi5m.rsiValue >= 61 &&
+          indicatorsData.rsi1m.rsiValue !== null &&
+          indicatorsData.rsi1m.rsiValue < 68,
         sell: {
           takeProfit: null,
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'upTrend' &&
-            (Number(
+            Number(
               (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                 100,
-            ) >= 0.05 ||
-              (indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
-                expectedProfitPercent >= 0.6)),
+            ) >= 0.05,
         },
       },
       downTrend: {
@@ -228,12 +225,10 @@ import _head from 'lodash/head';
       upFlat: {
         buy:
           botState.status === 'buy' &&
-          Number(
-            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-          ) >= 0.1 &&
+          indicatorsData.fast5mEMA > indicatorsData.middle5mEMA &&
           // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
           // indicatorsData.emaSignal === 'buy' &&
-          indicatorsData.rsi1m.rsiValue < 55 &&
+          indicatorsData.rsi1m.rsiValue <= 50 &&
           indicatorsData.rsi1m.rsiValue !== null,
         sell: {
           takeProfit:
@@ -244,14 +239,14 @@ import _head from 'lodash/head';
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'upFlat' &&
-            (Number(
-              (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
+            Number(
+              (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                 100,
-            ) >= 0.1 ||
-              Number(
-                (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-                  100,
-              ) >= 0.05),
+            ) >= 0.05,
+          // (Number(
+          //   (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
+          //     100,
+          // ) >= 0.1 ||
         },
       },
       downFlat: {
@@ -278,28 +273,31 @@ import _head from 'lodash/head';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.rsi5m.rsiValue >= 41 &&
+          // indicatorsData.rsi5m.rsiValue >= 41 &&
           // indicatorsData.rsi15m.rsiValue >= 41 &&
-          // indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
-          indicatorsData.stochRsiSignal.stoch5m === 'buy',
+          indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
+          indicatorsData.stochRsiSignal.stoch15m === 'buy',
         sell: {
           takeProfit: null,
           // botState.status === 'sell' &&
           // botState.buyReason === 'stochRsi' &&
-          // indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
-          // expectedProfitPercent >= 0.6,
+          // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
+          // expectedProfitPercent >= 1,
 
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            ((indicatorsData.stochRsiSignal.stoch5m === 'sell' &&
-              !indicatorsData.priceGrowArea) ||
-              (indicatorsData.priceGrowArea &&
-                Number(
-                  (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
-                    100 -
-                    100,
-                ) >= 0.5)),
+            (indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
+              expectedProfitPercent >= 1),
+
+          // ((indicatorsData.stochRsiSignal.stoch5m === 'sell' &&
+          //   !indicatorsData.priceGrowArea) ||
+          //   (indicatorsData.priceGrowArea &&
+          //     Number(
+          //       (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
+          //         100 -
+          //         100,
+          //     ) >= 0.5)),
 
           // (indicatorsData.rsi5m.rsiValue !== null &&
           //   indicatorsData.rsi5m.rsiValue < 39)),)
@@ -509,12 +507,13 @@ import _head from 'lodash/head';
 
     if (conditions.upFlat.sell.takeProfit) {
       if (
-        Number(
-          (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-        ) >= 0.1 &&
-        Number(
-          (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
-        ) >= 0.1
+        false
+        // Number(
+        //   (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+        // ) >= 0.1 &&
+        // Number(
+        //   (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
+        // ) >= 0.1
       ) {
         botState.buyReason = 'upTrend';
         await sendToRecipients(` INFO
@@ -655,26 +654,28 @@ import _head from 'lodash/head';
   };
 
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  getStochRSISignal(symbol, '1m', indicatorsData, 1.5, 1.5);
+  // getStochRSISignal(symbol, '1m', indicatorsData, 1.5, 1.5);
   getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
-  // getStochRSISignal(symbol, '15m', indicatorsData);
+  getStochRSISignal(symbol, '15m', indicatorsData, 1.5, 1.5);
+  getForceIndexSignal(symbol, '15m');
+
   // getStochRSISignal(symbol, '1h', indicatorsData);
-  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
-  getEMASignal(symbol, '5m', indicatorsData);
-  getEMASignal(symbol, '15m', indicatorsData);
-  getEMASignal(symbol, '1m', indicatorsData);
+  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  // getEMASignal(symbol, '5m', indicatorsData);
+  // getEMASignal(symbol, '15m', indicatorsData);
+  // getEMASignal(symbol, '1m', indicatorsData);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  with using the ${botState.strategy}
+  Revision N: ${revisionNumber}
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
     await sendToRecipients(`INIT
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  with using the ${botState.strategy}
+  Revision N: ${revisionNumber}
   Status: ${botState.status.toUpperCase()}
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
