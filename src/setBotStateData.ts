@@ -18,9 +18,9 @@ const botState = {
   sellError: false,
   status: 'buy',
   strategies: {
-    upTrend: { enabled: false, stopLoss: false },
+    upTrend: { enabled: true, stopLoss: false },
     downTrend: { enabled: false, stopLoss: false },
-    upFlat: { enabled: true, stopLoss: false },
+    upFlat: { enabled: false, stopLoss: false },
     downFlat: { enabled: false, stopLoss: false },
     stochRsi: { enabled: false, stopLoss: false },
     trendsCatcher: { enabled: false, stopLoss: false },
