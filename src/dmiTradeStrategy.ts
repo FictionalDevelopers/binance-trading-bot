@@ -272,22 +272,22 @@ import _head from 'lodash/head';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.rsi5m.rsiValue >= 41 &&
+          // indicatorsData.rsi5m.rsiValue >= 41 &&
           // indicatorsData.rsi15m.rsiValue >= 41 &&
-          indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
-          indicatorsData.stochRsiSignal.stoch5m === 'buy',
+          indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
+          indicatorsData.stochRsiSignal.stoch15m === 'buy',
         sell: {
           takeProfit: null,
           // botState.status === 'sell' &&
           // botState.buyReason === 'stochRsi' &&
-          // indicatorsData.stochRsiSignal.stoch1m === 'sell' &&
-          // expectedProfitPercent >= 0.5,
+          // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
+          // expectedProfitPercent >= 1,
 
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
             (indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
-              expectedProfitPercent >= 0.5),
+              expectedProfitPercent >= 1),
 
           // ((indicatorsData.stochRsiSignal.stoch5m === 'sell' &&
           //   !indicatorsData.priceGrowArea) ||
@@ -654,8 +654,8 @@ import _head from 'lodash/head';
 
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getStochRSISignal(symbol, '1m', indicatorsData, 1.5, 1.5);
-  // getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
-  // getStochRSISignal(symbol, '15m', indicatorsData);
+  getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
+  getStochRSISignal(symbol, '15m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '1h', indicatorsData);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getRSISignal(symbol, '5m', indicatorsData.rsi5m);
