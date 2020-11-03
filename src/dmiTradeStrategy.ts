@@ -668,7 +668,7 @@ import _head from 'lodash/head';
   // getEMASignal(symbol, '5m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1m', indicatorsData);
-  getObvSignal(symbol, '15m', indicatorsData);
+  getObvSignal(symbol, '1h', indicatorsData);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)
