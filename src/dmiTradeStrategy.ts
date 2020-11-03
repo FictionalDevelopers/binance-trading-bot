@@ -12,7 +12,7 @@ import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 import { getStochRSISignal } from './components/stochRSI-signals';
-import { getObvSignal } from './components/obv-signals';
+import { getObvSignal, runObvInterval } from './components/obv-signals';
 import { service as botStateService } from './components/botState';
 import _head from 'lodash/head';
 
@@ -53,6 +53,7 @@ import _head from 'lodash/head';
   }
 
   const indicatorsData = {
+    prevObv: null,
     obv: null,
     obvSignal: null,
     priceGrowArea: false,
@@ -130,6 +131,7 @@ import _head from 'lodash/head';
   };
 
   // runEMAInterval(indicatorsData, botState);
+  runObvInterval(indicatorsData);
 
   // const rsiRebuyChecker = setInterval(() => {
   //   if (

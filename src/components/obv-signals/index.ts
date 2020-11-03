@@ -1,4 +1,20 @@
 import { getObvStream } from '../../indicators/obv';
+import { sendToRecipients } from '../../services/telegram';
+
+export const runObvInterval = indicatorsData => {
+  setInterval(async () => {
+    if (!indicatorsData.prevObv && indicatorsData.obv) {
+      indicatorsData.prevObv = indicatorsData.obv;
+      return;
+    }
+
+    if (indicatorsData.prevObv > indicatorsData.obv)
+      indicatorsData.obvSignal = 'sell';
+    if (indicatorsData.prevObv < indicatorsData.obv)
+      indicatorsData.obvSignal = 'buy';
+    indicatorsData.prevObv = indicatorsData.obv;
+  }, 60000);
+};
 
 export const getObvSignal = (symbol, timeFrame, indicatorsData) => {
   getObvStream({
@@ -10,8 +26,6 @@ export const getObvSignal = (symbol, timeFrame, indicatorsData) => {
         indicatorsData.obv = obv;
         return;
       }
-      if (indicatorsData.obv < obv) indicatorsData.obvSignal = 'buy';
-      if (indicatorsData.obv > obv) indicatorsData.obvSignal = 'sell';
       indicatorsData.obv = obv;
       console.log(obv);
     }
