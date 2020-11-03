@@ -27,7 +27,7 @@ import _head from 'lodash/head';
   // const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
   // const ordersList = await getOrdersList(symbol.toUpperCase());
   // const lastOrder = ordersList[ordersList.length - 1] || null;
-  const workingDeposit = 470;
+  const workingDeposit = 400;
   // const symbol = process.argv[2];
   let botState;
 
@@ -654,8 +654,8 @@ import _head from 'lodash/head';
 
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getStochRSISignal(symbol, '1m', indicatorsData, 1.5, 1.5);
-  getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
-  getStochRSISignal(symbol, '15m', indicatorsData, 1.5, 1.5);
+  // getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
+  // getStochRSISignal(symbol, '15m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '1h', indicatorsData);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getRSISignal(symbol, '5m', indicatorsData.rsi5m);
