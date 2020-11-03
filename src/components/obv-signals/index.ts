@@ -9,8 +9,8 @@ export const getObvSignal = (symbol, timeFrame, indicatorsData) => {
       indicatorsData.obv = obv;
       return;
     }
-    if (indicatorsData.obv < obv) console.log('BUY');
-    if (indicatorsData.obv > obv) console.log('SELL');
+    if (indicatorsData.obv < obv) indicatorsData.obvSignal = 'buy';
+    if (indicatorsData.obv > obv) indicatorsData.obvSignal = 'sell';
     indicatorsData.obv = obv;
     console.log(obv);
   });

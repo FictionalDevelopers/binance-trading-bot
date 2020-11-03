@@ -12,6 +12,7 @@ import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 import { getStochRSISignal } from './components/stochRSI-signals';
+import { getObvSignal } from './components/obv-signals';
 import { service as botStateService } from './components/botState';
 import _head from 'lodash/head';
 
@@ -52,6 +53,8 @@ import _head from 'lodash/head';
   }
 
   const indicatorsData = {
+    obv: null,
+    obvSignal: null,
     priceGrowArea: false,
     stochRsiSignal: {
       stoch1m: null,
@@ -270,12 +273,11 @@ import _head from 'lodash/head';
         },
       },
       stochRsiStrategy: {
-        buy:
-          botState.status === 'buy' &&
-          // indicatorsData.rsi5m.rsiValue >= 41 &&
-          // indicatorsData.rsi15m.rsiValue >= 41 &&
-          indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-          indicatorsData.stochRsiSignal.stoch15m === 'buy',
+        buy: botState.status === 'buy' && indicatorsData.obvSignal === 'buy',
+        // indicatorsData.rsi5m.rsiValue >= 41 &&
+        // indicatorsData.rsi15m.rsiValue >= 41 &&
+        // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
+        // indicatorsData.stochRsiSignal.stoch15m === 'buy',
         sell: {
           takeProfit: null,
           // botState.status === 'sell' &&
@@ -286,8 +288,9 @@ import _head from 'lodash/head';
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            (indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
-              expectedProfitPercent >= 1),
+            indicatorsData.obvSignal === 'sell',
+          // (indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
+          //   expectedProfitPercent >= 1),
 
           // ((indicatorsData.stochRsiSignal.stoch5m === 'sell' &&
           //   !indicatorsData.priceGrowArea) ||
@@ -657,11 +660,13 @@ import _head from 'lodash/head';
   // getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '15m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '1h', indicatorsData);
-  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  getEMASignal(symbol, '5m', indicatorsData);
-  getEMASignal(symbol, '15m', indicatorsData);
-  getEMASignal(symbol, '1m', indicatorsData);
+
+  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  // getEMASignal(symbol, '5m', indicatorsData);
+  // getEMASignal(symbol, '15m', indicatorsData);
+  // getEMASignal(symbol, '1m', indicatorsData);
+  getObvSignal(symbol, '15m', indicatorsData);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)
