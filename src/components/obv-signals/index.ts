@@ -24,6 +24,11 @@ export const runObvInterval = indicatorsData => {
       indicatorsData.obvSignal = 'sell';
     }
 
+    console.log('Curr: ' + indicatorsData.obv);
+    console.log('Prev: ' + indicatorsData.prevObv);
+    console.log('Buy signal: ' + indicatorsData.obvBuySignalCount);
+    console.log('Sell signal: ' + indicatorsData.obvSellSignalCount + '\n');
+
     indicatorsData.prevObv = indicatorsData.obv;
   }, 60000);
 };

@@ -277,11 +277,13 @@ import _head from 'lodash/head';
         },
       },
       stochRsiStrategy: {
-        buy: botState.status === 'buy' && indicatorsData.obvSignal === 'buy',
-        // indicatorsData.rsi5m.rsiValue >= 41 &&
-        // indicatorsData.rsi15m.rsiValue >= 41 &&
-        // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-        // indicatorsData.stochRsiSignal.stoch15m === 'buy',
+        buy:
+          botState.status === 'buy' &&
+          indicatorsData.obvSignal === 'buy' &&
+          // indicatorsData.rsi5m.rsiValue >= 41 &&
+          // indicatorsData.rsi15m.rsiValue >= 41 &&
+          // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
+          indicatorsData.stochRsiSignal.stoch15m === 'buy',
         sell: {
           takeProfit: null,
           // botState.status === 'sell' &&
@@ -292,8 +294,8 @@ import _head from 'lodash/head';
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            indicatorsData.obvSignal === 'sell',
-          // (indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
+            // indicatorsData.obvSignal === 'sell',
+            indicatorsData.stochRsiSignal.stoch15m === 'sell',
           //   expectedProfitPercent >= 1),
 
           // ((indicatorsData.stochRsiSignal.stoch5m === 'sell' &&
@@ -665,7 +667,7 @@ import _head from 'lodash/head';
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getStochRSISignal(symbol, '1m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
-  // getStochRSISignal(symbol, '15m', indicatorsData, 1.5, 1.5);
+  getStochRSISignal(symbol, '15m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '1h', indicatorsData);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
