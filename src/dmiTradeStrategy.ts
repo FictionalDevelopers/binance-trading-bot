@@ -53,6 +53,8 @@ import _head from 'lodash/head';
   }
 
   const indicatorsData = {
+    obvBuySignalCount: 0,
+    obvSellSignalCount: 0,
     prevObv: null,
     obv: null,
     obvSignal: null,
@@ -426,6 +428,7 @@ import _head from 'lodash/head';
           'STOCH RSI SIGNAL',
         );
         botState.buyReason = 'stochRsi';
+        indicatorsData.obvBuySignalCount = 0;
         return;
       }
     }
@@ -632,6 +635,8 @@ import _head from 'lodash/head';
         'STOCH RSI STOP LOSS',
         false,
       );
+      indicatorsData.obvSellSignalCount = 0;
+
       // indicatorsData.priceGrowArea = false;
       return;
     }

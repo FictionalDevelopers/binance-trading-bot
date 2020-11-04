@@ -9,9 +9,17 @@ export const runObvInterval = indicatorsData => {
     }
 
     if (indicatorsData.prevObv > indicatorsData.obv)
-      indicatorsData.obvSignal = 'sell';
+      indicatorsData.obvSellSignalCount++;
     if (indicatorsData.prevObv < indicatorsData.obv)
+      indicatorsData.obvBuySignalCount++;
+
+    if (indicatorsData.obvBuySignalCount >= 2) {
       indicatorsData.obvSignal = 'buy';
+    }
+    if (indicatorsData.obvSellSignalCount >= 2) {
+      indicatorsData.obvSignal = 'sell';
+    }
+
     indicatorsData.prevObv = indicatorsData.obv;
   }, 60000);
 };
