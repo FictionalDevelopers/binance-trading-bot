@@ -15,6 +15,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
 import { getObvSignal, runObvInterval } from './components/obv-signals';
 import { service as botStateService } from './components/botState';
 import _head from 'lodash/head';
+import { getForceIndexSignal } from './components/forceIndex';
 
 (async function() {
   await connect();
@@ -53,6 +54,13 @@ import _head from 'lodash/head';
   }
 
   const indicatorsData = {
+    efi: {
+      efiBuySignalCount: 0,
+      efiSellSignalCount: 0,
+      prevEfi: null,
+      efi: null,
+      efiSignal: null,
+    },
     obvBuySignalCount: 0,
     obvSellSignalCount: 0,
     prevObv: null,
@@ -279,11 +287,12 @@ import _head from 'lodash/head';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.obvSignal === 'buy' &&
+          // indicatorsData.obvSignal === 'buy' &&
           // indicatorsData.rsi5m.rsiValue >= 41 &&
           // indicatorsData.rsi15m.rsiValue >= 41 &&
           // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-          indicatorsData.stochRsiSignal.stoch15m === 'buy',
+          indicatorsData.stochRsiSignal.stoch15m === 'buy' &&
+          indicatorsData.efi.efi > 0,
         sell: {
           takeProfit: null,
           // botState.status === 'sell' &&
@@ -675,7 +684,8 @@ import _head from 'lodash/head';
   // getEMASignal(symbol, '5m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1m', indicatorsData);
-  getObvSignal(symbol, '1h', indicatorsData);
+  // getObvSignal(symbol, '1h', indicatorsData);
+  getForceIndexSignal(symbol, '15m', 13, indicatorsData);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)

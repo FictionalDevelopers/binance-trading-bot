@@ -13,6 +13,7 @@ import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 import { getStochRSISignal } from './components/stochRSI-signals';
 import { getObvSignal, runObvInterval } from './components/obv-signals';
+import { getForceIndexSignal, runEFIInterval } from './components/forceIndex';
 import { service as botStateService } from './components/botState';
 import _head from 'lodash/head';
 
@@ -53,6 +54,13 @@ import _head from 'lodash/head';
   }
 
   const indicatorsData = {
+    efi: {
+      efiBuySignalCount: 0,
+      efiSellSignalCount: 0,
+      prevEfi: null,
+      efi: null,
+      efiSignal: null,
+    },
     obvBuySignalCount: 0,
     obvSellSignalCount: 0,
     prevObv: null,
@@ -663,8 +671,13 @@ import _head from 'lodash/head';
   // getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '15m', indicatorsData, 1.5, 1.5);
   // getForceIndexSignal(symbol, '15m');
-  runObvInterval(indicatorsData);
-  getObvSignal(symbol, '1h', indicatorsData);
+
+  // runObvInterval(indicatorsData);
+  // getObvSignal(symbol, '1h', indicatorsData);
+
+  runEFIInterval(indicatorsData);
+
+  getForceIndexSignal(symbol, '1h', 13, indicatorsData);
 
   // getStochRSISignal(symbol, '1h', indicatorsData);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
