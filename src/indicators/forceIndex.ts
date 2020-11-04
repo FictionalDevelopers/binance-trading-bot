@@ -1,32 +1,29 @@
-import last from 'lodash/last';
-import { from, Observable, defer } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { forceIndex } from 'trading-indicator';
-import { getCandleStreamForInterval } from '../api/candles';
-import { INDICATORS_LIST_SYMBOLS } from '../constants';
+import { ForceIndex } from 'technicalindicators';
+import { from, Observable } from 'rxjs';
+import { last } from 'lodash';
+import _map from 'lodash/map';
+import { map, pluck, switchMap } from 'rxjs/operators';
+import { getCandleStreamForInterval, getCandlesList } from '../api/candles';
 
-type forceIndexStreamConfig = {
+type ForceIndexStreamConfig = {
   symbol: string;
   interval: string;
+  period: number;
 };
 
-export function getForceIndexStream(
-  config: forceIndexStreamConfig,
-): Observable<number> {
-  return getCandleStreamForInterval(config.symbol, config.interval).pipe(
-    switchMap(() =>
-      from(
-        forceIndex(
-          25,
-          13,
-          'close',
-          'binance',
-          INDICATORS_LIST_SYMBOLS[config.symbol],
-          config.interval,
-          false,
-        ),
-      ),
+export const getForceIndexStream = (
+  config: ForceIndexStreamConfig,
+): Observable<number> =>
+  getCandleStreamForInterval(config.symbol, config.interval).pipe(
+    switchMap(_ => from(getCandlesList(config))),
+    map(
+      candles =>
+        new ForceIndex({
+          close: _map(candles, 'close'),
+          volume: _map(candles, 'volume'),
+          period: config.period,
+        }),
     ),
+    pluck('result'),
     map(last),
   );
-}
