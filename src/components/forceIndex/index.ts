@@ -1,7 +1,7 @@
 // import * as service from './service';
 import { getForceIndexStream } from '../../indicators/forceIndex';
 
-export const runEFIInterval = ({ efi }) => {
+export const runEFIInterval = efi => {
   setInterval(async () => {
     if (!efi.prevAv && efi.av) {
       efi.prevAv = efi.av;
@@ -38,23 +38,18 @@ export const runEFIInterval = ({ efi }) => {
   }, 60000);
 };
 
-export const getForceIndexSignal = (
-  symbol,
-  timeFrame,
-  period,
-  indicatorsData,
-) => {
+export const getForceIndexSignal = (symbol, timeFrame, period, efiData) => {
   getForceIndexStream({
     symbol: symbol,
     interval: timeFrame,
     period: period,
   }).subscribe(forceIndex => {
     if (forceIndex) {
-      if (!indicatorsData.efi) {
-        indicatorsData.efi.efi = forceIndex;
+      if (!efiData.efi) {
+        efiData.efi = forceIndex;
         return;
       }
-      indicatorsData.efi.efi = forceIndex;
+      efiData.efi = forceIndex;
       // console.log(
       //   (indicatorsData.efi.efi / indicatorsData.efi.prevEfi) * 100 - 100,
       // );

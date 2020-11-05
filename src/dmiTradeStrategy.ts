@@ -56,7 +56,16 @@ import getAvarage from './utils/getAverage';
   }
 
   const indicatorsData = {
-    efi: {
+    efi1h: {
+      efiBuySignalCount: 0,
+      efiSellSignalCount: 0,
+      prevEfi: null,
+      efi: null,
+      efiSignal: null,
+      av: null,
+      prevAv: null,
+    },
+    efi5m: {
       efiBuySignalCount: 0,
       efiSellSignalCount: 0,
       prevEfi: null,
@@ -291,7 +300,8 @@ import getAvarage from './utils/getAverage';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.efi.efiSignal === 'buy' &&
+          indicatorsData.efi1h.efiSignal === 'buy' &&
+          indicatorsData.efi5m.efi > 0 &&
           // indicatorsData.obvSignal === 'buy' &&
           // indicatorsData.rsi5m.rsiValue >= 41 &&
           // indicatorsData.rsi15m.rsiValue >= 41 &&
@@ -308,7 +318,7 @@ import getAvarage from './utils/getAverage';
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            indicatorsData.efi.efiSignal === 'sell',
+            indicatorsData.efi1h.efiSignal === 'sell',
 
           // indicatorsData.obvSignal === 'sell',
           // indicatorsData.stochRsiSignal.stoch15m === 'sell',
@@ -692,7 +702,8 @@ import getAvarage from './utils/getAverage';
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1m', indicatorsData);
   // getObvSignal(symbol, '1h', indicatorsData);
-  getForceIndexSignal(symbol, '1h', 13, indicatorsData);
+  getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
+  getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)
@@ -711,7 +722,7 @@ import getAvarage from './utils/getAverage';
   `);
   }
 
-  runEFIInterval(indicatorsData);
+  runEFIInterval(indicatorsData.efi1h);
 
   getTradeStream({
     symbol: symbol,
@@ -727,7 +738,7 @@ import getAvarage from './utils/getAverage';
   })
     .pipe(bufferCount(3, 3))
     .subscribe(data => {
-      indicatorsData.efi.av = getAvarage(data);
+      indicatorsData.efi1h.av = getAvarage(data);
       // if (indicatorsData.efi.av && indicatorsData.efi.prevAv) {
       //   if (indicatorsData.efi.av > indicatorsData.efi.prevAv)
       //     indicatorsData.efi.efiSignal = 'buy';
@@ -735,8 +746,8 @@ import getAvarage from './utils/getAverage';
       //     indicatorsData.efi.efiSignal = 'sell';
       // }
       // console.log(getAvarage(data));
-      console.log('Av: ' + indicatorsData.efi.av);
-      console.log('Prev av: ' + indicatorsData.efi.prevAv + '\n');
+      console.log('Av: ' + indicatorsData.efi1h.av);
+      console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
     });
 })();
 
