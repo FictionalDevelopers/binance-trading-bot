@@ -315,8 +315,8 @@ import getAvarage from './utils/getAverage';
           // indicatorsData.rsi5m.rsiValue >= 41 &&
           // indicatorsData.rsi15m.rsiValue >= 41 &&
           // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-          indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-          indicatorsData.stochRsiSignal.stoch1m === 'buy',
+          indicatorsData.stochRsiSignal.stoch5m === 'buy',
+        // indicatorsData.stochRsiSignal.stoch1m === 'buy',
         // indicatorsData.efi.efi > 0,
         sell: {
           takeProfit: null,
@@ -328,7 +328,8 @@ import getAvarage from './utils/getAverage';
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            indicatorsData.stochRsiSignal.stoch1m === 'sell',
+            // indicatorsData.stochRsiSignal.stoch1m === 'sell',
+            indicatorsData.efi1h.efiSignal === 'sell',
 
           // indicatorsData.obvSignal === 'sell',
           // indicatorsData.stochRsiSignal.stoch15m === 'sell',

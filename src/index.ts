@@ -722,7 +722,7 @@ import getAvarage from './utils/getAverage';
   // `);
   // }
 
-  runEFIInterval(indicatorsData.efi1h);
+  // runEFIInterval(indicatorsData.efi1h);
 
   // getTradeStream({
   //   symbol: symbol,
@@ -738,16 +738,17 @@ import getAvarage from './utils/getAverage';
   })
     .pipe(bufferCount(3, 3))
     .subscribe(data => {
-      indicatorsData.efi1h.av = getAvarage(data);
-      // if (indicatorsData.efi.av && indicatorsData.efi.prevAv) {
-      //   if (indicatorsData.efi.av > indicatorsData.efi.prevAv)
-      //     indicatorsData.efi.efiSignal = 'buy';
-      //   if (indicatorsData.efi.av < indicatorsData.efi.prevAv)
-      //     indicatorsData.efi.efiSignal = 'sell';
-      // }
+      const currentAvg = getAvarage(data);
+      if (!indicatorsData.efi1h.prevAv) {
+        indicatorsData.efi1h.prevAv = currentAvg;
+        return;
+      }
       console.log('Current: ' + getAvarage(data));
+      if (indicatorsData.efi1h.prevAv > currentAvg) console.log('DOWN');
+      if (indicatorsData.efi1h.prevAv < currentAvg) console.log('UP');
       // console.log('Av: ' + indicatorsData.efi1h.av);
       // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
+      indicatorsData.efi1h.prevAv = currentAvg;
     });
 })();
 
