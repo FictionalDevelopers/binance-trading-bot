@@ -15,7 +15,9 @@ import { getStochRSISignal } from './components/stochRSI-signals';
 import { getObvSignal, runObvInterval } from './components/obv-signals';
 import { service as botStateService } from './components/botState';
 import _head from 'lodash/head';
-import { getForceIndexSignal } from './components/forceIndex';
+import { getForceIndexSignal, runEFIInterval } from './components/forceIndex';
+import { getForceIndexStream } from './indicators/forceIndex';
+import getAvarage from './utils/getAverage';
 
 (async function() {
   await connect();
@@ -60,6 +62,8 @@ import { getForceIndexSignal } from './components/forceIndex';
       prevEfi: null,
       efi: null,
       efiSignal: null,
+      av: null,
+      prevAv: null,
     },
     obvBuySignalCount: 0,
     obvSellSignalCount: 0,
@@ -287,12 +291,13 @@ import { getForceIndexSignal } from './components/forceIndex';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
+          indicatorsData.efi.efiSignal === 'buy' &&
           // indicatorsData.obvSignal === 'buy' &&
           // indicatorsData.rsi5m.rsiValue >= 41 &&
           // indicatorsData.rsi15m.rsiValue >= 41 &&
           // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-          indicatorsData.stochRsiSignal.stoch15m === 'buy' &&
-          indicatorsData.efi.efi > 0,
+          indicatorsData.stochRsiSignal.stoch5m === 'buy',
+        // indicatorsData.efi.efi > 0,
         sell: {
           takeProfit: null,
           // botState.status === 'sell' &&
@@ -303,8 +308,10 @@ import { getForceIndexSignal } from './components/forceIndex';
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            // indicatorsData.obvSignal === 'sell',
-            indicatorsData.stochRsiSignal.stoch15m === 'sell',
+            indicatorsData.efi.efiSignal === 'sell',
+
+          // indicatorsData.obvSignal === 'sell',
+          // indicatorsData.stochRsiSignal.stoch15m === 'sell',
           //   expectedProfitPercent >= 1),
 
           // ((indicatorsData.stochRsiSignal.stoch5m === 'sell' &&
@@ -676,7 +683,7 @@ import { getForceIndexSignal } from './components/forceIndex';
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getStochRSISignal(symbol, '1m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
-  getStochRSISignal(symbol, '15m', indicatorsData, 1.5, 1.5);
+  getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '1h', indicatorsData);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
@@ -685,7 +692,7 @@ import { getForceIndexSignal } from './components/forceIndex';
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1m', indicatorsData);
   // getObvSignal(symbol, '1h', indicatorsData);
-  getForceIndexSignal(symbol, '15m', 13, indicatorsData);
+  getForceIndexSignal(symbol, '1h', 13, indicatorsData);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)
@@ -704,12 +711,33 @@ import { getForceIndexSignal } from './components/forceIndex';
   `);
   }
 
+  runEFIInterval(indicatorsData);
+
   getTradeStream({
     symbol: symbol,
     resource: RESOURCES.TRADE,
   })
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(trader);
+
+  getForceIndexStream({
+    symbol: symbol,
+    interval: '1h',
+    period: 13,
+  })
+    .pipe(bufferCount(3, 3))
+    .subscribe(data => {
+      indicatorsData.efi.av = getAvarage(data);
+      // if (indicatorsData.efi.av && indicatorsData.efi.prevAv) {
+      //   if (indicatorsData.efi.av > indicatorsData.efi.prevAv)
+      //     indicatorsData.efi.efiSignal = 'buy';
+      //   if (indicatorsData.efi.av < indicatorsData.efi.prevAv)
+      //     indicatorsData.efi.efiSignal = 'sell';
+      // }
+      // console.log(getAvarage(data));
+      console.log('Av: ' + indicatorsData.efi.av);
+      console.log('Prev av: ' + indicatorsData.efi.prevAv + '\n');
+    });
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {
