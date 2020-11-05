@@ -733,7 +733,7 @@ import getAvarage from './utils/getAverage';
 
   getForceIndexStream({
     symbol: symbol,
-    interval: '1h',
+    interval: '5m',
     period: 13,
   })
     .pipe(bufferCount(3, 3))
