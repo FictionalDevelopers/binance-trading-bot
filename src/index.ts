@@ -704,6 +704,7 @@ import getAvarage from './utils/getAverage';
   // getObvSignal(symbol, '1h', indicatorsData);
   getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
   getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
 
   // if (botState.testMode) {
   //   await sendToRecipients(`INIT (TEST MODE)
