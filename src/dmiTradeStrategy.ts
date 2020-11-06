@@ -105,6 +105,7 @@ import getAvarage from './utils/getAverage';
       adxSellSignalVolume: 0,
       willPriceGrow: false,
       trend: null,
+      adx: null,
     },
     dmi1h: {
       prevDmi: null,
@@ -115,6 +116,7 @@ import getAvarage from './utils/getAverage';
       adxSellSignalVolume: 0,
       willPriceGrow: false,
       trend: null,
+      adx: null,
     },
     dmi1m: {
       prevDmi: null,
@@ -125,6 +127,7 @@ import getAvarage from './utils/getAverage';
       adxSellSignalVolume: 0,
       willPriceGrow: false,
       trend: null,
+      adx: null,
     },
     rsi1m: {
       rsiValue: null,
