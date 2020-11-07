@@ -318,6 +318,7 @@ import getAvarage from './utils/getAverage';
             indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
             indicatorsData.dmi5m.adx > 20) ||
             (indicatorsData.efi1m.efi > 0 &&
+              indicatorsData.efi5m.efi > 0 &&
               indicatorsData.dmi1m.adx > 20 &&
               indicatorsData.stochRsiSignal.stoch1m === 'buy')),
         // indicatorsData.obvSignal === 'buy' &&
