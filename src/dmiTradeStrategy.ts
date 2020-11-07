@@ -312,6 +312,10 @@ import getAvarage from './utils/getAverage';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
+          indicatorsData.rsi1m.rsiValue !== null &&
+          indicatorsData.rsi1m.rsiValue < 68 &&
+          indicatorsData.rsi5m.rsiValue !== null &&
+          indicatorsData.rsi5m.rsiValue < 68 &&
           // indicatorsData.efi1h.efiSignal === 'buy' &&
           ((indicatorsData.efi5m.efi > 0 &&
             indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
@@ -719,8 +723,8 @@ import getAvarage from './utils/getAverage';
   getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   // getStochRSISignal(symbol, '1h', indicatorsData);
 
-  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getEMASignal(symbol, '5m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1m', indicatorsData);
