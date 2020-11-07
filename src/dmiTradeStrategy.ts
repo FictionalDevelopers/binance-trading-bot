@@ -714,7 +714,7 @@ import getAvarage from './utils/getAverage';
   getStochRSISignal(symbol, '5m', indicatorsData, 5, 5);
   getStochRSISignal(symbol, '1m', indicatorsData, 5, 5);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
+  getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   // getStochRSISignal(symbol, '1h', indicatorsData);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
