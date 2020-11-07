@@ -335,7 +335,7 @@ import getAvarage from './utils/getAverage';
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            indicatorsData.stochRsiSignal.stoch5m === 'sell',
+            indicatorsData.stochRsiSignal.stoch1m === 'sell',
           // indicatorsData.efi1h.efiSignal === 'sell',
 
           // indicatorsData.obvSignal === 'sell',
