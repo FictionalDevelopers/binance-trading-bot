@@ -313,14 +313,9 @@ import getAvarage from './utils/getAverage';
         buy:
           botState.status === 'buy' &&
           // indicatorsData.efi1h.efiSignal === 'buy' &&
-          ((indicatorsData.efi5m.efi > 0 &&
-            indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-            indicatorsData.dmi5m.adx > 20) ||
-            (indicatorsData.efi1m.efi > 0 &&
-              indicatorsData.efi5m.efi > 0 &&
-              indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-              indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
-              indicatorsData.dmi1m.adx > 20)),
+          indicatorsData.efi5m.efi > 0 &&
+          indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
+          indicatorsData.dmi5m.adx > 20,
         // indicatorsData.obvSignal === 'buy' &&
         // indicatorsData.rsi5m.rsiValue >= 41 &&
         // indicatorsData.rsi15m.rsiValue >= 41 &&
@@ -713,10 +708,10 @@ import getAvarage from './utils/getAverage';
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getStochRSISignal(symbol, '1m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
-  getStochRSISignal(symbol, '5m', indicatorsData, 0.5, 1);
-  getStochRSISignal(symbol, '1m', indicatorsData, 0.5, 1);
+  getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
+  // getStochRSISignal(symbol, '1m', indicatorsData, 0.5, 1);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  getDMISignal(symbol, '1m', indicatorsData.dmi1m);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   // getStochRSISignal(symbol, '1h', indicatorsData);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
