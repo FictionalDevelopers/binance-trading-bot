@@ -11,6 +11,7 @@ import { marketSellAction, marketBuyAction, getOrdersList } from './api/order';
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
+import { getTrixSignal, runTrixInterval } from './components/trix-signal';
 import {
   getStochRSISignal,
   runStochRsiInterval,
@@ -22,6 +23,7 @@ import { getForceIndexSignal, runEFIInterval } from './components/forceIndex';
 import { getForceIndexStream } from './indicators/forceIndex';
 import getAvarage from './utils/getAverage';
 import { getStochRsiStream } from './indicators/stochRSI';
+import { getTrixStream } from './indicators/trix';
 
 (async function() {
   await connect();
@@ -60,6 +62,15 @@ import { getStochRsiStream } from './indicators/stochRSI';
   // }
 
   const indicatorsData = {
+    trix: {
+      trix5m: {
+        av: null,
+        prevAv: null,
+        signal: null,
+        value: null,
+        prev: null,
+      },
+    },
     efi1h: {
       efiBuySignalCount: 0,
       efiSellSignalCount: 0,
@@ -717,8 +728,8 @@ import { getStochRsiStream } from './indicators/stochRSI';
   // getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  getStochRSISignal(symbol, '5m', indicatorsData.stochRsiSignal.stoch5m, 5, 5);
-
+  // getStochRSISignal(symbol, '5m', indicatorsData.stochRsiSignal.stoch5m, 5, 5);
+  // getTrixSignal(symbol, '5m', {});
   // if (botState.testMode) {
   //   await sendToRecipients(`INIT (TEST MODE)
   // Bot started working at: ${format(new Date(), DATE_FORMAT)}
@@ -737,7 +748,10 @@ import { getStochRsiStream } from './indicators/stochRSI';
   // }
 
   // runEFIInterval(indicatorsData.efi1h);
-  runStochRsiInterval(indicatorsData.stochRsiSignal.stoch5m);
+  // runStochRsiInterval(indicatorsData.stochRsiSignal.stoch5m);
+
+  runTrixInterval(indicatorsData.trix.trix5m);
+  getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
 
   // getTradeStream({
   //   symbol: symbol,
@@ -766,25 +780,46 @@ import { getStochRsiStream } from './indicators/stochRSI';
   //     indicatorsData.efi1h.prevAv = currentAvg;
   //   });
 
-  getStochRsiStream({
-    symbol: symbol,
-    interval: '5m',
-  })
-    .pipe(pluck('k'), bufferCount(3, 3))
-    .subscribe(data => {
-      indicatorsData.stochRsiSignal.stoch5m.av = getAvarage(data);
-      // if (indicatorsData.efi.av && indicatorsData.efi.prevAv) {
-      //   if (indicatorsData.efi.av > indicatorsData.efi.prevAv)
-      //     indicatorsData.efi.efiSignal = 'buy';
-      //   if (indicatorsData.efi.av < indicatorsData.efi.prevAv)
-      //     indicatorsData.efi.efiSignal = 'sell';
-      // }
-      console.log(getAvarage(data));
-      // console.log('Av: ' + indicatorsData.stochRsiSignal.stoch5m.av);
-      // console.log(
-      //   'Prev av: ' + indicatorsData.stochRsiSignal.stoch5m.prevAv + '\n',
-      // );
-    });
+  // getTrixStream({
+  //   symbol: symbol,
+  //   interval: '5m',
+  //   period: 6,
+  // })
+  //   .pipe(bufferCount(20, 20))
+  //   .subscribe(data => {
+  //     const currentAvg = getAvarage(data);
+  //     if (!indicatorsData.trix.trix5m.prevAv) {
+  //       indicatorsData.trix.trix5m.prevAv = currentAvg;
+  //       return;
+  //     }
+  //     console.log('Current: ' + getAvarage(data));
+  //     if (indicatorsData.trix.trix5m.prevAv > currentAvg) console.log('DOWN');
+  //     if (indicatorsData.trix.trix5m.prevAv < currentAvg) console.log('UP');
+  //     // console.log('Av: ' + indicatorsData.efi1h.av);
+  //     // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
+  //     indicatorsData.trix.trix5m.prevAv = currentAvg;
+  //   });
+
+  // getStochRsiStream({
+  //   symbol: symbol,
+  //   interval: '5m',
+  // })
+  //   .pipe(pluck('k'), bufferCount(20, 20))
+  //   .subscribe(data => {
+  //     const currentAvg = getAvarage(data);
+  //     if (!indicatorsData.stochRsiSignal.stoch5m.prevAv) {
+  //       indicatorsData.stochRsiSignal.stoch5m.prevAv = currentAvg;
+  //       return;
+  //     }
+  //     console.log('Current: ' + getAvarage(data));
+  //     if (indicatorsData.stochRsiSignal.stoch5m.prevAv > currentAvg)
+  //       console.log('DOWN');
+  //     if (indicatorsData.stochRsiSignal.stoch5m.prevAv < currentAvg)
+  //       console.log('UP');
+  //     // console.log('Av: ' + indicatorsData.efi1h.av);
+  //     // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
+  //     indicatorsData.stochRsiSignal.stoch5m.prevAv = currentAvg;
+  //   });
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {

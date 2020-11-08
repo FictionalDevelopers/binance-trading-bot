@@ -22,6 +22,7 @@ import { getForceIndexSignal, runEFIInterval } from './components/forceIndex';
 import { getForceIndexStream } from './indicators/forceIndex';
 import getAvarage from './utils/getAverage';
 import { getStochRsiStream } from './indicators/stochRSI';
+import { getTrixSignal, runTrixInterval } from './components/trix-signal';
 
 (async function() {
   await connect();
@@ -60,6 +61,15 @@ import { getStochRsiStream } from './indicators/stochRSI';
   }
 
   const indicatorsData = {
+    trix: {
+      trix5m: {
+        av: null,
+        prevAv: null,
+        signal: null,
+        value: null,
+        prev: null,
+      },
+    },
     efi1h: {
       efiBuySignalCount: 0,
       efiSellSignalCount: 0,
@@ -324,19 +334,20 @@ import { getStochRsiStream } from './indicators/stochRSI';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.rsi1m.rsiValue !== null &&
-          indicatorsData.rsi1m.rsiValue < 68 &&
-          indicatorsData.rsi5m.rsiValue !== null &&
-          indicatorsData.rsi5m.rsiValue < 68 &&
-          // indicatorsData.efi1h.efiSignal === 'buy' &&
-          ((indicatorsData.efi5m.efi > 0 &&
-            indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-            indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
-            indicatorsData.dmi5m.adx > 20) ||
-            (indicatorsData.efi1m.efi > 0 &&
-              indicatorsData.efi5m.efi > 0 &&
-              indicatorsData.dmi1m.adx > 20 &&
-              indicatorsData.stochRsiSignal.stoch1m === 'buy')),
+          indicatorsData.trix.trix5m.signal === 'buy',
+        // indicatorsData.rsi1m.rsiValue !== null &&
+        // indicatorsData.rsi1m.rsiValue < 68 &&
+        // indicatorsData.rsi5m.rsiValue !== null &&
+        // indicatorsData.rsi5m.rsiValue < 68 &&
+        // indicatorsData.efi1h.efiSignal === 'buy' &&
+        // ((indicatorsData.efi5m.efi > 0 &&
+        //   indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
+        //   indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
+        //   indicatorsData.dmi5m.adx > 20) ||
+        //   (indicatorsData.efi1m.efi > 0 &&
+        //     indicatorsData.efi5m.efi > 0 &&
+        //     indicatorsData.dmi1m.adx > 20 &&
+        //     indicatorsData.stochRsiSignal.stoch1m === 'buy')),
         // indicatorsData.obvSignal === 'buy' &&
         // indicatorsData.rsi5m.rsiValue >= 41 &&
         // indicatorsData.rsi15m.rsiValue >= 41 &&
@@ -353,7 +364,8 @@ import { getStochRsiStream } from './indicators/stochRSI';
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            indicatorsData.stochRsiSignal.stoch1m === 'sell',
+            indicatorsData.trix.trix5m.signal === 'sell',
+          // indicatorsData.stochRsiSignal.stoch1m === 'sell',
           // indicatorsData.efi1h.efiSignal === 'sell',
 
           // indicatorsData.obvSignal === 'sell',
@@ -726,6 +738,9 @@ import { getStochRsiStream } from './indicators/stochRSI';
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
+  runTrixInterval(indicatorsData.trix.trix5m);
+  getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
+
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getStochRSISignal(symbol, '1m', indicatorsData, 1.5, 1.5);
   // getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
@@ -735,15 +750,15 @@ import { getStochRsiStream } from './indicators/stochRSI';
   getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   // getStochRSISignal(symbol, '1h', indicatorsData);
 
-  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getEMASignal(symbol, '5m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1m', indicatorsData);
   // getObvSignal(symbol, '1h', indicatorsData);
-  getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
-  getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
-  getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
+  // getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
+  // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
+  // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)

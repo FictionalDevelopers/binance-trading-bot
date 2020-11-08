@@ -1,4 +1,4 @@
-import { TRIX } from 'technicalindicators';
+import { TRIX, trix } from 'technicalindicators';
 import { from, Observable } from 'rxjs';
 import { last } from 'lodash';
 import _map from 'lodash/map';
@@ -17,7 +17,7 @@ export const getTrixStream = (config: TrixStreamConfig): Observable<number> =>
     map(
       candles =>
         new TRIX({
-          values: _map(candles, 'close'),
+          values: _map(candles, 'close').map(value => Number(value)),
           period: config.period,
         }),
     ),
