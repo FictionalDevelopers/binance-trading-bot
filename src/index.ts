@@ -11,13 +11,17 @@ import { marketSellAction, marketBuyAction, getOrdersList } from './api/order';
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
-import { getStochRSISignal } from './components/stochRSI-signals';
+import {
+  getStochRSISignal,
+  runStochRsiInterval,
+} from './components/stochRSI-signals';
 import { getObvSignal, runObvInterval } from './components/obv-signals';
 import { service as botStateService } from './components/botState';
 import _head from 'lodash/head';
 import { getForceIndexSignal, runEFIInterval } from './components/forceIndex';
 import { getForceIndexStream } from './indicators/forceIndex';
 import getAvarage from './utils/getAverage';
+import { getStochRsiStream } from './indicators/stochRSI';
 
 (async function() {
   await connect();
@@ -81,8 +85,16 @@ import getAvarage from './utils/getAverage';
     obvSignal: null,
     priceGrowArea: false,
     stochRsiSignal: {
-      stoch1m: null,
-      stoch5m: null,
+      stoch1m: {},
+      stoch5m: {
+        BuySignalCount: 0,
+        SellSignalCount: 0,
+        prev: null,
+        value: null,
+        signal: null,
+        av: null,
+        prevAv: null,
+      },
       stoch15m: null,
       stoch1h: null,
     },
@@ -702,9 +714,10 @@ import getAvarage from './utils/getAverage';
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1m', indicatorsData);
   // getObvSignal(symbol, '1h', indicatorsData);
-  getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
-  getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  // getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
+  // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
+  // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  getStochRSISignal(symbol, '5m', indicatorsData.stochRsiSignal.stoch5m, 5, 5);
 
   // if (botState.testMode) {
   //   await sendToRecipients(`INIT (TEST MODE)
@@ -724,6 +737,7 @@ import getAvarage from './utils/getAverage';
   // }
 
   // runEFIInterval(indicatorsData.efi1h);
+  runStochRsiInterval(indicatorsData.stochRsiSignal.stoch5m);
 
   // getTradeStream({
   //   symbol: symbol,
@@ -732,24 +746,44 @@ import getAvarage from './utils/getAverage';
   //   .pipe(pluck('price'), bufferCount(1, 1))
   //   .subscribe(trader);
 
-  getForceIndexStream({
+  // getForceIndexStream({
+  //   symbol: symbol,
+  //   interval: '5m',
+  //   period: 13,
+  // })
+  //   .pipe(bufferCount(3, 3))
+  //   .subscribe(data => {
+  //     const currentAvg = getAvarage(data);
+  //     if (!indicatorsData.efi1h.prevAv) {
+  //       indicatorsData.efi1h.prevAv = currentAvg;
+  //       return;
+  //     }
+  //     console.log('Current: ' + getAvarage(data));
+  //     if (indicatorsData.efi1h.prevAv > currentAvg) console.log('DOWN');
+  //     if (indicatorsData.efi1h.prevAv < currentAvg) console.log('UP');
+  //     // console.log('Av: ' + indicatorsData.efi1h.av);
+  //     // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
+  //     indicatorsData.efi1h.prevAv = currentAvg;
+  //   });
+
+  getStochRsiStream({
     symbol: symbol,
     interval: '5m',
-    period: 13,
   })
-    .pipe(bufferCount(3, 3))
+    .pipe(pluck('k'), bufferCount(3, 3))
     .subscribe(data => {
-      const currentAvg = getAvarage(data);
-      if (!indicatorsData.efi1h.prevAv) {
-        indicatorsData.efi1h.prevAv = currentAvg;
-        return;
-      }
-      console.log('Current: ' + getAvarage(data));
-      if (indicatorsData.efi1h.prevAv > currentAvg) console.log('DOWN');
-      if (indicatorsData.efi1h.prevAv < currentAvg) console.log('UP');
-      // console.log('Av: ' + indicatorsData.efi1h.av);
-      // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
-      indicatorsData.efi1h.prevAv = currentAvg;
+      indicatorsData.stochRsiSignal.stoch5m.av = getAvarage(data);
+      // if (indicatorsData.efi.av && indicatorsData.efi.prevAv) {
+      //   if (indicatorsData.efi.av > indicatorsData.efi.prevAv)
+      //     indicatorsData.efi.efiSignal = 'buy';
+      //   if (indicatorsData.efi.av < indicatorsData.efi.prevAv)
+      //     indicatorsData.efi.efiSignal = 'sell';
+      // }
+      console.log(getAvarage(data));
+      // console.log('Av: ' + indicatorsData.stochRsiSignal.stoch5m.av);
+      // console.log(
+      //   'Prev av: ' + indicatorsData.stochRsiSignal.stoch5m.prevAv + '\n',
+      // );
     });
 })();
 

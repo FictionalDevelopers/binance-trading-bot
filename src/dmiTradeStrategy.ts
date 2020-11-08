@@ -11,13 +11,17 @@ import { marketSellAction, marketBuyAction, getOrdersList } from './api/order';
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
-import { getStochRSISignal } from './components/stochRSI-signals';
+import {
+  getStochRSISignal,
+  runStochRsiInterval,
+} from './components/stochRSI-signals';
 import { getObvSignal, runObvInterval } from './components/obv-signals';
 import { service as botStateService } from './components/botState';
 import _head from 'lodash/head';
 import { getForceIndexSignal, runEFIInterval } from './components/forceIndex';
 import { getForceIndexStream } from './indicators/forceIndex';
 import getAvarage from './utils/getAverage';
+import { getStochRsiStream } from './indicators/stochRSI';
 
 (async function() {
   await connect();
@@ -90,8 +94,16 @@ import getAvarage from './utils/getAverage';
     obvSignal: null,
     priceGrowArea: false,
     stochRsiSignal: {
-      stoch1m: null,
-      stoch5m: null,
+      stoch1m: {},
+      stoch5m: {
+        BuySignalCount: 0,
+        SellSignalCount: 0,
+        prev: null,
+        value: null,
+        signal: null,
+        av: null,
+        prevAv: null,
+      },
       stoch15m: null,
       stoch1h: null,
     },
@@ -751,6 +763,7 @@ import getAvarage from './utils/getAverage';
   }
 
   runEFIInterval(indicatorsData.efi1h);
+  runStochRsiInterval(indicatorsData.stochRsiSignal.stoch5m);
 
   getTradeStream({
     symbol: symbol,
@@ -776,6 +789,26 @@ import getAvarage from './utils/getAverage';
       // console.log(getAvarage(data));
       console.log('Av: ' + indicatorsData.efi1h.av);
       console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
+    });
+
+  getStochRsiStream({
+    symbol: symbol,
+    interval: '5m',
+  })
+    .pipe(bufferCount(3, 3))
+    .subscribe(data => {
+      indicatorsData.stochRsiSignal.stoch5m.av = getAvarage(data);
+      // if (indicatorsData.efi.av && indicatorsData.efi.prevAv) {
+      //   if (indicatorsData.efi.av > indicatorsData.efi.prevAv)
+      //     indicatorsData.efi.efiSignal = 'buy';
+      //   if (indicatorsData.efi.av < indicatorsData.efi.prevAv)
+      //     indicatorsData.efi.efiSignal = 'sell';
+      // }
+      // console.log(getAvarage(data));
+      console.log('Av: ' + indicatorsData.stochRsiSignal.stoch5m.av);
+      console.log(
+        'Prev av: ' + indicatorsData.stochRsiSignal.stoch5m.prevAv + '\n',
+      );
     });
 })();
 
