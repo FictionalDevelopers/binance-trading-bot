@@ -11,11 +11,13 @@ export const runTrixInterval = trixData => {
       trixData.SellSignalCount++;
       trixData.BuySignalCount = 0;
       trixData.signal = 'sell';
+      console.log('sell');
     }
     if (trixData.prev < trixData.value) {
       trixData.BuySignalCount++;
       trixData.SellSignalCount = 0;
       trixData.signal = 'buy';
+      console.log('buy');
     }
 
     // if (efi.efiBuySignalCount >= 2) {
@@ -34,7 +36,7 @@ export const runTrixInterval = trixData => {
     console.log('Prev: ' + trixData.prev + '\n');
 
     trixData.prev = trixData.value;
-  }, 300000);
+  }, 60000);
 };
 
 export const getTrixSignal = (symbol, timeFrame, trixData) => {

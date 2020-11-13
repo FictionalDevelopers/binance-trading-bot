@@ -729,7 +729,8 @@ import { getTrixStream } from './indicators/trix';
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getStochRSISignal(symbol, '5m', indicatorsData.stochRsiSignal.stoch5m, 5, 5);
-  // getTrixSignal(symbol, '5m', {});
+  runTrixInterval(indicatorsData.trix.trix5m);
+  getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
   // if (botState.testMode) {
   //   await sendToRecipients(`INIT (TEST MODE)
   // Bot started working at: ${format(new Date(), DATE_FORMAT)}
@@ -750,8 +751,8 @@ import { getTrixStream } from './indicators/trix';
   // runEFIInterval(indicatorsData.efi1h);
   // runStochRsiInterval(indicatorsData.stochRsiSignal.stoch5m);
 
-  runTrixInterval(indicatorsData.trix.trix5m);
-  getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
+  // runTrixInterval(indicatorsData.trix.trix5m);
+  // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
 
   // getTradeStream({
   //   symbol: symbol,
@@ -765,7 +766,7 @@ import { getTrixStream } from './indicators/trix';
   //   interval: '5m',
   //   period: 13,
   // })
-  //   .pipe(bufferCount(3, 3))
+  //   .pipe(bufferCount(10, 10))
   //   .subscribe(data => {
   //     const currentAvg = getAvarage(data);
   //     if (!indicatorsData.efi1h.prevAv) {
@@ -800,6 +801,7 @@ import { getTrixStream } from './indicators/trix';
   //     indicatorsData.trix.trix5m.prevAv = currentAvg;
   //   });
 
+  //
   // getStochRsiStream({
   //   symbol: symbol,
   //   interval: '5m',

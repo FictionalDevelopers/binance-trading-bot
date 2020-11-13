@@ -70,40 +70,43 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
         prev: null,
       },
     },
-    efi1h: {
-      efiBuySignalCount: 0,
-      efiSellSignalCount: 0,
-      prevEfi: null,
-      efi: null,
-      efiSignal: null,
-      av: null,
-      prevAv: null,
+    efi: {
+      efi1h: {
+        efiBuySignalCount: 0,
+        efiSellSignalCount: 0,
+        prevEfi: null,
+        efi: null,
+        signal: null,
+        av: null,
+        prevAv: null,
+      },
+      efi5m: {
+        efiBuySignalCount: 0,
+        efiSellSignalCount: 0,
+        prevEfi: null,
+        efi: null,
+        signal: null,
+        av: null,
+        prevAv: null,
+      },
+      efi1m: {
+        efiBuySignalCount: 0,
+        efiSellSignalCount: 0,
+        prevEfi: null,
+        efi: null,
+        signal: null,
+        av: null,
+        prevAv: null,
+      },
     },
-    efi5m: {
-      efiBuySignalCount: 0,
-      efiSellSignalCount: 0,
-      prevEfi: null,
-      efi: null,
-      efiSignal: null,
-      av: null,
-      prevAv: null,
-    },
-    efi1m: {
-      efiBuySignalCount: 0,
-      efiSellSignalCount: 0,
-      prevEfi: null,
-      efi: null,
-      efiSignal: null,
-      av: null,
-      prevAv: null,
-    },
+
     obvBuySignalCount: 0,
     obvSellSignalCount: 0,
     prevObv: null,
     obv: null,
     obvSignal: null,
     priceGrowArea: false,
-    stochRsiSignal: {
+    stochRsi: {
       stoch1m: {},
       stoch5m: {
         BuySignalCount: 0,
@@ -334,18 +337,18 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.trix.trix5m.signal === 'buy',
-        // indicatorsData.rsi1m.rsiValue !== null &&
-        // indicatorsData.rsi1m.rsiValue < 68 &&
-        // indicatorsData.rsi5m.rsiValue !== null &&
-        // indicatorsData.rsi5m.rsiValue < 68 &&
-        // indicatorsData.efi1h.efiSignal === 'buy' &&
-        // ((indicatorsData.efi5m.efi > 0 &&
-        //   indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-        //   indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
-        //   indicatorsData.dmi5m.adx > 20) ||
-        //   (indicatorsData.efi1m.efi > 0 &&
-        //     indicatorsData.efi5m.efi > 0 &&
+          // indicatorsData.trix.trix5m.signal === 'buy',
+          // indicatorsData.rsi1m.rsiValue !== null &&
+          // indicatorsData.rsi1m.rsiValue < 68 &&
+          // indicatorsData.rsi5m.rsiValue !== null &&
+          // indicatorsData.rsi5m.rsiValue < 68 &&
+          // indicatorsData.efi1h.efiSignal === 'buy' &&
+          // ((indicatorsData.efi5m.efi > 0 &&
+          indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
+          //   indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
+          //   indicatorsData.dmi5m.adx > 20) ||
+          //   (indicatorsData.efi1m.efi > 0 &&
+          indicatorsData.efi.efi5m.efi > 0,
         //     indicatorsData.dmi1m.adx > 20 &&
         //     indicatorsData.stochRsiSignal.stoch1m === 'buy')),
         // indicatorsData.obvSignal === 'buy' &&
@@ -364,8 +367,8 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            indicatorsData.trix.trix5m.signal === 'sell',
-          // indicatorsData.stochRsiSignal.stoch1m === 'sell',
+            // indicatorsData.trix.trix5m.signal === 'sell',
+            indicatorsData.stochRsi.stoch5m.signal === 'sell',
           // indicatorsData.efi1h.efiSignal === 'sell',
 
           // indicatorsData.obvSignal === 'sell',
@@ -738,17 +741,12 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
-  runTrixInterval(indicatorsData.trix.trix5m);
-  getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
-
+  // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
+  getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 5, 5);
+  getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
+  // getStochRSISignal(symbol, '1m', indicatorsData, 5, 5);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  // getStochRSISignal(symbol, '1m', indicatorsData, 1.5, 1.5);
-  // getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
-  getStochRSISignal(symbol, '5m', indicatorsData, 5, 5);
-  getStochRSISignal(symbol, '1m', indicatorsData, 5, 5);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  getDMISignal(symbol, '1m', indicatorsData.dmi1m);
-  // getStochRSISignal(symbol, '1h', indicatorsData);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
@@ -777,8 +775,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   `);
   }
 
-  runEFIInterval(indicatorsData.efi1h);
-  runStochRsiInterval(indicatorsData.stochRsiSignal.stoch5m);
+  // runStochRsiInterval(indicatorsData.stochRsi.stoch5m);
 
   getTradeStream({
     symbol: symbol,
@@ -787,44 +784,50 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(trader);
 
-  getForceIndexStream({
-    symbol: symbol,
-    interval: '1h',
-    period: 13,
-  })
-    .pipe(bufferCount(3, 3))
-    .subscribe(data => {
-      indicatorsData.efi1h.av = getAvarage(data);
-      // if (indicatorsData.efi.av && indicatorsData.efi.prevAv) {
-      //   if (indicatorsData.efi.av > indicatorsData.efi.prevAv)
-      //     indicatorsData.efi.efiSignal = 'buy';
-      //   if (indicatorsData.efi.av < indicatorsData.efi.prevAv)
-      //     indicatorsData.efi.efiSignal = 'sell';
-      // }
-      // console.log(getAvarage(data));
-      console.log('Av: ' + indicatorsData.efi1h.av);
-      console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
-    });
+  // getForceIndexStream({
+  //   symbol: symbol,
+  //   interval: '5m',
+  //   period: 13,
+  // })
+  //   .pipe(bufferCount(10, 10))
+  //   .subscribe(data => {
+  //     const currentAv = getAvarage(data);
+  //     if (!indicatorsData.efi.efi5m.prevAv) {
+  //       indicatorsData.efi.efi5m.prevAv = currentAv;
+  //       return;
+  //     }
+  //     console.log(getAvarage(data));
+  //     console.log('Av: ' + currentAv);
+  //     console.log('Prev av: ' + indicatorsData.efi.efi5m.prevAv + '\n');
+  //     indicatorsData.efi.efi5m.prevAv = currentAv;
+  //   });
 
-  getStochRsiStream({
-    symbol: symbol,
-    interval: '5m',
-  })
-    .pipe(bufferCount(3, 3))
-    .subscribe(data => {
-      indicatorsData.stochRsiSignal.stoch5m.av = getAvarage(data);
-      // if (indicatorsData.efi.av && indicatorsData.efi.prevAv) {
-      //   if (indicatorsData.efi.av > indicatorsData.efi.prevAv)
-      //     indicatorsData.efi.efiSignal = 'buy';
-      //   if (indicatorsData.efi.av < indicatorsData.efi.prevAv)
-      //     indicatorsData.efi.efiSignal = 'sell';
-      // }
-      // console.log(getAvarage(data));
-      console.log('Av: ' + indicatorsData.stochRsiSignal.stoch5m.av);
-      console.log(
-        'Prev av: ' + indicatorsData.stochRsiSignal.stoch5m.prevAv + '\n',
-      );
-    });
+  // getStochRsiStream({
+  //   symbol: symbol,
+  //   interval: '5m',
+  // })
+  //   .pipe(bufferCount(10, 10))
+  //   .subscribe(data => {
+  //     indicatorsData.stochRsi.stoch5m.av = getAvarage(data);
+  //     if (
+  //       indicatorsData.stochRsi.stoch5m.av &&
+  //       indicatorsData.stochRsi.stoch5m.prevAv
+  //     ) {
+  //       if (
+  //         indicatorsData.stochRsi.stoch5m.av >
+  //         indicatorsData.stochRsi.stoch5m.prevAv
+  //       )
+  //         indicatorsData.stochRsi.stoch5m.signal = 'buy';
+  //       if (
+  //         indicatorsData.stochRsi.stoch5m.av <
+  //         indicatorsData.stochRsi.stoch5m.prevAv
+  //       )
+  //         indicatorsData.stochRsi.stoch5m.signal = 'sell';
+  //     }
+  //     console.log(getAvarage(data));
+  //     console.log('Av: ' + indicatorsData.stochRsi.stoch5m.av);
+  //     console.log('Prev av: ' + indicatorsData.stochRsi.stoch5m.prevAv + '\n');
+  //   });
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {
