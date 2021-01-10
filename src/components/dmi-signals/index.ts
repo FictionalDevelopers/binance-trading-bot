@@ -66,17 +66,31 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
       indicatorsData.willPriceGrow = false;
     // console.log(dmi.adx);
     if (
-      indicatorsData.prevDiff <
-      Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4)
+      (Number(dmi.pdi).toPrecision(4) /
+        Number(dmi.mdi).toPrecision(4) /
+        indicatorsData.prevDiff) *
+        100 -
+        100 >=
+      1
     ) {
       indicatorsData.signal = 'BUY';
       console.log('BUY');
+      console.log(
+        Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4),
+      );
     } else if (
-      indicatorsData.prevDiff >
-      Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4)
+      (indicatorsData.prevDiff /
+        Number(dmi.pdi).toPrecision(4) /
+        Number(dmi.mdi).toPrecision(4)) *
+        100 -
+        100 >=
+      1
     ) {
       indicatorsData.signal = 'SELL';
       console.log('SELL');
+      console.log(
+        Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4),
+      );
     }
 
     indicatorsData.prevDmi = dmi;
