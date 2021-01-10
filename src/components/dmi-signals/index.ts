@@ -8,6 +8,7 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
   }).subscribe(dmi => {
     if (!indicatorsData.prevDmi) {
       indicatorsData.prevDmi = dmi;
+      indicatorsData.prevDiff = dmi.pdi / dmi.mdi;
       return;
     }
     indicatorsData.adx = dmi.adx;
@@ -62,7 +63,13 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
       indicatorsData.willPriceGrow = true;
     if (indicatorsData.adxSellSignalVolume > 0)
       indicatorsData.willPriceGrow = false;
-    console.log(dmi.adx);
+    // console.log(dmi.adx);
+    if (indicatorsData.prevDiff < dmi.pdi / dmi.mdi)
+      indicatorsData.signal = 'BUY';
+    else if (indicatorsData.prevDiff > dmi.pdi / dmi.mdi)
+      indicatorsData.signal = 'SELL';
+
     indicatorsData.prevDmi = dmi;
+    indicatorsData.prevDiff = dmi.pdi / dmi.mdi;
   });
 };

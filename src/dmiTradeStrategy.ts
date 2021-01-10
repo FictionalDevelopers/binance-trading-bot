@@ -141,6 +141,18 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       trend: null,
       adx: null,
     },
+    dmi15m: {
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      adxSignal: 0,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+      adx: null,
+      signal: null,
+    },
     dmi1h: {
       prevDmi: null,
       dmiMdiSignal: 0,
@@ -400,21 +412,23 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       },
       trendsCatcher: {
         buy:
-          botState.status === 'buy' &&
-          indicatorsData.dmi1h.willPriceGrow &&
-          Number(
-            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-          ) >= 0.1,
+          botState.status === 'buy' && indicatorsData.dmi15m.signal === 'BUY',
+        // indicatorsData.dmi1h.willPriceGrow &&
+        // Number(
+        //   (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+        // ) >= 0.1,
         sell: {
           takeProfit: null,
           stopLoss:
             botState.status === 'sell' &&
-            botState.buyReason === 'trendsCatcher' &&
-            (Number(
-              (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-                100,
-            ) >= 0.5 ||
-              !indicatorsData.dmi1h.willPriceGrow),
+            indicatorsData.dmi15m.signal === 'SELL',
+
+          // botState.buyReason === 'trendsCatcher' &&
+          // (Number(
+          //   (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
+          //     100,
+          // ) >= 0.5 ||
+          //   !indicatorsData.dmi1h.willPriceGrow),
         },
       },
     };
@@ -756,7 +770,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
   // getStochRSISignal(symbol, '1m', indicatorsData, 5, 5);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  getDMISignal(symbol, '15m', indicatorsData.dmi15m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);

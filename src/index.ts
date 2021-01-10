@@ -120,6 +120,17 @@ import { getTrixStream } from './indicators/trix';
       willPriceGrow: false,
       trend: null,
     },
+    dmi15m: {
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      adxSignal: 0,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+      signal: null,
+    },
     dmi1h: {
       prevDmi: null,
       dmiMdiSignal: 0,
@@ -729,8 +740,8 @@ import { getTrixStream } from './indicators/trix';
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getStochRSISignal(symbol, '5m', indicatorsData.stochRsiSignal.stoch5m, 5, 5);
-  runTrixInterval(indicatorsData.trix.trix5m);
-  getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
+  // runTrixInterval(indicatorsData.trix.trix5m);
+  // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
   // if (botState.testMode) {
   //   await sendToRecipients(`INIT (TEST MODE)
   // Bot started working at: ${format(new Date(), DATE_FORMAT)}
@@ -761,24 +772,26 @@ import { getTrixStream } from './indicators/trix';
   //   .pipe(pluck('price'), bufferCount(1, 1))
   //   .subscribe(trader);
 
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+
   // getForceIndexStream({
   //   symbol: symbol,
   //   interval: '5m',
   //   period: 13,
   // })
-  //   .pipe(bufferCount(10, 10))
+  //   .pipe(bufferCount(5, 5))
   //   .subscribe(data => {
   //     const currentAvg = getAvarage(data);
-  //     if (!indicatorsData.efi1h.prevAv) {
-  //       indicatorsData.efi1h.prevAv = currentAvg;
+  //     if (!indicatorsData.efi5m.prevAv) {
+  //       indicatorsData.efi5m.prevAv = currentAvg;
   //       return;
   //     }
   //     console.log('Current: ' + getAvarage(data));
-  //     if (indicatorsData.efi1h.prevAv > currentAvg) console.log('DOWN');
-  //     if (indicatorsData.efi1h.prevAv < currentAvg) console.log('UP');
+  //     if (indicatorsData.efi5m.prevAv > currentAvg) console.log('DOWN');
+  //     if (indicatorsData.efi5m.prevAv < currentAvg) console.log('UP');
   //     // console.log('Av: ' + indicatorsData.efi1h.av);
   //     // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
-  //     indicatorsData.efi1h.prevAv = currentAvg;
+  //     indicatorsData.efi5m.prevAv = currentAvg;
   //   });
 
   // getTrixStream({
@@ -802,26 +815,26 @@ import { getTrixStream } from './indicators/trix';
   //   });
 
   //
-  getStochRsiStream({
-    symbol: symbol,
-    interval: '5m',
-  })
-    .pipe(pluck('k'), bufferCount(20, 20))
-    .subscribe(data => {
-      const currentAvg = getAvarage(data);
-      if (!indicatorsData.stochRsiSignal.stoch5m.prevAv) {
-        indicatorsData.stochRsiSignal.stoch5m.prevAv = currentAvg;
-        return;
-      }
-      console.log('Current: ' + getAvarage(data));
-      if (indicatorsData.stochRsiSignal.stoch5m.prevAv > currentAvg)
-        console.log('DOWN');
-      if (indicatorsData.stochRsiSignal.stoch5m.prevAv < currentAvg)
-        console.log('UP');
-      // console.log('Av: ' + indicatorsData.efi1h.av);
-      // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
-      indicatorsData.stochRsiSignal.stoch5m.prevAv = currentAvg;
-    });
+  // getStochRsiStream({
+  //   symbol: symbol,
+  //   interval: '5m',
+  // })
+  //   .pipe(pluck('k'), bufferCount(20, 20))
+  //   .subscribe(data => {
+  //     const currentAvg = getAvarage(data);
+  //     if (!indicatorsData.stochRsiSignal.stoch5m.prevAv) {
+  //       indicatorsData.stochRsiSignal.stoch5m.prevAv = currentAvg;
+  //       return;
+  //     }
+  //     console.log('Current: ' + getAvarage(data));
+  //     if (indicatorsData.stochRsiSignal.stoch5m.prevAv > currentAvg)
+  //       console.log('DOWN');
+  //     if (indicatorsData.stochRsiSignal.stoch5m.prevAv < currentAvg)
+  //       console.log('UP');
+  //     // console.log('Av: ' + indicatorsData.efi1h.av);
+  //     // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
+  //     indicatorsData.stochRsiSignal.stoch5m.prevAv = currentAvg;
+  //   });
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {
