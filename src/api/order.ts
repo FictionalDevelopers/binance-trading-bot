@@ -137,7 +137,7 @@ export const marketSellAction = async (
                                   }
                                   date: ${format(new Date(), DATE_FORMAT)}
                                   current profit: ${expectedProfitPercent -
-                                    0.15}%
+                                    0.2}%
                                   total profit: ${botState.totalProfit}%
                     `);
         console.log(`SELL 
@@ -149,7 +149,7 @@ export const marketSellAction = async (
                                   }
                                   date: ${format(new Date(), DATE_FORMAT)}
                                   current profit: ${expectedProfitPercent -
-                                    0.15}%
+                                    0.2}%
                                   total profit: ${botState.totalProfit}%
                     `);
         botState.dealsCount++;

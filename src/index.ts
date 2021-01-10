@@ -772,7 +772,7 @@ import { getTrixStream } from './indicators/trix';
   //   .pipe(pluck('price'), bufferCount(1, 1))
   //   .subscribe(trader);
 
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  getDMISignal(symbol, '15m', indicatorsData.dmi15m);
 
   // getForceIndexStream({
   //   symbol: symbol,

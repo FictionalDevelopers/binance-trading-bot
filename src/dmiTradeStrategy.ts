@@ -788,6 +788,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
   Strategies: ${JSON.stringify(botState.strategies)}
+  Status: ${botState.status.toUpperCase()}
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
