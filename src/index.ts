@@ -802,26 +802,26 @@ import { getTrixStream } from './indicators/trix';
   //   });
 
   //
-  // getStochRsiStream({
-  //   symbol: symbol,
-  //   interval: '5m',
-  // })
-  //   .pipe(pluck('k'), bufferCount(20, 20))
-  //   .subscribe(data => {
-  //     const currentAvg = getAvarage(data);
-  //     if (!indicatorsData.stochRsiSignal.stoch5m.prevAv) {
-  //       indicatorsData.stochRsiSignal.stoch5m.prevAv = currentAvg;
-  //       return;
-  //     }
-  //     console.log('Current: ' + getAvarage(data));
-  //     if (indicatorsData.stochRsiSignal.stoch5m.prevAv > currentAvg)
-  //       console.log('DOWN');
-  //     if (indicatorsData.stochRsiSignal.stoch5m.prevAv < currentAvg)
-  //       console.log('UP');
-  //     // console.log('Av: ' + indicatorsData.efi1h.av);
-  //     // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
-  //     indicatorsData.stochRsiSignal.stoch5m.prevAv = currentAvg;
-  //   });
+  getStochRsiStream({
+    symbol: symbol,
+    interval: '5m',
+  })
+    .pipe(pluck('k'), bufferCount(20, 20))
+    .subscribe(data => {
+      const currentAvg = getAvarage(data);
+      if (!indicatorsData.stochRsiSignal.stoch5m.prevAv) {
+        indicatorsData.stochRsiSignal.stoch5m.prevAv = currentAvg;
+        return;
+      }
+      console.log('Current: ' + getAvarage(data));
+      if (indicatorsData.stochRsiSignal.stoch5m.prevAv > currentAvg)
+        console.log('DOWN');
+      if (indicatorsData.stochRsiSignal.stoch5m.prevAv < currentAvg)
+        console.log('UP');
+      // console.log('Av: ' + indicatorsData.efi1h.av);
+      // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
+      indicatorsData.stochRsiSignal.stoch5m.prevAv = currentAvg;
+    });
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {
