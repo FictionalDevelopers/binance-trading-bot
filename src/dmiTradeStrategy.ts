@@ -773,12 +773,14 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
     await sendToRecipients(`INIT (TEST MODE)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
+  Strategies: ${JSON.stringify(botState.strategies)}
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
     await sendToRecipients(`INIT
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
+  Strategies: ${JSON.stringify(botState.strategies)}
   Status: ${botState.status.toUpperCase()}
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
