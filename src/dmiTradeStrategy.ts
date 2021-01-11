@@ -785,7 +785,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   };
 
   // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
-  getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 5, 5);
+  getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
   getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
   // getStochRSISignal(symbol, '1m', indicatorsData, 5, 5);
