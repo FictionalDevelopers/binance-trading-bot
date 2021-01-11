@@ -421,9 +421,8 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
           takeProfit: expectedProfitPercent >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.dmi15m.signal === 'SELL',
-
-          // botState.buyReason === 'trendsCatcher' &&
+            indicatorsData.dmi15m.signal === 'SELL' &&
+            botState.buyReason === 'trendsCatcher',
           // (Number(
           //   (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
           //     100,
@@ -778,6 +777,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
         stepSize,
         initialUSDTBalance,
         'STOP LOSS',
+        false,
       );
       return;
     }
