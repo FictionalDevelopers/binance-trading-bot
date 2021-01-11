@@ -126,7 +126,7 @@ export const marketSellAction = async (
         botState.updateState('buyPrice', null);
         botState.updateState(
           'totalProfit',
-          (botState.totalProfit += expectedProfitPercent - 0.15),
+          (botState.totalProfit += expectedProfitPercent - 0.2),
         );
         await sendToRecipients(`SELL 
                                   Strategy: ${strategy}
