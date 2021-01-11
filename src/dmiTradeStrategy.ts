@@ -365,12 +365,12 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
           // indicatorsData.rsi5m.rsiValue < 68 &&
           // indicatorsData.efi1h.efiSignal === 'buy' &&
           // ((indicatorsData.efi5m.efi > 0 &&
-          indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
-          indicatorsData.efi.efi15m.efi > 0 &&
-          //   indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
-          //   indicatorsData.dmi5m.adx > 20) ||
-          //   (indicatorsData.efi1m.efi > 0 &&
-          indicatorsData.efi.efi5m.efi > 0,
+          indicatorsData.stochRsi.stoch5m.signal === 'buy',
+        // indicatorsData.efi.efi15m.efi > 0 &&
+        //   indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
+        //   indicatorsData.dmi5m.adx > 20) ||
+        //   (indicatorsData.efi1m.efi > 0 &&
+        // indicatorsData.efi.efi5m.efi > 0,
         //     indicatorsData.dmi1m.adx > 20 &&
         //     indicatorsData.stochRsiSignal.stoch1m === 'buy')),
         // indicatorsData.obvSignal === 'buy' &&
@@ -380,11 +380,11 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
         // indicatorsData.stochRsiSignal.stoch1m === 'buy',
         // indicatorsData.efi.efi > 0,
         sell: {
-          takeProfit: null,
-          // botState.status === 'sell' &&
-          // botState.buyReason === 'stochRsi' &&
-          // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
-          // expectedProfitPercent >= 1,
+          takeProfit:
+            // botState.status === 'sell' &&
+            // botState.buyReason === 'stochRsi' &&
+            // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
+            expectedProfitPercent >= 0.5,
 
           stopLoss:
             botState.status === 'sell' &&
@@ -777,7 +777,6 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
         stepSize,
         initialUSDTBalance,
         'STOP LOSS',
-        false,
       );
       return;
     }
