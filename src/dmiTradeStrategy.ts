@@ -401,7 +401,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
             botState.buyReason === 'stochRsi' &&
             // indicatorsData.trix.trix5m.signal === 'sell',
             (indicatorsData.stochRsi.stoch5m.signal === 'sell' ||
-              indicatorsData.stochRsi.stoch15m.signal),
+              indicatorsData.stochRsi.stoch15m.signal === 'sell'),
           // indicatorsData.efi1h.efiSignal === 'sell',
 
           // indicatorsData.obvSignal === 'sell',
