@@ -79,12 +79,8 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
         Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4),
       );
     } else if (
-      (Number(dmi.pdi).toPrecision(4) /
-        Number(dmi.mdi).toPrecision(4) /
-        indicatorsData.prevDiff) *
-        100 -
-        100 <=
-      -1
+      indicatorsData.prevDiff >
+      Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4)
     ) {
       indicatorsData.signal = 'SELL';
       console.log('SELL');

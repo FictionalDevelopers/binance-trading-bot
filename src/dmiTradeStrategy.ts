@@ -418,7 +418,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
         //   (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
         // ) >= 0.1,
         sell: {
-          takeProfit: null,
+          takeProfit: expectedProfitPercent >= 1,
           stopLoss:
             botState.status === 'sell' &&
             indicatorsData.dmi15m.signal === 'SELL',
@@ -745,6 +745,26 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
     }
 
     /** *********************TRENDS CATCHER***********************/
+
+    if (
+      conditions.trendsCatcher.sell.takeProfit &&
+      !botState.strategies.trendsCatcher.stopLoss
+    ) {
+      await marketSellAction(
+        'trendsCatcher',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'TRENDS CATCHER TAKE PROFIT',
+        true,
+      );
+      return;
+    }
 
     if (conditions.trendsCatcher.sell.stopLoss) {
       await marketSellAction(
