@@ -394,14 +394,14 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
             // botState.status === 'sell' &&
             // botState.buyReason === 'stochRsi' &&
             // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
-            expectedProfitPercent <= -0.5,
+            expectedProfitPercent <= -1,
 
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
             // indicatorsData.trix.trix5m.signal === 'sell',
-            (indicatorsData.stochRsi.stoch5m.signal === 'sell' ||
-              indicatorsData.stochRsi.stoch15m.signal === 'sell'),
+            indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
+              indicatorsData.stochRsi.stoch15m.signal === 'sell',
           // indicatorsData.efi1h.efiSignal === 'sell',
 
           // indicatorsData.obvSignal === 'sell',
