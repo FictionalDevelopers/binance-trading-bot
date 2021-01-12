@@ -390,18 +390,18 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
         // indicatorsData.stochRsiSignal.stoch1m === 'buy',
         // indicatorsData.efi.efi > 0,
         sell: {
-          takeProfit:
-            // botState.status === 'sell' &&
-            // botState.buyReason === 'stochRsi' &&
-            // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
-            expectedProfitPercent <= -1,
+          takeProfit: null,
+          // botState.status === 'sell' &&
+          // botState.buyReason === 'stochRsi' &&
+          // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
+          // expectedProfitPercent <= -1,
 
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
             // indicatorsData.trix.trix5m.signal === 'sell',
             indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
-              indicatorsData.stochRsi.stoch15m.signal === 'sell',
+            indicatorsData.stochRsi.stoch15m.signal === 'sell',
           // indicatorsData.efi1h.efiSignal === 'sell',
 
           // indicatorsData.obvSignal === 'sell',
@@ -429,7 +429,9 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
         //   (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
         // ) >= 0.1,
         sell: {
-          takeProfit: expectedProfitPercent >= 1,
+          takeProfit:
+            expectedProfitPercent >= 1 &&
+            botState.buyReason === 'trendsCatcher',
           stopLoss:
             botState.status === 'sell' &&
             indicatorsData.dmi15m.signal === 'SELL' &&
