@@ -92,6 +92,12 @@ import { getTrixStream } from './indicators/trix';
     obvBuySignalCount: 0,
     obvSellSignalCount: 0,
     prevObv: null,
+    obv5m: {
+      obv: null,
+    },
+    obv15m: {
+      obv: null,
+    },
     obv: null,
     obvSignal: null,
     priceGrowArea: false,
@@ -737,7 +743,8 @@ import { getTrixStream } from './indicators/trix';
   // getEMASignal(symbol, '1m', indicatorsData);
   // getObvSignal(symbol, '1h', indicatorsData);
   // getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
-  // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
+  getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
+  getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi15m);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
   // getStochRSISignal(symbol, '5m', indicatorsData.stochRsiSignal.stoch5m, 5, 5);
   // runTrixInterval(indicatorsData.trix.trix5m);
@@ -772,7 +779,8 @@ import { getTrixStream } from './indicators/trix';
   //   .pipe(pluck('price'), bufferCount(1, 1))
   //   .subscribe(trader);
 
-  getDMISignal(symbol, '15m', indicatorsData.dmi15m);
+  // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m);
 
   // getForceIndexStream({
   //   symbol: symbol,
