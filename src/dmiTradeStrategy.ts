@@ -191,6 +191,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       willPriceGrow: false,
       trend: null,
       adx: null,
+      signal: null,
     },
     rsi1m: {
       rsiValue: null,
@@ -375,42 +376,28 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          // indicatorsData.trix.trix5m.signal === 'buy',
-          // indicatorsData.rsi1m.rsiValue !== null &&
-          // indicatorsData.rsi1m.rsiValue < 68 &&
-          // indicatorsData.rsi5m.rsiValue !== null &&
-          // indicatorsData.rsi5m.rsiValue < 68 &&
+          // indicatorsData.dmi5m.signal === 'BUY' &&
+          indicatorsData.dmi1m.signal === 'BUY' &&
           // indicatorsData.efi1h.efiSignal === 'buy' &&
-          // ((indicatorsData.efi5m.efi > 0 &&
+          // indicatorsData.efi5m.efi > 0 &&
+          // indicatorsData.obvSignal === 'buy' &&
+          // indicatorsData.rsi5m.rsiValue >= 41 &&
+          // indicatorsData.rsi15m.rsiValue >= 41 &&
           indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
-          indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
-          indicatorsData.efi.efi15m.efi > 0 &&
-          indicatorsData.efi.efi5m.efi > 0,
-        //   indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
-        //   indicatorsData.dmi5m.adx > 20) ||
-        //   (indicatorsData.efi1m.efi > 0 &&
-        // indicatorsData.efi.efi5m.efi > 0,
-        //     indicatorsData.dmi1m.adx > 20 &&
-        //     indicatorsData.stochRsiSignal.stoch1m === 'buy')),
-        // indicatorsData.obvSignal === 'buy' &&
-        // indicatorsData.rsi5m.rsiValue >= 41 &&
-        // indicatorsData.rsi15m.rsiValue >= 41 &&
-        // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-        // indicatorsData.stochRsiSignal.stoch1m === 'buy',
+          indicatorsData.stochRsi.stoch1m.signal === 'buy',
         // indicatorsData.efi.efi > 0,
         sell: {
           takeProfit: null,
           // botState.status === 'sell' &&
           // botState.buyReason === 'stochRsi' &&
           // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
-          // expectedProfitPercent <= -1,
+          // expectedProfitPercent >= 1,
 
           stopLoss:
             botState.status === 'sell' &&
-            botState.buyReason === 'stochRsi' &&
-            // indicatorsData.trix.trix5m.signal === 'sell',
-            indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
-            indicatorsData.stochRsi.stoch15m.signal === 'sell',
+            (indicatorsData.stochRsi.stoch1m.signal === 'sell' ||
+              indicatorsData.dmi1m.signal === 'SELL'),
+          // botState.buyReason === 'stochRsi' &&
           // indicatorsData.efi1h.efiSignal === 'sell',
 
           // indicatorsData.obvSignal === 'sell',
