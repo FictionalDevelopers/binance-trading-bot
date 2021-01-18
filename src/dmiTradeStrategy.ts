@@ -157,6 +157,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       willPriceGrow: false,
       trend: null,
       adx: null,
+      signal: null,
     },
     dmi15m: {
       prevDmi: null,
@@ -376,15 +377,15 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          // indicatorsData.dmi5m.signal === 'BUY' &&
-          indicatorsData.dmi1m.signal === 'BUY' &&
-          // indicatorsData.efi1h.efiSignal === 'buy' &&
-          // indicatorsData.efi5m.efi > 0 &&
-          // indicatorsData.obvSignal === 'buy' &&
-          // indicatorsData.rsi5m.rsiValue >= 41 &&
-          // indicatorsData.rsi15m.rsiValue >= 41 &&
-          indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
-          indicatorsData.stochRsi.stoch1m.signal === 'buy',
+          indicatorsData.dmi5m.signal === 'BUY' &&
+          indicatorsData.dmi1m.signal === 'BUY',
+        // indicatorsData.efi1h.efiSignal === 'buy' &&
+        // indicatorsData.efi5m.efi > 0 &&
+        // indicatorsData.obvSignal === 'buy' &&
+        // indicatorsData.rsi5m.rsiValue >= 41 &&
+        // indicatorsData.rsi15m.rsiValue >= 41 &&
+        // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
+        // indicatorsData.stochRsi.stoch1m.signal === 'buy',
         // indicatorsData.efi.efi > 0,
         sell: {
           takeProfit: null,
@@ -395,8 +396,11 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
 
           stopLoss:
             botState.status === 'sell' &&
-            (indicatorsData.stochRsi.stoch1m.signal === 'sell' ||
+            (indicatorsData.dmi5m.signal === 'SELL' ||
               indicatorsData.dmi1m.signal === 'SELL'),
+
+          // (indicatorsData.stochRsi.stoch1m.signal === 'sell' ||
+          //   indicatorsData.dmi1m.signal === 'SELL'),
           // botState.buyReason === 'stochRsi' &&
           // indicatorsData.efi1h.efiSignal === 'sell',
 
@@ -794,8 +798,9 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   };
 
   getDMISignal(symbol, '1m', indicatorsData.dmi1m);
-  getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
-  getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
+  // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
+  // getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
 
   // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
   // getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
