@@ -71,25 +71,32 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
         indicatorsData.prevDiff) *
         100 -
         100 >=
-      1
+      0.5
     ) {
       indicatorsData.signal = 'BUY';
       console.log('BUY');
       console.log(
+        'Value: ',
         Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4),
       );
     } else if (
-      indicatorsData.prevDiff >
-      Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4)
+      (Number(dmi.pdi).toPrecision(4) /
+        Number(dmi.mdi).toPrecision(4) /
+        indicatorsData.prevDiff) *
+        100 -
+        100 <=
+      -0.25
     ) {
       indicatorsData.signal = 'SELL';
       console.log('SELL');
       console.log(
+        'Value: ',
         Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4),
       );
     }
 
     console.log(
+      'Diff: ',
       (Number(dmi.pdi).toPrecision(4) /
         Number(dmi.mdi).toPrecision(4) /
         indicatorsData.prevDiff) *
