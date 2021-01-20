@@ -116,15 +116,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
     obvSignal: null,
     priceGrowArea: false,
     stochRsi: {
-      stoch1m: {
-        BuySignalCount: 0,
-        SellSignalCount: 0,
-        prev: null,
-        value: null,
-        signal: null,
-        av: null,
-        prevAv: null,
-      },
+      stoch1m: {},
       stoch5m: {
         BuySignalCount: 0,
         SellSignalCount: 0,
@@ -157,7 +149,6 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       willPriceGrow: false,
       trend: null,
       adx: null,
-      signal: null,
     },
     dmi15m: {
       prevDmi: null,
@@ -192,7 +183,6 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       willPriceGrow: false,
       trend: null,
       adx: null,
-      signal: null,
     },
     rsi1m: {
       rsiValue: null,
@@ -231,7 +221,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   };
 
   // runEMAInterval(indicatorsData, botState);
-  // runObvInterval(indicatorsData);
+  runObvInterval(indicatorsData);
 
   // const rsiRebuyChecker = setInterval(() => {
   //   if (
@@ -377,32 +367,41 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.dmi5m.signal === 'BUY' &&
-          indicatorsData.dmi15m.signal === 'BUY',
-        // indicatorsData.efi1h.efiSignal === 'buy' &&
-        // indicatorsData.efi5m.efi > 0 &&
+          // indicatorsData.trix.trix5m.signal === 'buy',
+          // indicatorsData.rsi1m.rsiValue !== null &&
+          // indicatorsData.rsi1m.rsiValue < 68 &&
+          // indicatorsData.rsi5m.rsiValue !== null &&
+          // indicatorsData.rsi5m.rsiValue < 68 &&
+          // indicatorsData.efi1h.efiSignal === 'buy' &&
+          // ((indicatorsData.efi5m.efi > 0 &&
+          indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
+          indicatorsData.stochRsi.stoch15m.signal === 'buy',
+        // indicatorsData.efi.efi15m.efi > 0 &&
+        //   indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
+        //   indicatorsData.dmi5m.adx > 20) ||
+        //   (indicatorsData.efi1m.efi > 0 &&
+        // indicatorsData.efi.efi5m.efi > 0,
+        //     indicatorsData.dmi1m.adx > 20 &&
+        //     indicatorsData.stochRsiSignal.stoch1m === 'buy')),
         // indicatorsData.obvSignal === 'buy' &&
         // indicatorsData.rsi5m.rsiValue >= 41 &&
         // indicatorsData.rsi15m.rsiValue >= 41 &&
-        // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
-        // indicatorsData.stochRsi.stoch1m.signal === 'buy',
+        // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
+        // indicatorsData.stochRsiSignal.stoch1m === 'buy',
         // indicatorsData.efi.efi > 0,
         sell: {
           takeProfit: null,
           // botState.status === 'sell' &&
           // botState.buyReason === 'stochRsi' &&
           // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
-          // expectedProfitPercent >= 1,
+          // expectedProfitPercent <= -1,
 
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.dmi5m.signal === 'SELL',
-          // ||
-          // indicatorsData.dmi1m.signal === 'SELL'
-
-          // (indicatorsData.stochRsi.stoch1m.signal === 'sell' ||
-          //   indicatorsData.dmi1m.signal === 'SELL'),
-          // botState.buyReason === 'stochRsi' &&
+            botState.buyReason === 'stochRsi' &&
+            // indicatorsData.trix.trix5m.signal === 'sell',
+            indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
+            indicatorsData.stochRsi.stoch15m.signal === 'sell',
           // indicatorsData.efi1h.efiSignal === 'sell',
 
           // indicatorsData.obvSignal === 'sell',
@@ -798,18 +797,13 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
-  getDMISignal(symbol, '15m', indicatorsData.dmi15m);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
-  // getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
-
   // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
-  // getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
-  // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
+  getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
+  getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
   // getStochRSISignal(symbol, '1m', indicatorsData, 5, 5);
-  // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
+  getDMISignal(symbol, '15m', indicatorsData.dmi15m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
