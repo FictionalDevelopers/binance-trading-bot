@@ -180,7 +180,15 @@ import { getTrixStream } from './indicators/trix';
         av: null,
         prevAv: null,
       },
-      stoch15m: null,
+      stoch15m: {
+        BuySignalCount: 0,
+        SellSignalCount: 0,
+        prev: null,
+        value: null,
+        signal: null,
+        av: null,
+        prevAv: null,
+      },
       stoch1h: null,
     },
     emaSignal: null,
@@ -263,24 +271,6 @@ import { getTrixStream } from './indicators/trix';
       value: true,
     },
   };
-
-  // runEMAInterval(indicatorsData, botState);
-  // runObvInterval(indicatorsData);
-
-  // const rsiRebuyChecker = setInterval(() => {
-  //   if (
-  //     indicatorsData.rsi1m.rsiValue !== null &&
-  //     indicatorsData.rsi5m.rsiValue !== null &&
-  //     indicatorsData.rsi5m.rsiValue <= 33
-  //   )
-  //     indicatorsData.rsiRebuy.value = true;
-  //   if (
-  //     indicatorsData.rsi1m.rsiValue >= 41 &&
-  //     indicatorsData.rsi5m.rsiValue >= 41
-  //   )
-  //     if (botState.status) indicatorsData.rsiRebuy.value = false;
-  // }, 1000);
-
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
     if (botState.status === 'isPending') return;
@@ -411,33 +401,49 @@ import { getTrixStream } from './indicators/trix';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          // indicatorsData.dmi1h.signal === 'BUY',
-          // indicatorsData.dmi15m.signal === 'BUY',
+          Number(
+            (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 - 100,
+          ) >= 0.1 &&
+          // indicatorsData.trix.trix5m.signal === 'buy',
+          // indicatorsData.rsi1m.rsiValue !== null &&
+          // indicatorsData.rsi1m.rsiValue < 68 &&
+          // indicatorsData.rsi5m.rsiValue !== null &&
+          // indicatorsData.rsi5m.rsiValue < 68 &&
           // indicatorsData.efi1h.efiSignal === 'buy' &&
-          // indicatorsData.efi5m.efi > 0 &&
-          // indicatorsData.obvSignal === 'buy' &&
-          // indicatorsData.rsi5m.rsiValue >= 41 &&
-          // indicatorsData.rsi15m.rsiValue >= 41 &&
+          // ((indicatorsData.efi5m.efi > 0 &&
           indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
-          indicatorsData.stochRsi.stoch1m.signal === 'buy',
+          indicatorsData.stochRsi.stoch15m.signal === 'buy',
+        // indicatorsData.efi.efi15m.efi > 0 &&
+        //   indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
+        //   indicatorsData.dmi5m.adx > 20) ||
+        //   (indicatorsData.efi1m.efi > 0 &&
+        // indicatorsData.efi.efi5m.efi > 0,
+        //     indicatorsData.dmi1m.adx > 20 &&
+        //     indicatorsData.stochRsiSignal.stoch1m === 'buy')),
+        // indicatorsData.obvSignal === 'buy' &&
+        // indicatorsData.rsi5m.rsiValue >= 41 &&
+        // indicatorsData.rsi15m.rsiValue >= 41 &&
+        // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
+        // indicatorsData.stochRsiSignal.stoch1m === 'buy',
         // indicatorsData.efi.efi > 0,
         sell: {
           takeProfit: null,
           // botState.status === 'sell' &&
           // botState.buyReason === 'stochRsi' &&
           // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
-          // expectedProfitPercent >= 1,
+          // expectedProfitPercent <= -1,
 
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.stochRsi.stoch1m.signal === 'sell',
-
-          // indicatorsData.dmi5m.signal === 'SELL' ||
-          // indicatorsData.dmi1h.signal === 'SELL',
-
-          // (indicatorsData.stochRsi.stoch1m.signal === 'sell' ||
-          //   indicatorsData.dmi1m.signal === 'SELL'),
-          // botState.buyReason === 'stochRsi' &&
+            botState.buyReason === 'stochRsi' &&
+            // indicatorsData.trix.trix5m.signal === 'sell',
+            ((indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
+              indicatorsData.stochRsi.stoch15m.signal === 'sell') ||
+              (Number(
+                (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
+                  100,
+              ) >= 0.1 &&
+                expectedProfitPercent < 0)),
           // indicatorsData.efi1h.efiSignal === 'sell',
 
           // indicatorsData.obvSignal === 'sell',
@@ -459,21 +465,24 @@ import { getTrixStream } from './indicators/trix';
       },
       trendsCatcher: {
         buy:
-          botState.status === 'buy' &&
-          indicatorsData.dmi1h.willPriceGrow &&
-          Number(
-            (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-          ) >= 0.1,
+          botState.status === 'buy' && indicatorsData.dmi15m.signal === 'BUY',
+        // indicatorsData.dmi1h.willPriceGrow &&
+        // Number(
+        //   (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
+        // ) >= 0.1,
         sell: {
-          takeProfit: null,
+          takeProfit:
+            expectedProfitPercent >= 1 &&
+            botState.buyReason === 'trendsCatcher',
           stopLoss:
             botState.status === 'sell' &&
-            botState.buyReason === 'trendsCatcher' &&
-            (Number(
-              (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-                100,
-            ) >= 0.5 ||
-              !indicatorsData.dmi1h.willPriceGrow),
+            indicatorsData.dmi15m.signal === 'SELL' &&
+            botState.buyReason === 'trendsCatcher',
+          // (Number(
+          //   (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
+          //     100,
+          // ) >= 0.5 ||
+          //   !indicatorsData.dmi1h.willPriceGrow),
         },
       },
     };
@@ -791,6 +800,26 @@ import { getTrixStream } from './indicators/trix';
 
     /** *********************TRENDS CATCHER***********************/
 
+    if (
+      conditions.trendsCatcher.sell.takeProfit &&
+      !botState.strategies.trendsCatcher.stopLoss
+    ) {
+      await marketSellAction(
+        'trendsCatcher',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'TRENDS CATCHER TAKE PROFIT',
+        true,
+      );
+      return;
+    }
+
     if (conditions.trendsCatcher.sell.stopLoss) {
       await marketSellAction(
         'trendsCatcher',
@@ -810,14 +839,15 @@ import { getTrixStream } from './indicators/trix';
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
-  // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
-  // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
+  // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
   getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
-  // getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
-  // getStochRSISignal(symbol, '5m', indicatorsData, 1.5, 1.5);
-  // getStochRSISignal(symbol, '1h', indicatorsData);
+  getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
+  // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
+  // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
+  // getStochRSISignal(symbol, '1m', indicatorsData, 5, 5);
+  // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
+  getEMASignal(symbol, '1m', indicatorsData);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
@@ -827,33 +857,29 @@ import { getTrixStream } from './indicators/trix';
   // getObvSignal(symbol, '1h', indicatorsData);
   // getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
-  // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi15m);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m);
-  // getStochRSISignal(symbol, '5m', indicatorsData.stochRsiSignal.stoch5m, 5, 5);
-  // runTrixInterval(indicatorsData.trix.trix5m);
-  // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
-  // if (botState.testMode) {
-  //   await sendToRecipients(`INIT (TEST MODE)
-  // Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  // Revision N: ${revisionNumber}
-  // Symbol: ${symbol.toUpperCase()}
-  // `);
-  // } else {
-  //   await sendToRecipients(`INIT
-  // Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  // Revision N: ${revisionNumber}
-  // Status: ${botState.status.toUpperCase()}
-  // Symbol: ${symbol.toUpperCase()}
-  // Initial USDT balance: ${initialUSDTBalance} USDT
-  // Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
-  // `);
-  // }
+  // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
 
-  // runEFIInterval(indicatorsData.efi1h);
-  // runStochRsiInterval(indicatorsData.stochRsiSignal.stoch5m);
+  if (botState.testMode) {
+    await sendToRecipients(`INIT (TEST MODE)
+  Bot started working at: ${format(new Date(), DATE_FORMAT)}
+  Revision N: ${revisionNumber}
+  Strategies: ${JSON.stringify(botState.strategies)}
+  Status: ${botState.status.toUpperCase()}
+  Symbol: ${symbol.toUpperCase()}
+  `);
+  } else {
+    await sendToRecipients(`INIT
+  Bot started working at: ${format(new Date(), DATE_FORMAT)}
+  Revision N: ${revisionNumber}
+  Strategies: ${JSON.stringify(botState.strategies)}
+  Status: ${botState.status.toUpperCase()}
+  Symbol: ${symbol.toUpperCase()}
+  Initial USDT balance: ${initialUSDTBalance} USDT
+  Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
+  `);
+  }
 
-  // runTrixInterval(indicatorsData.trix.trix5m);
-  // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
+  // runStochRsiInterval(indicatorsData.stochRsi.stoch5m);
 
   getTradeStream({
     symbol: symbol,
@@ -861,71 +887,6 @@ import { getTrixStream } from './indicators/trix';
   })
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(trader);
-
-  // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m);
-
-  // getForceIndexStream({
-  //   symbol: symbol,
-  //   interval: '5m',
-  //   period: 13,
-  // })
-  //   .pipe(bufferCount(5, 5))
-  //   .subscribe(data => {
-  //     const currentAvg = getAvarage(data);
-  //     if (!indicatorsData.efi5m.prevAv) {
-  //       indicatorsData.efi5m.prevAv = currentAvg;
-  //       return;
-  //     }
-  //     console.log('Current: ' + getAvarage(data));
-  //     if (indicatorsData.efi5m.prevAv > currentAvg) console.log('DOWN');
-  //     if (indicatorsData.efi5m.prevAv < currentAvg) console.log('UP');
-  //     // console.log('Av: ' + indicatorsData.efi1h.av);
-  //     // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
-  //     indicatorsData.efi5m.prevAv = currentAvg;
-  //   });
-
-  // getTrixStream({
-  //   symbol: symbol,
-  //   interval: '5m',
-  //   period: 6,
-  // })
-  //   .pipe(bufferCount(20, 20))
-  //   .subscribe(data => {
-  //     const currentAvg = getAvarage(data);
-  //     if (!indicatorsData.trix.trix5m.prevAv) {
-  //       indicatorsData.trix.trix5m.prevAv = currentAvg;
-  //       return;
-  //     }
-  //     console.log('Current: ' + getAvarage(data));
-  //     if (indicatorsData.trix.trix5m.prevAv > currentAvg) console.log('DOWN');
-  //     if (indicatorsData.trix.trix5m.prevAv < currentAvg) console.log('UP');
-  //     // console.log('Av: ' + indicatorsData.efi1h.av);
-  //     // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
-  //     indicatorsData.trix.trix5m.prevAv = currentAvg;
-  //   });
-
-  //
-  // getStochRsiStream({
-  //   symbol: symbol,
-  //   interval: '5m',
-  // })
-  //   .pipe(pluck('k'), bufferCount(20, 20))
-  //   .subscribe(data => {
-  //     const currentAvg = getAvarage(data);
-  //     if (!indicatorsData.stochRsiSignal.stoch5m.prevAv) {
-  //       indicatorsData.stochRsiSignal.stoch5m.prevAv = currentAvg;
-  //       return;
-  //     }
-  //     console.log('Current: ' + getAvarage(data));
-  //     if (indicatorsData.stochRsiSignal.stoch5m.prevAv > currentAvg)
-  //       console.log('DOWN');
-  //     if (indicatorsData.stochRsiSignal.stoch5m.prevAv < currentAvg)
-  //       console.log('UP');
-  //     // console.log('Av: ' + indicatorsData.efi1h.av);
-  //     // console.log('Prev av: ' + indicatorsData.efi1h.prevAv + '\n');
-  //     indicatorsData.stochRsiSignal.stoch5m.prevAv = currentAvg;
-  //   });
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {

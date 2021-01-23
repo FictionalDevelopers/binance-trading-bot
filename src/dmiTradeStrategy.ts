@@ -367,6 +367,9 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
+          Number(
+            (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 - 100,
+          ) >= 0.1 &&
           // indicatorsData.trix.trix5m.signal === 'buy',
           // indicatorsData.rsi1m.rsiValue !== null &&
           // indicatorsData.rsi1m.rsiValue < 68 &&
@@ -400,8 +403,13 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
             // indicatorsData.trix.trix5m.signal === 'sell',
-            indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
-            indicatorsData.stochRsi.stoch15m.signal === 'sell',
+            ((indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
+              indicatorsData.stochRsi.stoch15m.signal === 'sell') ||
+              (Number(
+                (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
+                  100,
+              ) >= 0.1 &&
+                expectedProfitPercent < 0)),
           // indicatorsData.efi1h.efiSignal === 'sell',
 
           // indicatorsData.obvSignal === 'sell',
@@ -800,10 +808,12 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
   getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
   getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
+  getEMASignal(symbol, '1m', indicatorsData);
+
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
   // getStochRSISignal(symbol, '1m', indicatorsData, 5, 5);
-  getDMISignal(symbol, '15m', indicatorsData.dmi15m);
+  // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
