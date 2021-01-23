@@ -49,21 +49,19 @@ export const getStochRSISignal = (
     symbol: symbol,
     interval: timeFrame,
   }).subscribe(stochRsi => {
-    if (Number(stochRsi.k) - Number(stochRsi.d) >= buySens) {
-      if (
-        stochRsiData.signal === 'sell' ||
-        stochRsiData.signal === null ||
-        Number(stochRsi.k) === 100
-      )
+    if (
+      Number(stochRsi.k) - Number(stochRsi.d) >= buySens ||
+      Number(stochRsi.k) === 100
+    ) {
+      if (stochRsiData.signal === 'sell' || stochRsiData.signal === null)
         stochRsiData.signal = 'buy';
     }
 
-    if (Number(stochRsi.d) - Number(stochRsi.k) >= sellSens) {
-      if (
-        stochRsiData.signal === 'buy' ||
-        stochRsiData.signal === null ||
-        Number(stochRsi.k) === 0
-      )
+    if (
+      Number(stochRsi.d) - Number(stochRsi.k) >= sellSens ||
+      Number(stochRsi.k) === 0
+    ) {
+      if (stochRsiData.signal === 'buy' || stochRsiData.signal === null)
         stochRsiData.signal = 'sell';
     }
     stochRsiData.value = stochRsi.k;
