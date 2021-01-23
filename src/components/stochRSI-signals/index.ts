@@ -62,7 +62,7 @@ export const getStochRSISignal = (
       if (
         stochRsiData.signal === 'buy' ||
         stochRsiData.signal === null ||
-        Number(stochRsi.d) === 100
+        Number(stochRsi.k) === 0
       )
         stochRsiData.signal = 'sell';
     }
