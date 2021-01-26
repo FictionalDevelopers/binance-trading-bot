@@ -380,6 +380,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
           // ) >= 0.1 &&
           // indicatorsData.trix.trix5m.signal === 'buy',
           indicatorsData.rsi1m.rsiValue !== null &&
+          indicatorsData.rsi1m.rsiValue < 67 &&
           indicatorsData.rsi1m.rsiValue > 50 &&
           // indicatorsData.rsi5m.rsiValue !== null &&
           // indicatorsData.rsi5m.rsiValue < 68 &&
@@ -410,7 +411,9 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
           stopLoss:
             botState.status === 'sell' &&
             botState.buyReason === 'stochRsi' &&
-            (indicatorsData.stochRsi.stoch1m.signal === 'sell' ||
+            ((indicatorsData.rsi1m.rsiValue !== null &&
+              indicatorsData.rsi1m.rsiValue < 49 &&
+              expectedProfitPercent < 0) ||
               indicatorsData.stochRsi.stoch5m.signal === 'sell'),
 
           // indicatorsData.trix.trix5m.signal === 'sell',
