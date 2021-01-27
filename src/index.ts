@@ -401,8 +401,9 @@ import { getTrixStream } from './indicators/trix';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.dmi1m.signal === 'BUY' &&
-          indicatorsData.dmi1m.willPriceGrow,
+          indicatorsData.dmi5m.signal === 'BUY' &&
+          indicatorsData.dmi5m.willPriceGrow,
+        // indicatorsData.rsi1m.rsiValue > 40,
 
         // Number(
         //   (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 - 100,
@@ -438,8 +439,8 @@ import { getTrixStream } from './indicators/trix';
 
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.dmi1m.signal === 'SELL' &&
-            !indicatorsData.dmi1m.willPriceGrow,
+            indicatorsData.dmi5m.signal === 'SELL' &&
+            !indicatorsData.dmi5m.willPriceGrow,
 
           // botState.buyReason === 'stochRsi' &&
           // indicatorsData.rsi1m.rsiValue < 40,
@@ -855,7 +856,7 @@ import { getTrixStream } from './indicators/trix';
   // getStochRSISignal(symbol, '1m', indicatorsData, 5, 5);
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
   // getEMASignal(symbol, '1m', indicatorsData);
-  getDMISignal(symbol, '1m', indicatorsData.dmi1m);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
