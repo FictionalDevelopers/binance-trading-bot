@@ -134,6 +134,15 @@ import { getTrixStream } from './indicators/trix';
         prev: null,
       },
     },
+    efi1m: {
+      efiBuySignalCount: 0,
+      efiSellSignalCount: 0,
+      prevEfi: null,
+      efi: null,
+      efiSignal: null,
+      av: null,
+      prevAv: null,
+    },
     efi1h: {
       efiBuySignalCount: 0,
       efiSellSignalCount: 0,
@@ -882,7 +891,7 @@ import { getTrixStream } from './indicators/trix';
   // runObvInterval(indicatorsData.obv1m);
   // getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
-  // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
+  getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)
@@ -913,21 +922,26 @@ import { getTrixStream } from './indicators/trix';
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(trader);
 
-  getObvStream({
+  getForceIndexStream({
     symbol: symbol,
     interval: '15m',
+    period: 13,
   })
-    .pipe(bufferCount(5))
+    .pipe(bufferCount(15))
     .subscribe(values => {
       if (!indicatorsData.emaAv) {
         indicatorsData.emaAv = getAvarage(values);
         return;
       }
       const currentEmaAv = getAvarage(values);
-      if (currentEmaAv > indicatorsData.emaAv) indicatorsData.emaSignal = 'buy';
-      if (currentEmaAv < indicatorsData.emaAv)
+      if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 >= 10)
+        indicatorsData.emaSignal = 'buy';
+      if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 <= -10)
         indicatorsData.emaSignal = 'sell';
-      console.log(indicatorsData.emaSignal);
+      console.log(
+        indicatorsData.emaSignal,
+        (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
+      );
       indicatorsData.emaAv = currentEmaAv;
     });
 })();

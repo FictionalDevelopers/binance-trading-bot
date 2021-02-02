@@ -376,8 +376,8 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
           // ((indicatorsData.efi5m.efi > 0 &&
           indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
           indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
-          indicatorsData.rsi15m.rsiValue > 40 &&
-          indicatorsData.rsi5m.rsiValue > 40,
+          indicatorsData.rsi15m.rsiValue > 50 &&
+          indicatorsData.rsi5m.rsiValue > 50,
         // indicatorsData.efi.efi15m.efi > 0 &&
         //   indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
         //   indicatorsData.dmi5m.adx > 20) ||
