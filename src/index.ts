@@ -65,6 +65,7 @@ import { getTrixStream } from './indicators/trix';
   // }
 
   const botState = {
+    local: true,
     strategies: {
       upTrend: { enabled: false, stopLoss: false },
       downTrend: { enabled: false, stopLoss: false },
@@ -903,7 +904,7 @@ import { getTrixStream } from './indicators/trix';
   // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
 
   if (botState.testMode) {
-    await sendToRecipients(`INIT (TEST MODE)
+    await sendToRecipients(`INIT (TEST MODE LOCAL)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
   Strategies: ${JSON.stringify(botState.strategies)}
@@ -911,7 +912,7 @@ import { getTrixStream } from './indicators/trix';
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
-    await sendToRecipients(`INIT
+    await sendToRecipients(`INIT (LOCAL)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
   Strategies: ${JSON.stringify(botState.strategies)}

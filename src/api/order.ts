@@ -128,7 +128,7 @@ export const marketSellAction = async (
           'totalProfit',
           (botState.totalProfit += expectedProfitPercent - 0.2),
         );
-        await sendToRecipients(`SELL
+        await sendToRecipients(`SELL ${botState.local && '(LOCAL)'}
                                   Strategy: ${strategy}
                                   Sell reason: ${sellReason}
                                   symbol: ${symbol.toUpperCase()}
@@ -158,13 +158,15 @@ export const marketSellAction = async (
           botState.strategies[`${strategy}`].stopLoss = true;
           botState.updateState('status', 'sell');
         }
-        await botStateService.trackBotState(
-          _omit(botState, [
-            'availableUSDT',
-            'availableCryptoCoin',
-            'updateState',
-          ]),
-        );
+        if (!botState.local) {
+          await botStateService.trackBotState(
+            _omit(botState, [
+              'availableUSDT',
+              'availableCryptoCoin',
+              'updateState',
+            ]),
+          );
+        }
       } catch (e) {
         await sendToRecipients(`SELL ERROR
                   ${JSON.stringify(e)}
@@ -301,7 +303,7 @@ export const marketBuyAction = async (
         'buyPrice',
         Number(pricesStream[pricesStream.length - 1]),
       );
-      await sendToRecipients(`BUY
+      await sendToRecipients(`BUY ${botState.local && '(LOCAL)'}
                              Strategy:${strategy}
                              Reason: ${buyReason}
                              Deal №: ${botState.dealsCount}
@@ -320,13 +322,15 @@ export const marketBuyAction = async (
 
       botState.updateState('status', 'sell');
       botState.updateState('prevPrice', botState.currentPrice);
-      await botStateService.trackBotState(
-        _omit(botState, [
-          'availableUSDT',
-          'availableCryptoCoin',
-          'updateState',
-        ]),
-      );
+      if (!botState.local) {
+        await botStateService.trackBotState(
+          _omit(botState, [
+            'availableUSDT',
+            'availableCryptoCoin',
+            'updateState',
+          ]),
+        );
+      }
     } catch (e) {
       await sendToRecipients(`BUY ERROR
             ${JSON.stringify(e)}
