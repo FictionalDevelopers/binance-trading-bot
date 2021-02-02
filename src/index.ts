@@ -218,6 +218,8 @@ import { getTrixStream } from './indicators/trix';
       willPriceGrow: false,
       trend: null,
       signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
     },
     dmi15m: {
       prevDmi: null,
@@ -229,6 +231,8 @@ import { getTrixStream } from './indicators/trix';
       willPriceGrow: false,
       trend: null,
       signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
     },
     dmi1h: {
       prevDmi: null,
@@ -240,6 +244,8 @@ import { getTrixStream } from './indicators/trix';
       willPriceGrow: false,
       trend: null,
       signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
     },
     dmi1m: {
       prevDmi: null,
@@ -419,10 +425,12 @@ import { getTrixStream } from './indicators/trix';
         },
       },
       stochRsiStrategy: {
-        buy: botState.status === 'buy' && indicatorsData.emaSignal === 'buy',
-        // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
-        // indicatorsData.dmi1m.signal === 'BUY' &&
-        // indicatorsData.dmi1m.adxSignal === 'buy',
+        buy:
+          botState.status === 'buy' &&
+          // && indicatorsData.emaSignal === 'buy',
+          // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
+          indicatorsData.dmi5m.signal === 'BUY' &&
+          indicatorsData.dmi5m.adxSignal === 'buy',
         // indicatorsData.dmi5m.willPriceGrow,
         // indicatorsData.rsi1m.rsiValue > 40,
 
@@ -459,10 +467,11 @@ import { getTrixStream } from './indicators/trix';
           // expectedProfitPercent <= -1,
 
           stopLoss:
-            botState.status === 'sell' && indicatorsData.emaSignal === 'sell',
-          // indicatorsData.stochRsi.stoch1m.signal === 'sell' &&
-          // indicatorsData.dmi1m.signal === 'SELL' &&
-          // indicatorsData.dmi1m.adxSignal === 'sell',
+            botState.status === 'sell' &&
+            // indicatorsData.emaSignal === 'sell',
+            // indicatorsData.stochRsi.stoch1m.signal === 'sell' &&
+            indicatorsData.dmi5m.signal === 'SELL' &&
+            indicatorsData.dmi5m.adxSignal === 'sell',
 
           // !indicatorsData.dmi5m.willPriceGrow,
 
@@ -880,7 +889,7 @@ import { getTrixStream } from './indicators/trix';
   // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
   // getEMASignal(symbol, '1m', indicatorsData);
-  // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
@@ -891,7 +900,7 @@ import { getTrixStream } from './indicators/trix';
   // runObvInterval(indicatorsData.obv1m);
   // getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
-  getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
+  // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)

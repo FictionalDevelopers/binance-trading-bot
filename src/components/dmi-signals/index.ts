@@ -77,7 +77,7 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
         100 >=
       0.5
     ) {
-      // indicatorsData.signal = 'BUY';
+      indicatorsData.signal = 'BUY';
       indicatorsData.buySignalCount++;
       indicatorsData.sellSignalCount = 0;
       console.log('BUY ' + indicatorsData.buySignalCount);
@@ -86,7 +86,7 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
           Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4) +
           '\n',
       );
-      if (indicatorsData.buySignalCount >= 3) indicatorsData.signal = 'BUY';
+      if (indicatorsData.buySignalCount > 0) indicatorsData.signal = 'BUY';
     } else if (
       (Number(dmi.pdi).toPrecision(4) /
         Number(dmi.mdi).toPrecision(4) /
@@ -95,7 +95,7 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
         100 <=
       -0.25
     ) {
-      // indicatorsData.signal = 'SELL';
+      indicatorsData.signal = 'SELL';
       indicatorsData.sellSignalCount++;
       indicatorsData.buySignalCount = 0;
       console.log('SELL ' + indicatorsData.sellSignalCount);
@@ -104,7 +104,7 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
           Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4) +
           '\n',
       );
-      if (indicatorsData.sellSignalCount >= 3) indicatorsData.signal = 'SELL';
+      if (indicatorsData.sellSignalCount > 0) indicatorsData.signal = 'SELL';
     }
 
     console.log(

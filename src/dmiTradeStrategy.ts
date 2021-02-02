@@ -809,7 +809,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
-  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getEMASignal(symbol, '5m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
