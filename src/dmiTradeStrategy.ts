@@ -375,7 +375,8 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
           // indicatorsData.efi1h.efiSignal === 'buy' &&
           // ((indicatorsData.efi5m.efi > 0 &&
           indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
-          indicatorsData.stochRsi.stoch15m.signal === 'buy',
+          indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
+          indicatorsData.rsi15m.rsiValue > 50,
         // indicatorsData.efi.efi15m.efi > 0 &&
         //   indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
         //   indicatorsData.dmi5m.adx > 20) ||
@@ -803,11 +804,11 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
   // getStochRSISignal(symbol, '1m', indicatorsData, 5, 5);
-  getDMISignal(symbol, '15m', indicatorsData.dmi15m);
+  // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getEMASignal(symbol, '5m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1m', indicatorsData);

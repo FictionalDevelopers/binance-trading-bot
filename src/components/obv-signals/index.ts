@@ -43,8 +43,10 @@ export const getObvSignal = (symbol, timeFrame, indicatorsData) => {
         indicatorsData.obv = obv;
         return;
       }
-      indicatorsData.obv = obv;
-      console.log(obv);
+      // if (indicatorsData.prevObv > obv) console.log('SELL');
+      // if (indicatorsData.prevObv < obv) console.log('BUY');
+      console.log((obv / indicatorsData.prevObv) * 100 - 100);
+      indicatorsData.prevObv = obv;
     }
   });
 };
