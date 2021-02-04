@@ -65,9 +65,9 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
     if (indicatorsData.adxSellSignalVolume > 0)
       indicatorsData.willPriceGrow = false;
     // console.log(dmi.adx);
-    if ((dmi.adx / indicatorsData.prevDmi.adx) * 100 - 100 >= 0.5)
+    if ((dmi.adx / indicatorsData.prevDmi.adx) * 100 - 100 >= 0.1)
       indicatorsData.adxSignal = 'buy';
-    if ((indicatorsData.prevDmi.adx / dmi.adx) * 100 - 100 >= 0.5)
+    if ((indicatorsData.prevDmi.adx / dmi.adx) * 100 - 100 >= 0.1)
       indicatorsData.adxSignal = 'sell';
     if (
       (Number(dmi.pdi).toPrecision(4) /
