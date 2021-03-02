@@ -70,53 +70,59 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
         prev: null,
       },
     },
-    efi: {
-      efi1h: {
-        efiBuySignalCount: 0,
-        efiSellSignalCount: 0,
-        prevEfi: null,
-        efi: null,
-        signal: null,
-        av: null,
-        prevAv: null,
-      },
-      efi5m: {
-        efiBuySignalCount: 0,
-        efiSellSignalCount: 0,
-        prevEfi: null,
-        efi: null,
-        signal: null,
-        av: null,
-        prevAv: null,
-      },
-      efi15m: {
-        efiBuySignalCount: 0,
-        efiSellSignalCount: 0,
-        prevEfi: null,
-        efi: null,
-        signal: null,
-        av: null,
-        prevAv: null,
-      },
-      efi1m: {
-        efiBuySignalCount: 0,
-        efiSellSignalCount: 0,
-        prevEfi: null,
-        efi: null,
-        signal: null,
-        av: null,
-        prevAv: null,
-      },
+    efi1m: {
+      efiBuySignalCount: 0,
+      efiSellSignalCount: 0,
+      prevEfi: null,
+      efi: null,
+      efiSignal: null,
+      av: null,
+      prevAv: null,
     },
-
+    efi1h: {
+      efiBuySignalCount: 0,
+      efiSellSignalCount: 0,
+      prevEfi: null,
+      efi: null,
+      efiSignal: null,
+      av: null,
+      prevAv: null,
+    },
+    efi5m: {
+      efiBuySignalCount: 0,
+      efiSellSignalCount: 0,
+      prevEfi: null,
+      efi: null,
+      efiSignal: null,
+      av: null,
+      prevAv: null,
+    },
     obvBuySignalCount: 0,
     obvSellSignalCount: 0,
     prevObv: null,
+    obv5m: {
+      obv: null,
+    },
+    obv15m: {
+      obv: null,
+    },
+    obv1m: {
+      obv: null,
+      prevObv: null,
+    },
     obv: null,
     obvSignal: null,
     priceGrowArea: false,
     stochRsi: {
-      stoch1m: {},
+      stoch1m: {
+        BuySignalCount: 0,
+        SellSignalCount: 0,
+        prev: null,
+        value: null,
+        signal: null,
+        av: null,
+        prevAv: null,
+      },
       stoch5m: {
         BuySignalCount: 0,
         SellSignalCount: 0,
@@ -135,21 +141,21 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
         av: null,
         prevAv: null,
       },
-
       stoch1h: null,
     },
     emaSignal: null,
     dmi5m: {
       prevDmi: null,
       dmiMdiSignal: 0,
-      adxSignal: 0,
+      adxSignal: null,
       mdiSignal: 0,
       adxBuySignalVolume: 0,
       adxSellSignalVolume: 0,
       willPriceGrow: false,
       trend: null,
-      adx: null,
       signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
     },
     dmi15m: {
       prevDmi: null,
@@ -160,8 +166,9 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       adxSellSignalVolume: 0,
       willPriceGrow: false,
       trend: null,
-      adx: null,
       signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
     },
     dmi1h: {
       prevDmi: null,
@@ -172,19 +179,22 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
       adxSellSignalVolume: 0,
       willPriceGrow: false,
       trend: null,
-      adx: null,
+      signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
     },
     dmi1m: {
       prevDmi: null,
       dmiMdiSignal: 0,
-      adxSignal: 0,
       mdiSignal: 0,
       adxBuySignalVolume: 0,
       adxSellSignalVolume: 0,
       willPriceGrow: false,
       trend: null,
-      adx: null,
       signal: null,
+      adxSignal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
     },
     rsi1m: {
       rsiValue: null,
@@ -220,25 +230,9 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
     rsiRebuy: {
       value: true,
     },
+    emaAvSignal: null,
+    emaAv: null,
   };
-
-  // runEMAInterval(indicatorsData, botState);
-  runObvInterval(indicatorsData);
-
-  // const rsiRebuyChecker = setInterval(() => {
-  //   if (
-  //     indicatorsData.rsi1m.rsiValue !== null &&
-  //     indicatorsData.rsi5m.rsiValue !== null &&
-  //     indicatorsData.rsi5m.rsiValue <= 33
-  //   )
-  //     indicatorsData.rsiRebuy.value = true;
-  //   if (
-  //     indicatorsData.rsi1m.rsiValue >= 41 &&
-  //     indicatorsData.rsi5m.rsiValue >= 41
-  //   )
-  //     if (botState.status) indicatorsData.rsiRebuy.value = false;
-  // }, 1000);
-
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
     if (botState.status === 'isPending') return;
@@ -827,7 +821,6 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
         'STOCH RSI STOP LOSS',
         false,
       );
-      indicatorsData.obvSellSignalCount = 0;
 
       // indicatorsData.priceGrowArea = false;
       return;
@@ -875,29 +868,30 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   };
 
   // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
-  // getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 3, 2, 0, 0);
-  getEMASignal(symbol, '5m', indicatorsData);
-
-  // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
+  // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
+  // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
-  // getStochRSISignal(symbol, '1m', indicatorsData, 5, 5);
-  // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
+  // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 3, 2, 0, 0);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 3, 3, 0, 0);
+  getEMASignal(symbol, '5m', indicatorsData);
+  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
-  // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getEMASignal(symbol, '5m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1m', indicatorsData);
-  // getObvSignal(symbol, '1h', indicatorsData);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m);
+  // runObvInterval(indicatorsData.obv1m);
   // getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
 
   if (botState.testMode) {
-    await sendToRecipients(`INIT (TEST MODE)
+    await sendToRecipients(`INIT (TEST MODE LOCAL)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
   Strategies: ${JSON.stringify(botState.strategies)}
@@ -905,7 +899,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
-    await sendToRecipients(`INIT
+    await sendToRecipients(`INIT (LOCAL)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
   Strategies: ${JSON.stringify(botState.strategies)}
@@ -927,47 +921,25 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
 
   // getForceIndexStream({
   //   symbol: symbol,
-  //   interval: '5m',
+  //   interval: '15m',
   //   period: 13,
   // })
-  //   .pipe(bufferCount(10, 10))
-  //   .subscribe(data => {
-  //     const currentAv = getAvarage(data);
-  //     if (!indicatorsData.efi.efi5m.prevAv) {
-  //       indicatorsData.efi.efi5m.prevAv = currentAv;
+  //   .pipe(bufferCount(15))
+  //   .subscribe(values => {
+  //     if (!indicatorsData.emaAv) {
+  //       indicatorsData.emaAv = getAvarage(values);
   //       return;
   //     }
-  //     console.log(getAvarage(data));
-  //     console.log('Av: ' + currentAv);
-  //     console.log('Prev av: ' + indicatorsData.efi.efi5m.prevAv + '\n');
-  //     indicatorsData.efi.efi5m.prevAv = currentAv;
-  //   });
-
-  // getStochRsiStream({
-  //   symbol: symbol,
-  //   interval: '5m',
-  // })
-  //   .pipe(bufferCount(10, 10))
-  //   .subscribe(data => {
-  //     indicatorsData.stochRsi.stoch5m.av = getAvarage(data);
-  //     if (
-  //       indicatorsData.stochRsi.stoch5m.av &&
-  //       indicatorsData.stochRsi.stoch5m.prevAv
-  //     ) {
-  //       if (
-  //         indicatorsData.stochRsi.stoch5m.av >
-  //         indicatorsData.stochRsi.stoch5m.prevAv
-  //       )
-  //         indicatorsData.stochRsi.stoch5m.signal = 'buy';
-  //       if (
-  //         indicatorsData.stochRsi.stoch5m.av <
-  //         indicatorsData.stochRsi.stoch5m.prevAv
-  //       )
-  //         indicatorsData.stochRsi.stoch5m.signal = 'sell';
-  //     }
-  //     console.log(getAvarage(data));
-  //     console.log('Av: ' + indicatorsData.stochRsi.stoch5m.av);
-  //     console.log('Prev av: ' + indicatorsData.stochRsi.stoch5m.prevAv + '\n');
+  //     const currentEmaAv = getAvarage(values);
+  //     if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 >= 10)
+  //       indicatorsData.emaSignal = 'buy';
+  //     if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 <= -10)
+  //       indicatorsData.emaSignal = 'sell';
+  //     console.log(
+  //       indicatorsData.emaSignal,
+  //       (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
+  //     );
+  //     indicatorsData.emaAv = currentEmaAv;
   //   });
 })();
 
