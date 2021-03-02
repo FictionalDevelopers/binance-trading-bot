@@ -1,6 +1,16 @@
 import { getDmiStream } from '../../indicators/dmi';
 
-export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
+export const getDMISignal = (
+  symbol,
+  timeFrame,
+  indicatorsData,
+  buyCount,
+  sellCount,
+  // pdiMdiBuyDiff,
+  // pdiMdiSellDiff,
+  adxBuyDiff,
+  adxSellDiff,
+) => {
   getDmiStream({
     symbol: symbol,
     interval: timeFrame,
@@ -65,46 +75,55 @@ export const getDMISignal = (symbol, timeFrame, indicatorsData) => {
     if (indicatorsData.adxSellSignalVolume > 0)
       indicatorsData.willPriceGrow = false;
     // console.log(dmi.adx);
-    if ((dmi.adx / indicatorsData.prevDmi.adx) * 100 - 100 >= 0.1)
-      indicatorsData.adxSignal = 'buy';
-    if ((indicatorsData.prevDmi.adx / dmi.adx) * 100 - 100 >= 0.1)
-      indicatorsData.adxSignal = 'sell';
-    if (
-      (Number(dmi.pdi).toPrecision(4) /
-        Number(dmi.mdi).toPrecision(4) /
-        indicatorsData.prevDiff) *
-        100 -
-        100 >=
-      0.5
-    ) {
-      indicatorsData.signal = 'BUY';
-      indicatorsData.buySignalCount++;
-      indicatorsData.sellSignalCount = 0;
-      console.log('BUY ' + indicatorsData.buySignalCount);
-      console.log(
-        'Value: ' +
-          Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4) +
-          '\n',
-      );
-      if (indicatorsData.buySignalCount > 0) indicatorsData.signal = 'BUY';
-    } else if (
-      (Number(dmi.pdi).toPrecision(4) /
-        Number(dmi.mdi).toPrecision(4) /
-        indicatorsData.prevDiff) *
-        100 -
-        100 <=
-      -0.25
-    ) {
-      indicatorsData.signal = 'SELL';
-      indicatorsData.sellSignalCount++;
-      indicatorsData.buySignalCount = 0;
-      console.log('SELL ' + indicatorsData.sellSignalCount);
-      console.log(
-        'Value: ' +
-          Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4) +
-          '\n',
-      );
-      if (indicatorsData.sellSignalCount > 0) indicatorsData.signal = 'SELL';
+    // if ((dmi.adx / indicatorsData.prevDmi.adx) * 100 - 100 >= 0.5)
+    //   indicatorsData.adxSignal = 'buy';
+    // if ((indicatorsData.prevDmi.adx / dmi.adx) * 100 - 100 >= 0.5)
+    //   indicatorsData.adxSignal = 'sell';
+    if (buyCount) {
+      if (
+        // (Number(dmi.pdi).toPrecision(4) /
+        //   Number(dmi.mdi).toPrecision(4) /
+        //   indicatorsData.prevDiff) *
+        //   100 -
+        //   100 >=
+        //   pdiMdiBuyDiff &&
+        (dmi.adx / indicatorsData.prevDmi.adx) * 100 - 100 >
+        adxBuyDiff
+      ) {
+        // indicatorsData.signal = 'BUY';
+        indicatorsData.buySignalCount++;
+        indicatorsData.sellSignalCount = 0;
+        console.log('BUY ' + indicatorsData.buySignalCount);
+        console.log(
+          'Value: ' +
+            Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4) +
+            '\n',
+        );
+        if (indicatorsData.buySignalCount >= buyCount)
+          indicatorsData.signal = 'BUY';
+      } else if (
+        // (Number(dmi.pdi).toPrecision(4) /
+        //   Number(dmi.mdi).toPrecision(4) /
+        //   indicatorsData.prevDiff) *
+        //   100 -
+        //   100 <=
+        //   pdiMdiSellDiff &&
+        (indicatorsData.prevDmi.adx / dmi.adx) * 100 - 100 >
+        adxSellDiff
+        // indicatorsData.adxSignal = 'sell'
+      ) {
+        // indicatorsData.signal = 'SELL';
+        indicatorsData.sellSignalCount++;
+        indicatorsData.buySignalCount = 0;
+        console.log('SELL ' + indicatorsData.sellSignalCount);
+        console.log(
+          'Value: ' +
+            Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4) +
+            '\n',
+        );
+        if (indicatorsData.sellSignalCount >= sellCount)
+          indicatorsData.signal = 'SELL';
+      }
     }
 
     console.log(

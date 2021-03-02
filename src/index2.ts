@@ -433,10 +433,15 @@ import { getTrixStream } from './indicators/trix';
           // && indicatorsData.emaSignal === 'buy',
           // indicatorsData.stochRsi.stoch5m.signal === 'buy',
           ((indicatorsData.dmi5m.signal === 'BUY' &&
-            indicatorsData.rsi5m.rsiValue > 51) ||
+            Number(
+              (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
+                100,
+            ) >= 0.1) ||
             (indicatorsData.dmi5m.signal === 'SELL' &&
-              indicatorsData.rsi5m.rsiValue !== null &&
-              indicatorsData.rsi5m.rsiValue < 49)),
+              Number(
+                (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
+                  100,
+              ) >= 0.1)),
         // &&
         // ((indicatorsData.rsi1m.rsiValue > 40 &&
         //   indicatorsData.rsi1m.rsiValue !== null &&
@@ -478,6 +483,18 @@ import { getTrixStream } from './indicators/trix';
         // indicatorsData.efi.efi > 0,
         sell: {
           takeProfit: null,
+          //   botState.status === 'sell' &&
+          //   ((indicatorsData.dmi1m.signal === 'SELL' &&
+          //     Number(
+          //       (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
+          //         100,
+          //     ) >= 0.1) ||
+          //     (indicatorsData.dmi1m.signal === 'BUY' &&
+          //       Number(
+          //         (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
+          //           100 -
+          //           100,
+          //       ) >= 0.1)),
           // botState.status === 'sell' &&
           // botState.buyReason === 'stochRsi' &&
           // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
@@ -486,10 +503,16 @@ import { getTrixStream } from './indicators/trix';
           stopLoss:
             botState.status === 'sell' &&
             ((indicatorsData.dmi5m.signal === 'SELL' &&
-              indicatorsData.rsi5m.rsiValue > 51) ||
+              Number(
+                (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
+                  100,
+              ) >= 0.1) ||
               (indicatorsData.dmi5m.signal === 'BUY' &&
-                indicatorsData.rsi5m.rsiValue !== null &&
-                indicatorsData.rsi5m.rsiValue < 49)),
+                Number(
+                  (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
+                    100 -
+                    100,
+                ) >= 0.1)),
           // ||
           // (indicatorsData.rsi1m.rsiValue < 40 &&
           //   indicatorsData.rsi1m.rsiValue !== null) ||
@@ -863,7 +886,6 @@ import { getTrixStream } from './indicators/trix';
         'STOCH RSI STOP LOSS',
         false,
       );
-      indicatorsData.obvSellSignalCount = 0;
 
       // indicatorsData.priceGrowArea = false;
       return;
@@ -917,12 +939,13 @@ import { getTrixStream } from './indicators/trix';
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
   // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m, 3, 2, 0, 0);
-  // getEMASignal(symbol, '1m', indicatorsData);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 3, 3, 0, 0);
+  getEMASignal(symbol, '5m', indicatorsData);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getEMASignal(symbol, '5m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1m', indicatorsData);
