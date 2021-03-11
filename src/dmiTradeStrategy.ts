@@ -473,7 +473,8 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
               (indicatorsData.rsi5m.rsiValue !== null &&
                 indicatorsData.rsi5m.rsiValue < 60 &&
                 indicatorsData.rsi5m.rsiValue > 40 &&
-                indicatorsData.stochRsi.stoch5m.signal === 'sell')),
+                indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
+                expectedProfitPercent > 0)),
           // ||
           // (indicatorsData.rsi1m.rsiValue < 40 &&
           //   indicatorsData.rsi1m.rsiValue !== null) ||
