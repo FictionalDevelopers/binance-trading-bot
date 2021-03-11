@@ -5,6 +5,7 @@ import { DATE_FORMAT } from '../constants/date';
 import getBalances from './balance';
 import { service as botStateService } from '../components/botState';
 import _omit from 'lodash/omit';
+import { indicatorsData } from '../index2';
 
 export const marketBuy = (symbol: string, quantity: number): Promise<unknown> =>
   new Promise((resolve, reject) => {
@@ -128,7 +129,7 @@ export const marketSellAction = async (
           'totalProfit',
           (botState.totalProfit += expectedProfitPercent - 0.2),
         );
-        await sendToRecipients(`SELL ${botState.local && '(LOCAL)'}
+        await sendToRecipients(`SELL ${botState.local ? '(LOCAL)' : ''}
                                   Strategy: ${strategy}
                                   Sell reason: ${sellReason}
                                   symbol: ${symbol.toUpperCase()}
@@ -153,6 +154,8 @@ export const marketSellAction = async (
                                   total profit: ${botState.totalProfit}%
                     `);
         botState.dealsCount++;
+        indicatorsData.dmi5m.signal = null;
+        indicatorsData.dmi5m.buySignalCount = 0;
         if (!stopLoss) botState.updateState('status', 'buy');
         else {
           botState.strategies[`${strategy}`].stopLoss = true;
@@ -303,7 +306,7 @@ export const marketBuyAction = async (
         'buyPrice',
         Number(pricesStream[pricesStream.length - 1]),
       );
-      await sendToRecipients(`BUY ${botState.local && '(LOCAL)'}
+      await sendToRecipients(`BUY ${botState.local ? '(LOCAL)' : ''}
                              Strategy:${strategy}
                              Reason: ${buyReason}
                              Deal №: ${botState.dealsCount}

@@ -13,7 +13,7 @@ import getAvarage from './utils/getAverage';
 import { getEmaStream } from '../src/indicators/ema';
 import { getObvStream } from './indicators/obv';
 
-import { getDMISignal } from './components/dmi-signals';
+// import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 import { getTrixSignal, runTrixInterval } from './components/trix-signal';
 import {
@@ -282,6 +282,7 @@ import { getTrixStream } from './indicators/trix';
     slow1mEMA: 0,
     middle1mEMA: 0,
     fast1mEMA: 0,
+    avFast1mEMA: 0,
     slow5mEMA: 0,
     middle5mEMA: 0,
     fast5mEMA: 0,
@@ -916,13 +917,13 @@ import { getTrixStream } from './indicators/trix';
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
   // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 3, 2, 0, 0);
+  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 3, 2, 0, 0);
   // getEMASignal(symbol, '1m', indicatorsData);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getEMASignal(symbol, '5m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1m', indicatorsData);
@@ -961,28 +962,28 @@ import { getTrixStream } from './indicators/trix';
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(trader);
 
-  // getForceIndexStream({
-  //   symbol: symbol,
-  //   interval: '15m',
-  //   period: 13,
-  // })
-  //   .pipe(bufferCount(15))
-  //   .subscribe(values => {
-  //     if (!indicatorsData.emaAv) {
-  //       indicatorsData.emaAv = getAvarage(values);
-  //       return;
-  //     }
-  //     const currentEmaAv = getAvarage(values);
-  //     if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 >= 10)
-  //       indicatorsData.emaSignal = 'buy';
-  //     if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 <= -10)
-  //       indicatorsData.emaSignal = 'sell';
-  //     console.log(
-  //       indicatorsData.emaSignal,
-  //       (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
-  //     );
-  //     indicatorsData.emaAv = currentEmaAv;
-  //   });
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 7,
+  })
+    .pipe(bufferCount(5, 5))
+    .subscribe(values => {
+      if (!indicatorsData.emaAv) {
+        indicatorsData.emaAv = getAvarage(values);
+        return;
+      }
+      const currentEmaAv = getAvarage(values);
+      if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 > 0)
+        indicatorsData.emaSignal = 'buy';
+      if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 < 0)
+        indicatorsData.emaSignal = 'sell';
+      console.log(
+        indicatorsData.emaSignal,
+        (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
+      );
+      indicatorsData.emaAv = currentEmaAv;
+    });
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {

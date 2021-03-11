@@ -28,6 +28,180 @@ import { getForceIndexStream } from './indicators/forceIndex';
 import { getStochRsiStream } from './indicators/stochRSI';
 import { getTrixStream } from './indicators/trix';
 
+export const indicatorsData = {
+  trix: {
+    trix5m: {
+      av: null,
+      prevAv: null,
+      signal: null,
+      value: null,
+      prev: null,
+    },
+  },
+  efi1m: {
+    efiBuySignalCount: 0,
+    efiSellSignalCount: 0,
+    prevEfi: null,
+    efi: null,
+    efiSignal: null,
+    av: null,
+    prevAv: null,
+  },
+  efi1h: {
+    efiBuySignalCount: 0,
+    efiSellSignalCount: 0,
+    prevEfi: null,
+    efi: null,
+    efiSignal: null,
+    av: null,
+    prevAv: null,
+  },
+  efi5m: {
+    efiBuySignalCount: 0,
+    efiSellSignalCount: 0,
+    prevEfi: null,
+    efi: null,
+    efiSignal: null,
+    av: null,
+    prevAv: null,
+  },
+  obvBuySignalCount: 0,
+  obvSellSignalCount: 0,
+  prevObv: null,
+  obv5m: {
+    obv: null,
+  },
+  obv15m: {
+    obv: null,
+  },
+  obv1m: {
+    obv: null,
+    prevObv: null,
+  },
+  obv: null,
+  obvSignal: null,
+  priceGrowArea: false,
+  stochRsi: {
+    stoch1m: {
+      BuySignalCount: 0,
+      SellSignalCount: 0,
+      prev: null,
+      value: null,
+      signal: null,
+      av: null,
+      prevAv: null,
+    },
+    stoch5m: {
+      BuySignalCount: 0,
+      SellSignalCount: 0,
+      prev: null,
+      value: null,
+      signal: null,
+      av: null,
+      prevAv: null,
+    },
+    stoch15m: {
+      BuySignalCount: 0,
+      SellSignalCount: 0,
+      prev: null,
+      value: null,
+      signal: null,
+      av: null,
+      prevAv: null,
+    },
+    stoch1h: null,
+  },
+  emaSignal: null,
+  dmi5m: {
+    prevDmi: null,
+    dmiMdiSignal: 0,
+    adxSignal: null,
+    mdiSignal: 0,
+    adxBuySignalVolume: 0,
+    adxSellSignalVolume: 0,
+    willPriceGrow: false,
+    trend: null,
+    signal: null,
+    buySignalCount: 0,
+    sellSignalCount: 0,
+  },
+  dmi15m: {
+    prevDmi: null,
+    dmiMdiSignal: 0,
+    adxSignal: 0,
+    mdiSignal: 0,
+    adxBuySignalVolume: 0,
+    adxSellSignalVolume: 0,
+    willPriceGrow: false,
+    trend: null,
+    signal: null,
+    buySignalCount: 0,
+    sellSignalCount: 0,
+  },
+  dmi1h: {
+    prevDmi: null,
+    dmiMdiSignal: 0,
+    adxSignal: 0,
+    mdiSignal: 0,
+    adxBuySignalVolume: 0,
+    adxSellSignalVolume: 0,
+    willPriceGrow: false,
+    trend: null,
+    signal: null,
+    buySignalCount: 0,
+    sellSignalCount: 0,
+  },
+  dmi1m: {
+    prevDmi: null,
+    dmiMdiSignal: 0,
+    mdiSignal: 0,
+    adxBuySignalVolume: 0,
+    adxSellSignalVolume: 0,
+    willPriceGrow: false,
+    trend: null,
+    signal: null,
+    adxSignal: null,
+    buySignalCount: 0,
+    sellSignalCount: 0,
+  },
+  rsi1m: {
+    rsiValue: null,
+    prevRsi: null,
+    sellNow: false,
+    buyNow: false,
+  },
+  rsi5m: {
+    rsiValue: null,
+    prevRsi: null,
+    sellNow: false,
+    buyNow: false,
+  },
+  rsi15m: {
+    rsiValue: null,
+    prevRsi: null,
+    sellNow: false,
+    buyNow: false,
+  },
+  slow1mEMA: 0,
+  middle1mEMA: 0,
+  fast1mEMA: 0,
+  slow5mEMA: 0,
+  middle5mEMA: 0,
+  fast5mEMA: 0,
+  slow1hEMA: 0,
+  middle1hEMA: 0,
+  fast1hEMA: 0,
+  slow15mEMA: 0,
+  middle15mEMA: 0,
+  fast15mEMA: 0,
+  summaryEMABuySignal: false,
+  rsiRebuy: {
+    value: true,
+  },
+  emaAvSignal: null,
+  emaAv: null,
+};
+
 (async function() {
   await connect();
   // await processSubscriptions();
@@ -125,179 +299,6 @@ import { getTrixStream } from './indicators/trix';
     },
   };
 
-  const indicatorsData = {
-    trix: {
-      trix5m: {
-        av: null,
-        prevAv: null,
-        signal: null,
-        value: null,
-        prev: null,
-      },
-    },
-    efi1m: {
-      efiBuySignalCount: 0,
-      efiSellSignalCount: 0,
-      prevEfi: null,
-      efi: null,
-      efiSignal: null,
-      av: null,
-      prevAv: null,
-    },
-    efi1h: {
-      efiBuySignalCount: 0,
-      efiSellSignalCount: 0,
-      prevEfi: null,
-      efi: null,
-      efiSignal: null,
-      av: null,
-      prevAv: null,
-    },
-    efi5m: {
-      efiBuySignalCount: 0,
-      efiSellSignalCount: 0,
-      prevEfi: null,
-      efi: null,
-      efiSignal: null,
-      av: null,
-      prevAv: null,
-    },
-    obvBuySignalCount: 0,
-    obvSellSignalCount: 0,
-    prevObv: null,
-    obv5m: {
-      obv: null,
-    },
-    obv15m: {
-      obv: null,
-    },
-    obv1m: {
-      obv: null,
-      prevObv: null,
-    },
-    obv: null,
-    obvSignal: null,
-    priceGrowArea: false,
-    stochRsi: {
-      stoch1m: {
-        BuySignalCount: 0,
-        SellSignalCount: 0,
-        prev: null,
-        value: null,
-        signal: null,
-        av: null,
-        prevAv: null,
-      },
-      stoch5m: {
-        BuySignalCount: 0,
-        SellSignalCount: 0,
-        prev: null,
-        value: null,
-        signal: null,
-        av: null,
-        prevAv: null,
-      },
-      stoch15m: {
-        BuySignalCount: 0,
-        SellSignalCount: 0,
-        prev: null,
-        value: null,
-        signal: null,
-        av: null,
-        prevAv: null,
-      },
-      stoch1h: null,
-    },
-    emaSignal: null,
-    dmi5m: {
-      prevDmi: null,
-      dmiMdiSignal: 0,
-      adxSignal: null,
-      mdiSignal: 0,
-      adxBuySignalVolume: 0,
-      adxSellSignalVolume: 0,
-      willPriceGrow: false,
-      trend: null,
-      signal: null,
-      buySignalCount: 0,
-      sellSignalCount: 0,
-    },
-    dmi15m: {
-      prevDmi: null,
-      dmiMdiSignal: 0,
-      adxSignal: 0,
-      mdiSignal: 0,
-      adxBuySignalVolume: 0,
-      adxSellSignalVolume: 0,
-      willPriceGrow: false,
-      trend: null,
-      signal: null,
-      buySignalCount: 0,
-      sellSignalCount: 0,
-    },
-    dmi1h: {
-      prevDmi: null,
-      dmiMdiSignal: 0,
-      adxSignal: 0,
-      mdiSignal: 0,
-      adxBuySignalVolume: 0,
-      adxSellSignalVolume: 0,
-      willPriceGrow: false,
-      trend: null,
-      signal: null,
-      buySignalCount: 0,
-      sellSignalCount: 0,
-    },
-    dmi1m: {
-      prevDmi: null,
-      dmiMdiSignal: 0,
-      mdiSignal: 0,
-      adxBuySignalVolume: 0,
-      adxSellSignalVolume: 0,
-      willPriceGrow: false,
-      trend: null,
-      signal: null,
-      adxSignal: null,
-      buySignalCount: 0,
-      sellSignalCount: 0,
-    },
-    rsi1m: {
-      rsiValue: null,
-      prevRsi: null,
-      sellNow: false,
-      buyNow: false,
-    },
-    rsi5m: {
-      rsiValue: null,
-      prevRsi: null,
-      sellNow: false,
-      buyNow: false,
-    },
-    rsi15m: {
-      rsiValue: null,
-      prevRsi: null,
-      sellNow: false,
-      buyNow: false,
-    },
-    slow1mEMA: 0,
-    middle1mEMA: 0,
-    fast1mEMA: 0,
-    slow5mEMA: 0,
-    middle5mEMA: 0,
-    fast5mEMA: 0,
-    slow1hEMA: 0,
-    middle1hEMA: 0,
-    fast1hEMA: 0,
-    slow15mEMA: 0,
-    middle15mEMA: 0,
-    fast15mEMA: 0,
-    summaryEMABuySignal: false,
-    rsiRebuy: {
-      value: true,
-    },
-    emaAvSignal: null,
-    emaAv: null,
-  };
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
     if (botState.status === 'isPending') return;
@@ -426,22 +427,34 @@ import { getTrixStream } from './indicators/trix';
         },
       },
       stochRsiStrategy: {
-        buy:
-          botState.status === 'buy' &&
-          // indicatorsData.dmi5m.willPriceGrow &&
-          // indicatorsData.dmi1m.willPriceGrow,
-          // && indicatorsData.emaSignal === 'buy',
-          // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-          ((indicatorsData.dmi5m.signal === 'BUY' &&
-            Number(
-              (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
-                100,
-            ) >= 0.1) ||
-            (indicatorsData.dmi5m.signal === 'SELL' &&
-              Number(
-                (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-                  100,
-              ) >= 0.1)),
+        buy: botState.status === 'buy' && indicatorsData.emaSignal === 'buy',
+        // indicatorsData.dmi5m.willPriceGrow &&
+        // indicatorsData.dmi1m.willPriceGrow,
+        // && indicatorsData.emaSignal === 'buy',
+        // indicatorsData.stochRsi.stoch5m.signal === 'buy',
+        // (indicatorsData.dmi1m.signal === 'BUY' &&
+        // Number(
+        //   (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
+        //     100,
+        // ) >= 0.1) ||
+        // (indicatorsData.dmi1m.signal === 'SELL' &&
+        //   Number(
+        //     (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
+        //       100,
+        //   ) >= 0.1 &&
+
+        // ((indicatorsData.dmi1m.signal === 'BUY' &&
+        //   indicatorsData.dmi1m.signal === 'BUY' &&
+        // Number(
+        //   (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
+        //     100,
+        // ) >= 0.05) ||
+        // (indicatorsData.dmi1m.signal === 'SELL' &&
+        //   indicatorsData.dmi1m.signal === 'SELL' &&
+        // Number(
+        //   (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
+        //     100,
+        // ) >= 0.05)),
         // &&
         // ((indicatorsData.rsi1m.rsiValue > 40 &&
         //   indicatorsData.rsi1m.rsiValue !== null &&
@@ -501,18 +514,18 @@ import { getTrixStream } from './indicators/trix';
           // expectedProfitPercent <= -1,
 
           stopLoss:
-            botState.status === 'sell' &&
-            ((indicatorsData.dmi5m.signal === 'SELL' &&
-              Number(
-                (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
-                  100,
-              ) >= 0.1) ||
-              (indicatorsData.dmi5m.signal === 'BUY' &&
-                Number(
-                  (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
-                    100 -
-                    100,
-                ) >= 0.1)),
+            botState.status === 'sell' && indicatorsData.emaSignal === 'sell',
+          // ((indicatorsData.dmi1m.signal === 'SELL' &&
+          //   Number(
+          //     (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
+          //       100,
+          //   ) >= 0.05) ||
+          //   (indicatorsData.dmi1m.signal === 'BUY' &&
+          //     Number(
+          //       (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) *
+          //         100 -
+          //         100,
+          //     ) >= 0.05)),
           // ||
           // (indicatorsData.rsi1m.rsiValue < 40 &&
           //   indicatorsData.rsi1m.rsiValue !== null) ||
@@ -938,9 +951,11 @@ import { getTrixStream } from './indicators/trix';
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
   // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 3, 2, 0, 0);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 2, 2, 0, 0);
+  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 2, 2, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 3, 3, 0, 0);
-  getEMASignal(symbol, '5m', indicatorsData);
+  // getEMASignal(symbol, '1m', indicatorsData);
+  // getEMASignal(symbol, '1m', indicatorsData);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
@@ -1006,6 +1021,29 @@ import { getTrixStream } from './indicators/trix';
   //     );
   //     indicatorsData.emaAv = currentEmaAv;
   //   });
+
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 7,
+  })
+    .pipe(bufferCount(20, 20))
+    .subscribe(values => {
+      if (!indicatorsData.emaAv) {
+        indicatorsData.emaAv = getAvarage(values);
+        return;
+      }
+      const currentEmaAv = getAvarage(values);
+      if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 > 0)
+        indicatorsData.emaSignal = 'buy';
+      if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 < 0)
+        indicatorsData.emaSignal = 'sell';
+      console.log(
+        indicatorsData.emaSignal,
+        (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
+      );
+      indicatorsData.emaAv = currentEmaAv;
+    });
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {

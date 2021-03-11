@@ -371,12 +371,24 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
             Number(
               (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
                 100,
-            ) >= 0.1) ||
+            ) >= 0.1 &&
+            Number(
+              (indicatorsData.middle5mEMA / indicatorsData.slow5mEMA) * 100 -
+                100,
+            ) >= 0.1 &&
+            indicatorsData.rsi5m.rsiValue > 60) ||
             (indicatorsData.dmi5m.signal === 'SELL' &&
               Number(
                 (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                   100,
-              ) >= 0.1)),
+              ) >= 0.1 &&
+              Number(
+                (indicatorsData.slow5mEMA / indicatorsData.middle5mEMA) * 100 -
+                  100,
+              ) >= 0.1 &&
+              indicatorsData.rsi5m.rsiValue > 40 &&
+              indicatorsData.rsi5m.rsiValue !== null &&
+              indicatorsData.rsi5m.rsiValue < 43)),
         // &&
         // ((indicatorsData.rsi1m.rsiValue > 40 &&
         //   indicatorsData.rsi1m.rsiValue !== null &&
@@ -441,13 +453,27 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
               Number(
                 (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
                   100,
+              ) >= 0.1 &&
+              Number(
+                (indicatorsData.middle5mEMA / indicatorsData.slow5mEMA) * 100 -
+                  100,
               ) >= 0.1) ||
               (indicatorsData.dmi5m.signal === 'BUY' &&
                 Number(
                   (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
                     100 -
                     100,
-                ) >= 0.1)),
+                ) >= 0.1 &&
+                Number(
+                  (indicatorsData.slow5mEMA / indicatorsData.middle5mEMA) *
+                    100 -
+                    100 >=
+                    0.1,
+                )) ||
+              (indicatorsData.rsi5m.rsiValue !== null &&
+                indicatorsData.rsi5m.rsiValue < 60 &&
+                indicatorsData.rsi5m.rsiValue > 40 &&
+                indicatorsData.stochRsi.stoch5m.signal === 'sell')),
           // ||
           // (indicatorsData.rsi1m.rsiValue < 40 &&
           //   indicatorsData.rsi1m.rsiValue !== null) ||
@@ -872,15 +898,15 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
-  // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 3, 2, 0, 0);
+  getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 2, 2, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 3, 3, 0, 0);
   getEMASignal(symbol, '5m', indicatorsData);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getEMASignal(symbol, '5m', indicatorsData);
   // getEMASignal(symbol, '15m', indicatorsData);
   // getEMASignal(symbol, '1m', indicatorsData);
@@ -891,7 +917,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
 
   if (botState.testMode) {
-    await sendToRecipients(`INIT (TEST MODE LOCAL)
+    await sendToRecipients(`INIT (TEST MODE)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
   Strategies: ${JSON.stringify(botState.strategies)}
@@ -899,7 +925,7 @@ import { getTrixSignal, runTrixInterval } from './components/trix-signal';
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
-    await sendToRecipients(`INIT (LOCAL)
+    await sendToRecipients(`INIT
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
   Strategies: ${JSON.stringify(botState.strategies)}
