@@ -5,7 +5,7 @@ import { DATE_FORMAT } from '../constants/date';
 import getBalances from './balance';
 import { service as botStateService } from '../components/botState';
 import _omit from 'lodash/omit';
-import { indicatorsData } from '../index2';
+// import { indicatorsData } from '../index2';
 
 export const marketBuy = (symbol: string, quantity: number): Promise<unknown> =>
   new Promise((resolve, reject) => {
@@ -154,8 +154,8 @@ export const marketSellAction = async (
                                   total profit: ${botState.totalProfit}%
                     `);
         botState.dealsCount++;
-        indicatorsData.dmi5m.signal = null;
-        indicatorsData.dmi5m.buySignalCount = 0;
+        // indicatorsData.dmi5m.signal = null;
+        // indicatorsData.dmi5m.buySignalCount = 0;
         if (!stopLoss) botState.updateState('status', 'buy');
         else {
           botState.strategies[`${strategy}`].stopLoss = true;
