@@ -427,34 +427,34 @@ export const indicatorsData = {
         },
       },
       stochRsiStrategy: {
-        buy: botState.status === 'buy' && indicatorsData.emaSignal === 'buy',
-        // indicatorsData.dmi5m.willPriceGrow &&
-        // indicatorsData.dmi1m.willPriceGrow,
-        // && indicatorsData.emaSignal === 'buy',
-        // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-        // (indicatorsData.dmi1m.signal === 'BUY' &&
-        // Number(
-        //   (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
-        //     100,
-        // ) >= 0.1) ||
-        // (indicatorsData.dmi1m.signal === 'SELL' &&
-        //   Number(
-        //     (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
-        //       100,
-        //   ) >= 0.1 &&
-
-        // ((indicatorsData.dmi1m.signal === 'BUY' &&
-        //   indicatorsData.dmi1m.signal === 'BUY' &&
-        // Number(
-        //   (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
-        //     100,
-        // ) >= 0.05) ||
-        // (indicatorsData.dmi1m.signal === 'SELL' &&
-        //   indicatorsData.dmi1m.signal === 'SELL' &&
-        // Number(
-        //   (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
-        //     100,
-        // ) >= 0.05)),
+        buy:
+          botState.status === 'buy' &&
+          // indicatorsData.dmi5m.willPriceGrow &&
+          // indicatorsData.dmi1m.willPriceGrow,
+          // && indicatorsData.emaSignal === 'buy',
+          // indicatorsData.stochRsi.stoch5m.signal === 'buy',
+          // (indicatorsData.dmi1m.signal === 'BUY' &&
+          // Number(
+          //   (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
+          //     100,
+          // ) >= 0.1) ||
+          // (indicatorsData.dmi1m.signal === 'SELL' &&
+          //   Number(
+          //     (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
+          //       100,
+          //   ) >= 0.1 &&
+          ((indicatorsData.dmi1h.signal === 'BUY' &&
+            // indicatorsData.dmi1m.signal === 'BUY' &&
+            Number(
+              (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
+                100,
+            ) >= 0.05) ||
+            (indicatorsData.dmi1h.signal === 'SELL' &&
+              // indicatorsData.dmi1m.signal === 'SELL' &&
+              Number(
+                (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) * 100 -
+                  100,
+              ) >= 0.05)),
         // &&
         // ((indicatorsData.rsi1m.rsiValue > 40 &&
         //   indicatorsData.rsi1m.rsiValue !== null &&
@@ -514,18 +514,18 @@ export const indicatorsData = {
           // expectedProfitPercent <= -1,
 
           stopLoss:
-            botState.status === 'sell' && indicatorsData.emaSignal === 'sell',
-          // ((indicatorsData.dmi1m.signal === 'SELL' &&
-          //   Number(
-          //     (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
-          //       100,
-          //   ) >= 0.05) ||
-          //   (indicatorsData.dmi1m.signal === 'BUY' &&
-          //     Number(
-          //       (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) *
-          //         100 -
-          //         100,
-          //     ) >= 0.05)),
+            botState.status === 'sell' &&
+            ((indicatorsData.dmi1h.signal === 'SELL' &&
+              Number(
+                (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
+                  100,
+              ) >= 0.05) ||
+              (indicatorsData.dmi1h.signal === 'BUY' &&
+                Number(
+                  (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) *
+                    100 -
+                    100,
+                ) >= 0.05)),
           // ||
           // (indicatorsData.rsi1m.rsiValue < 40 &&
           //   indicatorsData.rsi1m.rsiValue !== null) ||
@@ -951,11 +951,10 @@ export const indicatorsData = {
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
   // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
-  // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 2, 2, 0, 0);
+  getDMISignal(symbol, '1h', indicatorsData.dmi1h, 2, 2, 0, 0);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 2, 2, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 3, 3, 0, 0);
-  // getEMASignal(symbol, '1m', indicatorsData);
-  // getEMASignal(symbol, '1m', indicatorsData);
+  getEMASignal(symbol, '1h', indicatorsData);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
@@ -1022,28 +1021,28 @@ export const indicatorsData = {
   //     indicatorsData.emaAv = currentEmaAv;
   //   });
 
-  getEmaStream({
-    symbol: symbol,
-    interval: '1m',
-    period: 7,
-  })
-    .pipe(bufferCount(20, 20))
-    .subscribe(values => {
-      if (!indicatorsData.emaAv) {
-        indicatorsData.emaAv = getAvarage(values);
-        return;
-      }
-      const currentEmaAv = getAvarage(values);
-      if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 > 0)
-        indicatorsData.emaSignal = 'buy';
-      if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 < 0)
-        indicatorsData.emaSignal = 'sell';
-      console.log(
-        indicatorsData.emaSignal,
-        (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
-      );
-      indicatorsData.emaAv = currentEmaAv;
-    });
+  // getEmaStream({
+  //   symbol: symbol,
+  //   interval: '1m',
+  //   period: 7,
+  // })
+  //   .pipe(bufferCount(20, 20))
+  //   .subscribe(values => {
+  //     if (!indicatorsData.emaAv) {
+  //       indicatorsData.emaAv = getAvarage(values);
+  //       return;
+  //     }
+  //     const currentEmaAv = getAvarage(values);
+  //     if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 > 0)
+  //       indicatorsData.emaSignal = 'buy';
+  //     if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 < 0)
+  //       indicatorsData.emaSignal = 'sell';
+  //     console.log(
+  //       indicatorsData.emaSignal,
+  //       (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
+  //     );
+  //     indicatorsData.emaAv = currentEmaAv;
+  //   });
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {
