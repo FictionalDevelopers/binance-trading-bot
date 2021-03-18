@@ -471,20 +471,19 @@ import { getRocSignal } from './components/roc-signals';
           // expectedProfitPercent <= -1,
 
           stopLoss:
-            (botState.status === 'sell' &&
-              ((indicatorsData.dmi1h.signal === 'SELL' &&
+            botState.status === 'sell' &&
+            ((indicatorsData.dmi1h.signal === 'SELL' &&
+              Number(
+                (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
+                  100,
+              ) >= 0.05) ||
+              (indicatorsData.dmi1h.signal === 'BUY' &&
                 Number(
-                  (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) *
+                  (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) *
                     100 -
                     100,
                 ) >= 0.05) ||
-                (indicatorsData.dmi1h.signal === 'BUY' &&
-                  Number(
-                    (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) *
-                      100 -
-                      100,
-                  ) >= 0.05))) ||
-            indicatorsData.roc.roc5m < -0.1,
+              indicatorsData.roc.roc5m < -0.1),
           // ((indicatorsData.dmi5m.signal === 'SELL' &&
           //   Number(
           //     (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
