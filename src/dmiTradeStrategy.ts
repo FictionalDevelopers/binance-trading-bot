@@ -24,6 +24,7 @@ import getAvarage from './utils/getAverage';
 import { getStochRsiStream } from './indicators/stochRSI';
 import { getTrixSignal, runTrixInterval } from './components/trix-signal';
 import { indicatorsData } from './index2';
+import { getRocSignal } from './components/roc-signals';
 
 (async function() {
   await connect();
@@ -62,6 +63,9 @@ import { indicatorsData } from './index2';
   }
 
   const indicatorsData = {
+    roc: {
+      roc5m: null,
+    },
     trix: {
       trix5m: {
         av: null,
@@ -364,6 +368,12 @@ import { indicatorsData } from './index2';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
+          indicatorsData.roc.roc5m > 0.05 &&
+          Number(
+            (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
+              100 >=
+              0.05 && indicatorsData.middle1mEMA > indicatorsData.slow1mEMA,
+          ) &&
           ((indicatorsData.dmi1h.signal === 'BUY' &&
             // indicatorsData.dmi1m.signal === 'BUY' &&
             Number(
@@ -461,18 +471,20 @@ import { indicatorsData } from './index2';
           // expectedProfitPercent <= -1,
 
           stopLoss:
-            botState.status === 'sell' &&
-            ((indicatorsData.dmi1h.signal === 'SELL' &&
-              Number(
-                (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
-                  100,
-              ) >= 0.05) ||
-              (indicatorsData.dmi1h.signal === 'BUY' &&
+            (botState.status === 'sell' &&
+              ((indicatorsData.dmi1h.signal === 'SELL' &&
                 Number(
-                  (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) *
+                  (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) *
                     100 -
                     100,
-                ) >= 0.05)),
+                ) >= 0.05) ||
+                (indicatorsData.dmi1h.signal === 'BUY' &&
+                  Number(
+                    (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) *
+                      100 -
+                      100,
+                  ) >= 0.05))) ||
+            indicatorsData.roc.roc5m < -0.1,
           // ((indicatorsData.dmi5m.signal === 'SELL' &&
           //   Number(
           //     (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
@@ -706,6 +718,7 @@ import { indicatorsData } from './index2';
         stepSize,
         initialUSDTBalance,
         'STOP LOSS OR TAKE PROFIT',
+        indicatorsData,
       );
       indicatorsData.rsiRebuy.value = true;
       return;
@@ -725,6 +738,7 @@ import { indicatorsData } from './index2';
         stepSize,
         initialUSDTBalance,
         'DOWNTREND CORRECTION TAKE PROFIT',
+        indicatorsData,
       );
       indicatorsData.rsiRebuy.value = false;
       return;
@@ -742,6 +756,7 @@ import { indicatorsData } from './index2';
         stepSize,
         initialUSDTBalance,
         'DOWNTREND CORRECTION STOP LOSS',
+        indicatorsData,
       );
       indicatorsData.rsiRebuy.value = true;
       return;
@@ -777,6 +792,7 @@ import { indicatorsData } from './index2';
           stepSize,
           initialUSDTBalance,
           'UP FLAT TAKE PROFIT',
+          indicatorsData,
         );
         indicatorsData.rsiRebuy.value = true;
         return;
@@ -795,6 +811,7 @@ import { indicatorsData } from './index2';
         stepSize,
         initialUSDTBalance,
         'UP FLAT STOP LOSS',
+        indicatorsData,
       );
       indicatorsData.rsiRebuy.value = true;
       return;
@@ -814,6 +831,7 @@ import { indicatorsData } from './index2';
         stepSize,
         initialUSDTBalance,
         'DOWN FLAT TAKE PROFIT',
+        indicatorsData,
       );
       indicatorsData.rsiRebuy.value = true;
       return;
@@ -831,6 +849,7 @@ import { indicatorsData } from './index2';
         stepSize,
         initialUSDTBalance,
         'DOWN FLAT LEVEL STOP LOSS',
+        indicatorsData,
       );
       indicatorsData.rsiRebuy.value = true;
       return;
@@ -853,6 +872,7 @@ import { indicatorsData } from './index2';
         stepSize,
         initialUSDTBalance,
         'STOCH RSI TAKE PROFIT',
+        indicatorsData,
         true,
       );
       return;
@@ -870,6 +890,7 @@ import { indicatorsData } from './index2';
         stepSize,
         initialUSDTBalance,
         'STOCH RSI STOP LOSS',
+        indicatorsData,
         false,
       );
 
@@ -894,6 +915,7 @@ import { indicatorsData } from './index2';
         stepSize,
         initialUSDTBalance,
         'TRENDS CATCHER TAKE PROFIT',
+        indicatorsData,
         true,
       );
       return;
@@ -911,6 +933,7 @@ import { indicatorsData } from './index2';
         stepSize,
         initialUSDTBalance,
         'STOP LOSS',
+        indicatorsData,
       );
       return;
     }
@@ -920,6 +943,8 @@ import { indicatorsData } from './index2';
 
   getDMISignal(symbol, '1h', indicatorsData.dmi1h, 2, 2, 0, 0);
   getEMASignal(symbol, '1h', indicatorsData);
+  getEMASignal(symbol, '1m', indicatorsData);
+  getRocSignal(symbol, '5m', indicatorsData.roc);
 
   // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
   // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);

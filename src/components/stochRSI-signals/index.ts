@@ -51,7 +51,7 @@ export const getStochRSISignal = (
   }).subscribe(stochRsi => {
     if (
       Number(stochRsi.k) - Number(stochRsi.d) >= buySens ||
-      Number(stochRsi.k) === 100
+      Number(stochRsi.k) == 100
     ) {
       if (stochRsiData.signal === 'sell' || stochRsiData.signal === null)
         stochRsiData.signal = 'buy';
@@ -59,7 +59,7 @@ export const getStochRSISignal = (
 
     if (
       Number(stochRsi.d) - Number(stochRsi.k) >= sellSens ||
-      Number(stochRsi.k) === 0
+      Number(stochRsi.k) == 0
     ) {
       if (stochRsiData.signal === 'buy' || stochRsiData.signal === null)
         stochRsiData.signal = 'sell';

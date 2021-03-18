@@ -118,6 +118,7 @@ export const marketSellAction = async (
   stepSize,
   initialUSDTBalance,
   sellReason,
+  indicatorsData,
   stopLoss = false,
 ) => {
   if (botState.testMode) {
@@ -154,8 +155,8 @@ export const marketSellAction = async (
                                   total profit: ${botState.totalProfit}%
                     `);
         botState.dealsCount++;
-        // indicatorsData.dmi5m.signal = null;
-        // indicatorsData.dmi5m.buySignalCount = 0;
+        indicatorsData.dmi5m.signal = null;
+        indicatorsData.dmi5m.buySignalCount = 0;
         if (!stopLoss) botState.updateState('status', 'buy');
         else {
           botState.strategies[`${strategy}`].stopLoss = true;

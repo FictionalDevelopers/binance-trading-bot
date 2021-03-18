@@ -23,8 +23,8 @@ export const getDMISignal = (
       return;
     }
     indicatorsData.adx = dmi.adx;
-    // if ((dmi.adx / dmi.pdi) * 100 - 100 >= 2.5) indicatorsData.adxSignal = -1;
-    // if ((dmi.pdi / dmi.adx) * 100 - 100 >= 2.5) indicatorsData.adxSignal = 1;
+    if ((dmi.adx / dmi.pdi) * 100 - 100 >= 2.5) indicatorsData.adxSignal = -1;
+    if ((dmi.pdi / dmi.adx) * 100 - 100 >= 2.5) indicatorsData.adxSignal = 1;
     if (dmi.mdi > dmi.pdi) {
       if (indicatorsData.trend === 'UP') {
         indicatorsData.adxBuySignalVolume = 0;

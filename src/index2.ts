@@ -13,7 +13,6 @@ import getAvarage from './utils/getAverage';
 import { getEmaStream } from '../src/indicators/ema';
 import { getObvStream } from './indicators/obv';
 
-import { getDMISignal } from './components/dmi-signals';
 import { getRSISignal } from './components/rsi-signals';
 import { getTrixSignal, runTrixInterval } from './components/trix-signal';
 import {
@@ -27,180 +26,10 @@ import { getForceIndexSignal, runEFIInterval } from './components/forceIndex';
 import { getForceIndexStream } from './indicators/forceIndex';
 import { getStochRsiStream } from './indicators/stochRSI';
 import { getTrixStream } from './indicators/trix';
-
-export const indicatorsData = {
-  trix: {
-    trix5m: {
-      av: null,
-      prevAv: null,
-      signal: null,
-      value: null,
-      prev: null,
-    },
-  },
-  efi1m: {
-    efiBuySignalCount: 0,
-    efiSellSignalCount: 0,
-    prevEfi: null,
-    efi: null,
-    efiSignal: null,
-    av: null,
-    prevAv: null,
-  },
-  efi1h: {
-    efiBuySignalCount: 0,
-    efiSellSignalCount: 0,
-    prevEfi: null,
-    efi: null,
-    efiSignal: null,
-    av: null,
-    prevAv: null,
-  },
-  efi5m: {
-    efiBuySignalCount: 0,
-    efiSellSignalCount: 0,
-    prevEfi: null,
-    efi: null,
-    efiSignal: null,
-    av: null,
-    prevAv: null,
-  },
-  obvBuySignalCount: 0,
-  obvSellSignalCount: 0,
-  prevObv: null,
-  obv5m: {
-    obv: null,
-  },
-  obv15m: {
-    obv: null,
-  },
-  obv1m: {
-    obv: null,
-    prevObv: null,
-  },
-  obv: null,
-  obvSignal: null,
-  priceGrowArea: false,
-  stochRsi: {
-    stoch1m: {
-      BuySignalCount: 0,
-      SellSignalCount: 0,
-      prev: null,
-      value: null,
-      signal: null,
-      av: null,
-      prevAv: null,
-    },
-    stoch5m: {
-      BuySignalCount: 0,
-      SellSignalCount: 0,
-      prev: null,
-      value: null,
-      signal: null,
-      av: null,
-      prevAv: null,
-    },
-    stoch15m: {
-      BuySignalCount: 0,
-      SellSignalCount: 0,
-      prev: null,
-      value: null,
-      signal: null,
-      av: null,
-      prevAv: null,
-    },
-    stoch1h: null,
-  },
-  emaSignal: null,
-  dmi5m: {
-    prevDmi: null,
-    dmiMdiSignal: 0,
-    adxSignal: null,
-    mdiSignal: 0,
-    adxBuySignalVolume: 0,
-    adxSellSignalVolume: 0,
-    willPriceGrow: false,
-    trend: null,
-    signal: null,
-    buySignalCount: 0,
-    sellSignalCount: 0,
-  },
-  dmi15m: {
-    prevDmi: null,
-    dmiMdiSignal: 0,
-    adxSignal: 0,
-    mdiSignal: 0,
-    adxBuySignalVolume: 0,
-    adxSellSignalVolume: 0,
-    willPriceGrow: false,
-    trend: null,
-    signal: null,
-    buySignalCount: 0,
-    sellSignalCount: 0,
-  },
-  dmi1h: {
-    prevDmi: null,
-    dmiMdiSignal: 0,
-    adxSignal: 0,
-    mdiSignal: 0,
-    adxBuySignalVolume: 0,
-    adxSellSignalVolume: 0,
-    willPriceGrow: false,
-    trend: null,
-    signal: null,
-    buySignalCount: 0,
-    sellSignalCount: 0,
-  },
-  dmi1m: {
-    prevDmi: null,
-    dmiMdiSignal: 0,
-    mdiSignal: 0,
-    adxBuySignalVolume: 0,
-    adxSellSignalVolume: 0,
-    willPriceGrow: false,
-    trend: null,
-    signal: null,
-    adxSignal: null,
-    buySignalCount: 0,
-    sellSignalCount: 0,
-  },
-  rsi1m: {
-    rsiValue: null,
-    prevRsi: null,
-    sellNow: false,
-    buyNow: false,
-  },
-  rsi5m: {
-    rsiValue: null,
-    prevRsi: null,
-    sellNow: false,
-    buyNow: false,
-  },
-  rsi15m: {
-    rsiValue: null,
-    prevRsi: null,
-    sellNow: false,
-    buyNow: false,
-  },
-  slow1mEMA: 0,
-  middle1mEMA: 0,
-  fast1mEMA: 0,
-  slow5mEMA: 0,
-  middle5mEMA: 0,
-  fast5mEMA: 0,
-  slow1hEMA: 0,
-  middle1hEMA: 0,
-  fast1hEMA: 0,
-  slow15mEMA: 0,
-  middle15mEMA: 0,
-  fast15mEMA: 0,
-  summaryEMABuySignal: false,
-  rsiRebuy: {
-    value: true,
-  },
-  emaAvSignal: null,
-  emaAv: null,
-};
+import { getRocSignal } from './components/roc-signals';
+import { getRocStream } from './indicators/roc';
+import { getDMISignal } from './components/dmi-signals';
+import { indicatorsData } from './index2';
 
 (async function() {
   await connect();
@@ -299,6 +128,183 @@ export const indicatorsData = {
     },
   };
 
+  const indicatorsData = {
+    roc: {
+      roc1m: null,
+    },
+    trix: {
+      trix5m: {
+        av: null,
+        prevAv: null,
+        signal: null,
+        value: null,
+        prev: null,
+      },
+    },
+    efi1m: {
+      efiBuySignalCount: 0,
+      efiSellSignalCount: 0,
+      prevEfi: null,
+      efi: null,
+      efiSignal: null,
+      av: null,
+      prevAv: null,
+    },
+    efi1h: {
+      efiBuySignalCount: 0,
+      efiSellSignalCount: 0,
+      prevEfi: null,
+      efi: null,
+      efiSignal: null,
+      av: null,
+      prevAv: null,
+    },
+    efi5m: {
+      efiBuySignalCount: 0,
+      efiSellSignalCount: 0,
+      prevEfi: null,
+      efi: null,
+      efiSignal: null,
+      av: null,
+      prevAv: null,
+    },
+    obvBuySignalCount: 0,
+    obvSellSignalCount: 0,
+    prevObv: null,
+    obv5m: {
+      obv: null,
+    },
+    obv15m: {
+      obv: null,
+    },
+    obv1m: {
+      obv: null,
+      prevObv: null,
+    },
+    obv: null,
+    obvSignal: null,
+    priceGrowArea: false,
+    stochRsi: {
+      stoch1m: {
+        BuySignalCount: 0,
+        SellSignalCount: 0,
+        prev: null,
+        value: null,
+        signal: null,
+        av: null,
+        prevAv: null,
+      },
+      stoch5m: {
+        BuySignalCount: 0,
+        SellSignalCount: 0,
+        prev: null,
+        value: null,
+        signal: null,
+        av: null,
+        prevAv: null,
+      },
+      stoch15m: {
+        BuySignalCount: 0,
+        SellSignalCount: 0,
+        prev: null,
+        value: null,
+        signal: null,
+        av: null,
+        prevAv: null,
+      },
+      stoch1h: null,
+    },
+    emaSignal: null,
+    dmi5m: {
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      adxSignal: null,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+      signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+    },
+    dmi15m: {
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      adxSignal: 0,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+      signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+    },
+    dmi1h: {
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      adxSignal: 0,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+      signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+    },
+    dmi1m: {
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+      signal: null,
+      adxSignal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+    },
+    rsi1m: {
+      rsiValue: null,
+      prevRsi: null,
+      sellNow: false,
+      buyNow: false,
+    },
+    rsi5m: {
+      rsiValue: null,
+      prevRsi: null,
+      sellNow: false,
+      buyNow: false,
+    },
+    rsi15m: {
+      rsiValue: null,
+      prevRsi: null,
+      sellNow: false,
+      buyNow: false,
+    },
+    slow1mEMA: 0,
+    middle1mEMA: 0,
+    fast1mEMA: 0,
+    avFast1mEMA: 0,
+    slow5mEMA: 0,
+    middle5mEMA: 0,
+    fast5mEMA: 0,
+    slow1hEMA: 0,
+    middle1hEMA: 0,
+    fast1hEMA: 0,
+    slow15mEMA: 0,
+    middle15mEMA: 0,
+    fast15mEMA: 0,
+    summaryEMABuySignal: false,
+    rsiRebuy: {
+      value: true,
+    },
+    emaAvSignal: null,
+    emaAv: null,
+  };
   const trader = async pricesStream => {
     const { tradeAmountPercent } = botState;
     if (botState.status === 'isPending') return;
@@ -429,32 +435,41 @@ export const indicatorsData = {
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          // indicatorsData.dmi5m.willPriceGrow &&
-          // indicatorsData.dmi1m.willPriceGrow,
-          // && indicatorsData.emaSignal === 'buy',
-          // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-          // (indicatorsData.dmi1m.signal === 'BUY' &&
-          // Number(
-          //   (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
-          //     100,
-          // ) >= 0.1) ||
-          // (indicatorsData.dmi1m.signal === 'SELL' &&
-          //   Number(
-          //     (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
-          //       100,
-          //   ) >= 0.1 &&
-          ((indicatorsData.dmi1h.signal === 'BUY' &&
-            // indicatorsData.dmi1m.signal === 'BUY' &&
+          // indicatorsData.roc.roc1m > 0.05 &&
+          // indicatorsData.stochRsi.stoch1m.signal === 'buy',
+
+          ((indicatorsData.dmi5m.signal === 'BUY' &&
+            indicatorsData.dmi1m.signal === 'BUY' &&
             Number(
-              (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
+              (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
                 100,
             ) >= 0.05) ||
-            (indicatorsData.dmi1h.signal === 'SELL' &&
-              // indicatorsData.dmi1m.signal === 'SELL' &&
+            (indicatorsData.dmi5m.signal === 'SELL' &&
+              indicatorsData.dmi1m.signal === 'SELL' &&
               Number(
-                (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) * 100 -
+                (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
                   100,
               ) >= 0.05)),
+        // ((indicatorsData.dmi5m.signal === 'BUY' &&
+        //   Number(
+        //     (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
+        //       100,
+        //   ) >= 0.05) ||
+        //   (indicatorsData.dmi5m.signal === 'SELL' &&
+        //     Number(
+        //       (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
+        //         100,
+        //     ) >= 0.05)),
+        // indicatorsData.dmi5m.willPriceGrow &&
+        // indicatorsData.dmi1m.willPriceGrow,
+        // && indicatorsData.emaSignal === 'buy',
+        // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
+        // indicatorsData.roc.roc1m > 0.05,
+        // ((indicatorsData.dmi5m.signal === 'BUY' &&
+        //   indicatorsData.rsi5m.rsiValue > 51) ||
+        //   (indicatorsData.dmi5m.signal === 'SELL' &&
+        //     indicatorsData.rsi5m.rsiValue !== null &&
+        //     indicatorsData.rsi5m.rsiValue < 49)),
         // &&
         // ((indicatorsData.rsi1m.rsiValue > 40 &&
         //   indicatorsData.rsi1m.rsiValue !== null &&
@@ -496,36 +511,45 @@ export const indicatorsData = {
         // indicatorsData.efi.efi > 0,
         sell: {
           takeProfit: null,
-          //   botState.status === 'sell' &&
-          //   ((indicatorsData.dmi1m.signal === 'SELL' &&
-          //     Number(
-          //       (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
-          //         100,
-          //     ) >= 0.1) ||
-          //     (indicatorsData.dmi1m.signal === 'BUY' &&
-          //       Number(
-          //         (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
-          //           100 -
-          //           100,
-          //       ) >= 0.1)),
-          // botState.status === 'sell' &&
+          // botState.status === 'sell' && expectedProfitPercent >= 0.5,
           // botState.buyReason === 'stochRsi' &&
           // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
           // expectedProfitPercent <= -1,
 
           stopLoss:
             botState.status === 'sell' &&
-            ((indicatorsData.dmi1h.signal === 'SELL' &&
+            // indicatorsData.stochRsi.stoch1m.signal === 'sell',
+            ((indicatorsData.dmi1m.signal === 'SELL' &&
               Number(
-                (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
+                (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
                   100,
               ) >= 0.05) ||
-              (indicatorsData.dmi1h.signal === 'BUY' &&
+              (indicatorsData.dmi1m.signal === 'BUY' &&
                 Number(
-                  (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) *
+                  (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
                     100 -
                     100,
                 ) >= 0.05)),
+          // indicatorsData.roc.roc1m < -0.1
+          // ((indicatorsData.dmi5m.signal === 'SELL' &&
+          //   Number(
+          //     (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
+          //       100,
+          //   ) >= 0.05) ||
+          //   (indicatorsData.dmi5m.signal === 'BUY' &&
+          //     Number(
+          //       (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
+          //         100 -
+          //         100,
+          //     ) >= 0.05) ||
+          //   indicatorsData.roc.roc1m < -0.1),
+          // indicatorsData.stochRsi.stoch1m.signal === 'sell',
+          // indicatorsData.roc.roc1m < -0.1,
+          // ((indicatorsData.dmi5m.signal === 'SELL' &&
+          //   indicatorsData.rsi5m.rsiValue > 51) ||
+          //   (indicatorsData.dmi5m.signal === 'BUY' &&
+          //     indicatorsData.rsi5m.rsiValue !== null &&
+          //     indicatorsData.rsi5m.rsiValue < 49)),
           // ||
           // (indicatorsData.rsi1m.rsiValue < 40 &&
           //   indicatorsData.rsi1m.rsiValue !== null) ||
@@ -733,6 +757,7 @@ export const indicatorsData = {
         stepSize,
         initialUSDTBalance,
         'STOP LOSS OR TAKE PROFIT',
+        indicatorsData,
       );
       indicatorsData.rsiRebuy.value = true;
       return;
@@ -752,6 +777,7 @@ export const indicatorsData = {
         stepSize,
         initialUSDTBalance,
         'DOWNTREND CORRECTION TAKE PROFIT',
+        indicatorsData,
       );
       indicatorsData.rsiRebuy.value = false;
       return;
@@ -769,6 +795,7 @@ export const indicatorsData = {
         stepSize,
         initialUSDTBalance,
         'DOWNTREND CORRECTION STOP LOSS',
+        indicatorsData,
       );
       indicatorsData.rsiRebuy.value = true;
       return;
@@ -804,6 +831,7 @@ export const indicatorsData = {
           stepSize,
           initialUSDTBalance,
           'UP FLAT TAKE PROFIT',
+          indicatorsData,
         );
         indicatorsData.rsiRebuy.value = true;
         return;
@@ -822,6 +850,7 @@ export const indicatorsData = {
         stepSize,
         initialUSDTBalance,
         'UP FLAT STOP LOSS',
+        indicatorsData,
       );
       indicatorsData.rsiRebuy.value = true;
       return;
@@ -841,6 +870,7 @@ export const indicatorsData = {
         stepSize,
         initialUSDTBalance,
         'DOWN FLAT TAKE PROFIT',
+        indicatorsData,
       );
       indicatorsData.rsiRebuy.value = true;
       return;
@@ -858,6 +888,7 @@ export const indicatorsData = {
         stepSize,
         initialUSDTBalance,
         'DOWN FLAT LEVEL STOP LOSS',
+        indicatorsData,
       );
       indicatorsData.rsiRebuy.value = true;
       return;
@@ -880,6 +911,7 @@ export const indicatorsData = {
         stepSize,
         initialUSDTBalance,
         'STOCH RSI TAKE PROFIT',
+        indicatorsData,
         true,
       );
       return;
@@ -896,9 +928,11 @@ export const indicatorsData = {
         pricesStream,
         stepSize,
         initialUSDTBalance,
-        'STOCH RSI STOP LOSS',
+        'ADX + ROC STOP LOSS',
+        indicatorsData,
         false,
       );
+      indicatorsData.obvSellSignalCount = 0;
 
       // indicatorsData.priceGrowArea = false;
       return;
@@ -921,6 +955,7 @@ export const indicatorsData = {
         stepSize,
         initialUSDTBalance,
         'TRENDS CATCHER TAKE PROFIT',
+        indicatorsData,
         true,
       );
       return;
@@ -938,6 +973,7 @@ export const indicatorsData = {
         stepSize,
         initialUSDTBalance,
         'STOP LOSS',
+        indicatorsData,
       );
       return;
     }
@@ -945,16 +981,16 @@ export const indicatorsData = {
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
+  getRocSignal(symbol, '1m', indicatorsData.roc);
   // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
-  // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
+  // getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
   // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
-  // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
-  getDMISignal(symbol, '1h', indicatorsData.dmi1h, 2, 2, 0, 0);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 2, 2, 0, 0);
-  // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 3, 3, 0, 0);
-  getEMASignal(symbol, '1h', indicatorsData);
+  // getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 2, 2, 0, 0);
+  getDMISignal(symbol, '1m', indicatorsData.dmi1m, 2, 2, 0, 0);
+  getEMASignal(symbol, '5m', indicatorsData);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
@@ -968,6 +1004,64 @@ export const indicatorsData = {
   // getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
+
+  // getRocStream({
+  //   symbol: symbol,
+  //   interval: '1m',
+  //   period: 9,
+  // })
+  //   .pipe(bufferCount(5, 5))
+  //   .subscribe(values => {
+  //     if (!indicatorsData.emaAv) {
+  //       indicatorsData.emaAv = getAvarage(values);
+  //       return;
+  //     }
+  //     const currentEmaAv = getAvarage(values);
+  //     if (currentEmaAv > indicatorsData.emaAv) indicatorsData.emaSignal = 'buy';
+  //     if (currentEmaAv < indicatorsData.emaAv)
+  //       indicatorsData.emaSignal = 'sell';
+  //     // console.log(
+  //     //   indicatorsData.emaSignal,
+  //     //   (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
+  //     // );
+  //     console.log('Curr av:' + currentEmaAv);
+  //     console.log('Prev av:' + indicatorsData.emaAv);
+  //     console.log(
+  //       'Diff: ',
+  //       (currentEmaAv - indicatorsData.emaAv).toString(),
+  //       '\n',
+  //     );
+  //     indicatorsData.emaAv = currentEmaAv;
+  //   });
+
+  // getObvStream({
+  //   symbol: symbol,
+  //   interval: '1m',
+  // })
+  //   .pipe(bufferCount(5, 5))
+  //   .subscribe(values => {
+  //     if (!indicatorsData.prevObv) {
+  //       indicatorsData.prevObv = getAvarage(values);
+  //       return;
+  //     }
+  //     const currentObvAv = getAvarage(values);
+  //     if (currentObvAv > indicatorsData.prevObv)
+  //       indicatorsData.obvSignal = 'buy';
+  //     if (currentObvAv < indicatorsData.prevObv)
+  //       indicatorsData.obvSignal = 'sell';
+  //     // console.log(
+  //     //   indicatorsData.emaSignal,
+  //     //   (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
+  //     // );
+  //     console.log('Curr obv:' + currentObvAv);
+  //     console.log('Prev obv:' + indicatorsData.prevObv);
+  //     console.log(
+  //       'Diff: ',
+  //       (Number(currentObvAv / indicatorsData.prevObv) * 100 - 100).toString(),
+  //       '\n',
+  //     );
+  //     indicatorsData.prevObv = currentObvAv;
+  //   });
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE LOCAL)
@@ -998,35 +1092,12 @@ export const indicatorsData = {
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(trader);
 
-  // getForceIndexStream({
-  //   symbol: symbol,
-  //   interval: '15m',
-  //   period: 13,
-  // })
-  //   .pipe(bufferCount(15))
-  //   .subscribe(values => {
-  //     if (!indicatorsData.emaAv) {
-  //       indicatorsData.emaAv = getAvarage(values);
-  //       return;
-  //     }
-  //     const currentEmaAv = getAvarage(values);
-  //     if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 >= 10)
-  //       indicatorsData.emaSignal = 'buy';
-  //     if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 <= -10)
-  //       indicatorsData.emaSignal = 'sell';
-  //     console.log(
-  //       indicatorsData.emaSignal,
-  //       (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
-  //     );
-  //     indicatorsData.emaAv = currentEmaAv;
-  //   });
-
   // getEmaStream({
   //   symbol: symbol,
   //   interval: '1m',
   //   period: 7,
   // })
-  //   .pipe(bufferCount(20, 20))
+  //   .pipe(bufferCount(5, 5))
   //   .subscribe(values => {
   //     if (!indicatorsData.emaAv) {
   //       indicatorsData.emaAv = getAvarage(values);
