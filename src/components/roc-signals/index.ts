@@ -1,12 +1,12 @@
 import { getRocStream } from '../../indicators/roc';
 
-export const getRocSignal = (symbol, timeFrame, data) => {
+export const getRocSignal = (symbol, timeFrame, rocData) => {
   getRocStream({
     symbol: symbol,
     interval: timeFrame,
     period: 9,
   }).subscribe(roc => {
-    data.roc5m = roc;
+    rocData.value = roc;
     // console.log(roc);
   });
 };
