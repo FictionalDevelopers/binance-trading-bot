@@ -262,6 +262,8 @@ import { indicatorsData } from './index2';
       signal: null,
       buySignalCount: 0,
       sellSignalCount: 0,
+      adxDownCount: null,
+      adxUpCount: null,
     },
     dmi1m: {
       adxUpCount: null,
@@ -446,17 +448,22 @@ import { indicatorsData } from './index2';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
+          Number(
+            (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
+              100 >=
+              0.05 && indicatorsData.middle1mEMA > indicatorsData.slow1mEMA,
+          ) &&
           // indicatorsData.roc.roc1m.value > 0.05 &&
           // indicatorsData.stochRsi.stoch1m.signal === 'buy',
 
-          ((indicatorsData.dmi1m.adxUpCount >= 2 &&
+          ((indicatorsData.dmi1h.adxUpCount > 0 &&
             Number(
-              (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
+              (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
                 100,
             ) >= 0.05) ||
-            (indicatorsData.dmi1m.adxDownCount >= 2 &&
+            (indicatorsData.dmi1h.adxDownCount > 0 &&
               Number(
-                (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
+                (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) * 100 -
                   100,
               ) >= 0.05)),
         // ((indicatorsData.dmi5m.signal === 'BUY' &&
@@ -528,14 +535,14 @@ import { indicatorsData } from './index2';
           stopLoss:
             botState.status === 'sell' &&
             // indicatorsData.stochRsi.stoch1m.signal === 'sell',
-            ((indicatorsData.dmi1m.adxDownCount > 0 &&
+            ((indicatorsData.dmi1h.adxDownCount > 0 &&
               Number(
-                (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
+                (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
                   100,
               ) >= 0.05) ||
-              (indicatorsData.dmi1m.adxUpCount > 0 &&
+              (indicatorsData.dmi1h.adxUpCount > 0 &&
                 Number(
-                  (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
+                  (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) *
                     100 -
                     100,
                 ) >= 0.05)),
@@ -999,8 +1006,9 @@ import { indicatorsData } from './index2';
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
   // getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 2, 2, 0, 0);
-  getDMISignal(symbol, '5m', indicatorsData.dmi1m, 2, 1, 0, 0);
-  getEMASignal(symbol, '5m', indicatorsData);
+  getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 1, 0, 0);
+  getEMASignal(symbol, '1h', indicatorsData);
+  getEMASignal(symbol, '1m', indicatorsData);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 

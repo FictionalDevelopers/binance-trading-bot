@@ -369,7 +369,7 @@ import { getRocSignal } from './components/roc-signals';
       stochRsiStrategy: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.roc.roc5m > 0.05 &&
+          // indicatorsData.roc.roc5m > 0.05 &&
           Number(
             (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
               100 >=
@@ -967,6 +967,8 @@ import { getRocSignal } from './components/roc-signals';
   // getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
+
+
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)
