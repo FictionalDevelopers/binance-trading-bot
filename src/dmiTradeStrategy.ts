@@ -375,13 +375,13 @@ import { getRocSignal } from './components/roc-signals';
               100 >=
               0.05 && indicatorsData.middle1mEMA > indicatorsData.slow1mEMA,
           ) &&
-          ((indicatorsData.dmi1h.adxUpCount > 0 &&
+          ((indicatorsData.dmi1h.adxUpCount >= 2 &&
             // indicatorsData.dmi1m.signal === 'BUY' &&
             Number(
               (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
                 100,
             ) >= 0.05) ||
-            (indicatorsData.dmi1h.adxDownCount > 0 &&
+            (indicatorsData.dmi1h.adxDownCount >= 2 &&
               // indicatorsData.dmi1m.signal === 'SELL' &&
               Number(
                 (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) * 100 -
@@ -967,8 +967,6 @@ import { getRocSignal } from './components/roc-signals';
   // getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
-
-
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE)
