@@ -957,7 +957,6 @@ import { getRocSignal } from './components/roc-signals';
   getEMASignal(symbol, '1h', indicatorsData);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
-
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getEMASignal(symbol, '5m', indicatorsData);
