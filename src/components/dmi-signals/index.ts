@@ -91,16 +91,16 @@ export const getDMISignal = (
         adxBuyDiff
       ) {
         // indicatorsData.signal = 'BUY';
-        indicatorsData.buySignalCount++;
-        indicatorsData.sellSignalCount = 0;
-        console.log('BUY ' + indicatorsData.buySignalCount);
+        indicatorsData.adxUpCount++;
+        indicatorsData.adxDownCount = 0;
+        console.log('BUY ' + indicatorsData.adxUpCount);
         console.log(
           'Value: ' +
             Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4) +
             '\n',
         );
-        if (indicatorsData.buySignalCount >= buyCount)
-          indicatorsData.signal = 'BUY';
+        // if (indicatorsData.buySignalCount >= buyCount)
+        //   indicatorsData.signal = 'BUY';
       } else if (
         // (Number(dmi.pdi).toPrecision(4) /
         //   Number(dmi.mdi).toPrecision(4) /
@@ -113,16 +113,16 @@ export const getDMISignal = (
         // indicatorsData.adxSignal = 'sell'
       ) {
         // indicatorsData.signal = 'SELL';
-        indicatorsData.sellSignalCount++;
-        indicatorsData.buySignalCount = 0;
-        console.log('SELL ' + indicatorsData.sellSignalCount);
+        indicatorsData.adxDownCount++;
+        indicatorsData.adxUpCount = 0;
+        console.log('SELL ' + indicatorsData.adxDownCount);
         console.log(
           'Value: ' +
             Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4) +
             '\n',
         );
-        if (indicatorsData.sellSignalCount >= sellCount)
-          indicatorsData.signal = 'SELL';
+        // if (indicatorsData.sellSignalCount >= sellCount)
+        //   indicatorsData.signal = 'SELL';
       }
     }
 

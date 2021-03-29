@@ -23,7 +23,6 @@ import { getForceIndexStream } from './indicators/forceIndex';
 import getAvarage from './utils/getAverage';
 import { getStochRsiStream } from './indicators/stochRSI';
 import { getTrixSignal, runTrixInterval } from './components/trix-signal';
-import { indicatorsData } from './index2';
 import { getRocSignal } from './components/roc-signals';
 
 (async function() {
@@ -187,6 +186,8 @@ import { getRocSignal } from './components/roc-signals';
       signal: null,
       buySignalCount: 0,
       sellSignalCount: 0,
+      adxUpCount: null,
+      adxDownCount: null,
     },
     dmi1m: {
       prevDmi: null,
@@ -374,13 +375,13 @@ import { getRocSignal } from './components/roc-signals';
               100 >=
               0.05 && indicatorsData.middle1mEMA > indicatorsData.slow1mEMA,
           ) &&
-          ((indicatorsData.dmi1h.signal === 'BUY' &&
+          ((indicatorsData.dmi1h.adxUpCount > 0 &&
             // indicatorsData.dmi1m.signal === 'BUY' &&
             Number(
               (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
                 100,
             ) >= 0.05) ||
-            (indicatorsData.dmi1h.signal === 'SELL' &&
+            (indicatorsData.dmi1h.adxDownCount > 0 &&
               // indicatorsData.dmi1m.signal === 'SELL' &&
               Number(
                 (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) * 100 -
@@ -472,18 +473,17 @@ import { getRocSignal } from './components/roc-signals';
 
           stopLoss:
             botState.status === 'sell' &&
-            ((indicatorsData.dmi1h.signal === 'SELL' &&
+            ((indicatorsData.dmi1h.adxDownCount > 0 &&
               Number(
                 (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
                   100,
               ) >= 0.05) ||
-              (indicatorsData.dmi1h.signal === 'BUY' &&
+              (indicatorsData.dmi1h.adxUpCount > 0 &&
                 Number(
                   (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) *
                     100 -
                     100,
-                ) >= 0.05) ||
-              indicatorsData.roc.roc5m < -0.1),
+                ) >= 0.05)),
           // ((indicatorsData.dmi5m.signal === 'SELL' &&
           //   Number(
           //     (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
@@ -951,7 +951,7 @@ import { getRocSignal } from './components/roc-signals';
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
   // getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 2, 2, 0, 0);
+  getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 3, 3, 0, 0);
   // getEMASignal(symbol, '5m', indicatorsData);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
