@@ -953,7 +953,8 @@ import { getRocSignal } from './components/roc-signals';
   // getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
   getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 3, 3, 0, 0);
-  // getEMASignal(symbol, '5m', indicatorsData);
+  getEMASignal(symbol, '1m', indicatorsData);
+  getEMASignal(symbol, '1h', indicatorsData);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
 
