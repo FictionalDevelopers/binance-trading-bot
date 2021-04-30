@@ -782,24 +782,24 @@ import _throttle from 'lodash/throttle';
         botState.buyReason = 'trendsCatcher';
         return;
       }
+    }
 
-      if (botState.strategies.scalper.enabled) {
-        if (conditions.scalper.buy) {
-          await marketBuyAction(
-            false,
-            symbol,
-            botState,
-            cryptoCoin,
-            pricesStream,
-            stepSize,
-            'TRENDS CATCHER',
-            workingDeposit,
-            'ADX SIGNAL',
-            indicatorsData,
-          );
-          botState.buyReason = 'scalper';
-          return;
-        }
+    if (botState.strategies.scalper.enabled) {
+      if (conditions.scalper.buy) {
+        await marketBuyAction(
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          pricesStream,
+          stepSize,
+          'TRENDS CATCHER',
+          workingDeposit,
+          'ADX SIGNAL',
+          indicatorsData,
+        );
+        botState.buyReason = 'scalper';
+        return;
       }
     }
 

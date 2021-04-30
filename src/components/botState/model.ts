@@ -28,6 +28,16 @@ const schema = new Schema({
     required: true,
   },
   strategies: {
+    scalper: {
+      enabled: {
+        type: Boolean,
+        default: false,
+      },
+      stopLoss: {
+        type: Boolean,
+        default: false,
+      },
+    },
     upTrend: {
       enabled: {
         type: Boolean,
