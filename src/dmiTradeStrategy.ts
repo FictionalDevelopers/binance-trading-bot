@@ -24,6 +24,7 @@ import getAvarage from './utils/getAverage';
 import { getStochRsiStream } from './indicators/stochRSI';
 import { getTrixSignal, runTrixInterval } from './components/trix-signal';
 import { getRocSignal } from './components/roc-signals';
+import _throttle from 'lodash/throttle';
 
 (async function() {
   await connect();
@@ -62,8 +63,28 @@ import { getRocSignal } from './components/roc-signals';
   }
 
   const indicatorsData = {
+    scalper: {
+      tradesVolume: {
+        buySignalCount: null,
+        sellSignalCount: null,
+        signal: null,
+      },
+      bidsAsksDiff: null,
+      prevAsk: null,
+      lastAsk: null,
+      lastBid: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+      signal: null,
+      maxBidSize: null,
+      maxAskSize: null,
+    },
+    growCount: 0,
+    fallCount: 0,
+    rocSignalBuyCount: 0,
+    rocSignalSellCount: 0,
     roc: {
-      roc5m: null,
+      roc1m: null,
     },
     trix: {
       trix5m: {
@@ -149,6 +170,10 @@ import { getRocSignal } from './components/roc-signals';
     },
     emaSignal: null,
     dmi5m: {
+      adxUpCount: 0,
+      adxDownCount: 0,
+      adxDiff: null,
+      adxDirection: null,
       prevDmi: null,
       dmiMdiSignal: 0,
       adxSignal: null,
@@ -162,6 +187,10 @@ import { getRocSignal } from './components/roc-signals';
       sellSignalCount: 0,
     },
     dmi15m: {
+      adxUpCount: 0,
+      adxDownCount: 0,
+      adxDiff: null,
+      adxDirection: null,
       prevDmi: null,
       dmiMdiSignal: 0,
       adxSignal: 0,
@@ -175,6 +204,9 @@ import { getRocSignal } from './components/roc-signals';
       sellSignalCount: 0,
     },
     dmi1h: {
+      adxUpCount: 0,
+      adxDownCount: 0,
+      adxDiff: null,
       prevDmi: null,
       dmiMdiSignal: 0,
       adxSignal: 0,
@@ -186,8 +218,6 @@ import { getRocSignal } from './components/roc-signals';
       signal: null,
       buySignalCount: 0,
       sellSignalCount: 0,
-      adxUpCount: null,
-      adxDownCount: null,
     },
     dmi1m: {
       prevDmi: null,
@@ -223,6 +253,7 @@ import { getRocSignal } from './components/roc-signals';
     slow1mEMA: 0,
     middle1mEMA: 0,
     fast1mEMA: 0,
+    avFast1mEMA: 0,
     slow5mEMA: 0,
     middle5mEMA: 0,
     fast5mEMA: 0,
@@ -253,6 +284,52 @@ import { getRocSignal } from './components/roc-signals';
       : 0;
 
     const conditions = {
+      scalper: {
+        buy:
+          botState.status === 'buy' &&
+          ((indicatorsData.rsi15m.rsiValue !== null &&
+            indicatorsData.rsi15m.rsiValue >= 51 &&
+            indicatorsData.dmi15m.adxUpCount >= 1 &&
+            indicatorsData.rsi5m.rsiValue !== null &&
+            indicatorsData.rsi5m.rsiValue >= 51 &&
+            indicatorsData.dmi5m.adxUpCount >= 1) ||
+            (indicatorsData.rsi15m.rsiValue !== null &&
+              indicatorsData.rsi15m.rsiValue <= 49 &&
+              indicatorsData.dmi15m.adxDownCount >= 1 &&
+              indicatorsData.rsi5m.rsiValue !== null &&
+              indicatorsData.rsi5m.rsiValue <= 49 &&
+              indicatorsData.dmi5m.adxDownCount >= 1)),
+        // indicatorsData.scalper.signal === 'buy' &&
+        // indicatorsData.scalper.buySignalCount >= 1,
+        // indicatorsData.scalper.tradesVolume.signal === 'buy' &&
+        // indicatorsData.scalper.tradesVolume.buySignalCount >= 1,
+
+        sell: {
+          takeProfit: null,
+          stopLoss:
+            botState.status === 'sell' &&
+            ((indicatorsData.rsi5m.rsiValue !== null &&
+              indicatorsData.rsi5m.rsiValue >= 51 &&
+              indicatorsData.dmi5m.adxDownCount >= 3) ||
+              (indicatorsData.rsi5m.rsiValue !== null &&
+                indicatorsData.rsi5m.rsiValue <= 49 &&
+                indicatorsData.dmi5m.adxUpCount >= 3)),
+          // indicatorsData.scalper.tradesVolume.signal === 'sell' &&
+          // indicatorsData.scalper.sellSignalCount >= 1 &&
+          // expectedProfitPercent < 0,
+          // (botState.lastBid / indicatorsData.scalper.lastBid) * 100 - 100 >=
+          //   0)
+          // expectedProfitPercent >= 0.3,
+          // ||
+          // expectedProfitPercent >= 0.3
+          // ||
+          // && expectedProfitPercent >= 0.3
+
+          // ((indicatorsData.scalper.signal === 'sell' &&
+          //   expectedProfitPercent <= -0.5) ||
+          //   expectedProfitPercent >= 1.5),
+        },
+      },
       upTrend: {
         buy:
           botState.status === 'buy' &&
@@ -593,6 +670,7 @@ import { getRocSignal } from './components/roc-signals';
           'TRENDS CATCHER',
           workingDeposit,
           'RESISTANCE LEVEL',
+          indicatorsData,
         );
         botState.buyReason = 'upTrend';
         return;
@@ -613,6 +691,7 @@ import { getRocSignal } from './components/roc-signals';
           'WAVES CATCHER',
           workingDeposit,
           'DOWN TREND CORRECTION LEVEL',
+          indicatorsData,
         );
         botState.buyReason = 'downTrend';
         indicatorsData.rsiRebuy.value = false;
@@ -634,6 +713,7 @@ import { getRocSignal } from './components/roc-signals';
           'WAVES CATCHER',
           workingDeposit,
           'UP FLAT ',
+          indicatorsData,
         );
         botState.buyReason = 'upFlat';
         return;
@@ -654,6 +734,7 @@ import { getRocSignal } from './components/roc-signals';
           'WAVES CATCHER',
           workingDeposit,
           'DOWN FLAT',
+          indicatorsData,
         );
         botState.buyReason = 'downFlat';
         return;
@@ -674,6 +755,7 @@ import { getRocSignal } from './components/roc-signals';
           'STOCH RSI',
           workingDeposit,
           'STOCH RSI SIGNAL',
+          indicatorsData,
         );
         botState.buyReason = 'stochRsi';
         indicatorsData.obvBuySignalCount = 0;
@@ -695,9 +777,29 @@ import { getRocSignal } from './components/roc-signals';
           'TRENDS CATCHER',
           workingDeposit,
           'ADX SIGNAL',
+          indicatorsData,
         );
         botState.buyReason = 'trendsCatcher';
         return;
+      }
+
+      if (botState.strategies.scalper.enabled) {
+        if (conditions.scalper.buy) {
+          await marketBuyAction(
+            false,
+            symbol,
+            botState,
+            cryptoCoin,
+            pricesStream,
+            stepSize,
+            'TRENDS CATCHER',
+            workingDeposit,
+            'ADX SIGNAL',
+            indicatorsData,
+          );
+          botState.buyReason = 'scalper';
+          return;
+        }
       }
     }
 
@@ -877,6 +979,23 @@ import { getRocSignal } from './components/roc-signals';
       return;
     }
 
+    if (conditions.scalper.sell.stopLoss) {
+      await marketSellAction(
+        'trendsCatcher',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'STOP LOSS',
+        indicatorsData,
+      );
+      return;
+    }
+
     if (conditions.stochRsiStrategy.sell.stopLoss) {
       await marketSellAction(
         'stochRsi',
@@ -940,10 +1059,10 @@ import { getRocSignal } from './components/roc-signals';
     botState.updateState('prevPrice', botState.currentPrice);
   };
 
-  getDMISignal(symbol, '1h', indicatorsData.dmi1h, 2, 2, 0, 0);
-  getEMASignal(symbol, '1h', indicatorsData);
-  getEMASignal(symbol, '1m', indicatorsData);
-  getRocSignal(symbol, '5m', indicatorsData.roc);
+  // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 2, 2, 0, 0);
+  // getEMASignal(symbol, '1h', indicatorsData);
+  // getEMASignal(symbol, '1m', indicatorsData);
+  // getRocSignal(symbol, '5m', indicatorsData.roc);
 
   // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
   // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
@@ -951,10 +1070,10 @@ import { getRocSignal } from './components/roc-signals';
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
   // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
   // getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
-  getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 1, 0, 0);
+  // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 3, 3, 0, 0);
-  getEMASignal(symbol, '1m', indicatorsData);
-  getEMASignal(symbol, '1h', indicatorsData);
+  // getEMASignal(symbol, '1m', indicatorsData);
+  // getEMASignal(symbol, '1h', indicatorsData);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
@@ -995,7 +1114,14 @@ import { getRocSignal } from './components/roc-signals';
     resource: RESOURCES.TRADE,
   })
     .pipe(pluck('price'), bufferCount(1, 1))
-    .subscribe(trader);
+    .subscribe(_throttle(trader), 500);
+
+  getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch5m, 2.5, 2.5);
+  getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
+  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
 
   // getForceIndexStream({
   //   symbol: symbol,

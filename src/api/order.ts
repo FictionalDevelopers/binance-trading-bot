@@ -155,6 +155,10 @@ export const marketSellAction = async (
                                   total profit: ${botState.totalProfit}%
                     `);
         botState.dealsCount++;
+        indicatorsData.scalper.tradesVolume.signal = null;
+        indicatorsData.scalper.tradesVolume.buySignalCount = null;
+        indicatorsData.scalper.signal = null;
+        indicatorsData.scalper.buySignalCount = 0;
         indicatorsData.dmi1h.signal = null;
         indicatorsData.dmi1h.buySignalCount = 0;
         if (!stopLoss) botState.updateState('status', 'buy');
@@ -299,6 +303,7 @@ export const marketBuyAction = async (
   strategy,
   usdtAmount,
   buyReason,
+  indicatorsData,
 ) => {
   if (botState.testMode) {
     try {
@@ -307,6 +312,7 @@ export const marketBuyAction = async (
         'buyPrice',
         Number(pricesStream[pricesStream.length - 1]),
       );
+      botState.updateState('lastBid', indicatorsData.scalper.lastBid);
       await sendToRecipients(`BUY ${botState.local ? '(LOCAL)' : ''}
                              Strategy:${strategy}
                              Reason: ${buyReason}

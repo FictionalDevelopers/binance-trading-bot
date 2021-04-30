@@ -1,5 +1,6 @@
 import * as service from './service';
 import { getStochRsiStream } from '../../indicators/stochRSI';
+import _throttle from 'lodash/throttle';
 
 export const runStochRsiInterval = stochRsi => {
   setInterval(async () => {
@@ -48,28 +49,30 @@ export const getStochRSISignal = (
   getStochRsiStream({
     symbol: symbol,
     interval: timeFrame,
-  }).subscribe(stochRsi => {
-    if (
-      Number(stochRsi.k) - Number(stochRsi.d) >= buySens ||
-      Number(stochRsi.k) == 100
-    ) {
-      if (stochRsiData.signal === 'sell' || stochRsiData.signal === null)
-        stochRsiData.signal = 'buy';
-    }
+  }).subscribe(
+    _throttle(stochRsi => {
+      if (
+        Number(stochRsi.k) - Number(stochRsi.d) >= buySens ||
+        Number(stochRsi.k) == 100
+      ) {
+        if (stochRsiData.signal === 'sell' || stochRsiData.signal === null)
+          stochRsiData.signal = 'buy';
+      }
 
-    if (
-      Number(stochRsi.d) - Number(stochRsi.k) >= sellSens ||
-      Number(stochRsi.k) == 0
-    ) {
-      if (stochRsiData.signal === 'buy' || stochRsiData.signal === null)
-        stochRsiData.signal = 'sell';
-    }
-    stochRsiData.value = stochRsi.k;
-    // console.log(stochRsiData.value);
-    // console.log(`StochRSI:${JSON.stringify(stochRsi)}`);
-    // console.log(`Signal: ${indicatorsData.stochRsiSignal}`);
-    // console.log(`Diff: ${Number(stochRsi.k) - Number(stochRsi.d)} \n`);
-  });
+      if (
+        Number(stochRsi.d) - Number(stochRsi.k) >= sellSens ||
+        Number(stochRsi.k) == 0
+      ) {
+        if (stochRsiData.signal === 'buy' || stochRsiData.signal === null)
+          stochRsiData.signal = 'sell';
+      }
+      stochRsiData.value = stochRsi.k;
+      // console.log(stochRsiData.value);
+      // console.log(`StochRSI:${JSON.stringify(stochRsi)}`);
+      // console.log(`Signal: ${indicatorsData.stochRsiSignal}`);
+      // console.log(`Diff: ${Number(stochRsi.k) - Number(stochRsi.d)} \n`);
+    }, 500),
+  );
 };
 
 export { service };
