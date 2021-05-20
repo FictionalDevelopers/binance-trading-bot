@@ -45,34 +45,39 @@ export const getStochRSISignal = (
   stochRsiData,
   buySens,
   sellSens,
+  buySignalCount,
+  sellSignalCount,
 ) => {
   getStochRsiStream({
     symbol: symbol,
     interval: timeFrame,
-  }).subscribe(
-    _throttle(stochRsi => {
-      if (
-        Number(stochRsi.k) - Number(stochRsi.d) >= buySens ||
-        Number(stochRsi.k) == 100
-      ) {
-        if (stochRsiData.signal === 'sell' || stochRsiData.signal === null)
-          stochRsiData.signal = 'buy';
-      }
+  }).subscribe(stochRsi => {
+    stochRsiData.data = stochRsi;
 
-      if (
-        Number(stochRsi.d) - Number(stochRsi.k) >= sellSens ||
-        Number(stochRsi.k) == 0
-      ) {
-        if (stochRsiData.signal === 'buy' || stochRsiData.signal === null)
-          stochRsiData.signal = 'sell';
-      }
-      stochRsiData.value = stochRsi.k;
-      // console.log(stochRsiData.value);
-      // console.log(`StochRSI:${JSON.stringify(stochRsi)}`);
-      // console.log(`Signal: ${indicatorsData.stochRsiSignal}`);
-      // console.log(`Diff: ${Number(stochRsi.k) - Number(stochRsi.d)} \n`);
-    }, 500),
-  );
+    if (
+      Number(stochRsi.k) - Number(stochRsi.d) >= buySens ||
+      Number(stochRsi.k) == 100
+    ) {
+      stochRsiData.buySignalCount++;
+      stochRsiData.sellSignalCount = 0;
+    } else if (
+      Number(stochRsi.d) - Number(stochRsi.k) >= sellSens ||
+      Number(stochRsi.k) == 4.3816802038539514e-14
+    ) {
+      stochRsiData.sellSignalCount++;
+      stochRsiData.buySignalCount = 0;
+    }
+    if (stochRsiData.buySignalCount >= buySignalCount)
+      stochRsiData.signal = 'buy';
+    else if (stochRsiData.sellSignalCount >= sellSignalCount)
+      stochRsiData.signal = 'sell';
+
+    stochRsiData.value = stochRsi.k;
+    // console.log(stochRsiData.value);
+    // console.log(`StochRSI:${JSON.stringify(stochRsi)}`);
+    // console.log(`Signal: ${indicatorsData.stochRsiSignal}`);
+    // console.log(`Diff: ${Number(stochRsi.k) - Number(stochRsi.d)} \n`);
+  });
 };
 
 export { service };
