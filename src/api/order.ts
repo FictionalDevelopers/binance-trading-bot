@@ -135,6 +135,11 @@ export const marketSellAction = async (
           (botState.totalMaxAvailableProfit +=
             botState.maxAvailableProfit - 0.2),
         );
+        botState.updateState(
+          'totalMinAvailableProfit',
+          (botState.totalMinAvailableProfit +=
+            botState.minAvailableProfit - 0.2),
+        );
         await sendToRecipients(`SELL ${botState.local ? '(LOCAL)' : ''}
                                   Strategy: ${strategy}
                                   Sell reason: ${sellReason}
@@ -151,6 +156,11 @@ export const marketSellAction = async (
                                   total max av profit: ${
                                     botState.totalMaxAvailableProfit
                                   }%
+                                  min av profit: ${botState.minAvailableProfit -
+                                    0.2}%
+                                  total min av profit: ${
+                                    botState.totalMinAvailableProfit
+                                  }%
                     `);
         console.log(`SELL 
                                   Strategy: ${strategy}
@@ -166,6 +176,7 @@ export const marketSellAction = async (
                     `);
         botState.dealsCount++;
         botState.maxAvailableProfit = 0;
+        botState.minAvailableProfit = 0;
         botState.confirmation = false;
         // indicatorsData.obv5m.signal = null;
         // indicatorsData.obv5m.buySignalCount = 0;

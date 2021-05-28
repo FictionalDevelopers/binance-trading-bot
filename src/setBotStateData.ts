@@ -4,6 +4,12 @@ import { sendToRecipients } from './services/telegram';
 import { service as botStateService } from './components/botState';
 
 const botState = {
+  maxAvailableProfit: 0,
+  minAvailableProfit: 0,
+  totalMinAvailableProfit: 0,
+  totalMaxAvailableProfit: 0,
+  profitDiff: 0,
+  isPricesStreamAlive: false,
   avrDealProfit: null,
   buyPrice: 0,
   buyReason: 'upTrend',

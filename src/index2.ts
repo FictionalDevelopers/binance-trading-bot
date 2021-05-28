@@ -75,6 +75,8 @@ import _debounce from 'lodash/debounce';
   const botState = {
     maxAvailableProfit: 0,
     totalMaxAvailableProfit: 0,
+    minAvailableProfit: 0,
+    totalMinAvailableProfit: 0,
     profitDiff: 0,
     isPricesStreamAlive: false,
     local: true,
@@ -1078,9 +1080,9 @@ import _debounce from 'lodash/debounce';
         buy:
           botState.status === 'buy' &&
           indicatorsData.obv5m.signal === 'buy' &&
-          indicatorsData.obv1m.signal === 'buy' &&
-          indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
-          indicatorsData.stochRsi.stoch5m.signal === 'buy',
+          indicatorsData.obv1m.signal === 'buy',
+        // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
+        // indicatorsData.stochRsi.stoch5m.signal === 'buy',
 
         // indicatorsData.obv1m.signal === 'buy',
         // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
@@ -1998,24 +2000,24 @@ import _debounce from 'lodash/debounce';
 
   /** *******************************INDICATORS SECTION**************************************/
 
-  getStochRSISignal(
-    symbol,
-    '1m',
-    indicatorsData.stochRsi.stoch1m,
-    1.5,
-    1.5,
-    2,
-    2,
-  );
-  getStochRSISignal(
-    symbol,
-    '5m',
-    indicatorsData.stochRsi.stoch5m,
-    1.5,
-    1.5,
-    2,
-    2,
-  );
+  // getStochRSISignal(
+  //   symbol,
+  //   '1m',
+  //   indicatorsData.stochRsi.stoch1m,
+  //   1.5,
+  //   1.5,
+  //   2,
+  //   2,
+  // );
+  // getStochRSISignal(
+  //   symbol,
+  //   '5m',
+  //   indicatorsData.stochRsi.stoch5m,
+  //   1.5,
+  //   1.5,
+  //   2,
+  //   2,
+  // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);

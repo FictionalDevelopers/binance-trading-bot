@@ -177,11 +177,19 @@ const schema = new Schema({
   },
   profitDiff: {
     type: Number,
-    default: 0,
+    default: null,
   },
   isPricesStreamAlive: {
     type: Boolean,
     default: false,
+  },
+  minAvailableProfit: {
+    type: Number,
+    default: 0,
+  },
+  totalMinAvailableProfit: {
+    type: Number,
+    default: 0,
   },
 });
 

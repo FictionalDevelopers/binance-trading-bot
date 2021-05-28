@@ -1002,6 +1002,8 @@ import _debounce from 'lodash/debounce';
       : 0;
     if (expectedProfitPercent > botState.maxAvailableProfit)
       botState.updateState('maxAvailableProfit', expectedProfitPercent);
+    if (expectedProfitPercent < botState.minAvailableProfit)
+      botState.updateState('minAvailableProfit', expectedProfitPercent);
     botState.updateState(
       'profitDiff',
       botState.maxAvailableProfit / expectedProfitPercent,
@@ -2013,6 +2015,9 @@ import _debounce from 'lodash/debounce';
       // );
       console.log(
         'Max av profit: ' + Number(botState.maxAvailableProfit - 0.2) + ' %',
+      );
+      console.log(
+        'Min av profit: ' + Number(botState.minAvailableProfit - 0.2) + ' %',
       );
       console.log(
         'Profit diff: ' +
