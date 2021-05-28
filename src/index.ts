@@ -35,6 +35,7 @@ import { getDMISignal } from './components/dmi-signals';
 import _throttle from 'lodash/throttle';
 import _debounce from 'lodash/debounce';
 // import { indicatorsData } from './index2';
+import readline from 'readline';
 
 (async function() {
   await connect();
@@ -73,6 +74,8 @@ import _debounce from 'lodash/debounce';
   // }
 
   const botState = {
+    actionConfirmation: true,
+    confirmation: false,
     local: true,
     strategies: {
       scalper: { enabled: true, stopLoss: false },
@@ -253,8 +256,8 @@ import _debounce from 'lodash/debounce';
         data: {},
       },
       stoch5m: {
-        BuySignalCount: 0,
-        SellSignalCount: 0,
+        buySignalCount: 0,
+        sellSignalCount: 0,
         prev: null,
         value: null,
         signal: null,
@@ -1047,6 +1050,25 @@ import _debounce from 'lodash/debounce';
   //   botState.updateState('prevPrice', botState.currentPrice);
   // };
 
+  const askConfirmation = action => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+    process.stdin.resume();
+    rl.question(`Confirm ${action}?:\n`, function(line) {
+      // switch (line) {
+      //   case '':
+      //     botState.confirmation = true;
+      //     break;
+      //   default:
+      //     break;
+      // }
+      if (line == '') botState.confirmation = 'true';
+      rl.close();
+    });
+  };
+
   const scalper = async pricesStream => {
     const { tradeAmountPercent } = botState;
     if (botState.status === 'isPending') return;
@@ -1062,14 +1084,17 @@ import _debounce from 'lodash/debounce';
 
     const conditions = {
       scalper: {
-        buy:
-          botState.status === 'buy' &&
-          // indicatorsData.roc.roc1m.value > 0 &&
-          indicatorsData.obv5m.signal === 'buy' &&
-          // indicatorsData.obv1m.signal === 'buy',
-          // indicatorsData.rsi5m.signal === 'buy' &&
-          // indicatorsData.rsi1m.signal === 'buy' &&
-          indicatorsData.stochRsi.stoch1m.signal === 'buy',
+        buy: botState.status === 'buy' && indicatorsData.obv5m.signal === 'buy',
+        // indicatorsData.stochRsi.stoch5m.signal === 'buy',
+        // (indicatorsData.dmi5m.adxUpCount >= 2 ||
+        //   indicatorsData.dmi5m.adxDownCount >= 2) &&
+        // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
+
+        // indicatorsData.obv1m.signal === 'buy' &&
+        // indicatorsData.roc.roc1m.value > 0 &&
+        // indicatorsData.obv1m.signal === 'buy',
+        // indicatorsData.rsi5m.signal === 'buy' &&
+        // indicatorsData.rsi1m.signal === 'buy' &&
         // indicatorsData.stochRsi.stoch1m.data.k < 20 &&
         // indicatorsData.stochRsi.stoch1m.data.d < 25 &&
         // (indicatorsData.dmi1m.adxUpCount >= 2 ||
@@ -1104,10 +1129,23 @@ import _debounce from 'lodash/debounce';
 
         sell: {
           takeProfit: null,
+          // botState.status === 'sell' &&
+          // expectedProfitPercent > 0.2 &&
+          // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.obv5m.signal === 'sell' &&
-            indicatorsData.roc.roc5m.signal === 'sell',
+            // (indicatorsData.dmi5m.adxUpCount >= 2 ||
+            //   indicatorsData.dmi5m.adxDownCount >= 2) &&
+            indicatorsData.obv5m.signal === 'sell',
+
+          // ((indicatorsData.obv5m.signal === 'sell' &&
+          //   indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
+          //   botState.currentProfit < 0) ||
+          //   (indicatorsData.obv5m.signal === 'sell' &&
+          //     indicatorsData.stochRsi.stoch1m.signal === 'sell')),
+          //
+
+          // indicatorsData.roc.roc5m.signal === 'sell',
           // ||
           // indicatorsData.obv5m.signal === 'sell'
           // indicatorsData.rsi5m.signal === 'sell' &&
@@ -1524,20 +1562,41 @@ import _debounce from 'lodash/debounce';
 
     if (botState.strategies.scalper.enabled) {
       if (conditions.scalper.buy) {
-        await marketBuyAction(
-          false,
-          symbol,
-          botState,
-          cryptoCoin,
-          pricesStream,
-          stepSize,
-          'TRENDS CATCHER',
-          workingDeposit,
-          'STRATEGY 1',
-          indicatorsData,
-        );
-        botState.buyReason = 'scalper';
-        return;
+        if (botState.actionConfirmation) {
+          askConfirmation('BUY');
+          if (botState.confirmation) {
+            await marketBuyAction(
+              false,
+              symbol,
+              botState,
+              cryptoCoin,
+              pricesStream,
+              stepSize,
+              'TRENDS CATCHER',
+              workingDeposit,
+              'STRATEGY 1',
+              indicatorsData,
+            );
+            botState.buyReason = 'scalper';
+            console.log('Confirmation: ' + botState.confirmation);
+            return;
+          }
+        } else {
+          await marketBuyAction(
+            false,
+            symbol,
+            botState,
+            cryptoCoin,
+            pricesStream,
+            stepSize,
+            'TRENDS CATCHER',
+            workingDeposit,
+            'STRATEGY 1',
+            indicatorsData,
+          );
+          botState.buyReason = 'scalper';
+          return;
+        }
       }
     }
 
@@ -1798,20 +1857,42 @@ import _debounce from 'lodash/debounce';
       return;
     }
     if (conditions.scalper.sell.stopLoss) {
-      await marketSellAction(
-        'trendsCatcher',
-        false,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        stepSize,
-        initialUSDTBalance,
-        'STRATEGY 1',
-        indicatorsData,
-      );
-      return;
+      if (botState.actionConfirmation) {
+        askConfirmation('SELL');
+        if (botState.confirmation) {
+          await marketSellAction(
+            'trendsCatcher',
+            false,
+            symbol,
+            botState,
+            cryptoCoin,
+            expectedProfitPercent,
+            pricesStream,
+            stepSize,
+            initialUSDTBalance,
+            'STRATEGY 1',
+            indicatorsData,
+          );
+          console.log('Confirmation: ' + botState.confirmation);
+
+          return;
+        }
+      } else {
+        await marketSellAction(
+          'trendsCatcher',
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          expectedProfitPercent,
+          pricesStream,
+          stepSize,
+          initialUSDTBalance,
+          'STRATEGY 1',
+          indicatorsData,
+        );
+        return;
+      }
     }
 
     botState.updateState('prevPrice', botState.currentPrice);
@@ -1961,15 +2042,24 @@ import _debounce from 'lodash/debounce';
 
   /** *******************************INDICATORS SECTION**************************************/
 
-  getStochRSISignal(
-    symbol,
-    '1m',
-    indicatorsData.stochRsi.stoch1m,
-    2.5,
-    2.5,
-    2,
-    2,
-  );
+  // getStochRSISignal(
+  //   symbol,
+  //   '1m',
+  //   indicatorsData.stochRsi.stoch1m,
+  //   2.5,
+  //   2.5,
+  //   2,
+  //   2,
+  // );
+  // getStochRSISignal(
+  //   symbol,
+  //   '5m',
+  //   indicatorsData.stochRsi.stoch5m,
+  //   2.5,
+  //   2.5,
+  //   2,
+  //   2,
+  // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
@@ -1983,8 +2073,9 @@ import _debounce from 'lodash/debounce';
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 3);
-  getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
+  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
 
   /*******************************************************************************************/
 
@@ -2056,15 +2147,28 @@ import _debounce from 'lodash/debounce';
 
   /** *************************DATA LOGGER********************************/
 
-  setInterval(() => {
-    console.log('OBV 5m: ' + indicatorsData.obv5m.signal);
-    console.log('ROC 5m: ' + indicatorsData.roc.roc5m.signal);
-    console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.value);
-    console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
-    console.log('Profit: ' + (botState.currentProfit - 0.2) + ' %');
-    // console.log('OBV 1m: ' + indicatorsData.obv1m.obvDiff);
-    console.log('\n');
-  }, 500);
+  // setInterval(() => {
+  //   console.log('OBV 5m: ' + indicatorsData.obv5m.signal);
+  //   // console.log('OBV 1m: ' + indicatorsData.obv1m.signal);
+  //   // console.log('ROC 5m: ' + indicatorsData.roc.roc5m.signal);
+  //   console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.value);
+  //   console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
+  //   console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.value);
+  //   console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
+  //   console.log(
+  //     'ADX 5m: ' +
+  //       indicatorsData.dmi5m.adxDiff +
+  //       ' ' +
+  //       indicatorsData.dmi5m.adxDirection +
+  //       ' ' +
+  //       (indicatorsData.dmi5m.adxUpCount
+  //         ? indicatorsData.dmi5m.adxUpCount
+  //         : indicatorsData.dmi5m.adxDownCount),
+  //   );
+  //   console.log('Profit: ' + (botState.currentProfit - 0.2) + ' %');
+  //   // console.log('OBV 1m: ' + indicatorsData.obv1m.obvDiff);
+  //   console.log('\n');
+  // }, 500);
 
   /************************************************************************/
 

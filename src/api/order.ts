@@ -130,6 +130,11 @@ export const marketSellAction = async (
           'totalProfit',
           (botState.totalProfit += expectedProfitPercent - 0.2),
         );
+        botState.updateState(
+          'totalMaxAvailableProfit',
+          (botState.totalMaxAvailableProfit +=
+            botState.maxAvailableProfit - 0.2),
+        );
         await sendToRecipients(`SELL ${botState.local ? '(LOCAL)' : ''}
                                   Strategy: ${strategy}
                                   Sell reason: ${sellReason}
@@ -141,6 +146,11 @@ export const marketSellAction = async (
                                   current profit: ${expectedProfitPercent -
                                     0.2}%
                                   total profit: ${botState.totalProfit}%
+                                  max av profit: ${botState.maxAvailableProfit -
+                                    0.2}%
+                                  total max av profit: ${
+                                    botState.totalMaxAvailableProfit
+                                  }%
                     `);
         console.log(`SELL 
                                   Strategy: ${strategy}
@@ -155,12 +165,20 @@ export const marketSellAction = async (
                                   total profit: ${botState.totalProfit}%
                     `);
         botState.dealsCount++;
-        indicatorsData.scalper.tradesVolume.signal = null;
-        indicatorsData.scalper.tradesVolume.buySignalCount = null;
-        indicatorsData.scalper.signal = null;
-        indicatorsData.scalper.buySignalCount = 0;
-        indicatorsData.dmi1h.signal = null;
-        indicatorsData.dmi1h.buySignalCount = 0;
+        botState.maxAvailableProfit = 0;
+        botState.confirmation = false;
+        // indicatorsData.obv5m.signal = null;
+        // indicatorsData.obv5m.buySignalCount = 0;
+        // indicatorsData.obv5m.sellSignalCount = 0;
+        // indicatorsData.obv1m.signal = null;
+        // indicatorsData.obv1m.sellSignalCount = 0;
+        // indicatorsData.obv1m.buySignalCount = 0;
+        // indicatorsData.scalper.tradesVolume.signal = null;
+        // indicatorsData.scalper.tradesVolume.buySignalCount = null;
+        // indicatorsData.scalper.signal = null;
+        // indicatorsData.scalper.buySignalCount = 0;
+        // indicatorsData.dmi1h.signal = null;
+        // indicatorsData.dmi1h.buySignalCount = 0;
         if (!stopLoss) botState.updateState('status', 'buy');
         else {
           botState.strategies[`${strategy}`].stopLoss = true;
@@ -329,7 +347,7 @@ export const marketBuyAction = async (
                              price: ${botState.buyPrice}
                              date: ${format(new Date(), DATE_FORMAT)}
               `);
-
+      botState.confirmation = false;
       botState.updateState('status', 'sell');
       botState.updateState('prevPrice', botState.currentPrice);
       if (!botState.local) {

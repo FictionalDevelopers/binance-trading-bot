@@ -49,15 +49,34 @@ export const getObvSignal = (
         indicatorsData.prevObv = obv;
         return;
       }
-      indicatorsData.obvDiff = (obv / indicatorsData.prevObv) * 100 - 100;
 
-      if (indicatorsData.obvDiff > 0) {
+      // indicatorsData.obvDiff = (obv / indicatorsData.prevObv) * 100 - 100;
+      //
+      // if (indicatorsData.obvDiff > 0) {
+      //   indicatorsData.buySignalCount = 0;
+      //   indicatorsData.sellSignalCount++;
+      // } else if (indicatorsData.obvDiff < 0) {
+      //   indicatorsData.sellSignalCount = 0;
+      //   indicatorsData.buySignalCount++;
+      // } else if (indicatorsData.obvDiff === 0) {
+      //   indicatorsData.sellSignalCount = 0;
+      //   indicatorsData.buySignalCount = 0;
+      //   indicatorsData.signal = null;
+      // }
+
+      if (indicatorsData.prevObv > obv) {
+        const obvDiff = Math.abs((indicatorsData.prevObv / obv) * 100 - 100);
+        if (obvDiff >= 10) indicatorsData.obvDiff = obvDiff;
+        else indicatorsData.obvDiff = null;
         indicatorsData.buySignalCount = 0;
         indicatorsData.sellSignalCount++;
-      } else if (indicatorsData.obvDiff < 0) {
+      } else if (indicatorsData.prevObv < obv) {
+        const obvDiff = Math.abs((obv / indicatorsData.prevObv) * 100 - 100);
+        if (obvDiff >= 10) indicatorsData.obvDiff = obvDiff;
+        else indicatorsData.obvDiff = null;
         indicatorsData.sellSignalCount = 0;
         indicatorsData.buySignalCount++;
-      } else if (indicatorsData.obvDiff === 0) {
+      } else if (indicatorsData.prevObv === obv) {
         indicatorsData.sellSignalCount = 0;
         indicatorsData.buySignalCount = 0;
         indicatorsData.signal = null;

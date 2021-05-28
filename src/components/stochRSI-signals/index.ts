@@ -56,13 +56,13 @@ export const getStochRSISignal = (
 
     if (
       Number(stochRsi.k) - Number(stochRsi.d) >= buySens ||
-      Number(stochRsi.k) == 100
+      Number(stochRsi.k).toFixed() >= Number(100)
     ) {
       stochRsiData.buySignalCount++;
       stochRsiData.sellSignalCount = 0;
     } else if (
       Number(stochRsi.d) - Number(stochRsi.k) >= sellSens ||
-      Number(stochRsi.k) == 4.3816802038539514e-14
+      Number(stochRsi.k).toFixed() <= Number(0)
     ) {
       stochRsiData.sellSignalCount++;
       stochRsiData.buySignalCount = 0;
