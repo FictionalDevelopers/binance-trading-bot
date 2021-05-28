@@ -167,6 +167,22 @@ const schema = new Schema({
     type: Number,
     default: null,
   },
+  maxAvailableProfit: {
+    type: Number,
+    default: 0,
+  },
+  totalMaxAvailableProfit: {
+    type: Number,
+    default: 0,
+  },
+  profitDiff: {
+    type: Number,
+    default: 0,
+  },
+  isPricesStreamAlive: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 export default model<BotState>('BotState', schema);

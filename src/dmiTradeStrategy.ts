@@ -50,94 +50,27 @@ import _debounce from 'lodash/debounce';
   // const lastOrder = ordersList[ordersList.length - 1] || null;
   const workingDeposit = 400;
   // const symbol = process.argv[2];
-  // let botState;
-  //
-  // try {
-  //   const response = await botStateService.getBotState();
-  //   const initialState = JSON.parse(JSON.stringify(_head(response)));
-  //
-  //   botState = {
-  //     ...initialState,
-  //     availableUSDT: initialUSDTBalance,
-  //     availableCryptoCoin: initialCryptoCoinBalance,
-  //     updateState: function(fieldName, value) {
-  //       this[`${fieldName}`] = value;
-  //     },
-  //   };
-  // } catch (e) {
-  //   await sendToRecipients(`ERROR
-  //   ${JSON.stringify(e)};
-  // `);
-  //
-  //   process.exit(1);
-  // }
+  let botState;
 
-  const botState = {
-    maxAvailableProfit: 0,
-    totalMaxAvailableProfit: 0,
-    profitDiff: 0,
-    isPricesStreamAlive: false,
-    local: true,
-    strategies: {
-      scalper: { enabled: true, stopLoss: false },
-      upTrend: { enabled: false, stopLoss: false },
-      downTrend: { enabled: false, stopLoss: false },
-      upFlat: { enabled: false, stopLoss: false },
-      downFlat: { enabled: false, stopLoss: false },
-      stochRsi: { enabled: false, stopLoss: false },
-      trendsCatcher: { enabled: false, stopLoss: false },
-    },
-    buyReason: null,
-    enabledLimits: false,
-    sellError: false,
-    emaStartPoint: null,
-    strategy: 'MIXED STRATEGY',
-    testMode: true,
-    useProfitLevels: false,
-    useEMAStopLoss: false,
-    status: 'buy',
-    // status: 'buy',
-    profitLevels: {
-      '1': {
-        id: 1,
-        profitPercent: 1,
-        amountPercent: 0.5,
-        isFilled: false,
+  try {
+    const response = await botStateService.getBotState();
+    const initialState = JSON.parse(JSON.stringify(_head(response)));
+
+    botState = {
+      ...initialState,
+      availableUSDT: initialUSDTBalance,
+      availableCryptoCoin: initialCryptoCoinBalance,
+      updateState: function(fieldName, value) {
+        this[`${fieldName}`] = value;
       },
-      '2': {
-        id: 2,
-        profitPercent: 2,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-      '3': {
-        id: 3,
-        profitPercent: 4,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-    },
-    currentProfit: null,
-    totalProfit: null,
-    totalPercentProfit: null,
-    tradeAmountPercent: 0.95,
-    availableUSDT: initialUSDTBalance,
-    availableCryptoCoin: initialCryptoCoinBalance,
-    cummulativeQuoteQty: null,
-    buyPrice: null,
-    lastBid: null,
-    currentPrice: null,
-    order: null,
-    avrDealProfit: null,
-    dealsCount: 1,
-    startTime: new Date().getTime(),
-    workDuration: null,
-    stopLoss: null,
-    prevPrice: null,
-    updateState: function(fieldName, value) {
-      this[`${fieldName}`] = value;
-    },
-  };
+    };
+  } catch (e) {
+    await sendToRecipients(`ERROR
+    ${JSON.stringify(e)};
+  `);
+
+    process.exit(1);
+  }
 
   const indicatorsData = {
     maxAvailableProfit: 0,

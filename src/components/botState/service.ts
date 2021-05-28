@@ -1,6 +1,10 @@
 import BotStateModel, { BotState } from './model';
 
 export async function trackBotState(botState: {
+  maxAvailableProfit: number;
+  totalMaxAvailableProfit: number;
+  profitDiff: number;
+  isPricesStreamAlive: boolean;
   strategyId: number;
   strategies: any;
   buyReason: string;
