@@ -58,6 +58,7 @@ import _debounce from 'lodash/debounce';
 
     botState = {
       ...initialState,
+      local: false,
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
       updateState: function(fieldName, value) {
