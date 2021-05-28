@@ -1015,8 +1015,8 @@ import _debounce from 'lodash/debounce';
           botState.status === 'buy' &&
           indicatorsData.obv5m.signal === 'buy' &&
           indicatorsData.obv1m.signal === 'buy',
-          // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
-          // indicatorsData.stochRsi.stoch5m.signal === 'buy',
+        // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
+        // indicatorsData.stochRsi.stoch5m.signal === 'buy',
 
         // indicatorsData.obv1m.signal === 'buy',
         // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
@@ -1063,7 +1063,9 @@ import _debounce from 'lodash/debounce';
 
         sell: {
           takeProfit:
-            botState.status === 'sell' && botState.minAvailableProfit <= -0.02,
+            botState.status === 'sell' &&
+            indicatorsData.obv1m.sellSignalCount >= 2 &&
+            expectedProfitPercent < 0,
           // (indicatorsData.obv5m.signal === 'sell' ||
           // (botState.profitDiff === 0 &&
           //     indicatorsData.obv1m.sellSignalCount >= 4) ||
