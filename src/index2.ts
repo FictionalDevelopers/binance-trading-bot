@@ -2034,7 +2034,7 @@ import _debounce from 'lodash/debounce';
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
-  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
+  getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
 
   /** *************************DATA LOGGER********************************/
 
@@ -2065,6 +2065,7 @@ import _debounce from 'lodash/debounce';
       );
       console.log('OBV 5m Val: ' + indicatorsData.obv5m.prevObv);
       console.log('OBV 5m Diff: ' + indicatorsData.obv5m.obvDiff + ' %');
+      console.log('ROC diff: ' + indicatorsData.roc.roc5m.diff);
       // console.log('OBV 1m: ' + indicatorsData.obv1m.signal);
       // console.log('ROC 5m: ' + indicatorsData.roc.roc5m.signal);
       // console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
