@@ -1128,7 +1128,9 @@ import _debounce from 'lodash/debounce';
         // indicatorsData.scalper.tradesVolume.buySignalCount >= 1,
 
         sell: {
-          takeProfit: null,
+          takeProfit:
+            botState.status === 'sell' &&
+            indicatorsData.roc.roc1m.signal === 'sell',
           // (indicatorsData.obv5m.signal === 'sell' ||
           // (botState.profitDiff === 0 &&
           //     indicatorsData.obv1m.sellSignalCount >= 4) ||
@@ -1571,7 +1573,7 @@ import _debounce from 'lodash/debounce';
           stepSize,
           'TRENDS CATCHER',
           workingDeposit,
-          'STRATEGY 2',
+          'STRATEGY 1 (take prof)',
           indicatorsData,
         );
         botState.buyReason = 'scalper';
@@ -1846,7 +1848,7 @@ import _debounce from 'lodash/debounce';
         pricesStream,
         stepSize,
         initialUSDTBalance,
-        'STRATEGY 2',
+        'STRATEGY 1(take prof)',
         indicatorsData,
       );
       return;
@@ -1913,7 +1915,7 @@ import _debounce from 'lodash/debounce';
     await sendToRecipients(`INIT (TEST MODE LOCAL)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
-  Strategies: STRATEGY 2
+  Strategies: STRATEGY 1(take prof)
   Status: ${botState.status.toUpperCase()}
   Symbol: ${symbol.toUpperCase()}
   `);
@@ -2034,7 +2036,7 @@ import _debounce from 'lodash/debounce';
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
-  getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
+  getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 4);
 
   /** *************************DATA LOGGER********************************/
 
@@ -2065,7 +2067,7 @@ import _debounce from 'lodash/debounce';
       );
       console.log('OBV 5m Val: ' + indicatorsData.obv5m.prevObv);
       console.log('OBV 5m Diff: ' + indicatorsData.obv5m.obvDiff + ' %');
-      console.log('ROC diff: ' + indicatorsData.roc.roc5m.diff);
+      console.log('ROC diff: ' + indicatorsData.roc.roc1m.diff);
       // console.log('OBV 1m: ' + indicatorsData.obv1m.signal);
       // console.log('ROC 5m: ' + indicatorsData.roc.roc5m.signal);
       // console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);

@@ -1014,9 +1014,9 @@ import _debounce from 'lodash/debounce';
         buy:
           botState.status === 'buy' &&
           indicatorsData.obv5m.signal === 'buy' &&
-          indicatorsData.obv1m.signal === 'buy' &&
-          indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
-          indicatorsData.stochRsi.stoch5m.signal === 'buy',
+          indicatorsData.obv1m.signal === 'buy',
+        // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
+        // indicatorsData.stochRsi.stoch5m.signal === 'buy',
 
         // indicatorsData.obv1m.signal === 'buy',
         // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
@@ -1062,8 +1062,8 @@ import _debounce from 'lodash/debounce';
         // indicatorsData.scalper.tradesVolume.buySignalCount >= 1,
 
         sell: {
-          takeProfit:
-            botState.status === 'sell' && expectedProfitPercent < -0.3,
+          takeProfit: null,
+
           // (indicatorsData.obv5m.signal === 'sell' ||
           // (botState.profitDiff === 0 &&
           //     indicatorsData.obv1m.sellSignalCount >= 4) ||
@@ -1077,9 +1077,8 @@ import _debounce from 'lodash/debounce';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            ((indicatorsData.obv5m.signal === 'sell' &&
-              indicatorsData.obv1m.signal === 'sell') ||
-              indicatorsData.stochRsi.stoch1m.signal === 'sell'),
+            indicatorsData.obv5m.signal === 'sell' &&
+            indicatorsData.obv1m.signal === 'sell',
 
           // indicatorsData.obv1m.signal === 'sell',
 
@@ -1936,24 +1935,24 @@ import _debounce from 'lodash/debounce';
 
   /** *******************************INDICATORS SECTION**************************************/
 
-  getStochRSISignal(
-    symbol,
-    '1m',
-    indicatorsData.stochRsi.stoch1m,
-    1.5,
-    1.5,
-    2,
-    2,
-  );
-  getStochRSISignal(
-    symbol,
-    '5m',
-    indicatorsData.stochRsi.stoch5m,
-    1.5,
-    1.5,
-    2,
-    2,
-  );
+  // getStochRSISignal(
+  //   symbol,
+  //   '1m',
+  //   indicatorsData.stochRsi.stoch1m,
+  //   1.5,
+  //   1.5,
+  //   2,
+  //   2,
+  // );
+  // getStochRSISignal(
+  //   symbol,
+  //   '5m',
+  //   indicatorsData.stochRsi.stoch5m,
+  //   1.5,
+  //   1.5,
+  //   2,
+  //   2,
+  // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
