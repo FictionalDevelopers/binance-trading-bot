@@ -61,6 +61,7 @@ import _debounce from 'lodash/debounce';
       local: false,
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
+      strategy: 'Strategy 2 (stop loss only)',
       updateState: function(fieldName, value) {
         this[`${fieldName}`] = value;
       },
@@ -2036,7 +2037,7 @@ import _debounce from 'lodash/debounce';
       if (
         indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount >= 20
       )
-        await sendToRecipients(`WARNING !!!
+        await sendToRecipients(`WARNING !!! ${botState.strategy}
         Prices stream is DEAD!!! Restart bot immediately!
   `);
     }, 500);

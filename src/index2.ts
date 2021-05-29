@@ -93,32 +93,7 @@ import _debounce from 'lodash/debounce';
     enabledLimits: false,
     sellError: false,
     emaStartPoint: null,
-    strategy: 'MIXED STRATEGY',
-    testMode: true,
-    useProfitLevels: false,
-    useEMAStopLoss: false,
-    status: 'buy',
-    // status: 'buy',
-    profitLevels: {
-      '1': {
-        id: 1,
-        profitPercent: 1,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-      '2': {
-        id: 2,
-        profitPercent: 2,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-      '3': {
-        id: 3,
-        profitPercent: 4,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-    },
+    strategy: 'Strategy 1(take profit)',
     currentProfit: null,
     totalProfit: null,
     totalPercentProfit: null,
@@ -2101,7 +2076,7 @@ import _debounce from 'lodash/debounce';
       if (
         indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount >= 20
       )
-        await sendToRecipients(`WARNING !!!
+        await sendToRecipients(`WARNING !!! ${botState.strategy}
         Prices stream is DEAD!!! Restart bot immediately!
   `);
     }, 500);
