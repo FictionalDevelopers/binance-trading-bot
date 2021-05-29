@@ -1016,8 +1016,8 @@ import _debounce from 'lodash/debounce';
           botState.status === 'buy' &&
           indicatorsData.obv5m.signal === 'buy' &&
           indicatorsData.obv1m.signal === 'buy' &&
-          indicatorsData.roc.roc5m.value > 0 &&
-          indicatorsData.roc.roc1m.value > 0,
+          indicatorsData.roc.roc5m.prevValue > 0 &&
+          indicatorsData.roc.roc1m.prevValue > 0,
         // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
         // indicatorsData.stochRsi.stoch5m.signal === 'buy',
 
