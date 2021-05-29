@@ -1015,7 +1015,9 @@ import _debounce from 'lodash/debounce';
         buy:
           botState.status === 'buy' &&
           indicatorsData.obv5m.signal === 'buy' &&
-          indicatorsData.obv1m.signal === 'buy',
+          indicatorsData.obv1m.signal === 'buy' &&
+          indicatorsData.roc.roc5m.value > 0 &&
+          indicatorsData.roc.roc1m.value > 0,
         // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
         // indicatorsData.stochRsi.stoch5m.signal === 'buy',
 
@@ -1969,6 +1971,9 @@ import _debounce from 'lodash/debounce';
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
+  getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
+  getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 4);
+
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
 

@@ -93,7 +93,32 @@ import _debounce from 'lodash/debounce';
     enabledLimits: false,
     sellError: false,
     emaStartPoint: null,
-    strategy: 'Strategy 1(take profit)',
+    strategy: 'Strategy 1(take prof)',
+    testMode: true,
+    useProfitLevels: false,
+    useEMAStopLoss: false,
+    status: 'buy',
+    // status: 'buy',
+    profitLevels: {
+      '1': {
+        id: 1,
+        profitPercent: 1,
+        amountPercent: 0.5,
+        isFilled: false,
+      },
+      '2': {
+        id: 2,
+        profitPercent: 2,
+        amountPercent: 0.5,
+        isFilled: false,
+      },
+      '3': {
+        id: 3,
+        profitPercent: 4,
+        amountPercent: 0.5,
+        isFilled: false,
+      },
+    },
     currentProfit: null,
     totalProfit: null,
     totalPercentProfit: null,
@@ -1105,7 +1130,9 @@ import _debounce from 'lodash/debounce';
         sell: {
           takeProfit:
             botState.status === 'sell' &&
-            indicatorsData.roc.roc1m.signal === 'sell',
+            expectedProfitPercent < 0 &&
+            indicatorsData.obv1m.sellSignalCount >= 3,
+          // indicatorsData.roc.roc1m.signal === 'sell',
           // (indicatorsData.obv5m.signal === 'sell' ||
           // (botState.profitDiff === 0 &&
           //     indicatorsData.obv1m.sellSignalCount >= 4) ||
@@ -1119,8 +1146,9 @@ import _debounce from 'lodash/debounce';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.obv5m.signal === 'sell' &&
-            indicatorsData.obv1m.signal === 'sell',
+            ((indicatorsData.obv5m.signal === 'sell' &&
+              indicatorsData.obv1m.signal === 'sell') ||
+              expectedProfitPercent >= 0.3),
 
           // indicatorsData.obv1m.signal === 'sell',
 
@@ -1797,7 +1825,7 @@ import _debounce from 'lodash/debounce';
       !botState.strategies.scalper.stopLoss
     ) {
       await marketSellAction(
-        'trendsCatcher',
+        'scalper',
         false,
         symbol,
         botState,
@@ -1814,7 +1842,7 @@ import _debounce from 'lodash/debounce';
     }
     if (conditions.scalper.sell.stopLoss) {
       await marketSellAction(
-        'trendsCatcher',
+        'scalper',
         false,
         symbol,
         botState,
@@ -2008,10 +2036,10 @@ import _debounce from 'lodash/debounce';
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 2);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
-  getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 4);
+  // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 4);
 
   /** *************************DATA LOGGER********************************/
 
