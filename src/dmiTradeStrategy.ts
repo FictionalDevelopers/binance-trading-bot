@@ -1015,7 +1015,6 @@ import _debounce from 'lodash/debounce';
         buy:
           botState.status === 'buy' &&
           indicatorsData.obv5m.signal === 'buy' &&
-          indicatorsData.obv1m.signal === 'buy' &&
           // indicatorsData.roc.roc5m.prevValue > 0 &&
           indicatorsData.roc.roc1m.prevValue > 0,
         // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
@@ -1065,14 +1064,13 @@ import _debounce from 'lodash/debounce';
         // indicatorsData.scalper.tradesVolume.buySignalCount >= 1,
 
         sell: {
-          takeProfit:
-            botState.status === 'sell' &&
-            ((botState.profitDiff === 0 &&
-              indicatorsData.obv1m.sellSignalCount >= 2) ||
-              (botState.profitDiff >= 1.1 &&
-                indicatorsData.obv1m.sellSignalCount >= 2) ||
-              (botState.profitDiff < 0 &&
-                indicatorsData.obv1m.sellSignalCount >= 2)),
+          takeProfit: null,
+          // ((botState.profitDiff === 0 &&
+          //   indicatorsData.obv1m.sellSignalCount >= 4) ||
+          //   (botState.profitDiff >= 1.1 &&
+          //     indicatorsData.obv1m.sellSignalCount >= 4) ||
+          //   (botState.profitDiff < 0 &&
+          //     indicatorsData.obv1m.sellSignalCount >= 4)),
 
           // botState.status === 'sell' &&
           // expectedProfitPercent > 0.2 &&
@@ -1968,8 +1966,8 @@ import _debounce from 'lodash/debounce';
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
   getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 4);
 

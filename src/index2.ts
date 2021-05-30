@@ -2038,6 +2038,7 @@ import _debounce from 'lodash/debounce';
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 2);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
+  getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
   getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
 
@@ -2093,7 +2094,9 @@ import _debounce from 'lodash/debounce';
       );
       console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
       console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
-      console.log('Roc:' + indicatorsData.roc.roc5m.value);
+      console.log('Roc:' + indicatorsData.roc.roc5m.prevValue);
+      console.log('Roc Diff:' + indicatorsData.roc.roc5m.diff);
+      console.log('EFI: ' + indicatorsData.efi5m.efi);
       botState.status === 'sell'
         ? console.log('Profit: ' + Number(botState.currentProfit - 0.2) + ' %')
         : console.log('Not in the deal');

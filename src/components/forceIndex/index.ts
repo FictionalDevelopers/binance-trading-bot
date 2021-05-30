@@ -44,16 +44,6 @@ export const getForceIndexSignal = (symbol, timeFrame, period, efiData) => {
     interval: timeFrame,
     period: period,
   }).subscribe(forceIndex => {
-    if (forceIndex) {
-      if (!efiData.efi) {
-        efiData.efi = forceIndex;
-        return;
-      }
-      efiData.efi = forceIndex;
-      // console.log(
-      //   (indicatorsData.efi.efi / indicatorsData.efi.prevEfi) * 100 - 100,
-      // );
-      // console.log(forceIndex);
-    }
+    efiData.efi = forceIndex;
   });
 };
