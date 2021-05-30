@@ -1085,12 +1085,11 @@ import _debounce from 'lodash/debounce';
 
     const conditions = {
       scalper: {
-        buy: null,
-        // botState.status === 'buy' &&
-        // indicatorsData.obv5m.signal === 'buy' &&
-        // indicatorsData.obv1m.signal === 'buy',
-
-        // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
+        buy:
+          botState.status === 'buy' &&
+          // indicatorsData.obv5m.signal === 'buy' &&
+          indicatorsData.obv1m.signal === 'buy' &&
+          indicatorsData.stochRsi.stoch1m.signal === 'buy',
         // indicatorsData.stochRsi.stoch5m.signal === 'buy',
 
         // indicatorsData.obv1m.signal === 'buy',
@@ -1152,7 +1151,7 @@ import _debounce from 'lodash/debounce';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.obv5m.signal === 'sell' &&
+            // indicatorsData.obv5m.signal === 'sell' &&
             indicatorsData.obv1m.signal === 'sell',
 
           // indicatorsData.obv1m.signal === 'sell',
@@ -2010,15 +2009,15 @@ import _debounce from 'lodash/debounce';
 
   /** *******************************INDICATORS SECTION**************************************/
 
-  // getStochRSISignal(
-  //   symbol,
-  //   '1m',
-  //   indicatorsData.stochRsi.stoch1m,
-  //   1.5,
-  //   1.5,
-  //   2,
-  //   2,
-  // );
+  getStochRSISignal(
+    symbol,
+    '1m',
+    indicatorsData.stochRsi.stoch1m,
+    1.5,
+    1.5,
+    2,
+    2,
+  );
   // getStochRSISignal(
   //   symbol,
   //   '5m',
@@ -2041,10 +2040,10 @@ import _debounce from 'lodash/debounce';
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
