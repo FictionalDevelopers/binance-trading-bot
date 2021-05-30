@@ -156,6 +156,14 @@ import _debounce from 'lodash/debounce';
     obvBuySignalCount: 0,
     obvSellSignalCount: 0,
     prevObv: null,
+    obv1h: {
+      signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+      obv: null,
+      prevObv: null,
+      obvDiff: null,
+    },
     obv5m: {
       signal: null,
       buySignalCount: 0,
@@ -1012,7 +1020,12 @@ import _debounce from 'lodash/debounce';
 
     const conditions = {
       scalper: {
-        buy: botState.status === 'buy' && indicatorsData.obv5m.signal === 'buy',
+        buy:
+          botState.status === 'buy' &&
+          indicatorsData.obv1h.signal === 'buy' &&
+          indicatorsData.obv15m.signal === 'buy' &&
+          indicatorsData.obv5m.signal === 'buy' &&
+          indicatorsData.obv1m.signal === 'buy',
         // indicatorsData.roc.roc5m.prevValue > 0 &&
         // indicatorsData.roc.roc1m.prevValue > 0,
         // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
@@ -1075,8 +1088,10 @@ import _debounce from 'lodash/debounce';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.obv5m.signal === 'sell',
-          // indicatorsData.obv1m.signal === 'sell',
+            indicatorsData.obv1h.signal === 'sell' &&
+            indicatorsData.obv15m.signal === 'sell' &&
+            indicatorsData.obv5m.signal === 'sell' &&
+            indicatorsData.obv1m.signal === 'sell',
 
           // indicatorsData.obv1m.signal === 'sell',
 
@@ -1924,12 +1939,12 @@ import _debounce from 'lodash/debounce';
   //     indicatorsData.emaAv = currentEmaAv;
   //   });
 
-  // getTradeStream({
-  //   symbol: symbol,
-  //   resource: RESOURCES.TRADE,
-  // })
-  //   .pipe(pluck('price'), bufferCount(1, 1))
-  //   .subscribe(scalper);
+  getTradeStream({
+    symbol: symbol,
+    resource: RESOURCES.TRADE,
+  })
+    .pipe(pluck('price'), bufferCount(1, 1))
+    .subscribe(scalper);
 
   /** *******************************INDICATORS SECTION**************************************/
 
@@ -1964,6 +1979,11 @@ import _debounce from 'lodash/debounce';
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
+
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
@@ -1974,74 +1994,74 @@ import _debounce from 'lodash/debounce';
 
   /** *************************DATA LOGGER********************************/
 
-  // (() => {
-  //   setInterval(async () => {
-  //     console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
-  //     console.log(
-  //       'OBV 5m: ' +
-  //         indicatorsData.obv5m.signal +
-  //         ' ' +
-  //         '(Buy Count: ' +
-  //         indicatorsData.obv5m.buySignalCount +
-  //         ' ' +
-  //         'Sell Count: ' +
-  //         indicatorsData.obv5m.sellSignalCount +
-  //         ')',
-  //     );
-  //     console.log(
-  //       'OBV 1m: ' +
-  //         indicatorsData.obv1m.signal +
-  //         ' ' +
-  //         '(Buy Count: ' +
-  //         indicatorsData.obv1m.buySignalCount +
-  //         ' ' +
-  //         'Sell Count: ' +
-  //         indicatorsData.obv1m.sellSignalCount +
-  //         ')',
-  //     );
-  //     console.log('OBV 5m Val: ' + indicatorsData.obv5m.prevObv);
-  //     console.log('OBV 5m Diff: ' + indicatorsData.obv5m.obvDiff + ' %');
-  //     // console.log('OBV 1m: ' + indicatorsData.obv1m.signal);
-  //     // console.log('ROC 5m: ' + indicatorsData.roc.roc5m.signal);
-  //     // console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
-  //     // console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
-  //     // console.log(
-  //     //   'ADX 5m: ' +
-  //     //     indicatorsData.dmi5m.adxDiff +
-  //     //     ' ' +
-  //     //     indicatorsData.dmi5m.adxDirection +
-  //     //     ' ' +
-  //     //     (indicatorsData.dmi5m.adxUpCount
-  //     //       ? indicatorsData.dmi5m.adxUpCount
-  //     //       : indicatorsData.dmi5m.adxDownCount),
-  //     // );
-  //     console.log(
-  //       'Max av profit: ' + Number(botState.maxAvailableProfit - 0.2) + ' %',
-  //     );
-  //     console.log(
-  //       'Min av profit: ' + Number(botState.minAvailableProfit - 0.2) + ' %',
-  //     );
-  //     console.log(
-  //       'Profit diff: ' +
-  //         Number(botState.maxAvailableProfit) / Number(botState.currentProfit),
-  //     );
-  //     console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
-  //     console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
-  //     botState.status === 'sell'
-  //       ? console.log('Profit: ' + Number(botState.currentProfit - 0.2) + ' %')
-  //       : console.log('Not in the deal');
-  //     console.log('\n');
-  //     // console.log('OBV 1m: ' + indicatorsData.obv1m.obvDiff);
-  //     botState.updateState('isPricesStreamAlive', false);
-  //     indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount++;
-  //     if (
-  //       indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount >= 20
-  //     )
-  //       await sendToRecipients(`WARNING !!! ${botState.strategy}
-  //       Prices stream is DEAD!!! Restart bot immediately!
-  // `);
-  //   }, 500);
-  // })();
+  (() => {
+    setInterval(async () => {
+      console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
+      console.log(
+        'OBV 5m: ' +
+          indicatorsData.obv5m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv5m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv5m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 1m: ' +
+          indicatorsData.obv1m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv1m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv1m.sellSignalCount +
+          ')',
+      );
+      console.log('OBV 5m Val: ' + indicatorsData.obv5m.prevObv);
+      console.log('OBV 5m Diff: ' + indicatorsData.obv5m.obvDiff + ' %');
+      // console.log('OBV 1m: ' + indicatorsData.obv1m.signal);
+      // console.log('ROC 5m: ' + indicatorsData.roc.roc5m.signal);
+      // console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
+      // console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
+      // console.log(
+      //   'ADX 5m: ' +
+      //     indicatorsData.dmi5m.adxDiff +
+      //     ' ' +
+      //     indicatorsData.dmi5m.adxDirection +
+      //     ' ' +
+      //     (indicatorsData.dmi5m.adxUpCount
+      //       ? indicatorsData.dmi5m.adxUpCount
+      //       : indicatorsData.dmi5m.adxDownCount),
+      // );
+      console.log(
+        'Max av profit: ' + Number(botState.maxAvailableProfit - 0.2) + ' %',
+      );
+      console.log(
+        'Min av profit: ' + Number(botState.minAvailableProfit - 0.2) + ' %',
+      );
+      console.log(
+        'Profit diff: ' +
+          Number(botState.maxAvailableProfit) / Number(botState.currentProfit),
+      );
+      console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
+      console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
+      botState.status === 'sell'
+        ? console.log('Profit: ' + Number(botState.currentProfit - 0.2) + ' %')
+        : console.log('Not in the deal');
+      console.log('\n');
+      // console.log('OBV 1m: ' + indicatorsData.obv1m.obvDiff);
+      botState.updateState('isPricesStreamAlive', false);
+      indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount++;
+      if (
+        indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount >= 20
+      )
+        await sendToRecipients(`WARNING !!! ${botState.strategy}
+        Prices stream is DEAD!!! Restart bot immediately!
+  `);
+    }, 500);
+  })();
 
   /************************************************************************/
 
