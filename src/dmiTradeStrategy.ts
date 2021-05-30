@@ -1005,10 +1005,10 @@ import _debounce from 'lodash/debounce';
       botState.updateState('maxAvailableProfit', expectedProfitPercent);
     if (expectedProfitPercent < botState.minAvailableProfit)
       botState.updateState('minAvailableProfit', expectedProfitPercent);
-    botState.updateState(
-      'profitDiff',
-      Number(botState.maxAvailableProfit) / Number(botState.currentProfit),
-    );
+    // botState.updateState(
+    //   'profitDiff',
+    //   Number(botState.maxAvailableProfit) / Number(botState.currentProfit),
+    // );
 
     const conditions = {
       scalper: {
