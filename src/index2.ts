@@ -223,6 +223,14 @@ import _debounce from 'lodash/debounce';
     obvBuySignalCount: 0,
     obvSellSignalCount: 0,
     prevObv: null,
+    obv1h: {
+      signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+      obv: null,
+      prevObv: null,
+      obvDiff: null,
+    },
     obv5m: {
       signal: null,
       buySignalCount: 0,
@@ -1077,10 +1085,11 @@ import _debounce from 'lodash/debounce';
 
     const conditions = {
       scalper: {
-        buy:
-          botState.status === 'buy' &&
-          indicatorsData.obv5m.signal === 'buy' &&
-          indicatorsData.obv1m.signal === 'buy',
+        buy: null,
+        // botState.status === 'buy' &&
+        // indicatorsData.obv5m.signal === 'buy' &&
+        // indicatorsData.obv1m.signal === 'buy',
+
         // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
         // indicatorsData.stochRsi.stoch5m.signal === 'buy',
 
@@ -1128,10 +1137,7 @@ import _debounce from 'lodash/debounce';
         // indicatorsData.scalper.tradesVolume.buySignalCount >= 1,
 
         sell: {
-          takeProfit:
-            botState.status === 'sell' &&
-            expectedProfitPercent < 0 &&
-            indicatorsData.obv1m.sellSignalCount >= 3,
+          takeProfit: null,
           // indicatorsData.roc.roc1m.signal === 'sell',
           // (indicatorsData.obv5m.signal === 'sell' ||
           // (botState.profitDiff === 0 &&
@@ -1146,9 +1152,8 @@ import _debounce from 'lodash/debounce';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            ((indicatorsData.obv5m.signal === 'sell' &&
-              indicatorsData.obv1m.signal === 'sell') ||
-              expectedProfitPercent >= 0.3),
+            indicatorsData.obv5m.signal === 'sell' &&
+            indicatorsData.obv1m.signal === 'sell',
 
           // indicatorsData.obv1m.signal === 'sell',
 
@@ -2036,17 +2041,42 @@ import _debounce from 'lodash/debounce';
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 2);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
-  getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
+  // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
-  getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
+  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
 
   /** *************************DATA LOGGER********************************/
 
   (() => {
     setInterval(async () => {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
+      console.log(
+        'OBV 1h: ' +
+          indicatorsData.obv1h.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv1h.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv1h.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 15m: ' +
+          indicatorsData.obv15m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv15m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv15m.sellSignalCount +
+          ')',
+      );
+
       console.log(
         'OBV 5m: ' +
           indicatorsData.obv5m.signal +

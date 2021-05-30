@@ -1924,12 +1924,12 @@ import _debounce from 'lodash/debounce';
   //     indicatorsData.emaAv = currentEmaAv;
   //   });
 
-  getTradeStream({
-    symbol: symbol,
-    resource: RESOURCES.TRADE,
-  })
-    .pipe(pluck('price'), bufferCount(1, 1))
-    .subscribe(scalper);
+  // getTradeStream({
+  //   symbol: symbol,
+  //   resource: RESOURCES.TRADE,
+  // })
+  //   .pipe(pluck('price'), bufferCount(1, 1))
+  //   .subscribe(scalper);
 
   /** *******************************INDICATORS SECTION**************************************/
 
@@ -1964,7 +1964,7 @@ import _debounce from 'lodash/debounce';
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
   // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 4);
