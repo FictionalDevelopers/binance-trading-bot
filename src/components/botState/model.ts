@@ -177,7 +177,7 @@ const schema = new Schema({
   },
   profitDiff: {
     type: Number,
-    default: null,
+    default: 0,
   },
   isPricesStreamAlive: {
     type: Boolean,
