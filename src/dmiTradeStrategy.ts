@@ -1991,8 +1991,8 @@ import _debounce from 'lodash/debounce';
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 2);
-  getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
+  getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 2, 2);
 
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
