@@ -1087,6 +1087,7 @@ import _debounce from 'lodash/debounce';
       scalper: {
         buy:
           botState.status === 'buy' &&
+          indicatorsData.roc.roc1m.signal === 'buy' &&
           // indicatorsData.obv5m.signal === 'buy' &&
           indicatorsData.obv1m.signal === 'buy' &&
           indicatorsData.stochRsi.stoch1m.signal === 'buy',
@@ -1137,6 +1138,7 @@ import _debounce from 'lodash/debounce';
 
         sell: {
           takeProfit: null,
+          // botState.status === 'sell' &&
           // indicatorsData.roc.roc1m.signal === 'sell',
           // (indicatorsData.obv5m.signal === 'sell' ||
           // (botState.profitDiff === 0 &&
@@ -1152,7 +1154,8 @@ import _debounce from 'lodash/debounce';
           stopLoss:
             botState.status === 'sell' &&
             // indicatorsData.obv5m.signal === 'sell' &&
-            indicatorsData.obv1m.signal === 'sell',
+            indicatorsData.obv1m.buySignalCount === 0 &&
+            indicatorsData.roc.roc1m.signal === 'sell',
 
           // indicatorsData.obv1m.signal === 'sell',
 
@@ -2043,10 +2046,10 @@ import _debounce from 'lodash/debounce';
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
+  getObvSignal(symbol, '5m', indicatorsData.obv1m, 4, 2);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
-  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
+  getRocSignal(symbol, '5m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
 
   /** *************************DATA LOGGER********************************/
 
@@ -2123,8 +2126,14 @@ import _debounce from 'lodash/debounce';
       );
       console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
       console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
-      console.log('Roc:' + indicatorsData.roc.roc5m.prevValue);
-      console.log('Roc Diff:' + indicatorsData.roc.roc5m.diff);
+      console.log(
+        'Roc:' +
+          indicatorsData.roc.roc1m.signal +
+          ' Buy Count: ' +
+          indicatorsData.roc.roc1m.buySignalCount +
+          ' Sell Count: ' +
+          indicatorsData.roc.roc1m.sellSignalCount,
+      );
       console.log('EFI: ' + indicatorsData.efi5m.efi);
       botState.status === 'sell'
         ? console.log('Profit: ' + Number(botState.currentProfit - 0.2) + ' %')
