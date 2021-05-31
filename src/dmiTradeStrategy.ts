@@ -1033,9 +1033,10 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
         buy:
           botState.status === 'buy' &&
           indicatorsData.haCandle.signal === 'buy' &&
-          indicatorsData.obv5m.signal === 'buy',
-
-        // indicatorsData.roc.roc5m.signal === 'buy' &&
+          indicatorsData.obv5m.signal === 'buy' &&
+          indicatorsData.rsi5m.rsiValue > 40 &&
+          indicatorsData.rsi1m.rsiValue > 40 &&
+          indicatorsData.roc.roc5m.signal === 'buy',
         // indicatorsData.obv5m.signal === 'buy' &&
         // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
         // indicatorsData.rsi5m.rsiValue > 40 &&
@@ -1995,6 +1996,9 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 2, 2);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
@@ -2002,8 +2006,6 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getRSISignal(symbol, '1h', indicatorsData.rsi1h);
-  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
@@ -2018,7 +2020,6 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 4);
 
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
-  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
 
   /** *************************DATA LOGGER********************************/
 
