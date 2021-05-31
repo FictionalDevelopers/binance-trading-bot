@@ -1094,7 +1094,7 @@ import _debounce from 'lodash/debounce';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.obv5m.buySignalCount === 0 &&
+            indicatorsData.obv5m.signal === 'sell' &&
             indicatorsData.roc.roc5m.signal === 'sell',
 
           // botState.status === 'sell' &&
