@@ -12,7 +12,7 @@ type HeikinAshiStreamConfig = {
 
 export const getHeikinAshiStream = (
   config: HeikinAshiStreamConfig,
-): Observable<CandleList> =>
+): Observable<object> =>
   getCandleStreamForInterval(config.symbol, config.interval).pipe(
     switchMap(_ => from(getCandlesList(config))),
     map(
