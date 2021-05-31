@@ -34,6 +34,7 @@ import { getRocStream } from './indicators/roc';
 import { getDMISignal } from './components/dmi-signals';
 import _throttle from 'lodash/throttle';
 import _debounce from 'lodash/debounce';
+import { getHeikinAshiSignal } from './indicators/heikinAshi';
 // import { indicatorsData } from './index2';
 
 (async function() {
@@ -75,6 +76,15 @@ import _debounce from 'lodash/debounce';
   }
 
   const indicatorsData = {
+    haCandle: {
+      open: null,
+      close: null,
+      high: null,
+      low: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+      signal: null,
+    },
     maxAvailableProfit: 0,
     totalMaxAvailableProfit: 0,
     isPricesStreamAliveNegativeSignalConfirmationCount: 0,
@@ -1022,11 +1032,14 @@ import _debounce from 'lodash/debounce';
       scalper: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.roc.roc5m.signal === 'buy' &&
-          indicatorsData.obv5m.signal === 'buy' &&
-          indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
-          indicatorsData.rsi5m.rsiValue > 40 &&
-          indicatorsData.rsi1m.rsiValue > 40,
+          indicatorsData.haCandle.signal === 'buy' &&
+          indicatorsData.obv5m.signal === 'buy',
+
+        // indicatorsData.roc.roc5m.signal === 'buy' &&
+        // indicatorsData.obv5m.signal === 'buy' &&
+        // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
+        // indicatorsData.rsi5m.rsiValue > 40 &&
+        // indicatorsData.rsi1m.rsiValue > 40,
         // botState.status === 'buy' &&
         // indicatorsData.obv1h.signal === 'buy' &&
         // indicatorsData.obv15m.signal === 'buy' &&
@@ -1095,7 +1108,10 @@ import _debounce from 'lodash/debounce';
           stopLoss:
             botState.status === 'sell' &&
             indicatorsData.obv5m.signal === 'sell' &&
-            indicatorsData.roc.roc5m.signal === 'sell',
+            indicatorsData.haCandle.signal === 'sell',
+          //
+          // indicatorsData.obv5m.signal === 'sell' &&
+          // indicatorsData.roc.roc5m.signal === 'sell',
 
           // botState.status === 'sell' &&
           // indicatorsData.obv1h.signal === 'sell' &&
@@ -1958,15 +1974,15 @@ import _debounce from 'lodash/debounce';
 
   /** *******************************INDICATORS SECTION**************************************/
 
-  getStochRSISignal(
-    symbol,
-    '1m',
-    indicatorsData.stochRsi.stoch1m,
-    1.5,
-    1.5,
-    2,
-    2,
-  );
+  // getStochRSISignal(
+  //   symbol,
+  //   '1m',
+  //   indicatorsData.stochRsi.stoch1m,
+  //   1.5,
+  //   1.5,
+  //   2,
+  //   2,
+  // );
   // getStochRSISignal(
   //   symbol,
   //   '5m',
@@ -1977,6 +1993,8 @@ import _debounce from 'lodash/debounce';
   //   2,
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
+  getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
@@ -1984,15 +2002,14 @@ import _debounce from 'lodash/debounce';
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getRSISignal(symbol, '1h', indicatorsData.rsi1h);
-  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
-  getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 2, 2);
+  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 2, 2);
 
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);

@@ -8,6 +8,7 @@ import { sendToRecipients } from './services/telegram';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketSellAction, marketBuyAction, getOrdersList } from './api/order';
+
 import _maxBy from 'lodash/maxBy';
 import { binance } from './api/binance';
 
@@ -34,6 +35,7 @@ import { getRocStream } from './indicators/roc';
 import { getDMISignal } from './components/dmi-signals';
 import _throttle from 'lodash/throttle';
 import _debounce from 'lodash/debounce';
+import { getHeikinAshiSignal } from './indicators/heikinAshi';
 // import { indicatorsData } from './index2';
 
 (async function() {
@@ -142,6 +144,15 @@ import _debounce from 'lodash/debounce';
   };
 
   const indicatorsData = {
+    haCandle: {
+      open: null,
+      close: null,
+      high: null,
+      low: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+      signal: null,
+    },
     maxAvailableProfit: 0,
     totalMaxAvailableProfit: 0,
     isPricesStreamAliveNegativeSignalConfirmationCount: 0,
@@ -1087,10 +1098,11 @@ import _debounce from 'lodash/debounce';
       scalper: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.roc.roc1m.signal === 'buy' &&
-          // indicatorsData.obv5m.signal === 'buy' &&
-          indicatorsData.obv1m.signal === 'buy' &&
-          indicatorsData.stochRsi.stoch1m.signal === 'buy',
+          indicatorsData.haCandle.signal === 'buy' &&
+          indicatorsData.obv5m.signal === 'buy',
+        // indicatorsData.roc.roc1m.signal === 'buy' &&
+        // indicatorsData.obv5m.signal === 'buy' &&
+        // indicatorsData.stochRsi.stoch1m.signal === 'buy',
         // indicatorsData.stochRsi.stoch5m.signal === 'buy',
 
         // indicatorsData.obv1m.signal === 'buy',
@@ -1149,13 +1161,14 @@ import _debounce from 'lodash/debounce';
           //     indicatorsData.obv1m.sellSignalCount >= 4)),
 
           // botState.status === 'sell' &&
-          // expectedProfitPercent > 0.2 &&
+          // expectedProfitPercent > 0.2 &&ect
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            // indicatorsData.obv5m.signal === 'sell' &&
-            indicatorsData.obv1m.sellSignalCount >= 0 &&
-            indicatorsData.roc.roc1m.signal === 'sell',
+            indicatorsData.obv5m.signal === 'sell' &&
+            indicatorsData.haCandle.signal === 'sell',
+          // indicatorsData.obv1m.sellSignalCount >= 0 &&
+          // indicatorsData.roc.roc1m.signal === 'sell',
 
           // indicatorsData.obv1m.signal === 'sell',
 
@@ -2012,15 +2025,15 @@ import _debounce from 'lodash/debounce';
 
   /** *******************************INDICATORS SECTION**************************************/
 
-  getStochRSISignal(
-    symbol,
-    '1m',
-    indicatorsData.stochRsi.stoch1m,
-    1.5,
-    1.5,
-    2,
-    2,
-  );
+  // getStochRSISignal(
+  //   symbol,
+  //   '1m',
+  //   indicatorsData.stochRsi.stoch1m,
+  //   1.5,
+  //   1.5,
+  //   2,
+  //   2,
+  // );
   // getStochRSISignal(
   //   symbol,
   //   '5m',
@@ -2046,39 +2059,59 @@ import _debounce from 'lodash/debounce';
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
-  getObvSignal(symbol, '5m', indicatorsData.obv1m, 4, 2);
+  getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
-  getRocSignal(symbol, '5m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
+  // getRocSignal(symbol, '5m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
 
   /** *************************DATA LOGGER********************************/
 
   (() => {
     setInterval(async () => {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
+      // console.log(
+      //   'OBV 1h: ' +
+      //     indicatorsData.obv1h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1h.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 15m: ' +
+      //     indicatorsData.obv15m.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv15m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv15m.sellSignalCount +
+      //     ')',
+      // );
       console.log(
-        'OBV 1h: ' +
-          indicatorsData.obv1h.signal +
+        'Candle: ' +
+          // 'open: ' +
+          // indicatorsData.haCandle.open +
+          // 'close: ' +
+          // indicatorsData.haCandle.close +
+          // 'high: ' +
+          // indicatorsData.haCandle.high +
+          // 'low: ' +
+          // indicatorsData.haCandle.low +
+          // '\n' +
+          indicatorsData.haCandle.signal +
           ' ' +
           '(Buy Count: ' +
-          indicatorsData.obv1h.buySignalCount +
+          indicatorsData.haCandle.buySignalCount +
           ' ' +
           'Sell Count: ' +
-          indicatorsData.obv1h.sellSignalCount +
+          indicatorsData.haCandle.sellSignalCount +
           ')',
       );
-      console.log(
-        'OBV 15m: ' +
-          indicatorsData.obv15m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv15m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv15m.sellSignalCount +
-          ')',
-      );
-
       console.log(
         'OBV 5m: ' +
           indicatorsData.obv5m.signal +
@@ -2090,19 +2123,19 @@ import _debounce from 'lodash/debounce';
           indicatorsData.obv5m.sellSignalCount +
           ')',
       );
-      console.log(
-        'OBV 1m: ' +
-          indicatorsData.obv1m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1m.sellSignalCount +
-          ')',
-      );
-      console.log('OBV 5m Val: ' + indicatorsData.obv5m.prevObv);
-      console.log('OBV 5m Diff: ' + indicatorsData.obv5m.obvDiff + ' %');
+      // console.log(
+      //   'OBV 1m: ' +
+      //     indicatorsData.obv1m.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1m.sellSignalCount +
+      //     ')',
+      // );
+      // console.log('OBV 5m Val: ' + indicatorsData.obv5m.prevObv);
+      // console.log('OBV 5m Diff: ' + indicatorsData.obv5m.obvDiff + ' %');
       // console.log('OBV 1m: ' + indicatorsData.obv1m.signal);
       // console.log('ROC 5m: ' + indicatorsData.roc.roc5m.signal);
       // console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
@@ -2124,8 +2157,8 @@ import _debounce from 'lodash/debounce';
         'Profit diff: ' +
           Number(botState.maxAvailableProfit) / Number(botState.currentProfit),
       );
-      console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
-      console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
+      // console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
+      // console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
       console.log(
         'Roc:' +
           indicatorsData.roc.roc1m.signal +
@@ -2134,7 +2167,7 @@ import _debounce from 'lodash/debounce';
           ' Sell Count: ' +
           indicatorsData.roc.roc1m.sellSignalCount,
       );
-      console.log('EFI: ' + indicatorsData.efi5m.efi);
+      // console.log('EFI: ' + indicatorsData.efi5m.efi);
       botState.status === 'sell'
         ? console.log('Profit: ' + Number(botState.currentProfit - 0.2) + ' %')
         : console.log('Not in the deal');

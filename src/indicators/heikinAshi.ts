@@ -4,6 +4,7 @@ import { last } from 'lodash';
 import _map from 'lodash/map';
 import { map, pluck, switchMap } from 'rxjs/operators';
 import { getCandleStreamForInterval, getCandlesList } from '../api/candles';
+import { getForceIndexStream } from './forceIndex';
 
 type HeikinAshiStreamConfig = {
   symbol: string;
@@ -35,8 +36,35 @@ export const getHeikinAshiStream = (
     })),
   );
 
-(async function() {
-  await getHeikinAshiStream({ symbol: 'linkusdt', interval: '1m' }).subscribe(
-    data => console.log('data', data) || data,
-  );
-})();
+export const getHeikinAshiSignal = (
+  symbol,
+  interval,
+  buySignalCount,
+  sellSignalCount,
+  haData,
+) => {
+  getHeikinAshiStream({
+    symbol,
+    interval,
+  }).subscribe(haCandle => {
+    const { open, close, high, low } = haCandle;
+    haData.open = open;
+    haData.close = close;
+    haData.high = high;
+    haData.low = low;
+
+    if (close > open) {
+      haData.buySignalCount++;
+      haData.sellSignalCount = 0;
+    } else if (close < open) {
+      haData.sellSignalCount++;
+      haData.buySignalCount = 0;
+    } else if (open === close) {
+      haData.sellSignalCount = 0;
+      haData.buySignalCount = 0;
+      haData.signal = null;
+    }
+    if (haData.buySignalCount >= buySignalCount) haData.signal = 'buy';
+    else if (haData.sellSignalCount >= sellSignalCount) haData.signal = 'sell';
+  });
+};
