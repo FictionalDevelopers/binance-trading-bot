@@ -59,11 +59,8 @@ export const getHeikinAshiSignal = (
     } else if (close < open) {
       haData.sellSignalCount++;
       haData.buySignalCount = 0;
-    } else if (open === close) {
-      haData.sellSignalCount = 0;
-      haData.buySignalCount = 0;
-      haData.signal = null;
     }
+
     if (haData.buySignalCount >= buySignalCount) haData.signal = 'buy';
     else if (haData.sellSignalCount >= sellSignalCount) haData.signal = 'sell';
   });
