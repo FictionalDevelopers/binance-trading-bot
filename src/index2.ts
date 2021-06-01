@@ -1099,7 +1099,13 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
         buy:
           botState.status === 'buy' &&
           indicatorsData.haCandle.signal === 'buy' &&
-          indicatorsData.obv5m.signal === 'buy',
+          indicatorsData.obv5m.signal === 'buy' &&
+          indicatorsData.rsi5m.rsiValue > 40 &&
+          indicatorsData.rsi1m.rsiValue > 40 &&
+          indicatorsData.roc.roc5m.signal === 'buy',
+        // botState.status === 'buy' &&
+        // indicatorsData.haCandle.signal === 'buy' &&
+        // indicatorsData.obv5m.signal === 'buy',
         // indicatorsData.roc.roc1m.signal === 'buy' &&
         // indicatorsData.obv5m.signal === 'buy' &&
         // indicatorsData.stochRsi.stoch1m.signal === 'buy',
@@ -1165,8 +1171,13 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.obv5m.signal === 'sell' &&
-            indicatorsData.haCandle.signal === 'sell',
+            ((indicatorsData.obv5m.signal === 'sell' &&
+              indicatorsData.haCandle.signal === 'sell') ||
+              (indicatorsData.obv5m.buySignalCount === 0 &&
+                indicatorsData.roc.roc5m.signal === 'sell')),
+          // botState.status === 'sell' &&
+          // indicatorsData.obv5m.signal === 'sell' &&
+          // indicatorsData.haCandle.signal === 'sell',
           // indicatorsData.obv1m.sellSignalCount >= 0 &&
           // indicatorsData.roc.roc1m.signal === 'sell',
 
@@ -2045,8 +2056,15 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
 
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
+  getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle);
+  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
+
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
@@ -2059,8 +2077,8 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
-  getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
+  // getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
