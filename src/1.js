@@ -30,3 +30,5 @@
 //
 // recursiveAsyncReadLine();
 console.log(-0.5 / -0.2);
+console.log(-0.5 / -0.2);
+console.log(-0.5 / -0.2);
