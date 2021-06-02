@@ -212,6 +212,16 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
         prevAv: null,
         data: {},
       },
+      stoch30m: {
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        prev: null,
+        value: null,
+        signal: null,
+        av: null,
+        prevAv: null,
+        data: {},
+      },
       stoch5m: {
         buySignalCount: 0,
         sellSignalCount: 0,
@@ -1035,11 +1045,11 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           indicatorsData.haCandle.signal === 'buy' &&
           indicatorsData.obv5m.signal === 'buy' &&
           (indicatorsData.dmi5m.adxUpCount >= 2 ||
-            indicatorsData.dmi5m.adxDownCount >= 2),
+            indicatorsData.dmi5m.adxDownCount >= 2) &&
+          indicatorsData.stochRsi.stoch30m.signal === 'buy',
         // indicatorsData.rsi5m.rsiValue > 40 &&
         // indicatorsData.rsi1m.rsiValue > 40,
         // indicatorsData.roc.roc5m.signal === 'buy',
-        // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
         // indicatorsData.stochRsi.stoch5m.signal === 'buy',
         // indicatorsData.obv5m.signal === 'buy' &&
         // indicatorsData.rsi5m.rsiValue > 40 &&
@@ -1111,12 +1121,11 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            ((indicatorsData.obv5m.signal === 'sell' &&
-              indicatorsData.haCandle.signal === 'sell' &&
-              (indicatorsData.dmi5m.adxUpCount >= 2 ||
-                indicatorsData.dmi5m.adxDownCount >= 2)) ||
-              (indicatorsData.haCandle.signal === 'sell' &&
-                expectedProfitPercent < 0.2)),
+            indicatorsData.obv5m.signal === 'sell' &&
+            (indicatorsData.dmi5m.adxUpCount >= 2 ||
+              indicatorsData.dmi5m.adxDownCount >= 2),
+          // indicatorsData.obv5m.signal === 'sell' &&
+          // indicatorsData.haCandle.signal === 'sell' &&
           // (indicatorsData.dmi5m.adxUpCount >= 2 ||
           //   indicatorsData.dmi5m.adxDownCount >= 2) &&
           // (indicatorsData.obv5m.buySignalCount === 0 &&
@@ -1987,15 +1996,15 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
   /** *******************************INDICATORS SECTION**************************************/
 
-  // getStochRSISignal(
-  //   symbol,
-  //   '1m',
-  //   indicatorsData.stochRsi.stoch1m,
-  //   1.5,
-  //   1.5,
-  //   2,
-  //   2,
-  // );
+  getStochRSISignal(
+    symbol,
+    '30m',
+    indicatorsData.stochRsi.stoch30m,
+    1.5,
+    1.5,
+    2,
+    2,
+  );
   // getStochRSISignal(
   //   symbol,
   //   '5m',
