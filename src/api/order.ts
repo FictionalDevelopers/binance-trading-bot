@@ -177,6 +177,8 @@ export const marketSellAction = async (
         botState.dealsCount++;
         botState.maxAvailableProfit = 0;
         botState.minAvailableProfit = 0;
+        botState.avgDealPrice = 0;
+        botState.dealPricesArr = [];
         botState.confirmation = false;
         indicatorsData.obv5m.signal = null;
         indicatorsData.obv5m.buySignalCount = 0;
