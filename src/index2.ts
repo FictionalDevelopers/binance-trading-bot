@@ -8,7 +8,6 @@ import { sendToRecipients } from './services/telegram';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import { marketSellAction, marketBuyAction, getOrdersList } from './api/order';
-
 import _maxBy from 'lodash/maxBy';
 import { binance } from './api/binance';
 
@@ -52,96 +51,29 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   // const lastOrder = ordersList[ordersList.length - 1] || null;
   const workingDeposit = 400;
   // const symbol = process.argv[2];
-  // let botState;
-  //
-  // try {
-  //   const response = await botStateService.getBotState();
-  //   const initialState = JSON.parse(JSON.stringify(_head(response)));
-  //
-  //   botState = {
-  //     ...initialState,
-  //     availableUSDT: initialUSDTBalance,
-  //     availableCryptoCoin: initialCryptoCoinBalance,
-  //     updateState: function(fieldName, value) {
-  //       this[`${fieldName}`] = value;
-  //     },
-  //   };
-  // } catch (e) {
-  //   await sendToRecipients(`ERROR
-  //   ${JSON.stringify(e)};
-  // `);
-  //
-  //   process.exit(1);
-  // }
+  let botState;
 
-  const botState = {
-    maxAvailableProfit: 0,
-    totalMaxAvailableProfit: 0,
-    minAvailableProfit: 0,
-    totalMinAvailableProfit: 0,
-    profitDiff: 0,
-    isPricesStreamAlive: false,
-    local: true,
-    strategies: {
-      scalper: { enabled: true, stopLoss: false },
-      upTrend: { enabled: false, stopLoss: false },
-      downTrend: { enabled: false, stopLoss: false },
-      upFlat: { enabled: false, stopLoss: false },
-      downFlat: { enabled: false, stopLoss: false },
-      stochRsi: { enabled: false, stopLoss: false },
-      trendsCatcher: { enabled: false, stopLoss: false },
-    },
-    buyReason: null,
-    enabledLimits: false,
-    sellError: false,
-    emaStartPoint: null,
-    strategy: 'Strategy 1(take prof)',
-    testMode: true,
-    useProfitLevels: false,
-    useEMAStopLoss: false,
-    status: 'buy',
-    // status: 'buy',
-    profitLevels: {
-      '1': {
-        id: 1,
-        profitPercent: 1,
-        amountPercent: 0.5,
-        isFilled: false,
+  try {
+    const response = await botStateService.getBotState();
+    const initialState = JSON.parse(JSON.stringify(_head(response)));
+
+    botState = {
+      ...initialState,
+      local: false,
+      availableUSDT: initialUSDTBalance,
+      availableCryptoCoin: initialCryptoCoinBalance,
+      strategy: 'Strategy 1 (ADX 1)',
+      updateState: function(fieldName, value) {
+        this[`${fieldName}`] = value;
       },
-      '2': {
-        id: 2,
-        profitPercent: 2,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-      '3': {
-        id: 3,
-        profitPercent: 4,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-    },
-    currentProfit: null,
-    totalProfit: null,
-    totalPercentProfit: null,
-    tradeAmountPercent: 0.95,
-    availableUSDT: initialUSDTBalance,
-    availableCryptoCoin: initialCryptoCoinBalance,
-    cummulativeQuoteQty: null,
-    buyPrice: null,
-    lastBid: null,
-    currentPrice: null,
-    order: null,
-    avrDealProfit: null,
-    dealsCount: 1,
-    startTime: new Date().getTime(),
-    workDuration: null,
-    stopLoss: null,
-    prevPrice: null,
-    updateState: function(fieldName, value) {
-      this[`${fieldName}`] = value;
-    },
-  };
+    };
+  } catch (e) {
+    await sendToRecipients(`ERROR
+    ${JSON.stringify(e)};
+  `);
+
+    process.exit(1);
+  }
 
   const indicatorsData = {
     haCandle: {
@@ -1089,10 +1021,12 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
       : 0;
     if (expectedProfitPercent > botState.maxAvailableProfit)
       botState.updateState('maxAvailableProfit', expectedProfitPercent);
-    botState.updateState(
-      'profitDiff',
-      botState.maxAvailableProfit / expectedProfitPercent,
-    );
+    if (expectedProfitPercent < botState.minAvailableProfit)
+      botState.updateState('minAvailableProfit', expectedProfitPercent);
+    // botState.updateState(
+    //   'profitDiff',
+    //   Number(botState.maxAvailableProfit) / Number(botState.currentProfit),
+    // );
 
     const conditions = {
       scalper: {
@@ -1100,15 +1034,24 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           botState.status === 'buy' &&
           indicatorsData.haCandle.signal === 'buy' &&
           indicatorsData.obv5m.signal === 'buy' &&
-          indicatorsData.rsi5m.rsiValue > 40 &&
-          indicatorsData.rsi1m.rsiValue > 40 &&
-          indicatorsData.roc.roc5m.signal === 'buy',
-        // botState.status === 'buy' &&
-        // indicatorsData.haCandle.signal === 'buy' &&
-        // indicatorsData.obv5m.signal === 'buy',
-        // indicatorsData.roc.roc1m.signal === 'buy' &&
+          (indicatorsData.dmi5m.adxUpCount >= 2 ||
+            indicatorsData.dmi5m.adxDownCount >= 2),
+        // indicatorsData.rsi5m.rsiValue > 40 &&
+        // indicatorsData.rsi1m.rsiValue > 40,
+        // indicatorsData.roc.roc5m.signal === 'buy',
+        // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
+        // indicatorsData.stochRsi.stoch5m.signal === 'buy',
         // indicatorsData.obv5m.signal === 'buy' &&
-        // indicatorsData.stochRsi.stoch1m.signal === 'buy',
+        // indicatorsData.rsi5m.rsiValue > 40 &&
+        // indicatorsData.rsi1m.rsiValue > 40,
+        // botState.status === 'buy' &&
+        // indicatorsData.obv1h.signal === 'buy' &&
+        // indicatorsData.obv15m.signal === 'buy' &&
+        // indicatorsData.obv5m.signal === 'buy' &&
+        // indicatorsData.obv1m.signal === 'buy',
+        // indicatorsData.roc.roc5m.prevValue > 0 &&
+        // indicatorsData.roc.roc1m.prevValue > 0,
+        // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
         // indicatorsData.stochRsi.stoch5m.signal === 'buy',
 
         // indicatorsData.obv1m.signal === 'buy',
@@ -1156,30 +1099,34 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
         sell: {
           takeProfit: null,
-          // botState.status === 'sell' &&
-          // indicatorsData.roc.roc1m.signal === 'sell',
-          // (indicatorsData.obv5m.signal === 'sell' ||
-          // (botState.profitDiff === 0 &&
+          // ((botState.profitDiff === 0 &&
+          //   indicatorsData.obv1m.sellSignalCount >= 4) ||
+          //   (botState.profitDiff >= 1.1 &&
           //     indicatorsData.obv1m.sellSignalCount >= 4) ||
-          // (botState.profitDiff >= 1.1 &&
-          //     indicatorsData.obv1m.sellSignalCount >= 4) ||
-          // (botState.profitDiff < 0 &&
+          //   (botState.profitDiff < 0 &&
           //     indicatorsData.obv1m.sellSignalCount >= 4)),
 
           // botState.status === 'sell' &&
-          // expectedProfitPercent > 0.2 &&ect
+          // expectedProfitPercent > 0.2 &&
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            ((indicatorsData.obv5m.signal === 'sell' &&
-              indicatorsData.haCandle.signal === 'sell') ||
-              (indicatorsData.obv5m.buySignalCount === 0 &&
-                indicatorsData.roc.roc5m.signal === 'sell')),
-          // botState.status === 'sell' &&
+            indicatorsData.obv5m.signal === 'sell' &&
+            (indicatorsData.dmi5m.adxUpCount >= 1 ||
+              indicatorsData.dmi5m.adxDownCount >= 1),
+          // indicatorsData.haCandle.signal === 'sell'),
+          // (indicatorsData.obv5m.buySignalCount === 0 &&
+          //   indicatorsData.roc.roc5m.signal === 'sell' &&
+          //   indicatorsData.haCandle.signal === 'sell')),
+          //
           // indicatorsData.obv5m.signal === 'sell' &&
-          // indicatorsData.haCandle.signal === 'sell',
-          // indicatorsData.obv1m.sellSignalCount >= 0 &&
-          // indicatorsData.roc.roc1m.signal === 'sell',
+          // indicatorsData.roc.roc5m.signal === 'sell',
+
+          // botState.status === 'sell' &&
+          // indicatorsData.obv1h.signal === 'sell' &&
+          // indicatorsData.obv15m.signal === 'sell' &&
+          // indicatorsData.obv5m.signal === 'sell' &&
+          // indicatorsData.obv1m.signal === 'sell',
 
           // indicatorsData.obv1m.signal === 'sell',
 
@@ -1607,7 +1554,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           stepSize,
           'TRENDS CATCHER',
           workingDeposit,
-          'STRATEGY 1 (take prof)',
+          'Strategy 1 (ADX 1)',
           indicatorsData,
         );
         botState.buyReason = 'scalper';
@@ -1882,7 +1829,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
         pricesStream,
         stepSize,
         initialUSDTBalance,
-        'STRATEGY 1(take prof)',
+        'Strategy 1 (ADX 1)',
         indicatorsData,
       );
       return;
@@ -1949,7 +1896,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
     await sendToRecipients(`INIT (TEST MODE LOCAL)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
-  Strategies: STRATEGY 1(take prof)
+  Strategies: Strategy 1 (ADX 1)
   Status: ${botState.status.toUpperCase()}
   Symbol: ${symbol.toUpperCase()}
   `);
@@ -2055,81 +2002,41 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   //   2,
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
-
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
   getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getRSISignal(symbol, '1h', indicatorsData.rsi1h);
-  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 1, 1);
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
-  // getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
+  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 2, 2);
+
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
-  // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
+  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 4);
+  // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 4);
+
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
-  // getRocSignal(symbol, '5m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
 
   /** *************************DATA LOGGER********************************/
 
   (() => {
     setInterval(async () => {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
-      // console.log(
-      //   'OBV 1h: ' +
-      //     indicatorsData.obv1h.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv1h.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv1h.sellSignalCount +
-      //     ')',
-      // );
-      // console.log(
-      //   'OBV 15m: ' +
-      //     indicatorsData.obv15m.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv15m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv15m.sellSignalCount +
-      //     ')',
-      // );
-      console.log(
-        'Candle: ' +
-          // 'open: ' +
-          // indicatorsData.haCandle.open +
-          // 'close: ' +
-          // indicatorsData.haCandle.close +
-          // 'high: ' +
-          // indicatorsData.haCandle.high +
-          // 'low: ' +
-          // indicatorsData.haCandle.low +
-          // '\n' +
-          indicatorsData.haCandle.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.haCandle.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.haCandle.sellSignalCount +
-          ')',
-      );
       console.log(
         'OBV 5m: ' +
           indicatorsData.obv5m.signal +
@@ -2141,19 +2048,19 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           indicatorsData.obv5m.sellSignalCount +
           ')',
       );
-      // console.log(
-      //   'OBV 1m: ' +
-      //     indicatorsData.obv1m.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv1m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv1m.sellSignalCount +
-      //     ')',
-      // );
-      // console.log('OBV 5m Val: ' + indicatorsData.obv5m.prevObv);
-      // console.log('OBV 5m Diff: ' + indicatorsData.obv5m.obvDiff + ' %');
+      console.log(
+        'OBV 1m: ' +
+          indicatorsData.obv1m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv1m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv1m.sellSignalCount +
+          ')',
+      );
+      console.log('OBV 5m Val: ' + indicatorsData.obv5m.prevObv);
+      console.log('OBV 5m Diff: ' + indicatorsData.obv5m.obvDiff + ' %');
       // console.log('OBV 1m: ' + indicatorsData.obv1m.signal);
       // console.log('ROC 5m: ' + indicatorsData.roc.roc5m.signal);
       // console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
@@ -2172,20 +2079,14 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
         'Max av profit: ' + Number(botState.maxAvailableProfit - 0.2) + ' %',
       );
       console.log(
+        'Min av profit: ' + Number(botState.minAvailableProfit - 0.2) + ' %',
+      );
+      console.log(
         'Profit diff: ' +
           Number(botState.maxAvailableProfit) / Number(botState.currentProfit),
       );
-      // console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
-      // console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
-      console.log(
-        'Roc:' +
-          indicatorsData.roc.roc1m.signal +
-          ' Buy Count: ' +
-          indicatorsData.roc.roc1m.buySignalCount +
-          ' Sell Count: ' +
-          indicatorsData.roc.roc1m.sellSignalCount,
-      );
-      // console.log('EFI: ' + indicatorsData.efi5m.efi);
+      console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
+      console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
       botState.status === 'sell'
         ? console.log('Profit: ' + Number(botState.currentProfit - 0.2) + ' %')
         : console.log('Not in the deal');
