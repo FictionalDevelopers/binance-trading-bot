@@ -2001,7 +2001,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   getStochRSISignal(
     symbol,
     '5m',
-    indicatorsData.stochRsi.stoch30m,
+    indicatorsData.stochRsi.stoch5m,
     1.5,
     1.5,
     2,
