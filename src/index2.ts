@@ -1098,10 +1098,11 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
     const conditions = {
       scalper: {
-        buy:
-          botState.status === 'buy' &&
-          indicatorsData.haCandle.signal === 'buy' &&
-          indicatorsData.obv5m.signal === 'buy',
+        buy: null,
+        // botState.status === 'buy' &&
+        // indicatorsData.haCandle.signal === 'buy' &&
+        // indicatorsData.obv5m.signal === 'buy',
+
         // indicatorsData.rsi5m.rsiValue > 40 &&
         // indicatorsData.rsi1m.rsiValue > 40 &&
         // indicatorsData.roc.roc5m.signal === 'buy',
@@ -2062,12 +2063,12 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
   getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
@@ -2149,15 +2150,6 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           ')',
       );
       console.log(
-        'ADX: ' +
-          '(UP: ' +
-          indicatorsData.dmi5m.adxUpCount +
-          ' ' +
-          'DOWN: ' +
-          indicatorsData.dmi5m.adxDownCount +
-          ')',
-      );
-      console.log(
         'OBV 1m: ' +
           indicatorsData.obv1m.signal +
           ' ' +
@@ -2168,6 +2160,16 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           indicatorsData.obv1m.sellSignalCount +
           ')',
       );
+      console.log(
+        'ADX: ' +
+          '(UP: ' +
+          indicatorsData.dmi5m.adxUpCount +
+          ' ' +
+          'DOWN: ' +
+          indicatorsData.dmi5m.adxDownCount +
+          ')',
+      );
+
       // console.log('OBV 5m Val: ' + indicatorsData.obv5m.prevObv);
       // console.log('OBV 5m Diff: ' + indicatorsData.obv5m.obvDiff + ' %');
       // console.log('OBV 1m: ' + indicatorsData.obv1m.signal);
