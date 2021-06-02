@@ -147,13 +147,42 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
   const indicatorsData = {
     haCandle: {
-      open: null,
-      close: null,
-      high: null,
-      low: null,
-      buySignalCount: 0,
-      sellSignalCount: 0,
-      signal: null,
+      ha1hCandle: {
+        open: null,
+        close: null,
+        high: null,
+        low: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
+      ha15mCandle: {
+        open: null,
+        close: null,
+        high: null,
+        low: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
+      ha5mCandle: {
+        open: null,
+        close: null,
+        high: null,
+        low: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
+      ha1mCandle: {
+        open: null,
+        close: null,
+        high: null,
+        low: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
     },
     maxAvailableProfit: 0,
     totalMaxAvailableProfit: 0,
@@ -1098,10 +1127,15 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
     const conditions = {
       scalper: {
-        buy: null,
-        // botState.status === 'buy' &&
-        // indicatorsData.haCandle.signal === 'buy' &&
-        // indicatorsData.obv5m.signal === 'buy',
+        buy:
+          botState.status === 'buy' &&
+          indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
+          indicatorsData.haCandle.ha15mCandle.signal === 'buy' &&
+          indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+          indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+          (indicatorsData.dmi5m.adxUpCount >= 2 ||
+            indicatorsData.dmi5m.adxDownCount >= 2) &&
+          indicatorsData.obv5m.signal === 'buy',
 
         // indicatorsData.rsi5m.rsiValue > 40 &&
         // indicatorsData.rsi1m.rsiValue > 40 &&
@@ -1175,10 +1209,15 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            ((indicatorsData.obv5m.signal === 'sell' &&
-              indicatorsData.haCandle.signal === 'sell') ||
-              (indicatorsData.obv5m.buySignalCount === 0 &&
-                indicatorsData.roc.roc5m.signal === 'sell')),
+            indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
+            (indicatorsData.dmi5m.adxUpCount >= 2 ||
+              indicatorsData.dmi5m.adxDownCount >= 2),
+
+          // ((indicatorsData.obv5m.signal === 'sell' &&
+          //   indicatorsData.haCandle.signal === 'sell') ||
+          //   (indicatorsData.obv5m.buySignalCount === 0 &&
+          //     indicatorsData.roc.roc5m.signal === 'sell')),
+
           // botState.status === 'sell' &&
           // indicatorsData.obv5m.signal === 'sell' &&
           // indicatorsData.haCandle.signal === 'sell',
@@ -1192,7 +1231,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           // indicatorsData.rsi1m.signal === 'sell' &&
           // (indicatorsData.dmi1m.adxUpCount >= 1 ||
           //   indicatorsData.dmi1m.adxDownCount >= 1),
-          // indicatorsData.scalper.askBidSignal === 'sell',
+          // // indicatorsData.scalper.askBidSignal === 'sell',
 
           // ((indicatorsData.rsi5m.rsiValue !== null &&
           //   indicatorsData.rsi5m.rsiValue >= 51 &&
@@ -2062,7 +2101,10 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
-  getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle);
+  getHeikinAshiSignal(symbol, '1h', 3, 3, indicatorsData.haCandle.ha1hCandle);
+  getHeikinAshiSignal(symbol, '15m', 3, 3, indicatorsData.haCandle.ha15mCandle);
+  getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
+  getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);

@@ -1046,7 +1046,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           indicatorsData.obv5m.signal === 'buy' &&
           (indicatorsData.dmi5m.adxUpCount >= 2 ||
             indicatorsData.dmi5m.adxDownCount >= 2) &&
-          indicatorsData.stochRsi.stoch30m.signal === 'buy',
+          indicatorsData.stochRsi.stoch5m.signal === 'buy',
         // indicatorsData.rsi5m.rsiValue > 40 &&
         // indicatorsData.rsi1m.rsiValue > 40,
         // indicatorsData.roc.roc5m.signal === 'buy',
@@ -1998,7 +1998,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
   getStochRSISignal(
     symbol,
-    '30m',
+    '5m',
     indicatorsData.stochRsi.stoch30m,
     1.5,
     1.5,
