@@ -1121,9 +1121,11 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.obv5m.signal === 'sell' &&
-            (indicatorsData.dmi5m.adxUpCount >= 2 ||
-              indicatorsData.dmi5m.adxDownCount >= 2),
+            ((indicatorsData.obv5m.signal === 'sell' &&
+              (indicatorsData.dmi5m.adxUpCount >= 2 ||
+                indicatorsData.dmi5m.adxDownCount >= 2)) ||
+              (indicatorsData.haCandle.signal === 'sell' &&
+                indicatorsData.obv5m.sellSignalCount >= 6)),
           // indicatorsData.obv5m.signal === 'sell' &&
           // indicatorsData.haCandle.signal === 'sell' &&
           // (indicatorsData.dmi5m.adxUpCount >= 2 ||
