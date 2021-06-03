@@ -77,6 +77,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   const botState = {
     dealPricesArr: [],
     avgDealPrice: null,
+    prevAvgDealPrice: null,
     maxAvailableProfit: 0,
     totalMaxAvailableProfit: 0,
     minAvailableProfit: 0,
@@ -146,6 +147,11 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   };
 
   const indicatorsData = {
+    avgDealPriceUpSignalCount: 0,
+    avgDealPriceDownSignalCount: 0,
+    avgDealPriceSignal: null,
+    avgDealPriceDiff: null,
+    avgPriceDiff: null,
     haCandle: {
       ha1hCandle: {
         open: null,
@@ -1129,13 +1135,15 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
       scalper: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
-          indicatorsData.haCandle.ha15mCandle.signal === 'buy' &&
-          indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
           indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-          (indicatorsData.dmi5m.adxUpCount >= 2 ||
-            indicatorsData.dmi5m.adxDownCount >= 2) &&
-          indicatorsData.obv5m.signal === 'buy',
+          // indicatorsData.haCandle.ha15mCandle.signal === 'buy' &&
+          // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+          // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+          // (indicatorsData.dmi5m.adxUpCount >= 2 ||
+          //   indicatorsData.dmi5m.adxDownCount >= 2) &&
+          (indicatorsData.obv5m.signal === 'buy' ||
+            indicatorsData.obv1m.signal === 'buy'),
+        // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
 
         // indicatorsData.rsi5m.rsiValue > 40 &&
         // indicatorsData.rsi1m.rsiValue > 40 &&
@@ -1209,9 +1217,21 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
-            (indicatorsData.dmi5m.adxUpCount >= 2 ||
-              indicatorsData.dmi5m.adxDownCount >= 2),
+            // indicatorsData.avgDealPriceSignal === 'sell' &&
+            (indicatorsData.obv5m.signal === 'sell' ||
+              indicatorsData.obv1m.signal === 'sell') &&
+            indicatorsData.haCandle.ha1mCandle.signal === 'sell',
+
+          // (indicatorsData.dmi1m.adxDownCount >= 2 ||
+          //   indicatorsData.dmi1m.adxUpCount >= 2)) ||
+          // (indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+          //   (indicatorsData.dmi1m.adxDownCount >= 2 ||
+          //     indicatorsData.dmi1m.adxUpCount >= 2))),
+
+          //   indicatorsData.haCandle.ha1mCandle.signal === 'sell'
+
+          // (indicatorsData.dmi5m.adxUpCount >= 2 ||
+          //   indicatorsData.dmi5m.adxDownCount >= 2),
 
           // ((indicatorsData.obv5m.signal === 'sell' &&
           //   indicatorsData.haCandle.signal === 'sell') ||
@@ -2077,6 +2097,46 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(scalper);
 
+  getTradeStream({
+    symbol: symbol,
+    resource: RESOURCES.TRADE,
+  })
+    .pipe(pluck('price'), bufferCount(10, 10))
+    .subscribe(pricesArr => {
+      botState.avgDealPrice = getAvarage(pricesArr);
+      const avgPriceProfit = botState.avgDealPrice
+        ? botState.avgDealPrice / botState.buyPrice > 1
+          ? Number((botState.avgDealPrice / botState.buyPrice) * 100 - 100)
+          : Number(
+              -1 * (100 - (botState.avgDealPrice / botState.buyPrice) * 100),
+            )
+        : 0;
+      indicatorsData.avgPriceDiff =
+        (botState.maxAvailableProfit / avgPriceProfit) * 100 - 100;
+
+      if (!botState.prevAvgDealPrice) {
+        botState.prevAvgDealPrice = botState.avgDealPrice;
+      } else {
+        indicatorsData.avgDealPriceDiff =
+          (botState.avgDealPrice / botState.prevAvgDealPrice) * 100 - 100;
+        botState.prevAvgDealPrice = botState.avgDealPrice;
+      }
+      if (indicatorsData.avgDealPriceDiff > 0) {
+        indicatorsData.avgDealPriceUpSignalCount++;
+        indicatorsData.avgDealPriceDownSignalCount = 0;
+      } else if (indicatorsData.avgDealPriceDiff < 0) {
+        indicatorsData.avgDealPriceDownSignalCount++;
+        indicatorsData.avgDealPriceUpSignalCount = 0;
+      } else if (indicatorsData.avgDealPriceDiff === 0) {
+        indicatorsData.avgDealPriceDownSignalCount = 0;
+        indicatorsData.avgDealPriceUpSignalCount = 0;
+      }
+      if (indicatorsData.avgDealPriceUpSignalCount >= 8)
+        indicatorsData.avgDealPriceSignal = 'buy';
+      else if (indicatorsData.avgDealPriceDownSignalCount >= 10)
+        indicatorsData.avgDealPriceSignal = 'sell';
+    });
+
   /** *******************************INDICATORS SECTION**************************************/
 
   // getStochRSISignal(
@@ -2099,13 +2159,17 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
 
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
-  getHeikinAshiSignal(symbol, '1h', 3, 3, indicatorsData.haCandle.ha1hCandle);
-  getHeikinAshiSignal(symbol, '15m', 3, 3, indicatorsData.haCandle.ha15mCandle);
-  getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
-  getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
+  // getHeikinAshiSignal(symbol, '1h', 3, 3, indicatorsData.haCandle.ha1hCandle);
+  // getHeikinAshiSignal(symbol, '15m', 3, 3, indicatorsData.haCandle.ha15mCandle);
+  // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
+  // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
+  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
+
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
@@ -2133,10 +2197,6 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
   (() => {
     setInterval(async () => {
-      if (botState.status === 'sell') {
-        botState.dealPricesArr.push(botState.currentPrice);
-        botState.avgDealPrice = getAvarage(botState.dealPricesArr);
-      }
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
       // console.log(
       //   'OBV 1h: ' +
@@ -2181,6 +2241,28 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           ')',
       );
       console.log(
+        'OBV 1h: ' +
+          indicatorsData.obv1h.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv1h.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv1h.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 15m: ' +
+          indicatorsData.obv15m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv15m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv15m.sellSignalCount +
+          ')',
+      );
+      console.log(
         'OBV 5m: ' +
           indicatorsData.obv5m.signal +
           ' ' +
@@ -2200,15 +2282,26 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           ' ' +
           'Sell Count: ' +
           indicatorsData.obv1m.sellSignalCount +
-          ')',
+          ')' +
+          '\n',
       );
+
       console.log(
-        'ADX: ' +
+        'ADX 5m: ' +
           '(UP: ' +
           indicatorsData.dmi5m.adxUpCount +
           ' ' +
           'DOWN: ' +
           indicatorsData.dmi5m.adxDownCount +
+          ')',
+      );
+      console.log(
+        'ADX 1m: ' +
+          '(UP: ' +
+          indicatorsData.dmi1m.adxUpCount +
+          ' ' +
+          'DOWN: ' +
+          indicatorsData.dmi1m.adxDownCount +
           ')',
       );
 
@@ -2228,7 +2321,23 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
       //       ? indicatorsData.dmi5m.adxUpCount
       //       : indicatorsData.dmi5m.adxDownCount),
       // );
-      console.log('Avg Deal Price: ' + botState.avgDealPrice);
+      console.log(
+        'Avg Deal Price: ' +
+          botState.avgDealPrice +
+          '( ' +
+          indicatorsData.avgDealPriceDiff +
+          ' )',
+      );
+      console.log(
+        'Avg Deal Price Diff: ' +
+          indicatorsData.avgDealPriceSignal +
+          '(UP: ' +
+          indicatorsData.avgDealPriceUpSignalCount +
+          ' DOWN: ' +
+          indicatorsData.avgDealPriceDownSignalCount +
+          ')',
+      );
+      console.log('Max Price / Avg Price Diff: ' + indicatorsData.avgPriceDiff);
       console.log(
         'Max av profit: ' + Number(botState.maxAvailableProfit - 0.2) + ' %',
       );
