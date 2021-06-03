@@ -1135,14 +1135,18 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
       scalper: {
         buy:
           botState.status === 'buy' &&
-          indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-          // indicatorsData.haCandle.ha15mCandle.signal === 'buy' &&
-          // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
-          // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-          // (indicatorsData.dmi5m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi5m.adxDownCount >= 2) &&
-          (indicatorsData.obv5m.signal === 'buy' ||
-            indicatorsData.obv1m.signal === 'buy'),
+          indicatorsData.obv1h.signal === 'buy' &&
+          (indicatorsData.dmi1h.adxUpCount >= 1 ||
+            indicatorsData.dmi1h.adxDownCount >= 1),
+
+        // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+        // indicatorsData.haCandle.ha15mCandle.signal === 'buy' &&
+        // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+        // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+        // (indicatorsData.dmi5m.adxUpCount >= 2 ||
+        //   indicatorsData.dmi5m.adxDownCount >= 2) &&
+        // (indicatorsData.obv5m.signal === 'buy' ||
+        //   indicatorsData.obv1m.signal === 'buy'),
         // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
 
         // indicatorsData.rsi5m.rsiValue > 40 &&
@@ -1217,10 +1221,14 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            // indicatorsData.avgDealPriceSignal === 'sell' &&
-            (indicatorsData.obv5m.signal === 'sell' ||
-              indicatorsData.obv1m.signal === 'sell') &&
-            indicatorsData.haCandle.ha1mCandle.signal === 'sell',
+            indicatorsData.obv1h.signal === 'sell' &&
+            (indicatorsData.dmi1h.adxUpCount >= 1 ||
+              indicatorsData.dmi1h.adxDownCount >= 1),
+
+          // indicatorsData.avgDealPriceSignal === 'sell' &&
+          // (indicatorsData.obv5m.signal === 'sell' ||
+          //   indicatorsData.obv1m.signal === 'sell') &&
+          // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
 
           // (indicatorsData.dmi1m.adxDownCount >= 2 ||
           //   indicatorsData.dmi1m.adxUpCount >= 2)) ||
@@ -2167,7 +2175,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   // getHeikinAshiSignal(symbol, '15m', 3, 3, indicatorsData.haCandle.ha15mCandle);
   // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
   // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
 
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
@@ -2286,24 +2294,24 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           '\n',
       );
 
-      console.log(
-        'ADX 5m: ' +
-          '(UP: ' +
-          indicatorsData.dmi5m.adxUpCount +
-          ' ' +
-          'DOWN: ' +
-          indicatorsData.dmi5m.adxDownCount +
-          ')',
-      );
-      console.log(
-        'ADX 1m: ' +
-          '(UP: ' +
-          indicatorsData.dmi1m.adxUpCount +
-          ' ' +
-          'DOWN: ' +
-          indicatorsData.dmi1m.adxDownCount +
-          ')',
-      );
+      // console.log(
+      //   'ADX 5m: ' +
+      //     '(UP: ' +
+      //     indicatorsData.dmi5m.adxUpCount +
+      //     ' ' +
+      //     'DOWN: ' +
+      //     indicatorsData.dmi5m.adxDownCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'ADX 1m: ' +
+      //     '(UP: ' +
+      //     indicatorsData.dmi1m.adxUpCount +
+      //     ' ' +
+      //     'DOWN: ' +
+      //     indicatorsData.dmi1m.adxDownCount +
+      //     ')',
+      // );
 
       // console.log('OBV 5m Val: ' + indicatorsData.obv5m.prevObv);
       // console.log('OBV 5m Diff: ' + indicatorsData.obv5m.obvDiff + ' %');
@@ -2321,22 +2329,22 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
       //       ? indicatorsData.dmi5m.adxUpCount
       //       : indicatorsData.dmi5m.adxDownCount),
       // );
-      console.log(
-        'Avg Deal Price: ' +
-          botState.avgDealPrice +
-          '( ' +
-          indicatorsData.avgDealPriceDiff +
-          ' )',
-      );
-      console.log(
-        'Avg Deal Price Diff: ' +
-          indicatorsData.avgDealPriceSignal +
-          '(UP: ' +
-          indicatorsData.avgDealPriceUpSignalCount +
-          ' DOWN: ' +
-          indicatorsData.avgDealPriceDownSignalCount +
-          ')',
-      );
+      // console.log(
+      //   'Avg Deal Price: ' +
+      //     botState.avgDealPrice +
+      //     '( ' +
+      //     indicatorsData.avgDealPriceDiff +
+      //     ' )',
+      // );
+      // console.log(
+      //   'Avg Deal Price Diff: ' +
+      //     indicatorsData.avgDealPriceSignal +
+      //     '(UP: ' +
+      //     indicatorsData.avgDealPriceUpSignalCount +
+      //     ' DOWN: ' +
+      //     indicatorsData.avgDealPriceDownSignalCount +
+      //     ')',
+      // );
       console.log('Max Price / Avg Price Diff: ' + indicatorsData.avgPriceDiff);
       console.log(
         'Max av profit: ' + Number(botState.maxAvailableProfit - 0.2) + ' %',
@@ -2347,14 +2355,14 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
       );
       // console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
       // console.log('Stoch 1m: ' + indicatorsData.stochRsi.stoch1m.signal);
-      console.log(
-        'Roc:' +
-          indicatorsData.roc.roc1m.signal +
-          ' Buy Count: ' +
-          indicatorsData.roc.roc1m.buySignalCount +
-          ' Sell Count: ' +
-          indicatorsData.roc.roc1m.sellSignalCount,
-      );
+      // console.log(
+      //   'Roc:' +
+      //     indicatorsData.roc.roc1m.signal +
+      //     ' Buy Count: ' +
+      //     indicatorsData.roc.roc1m.buySignalCount +
+      //     ' Sell Count: ' +
+      //     indicatorsData.roc.roc1m.sellSignalCount,
+      // );
       // console.log('EFI: ' + indicatorsData.efi5m.efi);
       botState.status === 'sell'
         ? console.log('Profit: ' + Number(botState.currentProfit - 0.2) + ' %')

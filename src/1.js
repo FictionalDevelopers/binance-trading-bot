@@ -29,6 +29,21 @@
 // };
 //
 // recursiveAsyncReadLine();
-console.log(-0.5 / -0.2);
-console.log(-0.5 / -0.2);
-console.log(-0.5 / -0.2);
+const profitLevels = {
+  level1: {
+    value: 1,
+    amount: 0.25,
+  },
+  level2: {
+    value: 1.5,
+    amount: 0.25,
+  },
+  level3: {
+    value: 2,
+    amount: 0.25,
+  },
+  level4: {
+    value: 4,
+    amount: 0.25,
+  },
+};
