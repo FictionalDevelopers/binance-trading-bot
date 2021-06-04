@@ -20,7 +20,7 @@ export interface BotState extends Document {
   order: any;
   avrDealProfit: number;
   prevPrice: number;
-  dealPricesArr: number;
+  dealPricesArr: Array<number>;
   avgDealPrice: number;
   prevAvgDealPrice: number;
   maxAvailableProfit: number;
