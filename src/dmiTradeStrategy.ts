@@ -1074,7 +1074,15 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
     const conditions = {
       scalper: {
-        buy: botState.status === 'buy' && indicatorsData.obv1h.signal === 'buy',
+        buy:
+          botState.status === 'buy' &&
+          indicatorsData.obv5m.signal === 'buy' &&
+          indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+          indicatorsData.obv1h.signal === 'buy' &&
+          (indicatorsData.dmi5m.adxUpCount >= 2 ||
+            indicatorsData.dmi5m.adxDownCount >= 2),
+
+        // botState.status === 'buy' && indicatorsData.obv1h.signal === 'buy',
         // (indicatorsData.dmi1h.adxUpCount >= 2 ||
         //   indicatorsData.dmi1h.adxDownCount >= 2),
 
@@ -1144,12 +1152,12 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
         // indicatorsData.scalper.tradesVolume.buySignalCount >= 1,
 
         sell: {
-          takeProfit:
-            botState.status === 'sell' &&
-            indicatorsData.avgDealPriceSignal === 'sell' &&
-            (indicatorsData.obv5m.signal === 'sell' ||
-              indicatorsData.obv1m.signal === 'sell') &&
-            indicatorsData.haCandle.ha1mCandle.signal === 'sell',
+          takeProfit: null,
+          // botState.status === 'sell' &&
+          // indicatorsData.avgDealPriceSignal === 'sell' &&
+          // (indicatorsData.obv5m.signal === 'sell' ||
+          //   indicatorsData.obv1m.signal === 'sell') &&
+          // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
 
           // ((botState.profitDiff === 0 &&
           //   indicatorsData.obv1m.sellSignalCount >= 4) ||
@@ -1163,7 +1171,12 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
-            indicatorsData.obv1h.signal === 'sell',
+            indicatorsData.avgDealPriceSignal === 'sell' &&
+            indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+            (indicatorsData.obv5m.signal === 'sell' ||
+              indicatorsData.obv1m.signal === 'sell'),
+          // botState.status === 'sell' &&
+          // indicatorsData.obv1h.signal === 'sell',
           // (indicatorsData.dmi1h.adxUpCount >= 2 ||
           //   indicatorsData.dmi1h.adxDownCount >= 2),
           //   (indicatorsData.dmi5m.adxUpCount >= 2 ||
@@ -2045,7 +2058,13 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
-  getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
+  getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
+  // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
 
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
@@ -2133,9 +2152,9 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           indicatorsData.avgDealPriceDownSignalCount = 0;
           indicatorsData.avgDealPriceUpSignalCount = 0;
         }
-        if (indicatorsData.avgDealPriceUpSignalCount >= 8)
+        if (indicatorsData.avgDealPriceUpSignalCount >= 3)
           indicatorsData.avgDealPriceSignal = 'buy';
-        else if (indicatorsData.avgDealPriceDownSignalCount >= 10)
+        else if (indicatorsData.avgDealPriceDownSignalCount >= 3)
           indicatorsData.avgDealPriceSignal = 'sell';
       }
 

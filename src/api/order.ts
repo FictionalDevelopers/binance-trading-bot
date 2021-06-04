@@ -177,15 +177,18 @@ export const marketSellAction = async (
         botState.dealsCount++;
         botState.maxAvailableProfit = 0;
         botState.minAvailableProfit = 0;
-        botState.avgDealPriceDiff = 0;
         indicatorsData.avgDealPriceDownSignalCount = 0;
         indicatorsData.avgDealPriceUpSignalCount = 0;
         indicatorsData.avgDealPriceSignal = null;
+        indicatorsData.avgDealPriceDiff = 0;
         botState.avgDealPrice = 0;
         botState.dealPricesArr = [];
         botState.confirmation = false;
         indicatorsData.obv5m.signal = null;
         indicatorsData.obv5m.buySignalCount = 0;
+        // indicatorsData.obv1h.signal = null;
+        // indicatorsData.obv1h.buySignalCount = 0;
+
         // indicatorsData.obv5m.sellSignalCount = 0;
         indicatorsData.obv1m.signal = null;
         // indicatorsData.obv1m.sellSignalCount = 0;
