@@ -1143,10 +1143,8 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
     const conditions = {
       scalper: {
-        buy:
-          botState.status === 'buy' &&
-          indicatorsData.obv1h.signal === 'buy' &&
-          indicatorsData.stochRsi.stoch1h.signal === 'buy',
+        buy: botState.status === 'buy' && indicatorsData.obv1h.signal === 'buy',
+        // indicatorsData.stochRsi.stoch1h.signal === 'buy',
         // (indicatorsData.dmi1h.adxUpCount >= 1 ||
         //   indicatorsData.dmi1h.adxDownCount >= 1),
 
@@ -1216,8 +1214,12 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
         // indicatorsData.scalper.tradesVolume.buySignalCount >= 1,
 
         sell: {
-          takeProfit: null,
-          // botState.status === 'sell' &&
+          takeProfit:
+            botState.status === 'sell' &&
+            indicatorsData.avgDealPriceSignal === 'sell' &&
+            (indicatorsData.obv5m.signal === 'sell' ||
+              indicatorsData.obv1m.signal === 'sell') &&
+            indicatorsData.haCandle.ha1mCandle.signal === 'sell',
           // indicatorsData.roc.roc1m.signal === 'sell',
           // (indicatorsData.obv5m.signal === 'sell' ||
           // (botState.profitDiff === 0 &&
@@ -1235,11 +1237,6 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
             indicatorsData.obv1h.signal === 'sell',
           // (indicatorsData.dmi1h.adxUpCount >= 1 ||
           //   indicatorsData.dmi1h.adxDownCount >= 1),
-
-          // indicatorsData.avgDealPriceSignal === 'sell' &&
-          // (indicatorsData.obv5m.signal === 'sell' ||
-          //   indicatorsData.obv1m.signal === 'sell') &&
-          // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
 
           // (indicatorsData.dmi1m.adxDownCount >= 2 ||
           //   indicatorsData.dmi1m.adxUpCount >= 2)) ||
@@ -2126,15 +2123,15 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
   /** *******************************INDICATORS SECTION**************************************/
 
-  getStochRSISignal(
-    symbol,
-    '1h',
-    indicatorsData.stochRsi.stoch1h,
-    1.5,
-    1.5,
-    2,
-    2,
-  );
+  // getStochRSISignal(
+  //   symbol,
+  //   '1h',
+  //   indicatorsData.stochRsi.stoch1h,
+  //   1.5,
+  //   1.5,
+  //   2,
+  //   2,
+  // );
   // getStochRSISignal(
   //   symbol,
   //   '5m',
@@ -2146,14 +2143,15 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
 
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
+  getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
+
   // getHeikinAshiSignal(symbol, '1h', 3, 3, indicatorsData.haCandle.ha1hCandle);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
   // getHeikinAshiSignal(symbol, '15m', 3, 3, indicatorsData.haCandle.ha15mCandle);
   // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
-  // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
 
