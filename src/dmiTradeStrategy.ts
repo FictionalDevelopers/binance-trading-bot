@@ -1078,7 +1078,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
         buy:
           botState.status === 'buy' &&
           indicatorsData.obv5m.signal === 'buy' &&
-          indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+          // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
           indicatorsData.obv1h.signal === 'buy' &&
           (indicatorsData.dmi5m.adxUpCount >= 2 ||
             indicatorsData.dmi5m.adxDownCount >= 2),
@@ -1173,7 +1173,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           stopLoss:
             botState.status === 'sell' &&
             indicatorsData.avgDealPriceSignal === 'sell' &&
-            indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+            // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
             (indicatorsData.obv5m.signal === 'sell' ||
               indicatorsData.obv1m.signal === 'sell'),
           // botState.status === 'sell' &&
