@@ -200,8 +200,8 @@ const schema = new Schema({
     default: 0,
   },
   dealPricesArr: {
-    type: Number,
-    default: 0,
+    type: Array,
+    default: [],
   },
   avgDealPrice: {
     type: Number,
