@@ -20,6 +20,14 @@ export interface BotState extends Document {
   order: any;
   avrDealProfit: number;
   prevPrice: number;
+  dealPricesArr: number;
+  avgDealPrice: number;
+  prevAvgDealPrice: number;
+  maxAvailableProfit: number;
+  totalMaxAvailableProfit: number;
+  minAvailableProfit: number;
+  totalMinAvailableProfit: number;
+  profitDiff: number;
 }
 const schema = new Schema({
   strategyId: {
@@ -188,6 +196,18 @@ const schema = new Schema({
     default: 0,
   },
   totalMinAvailableProfit: {
+    type: Number,
+    default: 0,
+  },
+  dealPricesArr: {
+    type: Number,
+    default: 0,
+  },
+  avgDealPrice: {
+    type: Number,
+    default: 0,
+  },
+  prevAvgDealPrice: {
     type: Number,
     default: 0,
   },
