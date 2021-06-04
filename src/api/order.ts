@@ -140,39 +140,56 @@ export const marketSellAction = async (
           (botState.totalMinAvailableProfit +=
             botState.minAvailableProfit - 0.2),
         );
-        await sendToRecipients(`SELL ${botState.local ? '(LOCAL)' : ''}
-                                  Strategy: ${strategy}
-                                  Sell reason: ${sellReason}
-                                  symbol: ${symbol.toUpperCase()}
-                                  price: ${
-                                    pricesStream[pricesStream.length - 1]
-                                  }
-                                  date: ${format(new Date(), DATE_FORMAT)}
-                                  current profit: ${expectedProfitPercent -
-                                    0.2}%
-                                  total profit: ${botState.totalProfit}%
-                                  max av profit: ${botState.maxAvailableProfit -
-                                    0.2}%
-                                  total max av profit: ${
-                                    botState.totalMaxAvailableProfit
-                                  }%
-                                  min av profit: ${botState.minAvailableProfit -
-                                    0.2}%
-                                  total min av profit: ${
-                                    botState.totalMinAvailableProfit
-                                  }%
-                    `);
+        if (botState.logToTelegram) {
+          await sendToRecipients(`SELL ${botState.local ? '(LOCAL)' : 'REMOTE'}
+                                    Strategy: ${strategy}
+                                    Sell reason: ${sellReason}
+                                    Deal №: ${botState.dealsCount}
+                                    Symbol: ${symbol.toUpperCase()}
+                                    Price: ${
+                                      pricesStream[pricesStream.length - 1]
+                                    }
+                                    Date: ${format(new Date(), DATE_FORMAT)}
+                                    Current profit: ${expectedProfitPercent -
+                                      0.2} %
+                                    Total profit: ${botState.totalProfit} %
+                                    Avg Deal Profit: ${botState.totalProfit /
+                                      botState.dealsCount} %
+                                    Max av profit: ${botState.maxAvailableProfit -
+                                      0.2} %
+                                    Total max av profit: ${
+                                      botState.totalMaxAvailableProfit
+                                    } %
+                                    Min av profit: ${botState.minAvailableProfit -
+                                      0.2} %
+                                    Total min av profit: ${
+                                      botState.totalMinAvailableProfit
+                                    } %
+                      `);
+        }
         console.log(`SELL 
                                   Strategy: ${strategy}
                                   Sell reason: ${sellReason}
-                                  symbol: ${symbol.toUpperCase()}
-                                  price: ${
+                                  Symbol: ${symbol.toUpperCase()}
+                                  Price: ${
                                     pricesStream[pricesStream.length - 1]
                                   }
-                                  date: ${format(new Date(), DATE_FORMAT)}
-                                  current profit: ${expectedProfitPercent -
+                                  Date: ${format(new Date(), DATE_FORMAT)}
+                                  Current profit: ${expectedProfitPercent -
+                                    0.2} %
+                                  Total profit: ${botState.totalProfit} %
+                                  Avg Deal Profit: ${botState.totalProfit /
+                                    botState.dealsCount} %
+                                  Max av profit: ${botState.maxAvailableProfit -
+                                    0.2} %
+                                  Total max av profit: ${
+                                    botState.totalMaxAvailableProfit
+                                  } %
+                                  Min av profit: ${botState.minAvailableProfit -
                                     0.2}%
-                                  total profit: ${botState.totalProfit}%
+                                  Total min av profit: ${
+                                    botState.totalMinAvailableProfit
+                                  } %
                     `);
         botState.dealsCount++;
         botState.maxAvailableProfit = 0;
@@ -351,14 +368,16 @@ export const marketBuyAction = async (
         Number(pricesStream[pricesStream.length - 1]),
       );
       botState.updateState('lastBid', indicatorsData.scalper.lastBid);
-      await sendToRecipients(`BUY ${botState.local ? '(LOCAL)' : ''}
-                             Strategy:${strategy}
-                             Reason: ${buyReason}
-                             Deal №: ${botState.dealsCount}
-                             symbol: ${symbol.toUpperCase()}
-                             price: ${botState.buyPrice}
-                             date: ${format(new Date(), DATE_FORMAT)}
-              `);
+      if (botState.logToTelegram) {
+        await sendToRecipients(`BUY ${botState.local ? '(LOCAL)' : '(REMOTE)'}
+                               Strategy:${strategy}
+                               Reason: ${buyReason}
+                               Deal №: ${botState.dealsCount}
+                               symbol: ${symbol.toUpperCase()}
+                               price: ${botState.buyPrice}
+                               date: ${format(new Date(), DATE_FORMAT)}
+                `);
+      }
       console.log(`BUY
                              Strategy:${strategy}
                              Reason: ${buyReason}

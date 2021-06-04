@@ -60,6 +60,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
     botState = {
       ...initialState,
       local: false,
+      logToTelegram: true,
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
       strategy: 'Strategy 2 (stop loss only)',

@@ -85,6 +85,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
     profitDiff: 0,
     isPricesStreamAlive: false,
     local: true,
+    logToTelegram: false,
     strategies: {
       scalper: { enabled: true, stopLoss: false },
       upTrend: { enabled: false, stopLoss: false },
