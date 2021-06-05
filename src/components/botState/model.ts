@@ -19,6 +19,8 @@ export interface BotState extends Document {
   cummulativeQuoteQty: number;
   order: any;
   avrDealProfit: number;
+  avgPrice: number;
+  prevAvgPrice: number;
   prevPrice: number;
   dealPricesArr: Array<number>;
   avgDealPrice: number;
@@ -208,6 +210,14 @@ const schema = new Schema({
     default: 0,
   },
   prevAvgDealPrice: {
+    type: Number,
+    default: 0,
+  },
+  avgPrice: {
+    type: Number,
+    default: 0,
+  },
+  prevAvgPrice: {
     type: Number,
     default: 0,
   },

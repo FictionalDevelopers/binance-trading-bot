@@ -11,6 +11,8 @@ const botState = {
   dealPricesArr: [],
   avgDealPrice: null,
   prevAvgDealPrice: null,
+  avgPrice: null,
+  prevAvgPrice: null,
   profitDiff: 0,
   isPricesStreamAlive: false,
   avrDealProfit: null,
