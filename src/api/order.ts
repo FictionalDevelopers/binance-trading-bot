@@ -141,7 +141,9 @@ export const marketSellAction = async (
             botState.minAvailableProfit - 0.2),
         );
         if (botState.logToTelegram) {
-          await sendToRecipients(`SELL ${botState.local ? '(LOCAL)' : 'REMOTE'}
+          await sendToRecipients(`SELL ${
+            botState.local ? '(LOCAL)' : '(REMOTE)'
+          }
                                     Strategy: ${strategy}
                                     Sell reason: ${sellReason}
                                     Deal №: ${botState.dealsCount}
@@ -373,18 +375,18 @@ export const marketBuyAction = async (
                                Strategy:${strategy}
                                Reason: ${buyReason}
                                Deal №: ${botState.dealsCount}
-                               symbol: ${symbol.toUpperCase()}
-                               price: ${botState.buyPrice}
-                               date: ${format(new Date(), DATE_FORMAT)}
+                               Symbol: ${symbol.toUpperCase()}
+                               Price: ${botState.buyPrice}
+                               Date: ${format(new Date(), DATE_FORMAT)}
                 `);
       }
       console.log(`BUY
                              Strategy:${strategy}
                              Reason: ${buyReason}
                              Deal №: ${botState.dealsCount}
-                             symbol: ${symbol.toUpperCase()}
-                             price: ${botState.buyPrice}
-                             date: ${format(new Date(), DATE_FORMAT)}
+                             Symbol: ${symbol.toUpperCase()}
+                             Price: ${botState.buyPrice}
+                             Date: ${format(new Date(), DATE_FORMAT)}
               `);
       botState.confirmation = false;
       botState.updateState('status', 'sell');
