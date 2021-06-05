@@ -1258,7 +1258,7 @@ import {
           // botState.status === 'sell' &&
           // expectedProfitPercent > 0.2 &&ect
           // indicatorsData.obv5m.sellSignalCount >= 1,
-          stopLoss:s
+          stopLoss:
             botState.status === 'sell' &&
             indicatorsData.avgDealPriceSignal === 'sell' &&
             indicatorsData.avgPriceSignal === 'sell' &&
