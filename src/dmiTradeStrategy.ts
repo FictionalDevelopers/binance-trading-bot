@@ -1076,6 +1076,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
     const conditions = {
       scalper: {
         buy:
+          botState.status === 'buy' &&
           indicatorsData.obv1h.signal === 'buy' &&
           indicatorsData.obv15m.signal === 'buy' &&
           indicatorsData.obv5m.signal === 'buy' &&
