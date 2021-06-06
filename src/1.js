@@ -47,3 +47,4 @@ const profitLevels = {
     amount: 0.25,
   },
 };
+console.log(1 / undefined);

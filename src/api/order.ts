@@ -68,12 +68,12 @@ export const setLimitSellOrders = async (symbol, botState, stepSize) => {
       //   +Number(botState.buyPrice * 1.04).toPrecision(4),
       // ),
     ]);
-    // botState.enabledLimits = true;
+    botState.updateState('enabledLimits', true);
   } catch (e) {
     await sendToRecipients(`LIMIT SELL ORDER ERROR
             ${JSON.stringify(e)}
       `);
-    botState.enabledLimits = false;
+    botState.updateState('enabledLimits', false);
   }
 };
 
@@ -261,6 +261,7 @@ export const marketSellAction = async (
           );
           const order = await marketSell(symbol.toUpperCase(), +amount);
           botState.updateState('order', order);
+          botState.updateState('enabledLimits', false);
         } else {
           const amount = binance.roundStep(
             Number(botState.availableCryptoCoin),
@@ -280,6 +281,16 @@ export const marketSellAction = async (
           Number(refreshedUSDTBalance) - Number(initialUSDTBalance),
         );
         botState.updateState(
+          'totalMaxAvailableProfit',
+          (botState.totalMaxAvailableProfit +=
+            botState.maxAvailableProfit - 0.2),
+        );
+        botState.updateState(
+          'totalMinAvailableProfit',
+          (botState.totalMinAvailableProfit +=
+            botState.minAvailableProfit - 0.2),
+        );
+        botState.updateState(
           'totalPercentProfit',
           (botState.totalPercentProfit +=
             (currentProfit / botState.cummulativeQuoteQty) * 100),
@@ -291,32 +302,13 @@ export const marketSellAction = async (
           'availableCryptoCoin',
           +afterSellCryptoCoinBalance,
         );
-        await sendToRecipients(`SELL
-                 Strategy: ${strategy}
-                 Reason: ${sellReason}
-                 Deal №: ${botState.dealsCount}
-                 Symbol: ${symbol.toUpperCase()}
-                 Price: ${botState.order.fills[0].price} USDT
-                 Date: ${format(new Date(), DATE_FORMAT)}
-                 Current profit: ${
-                   botState.currentProfit
-                 } USDT (${(currentProfit / botState.cummulativeQuoteQt) *
-          100} %)
-                 Total profit: ${botState.totalProfit} USDT (${
-          botState.totalPercentProfit
-        } %)
-                 Average deal profit: ${botState.totalProfit /
-                   botState.dealsCount} USDT/deal (${botState.totalPercentProfit /
-          botState.dealsCount} %)
-                 Stablecoin balance: ${botState.availableUSDT} USDT
-                 Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
-                 OrderInfo: ${JSON.stringify(botState.order)}
-                 Work duration: ${format(
-                   botState.startTime - new Date().getTime(),
-                   DATE_FORMAT,
-                 )}
-             `);
         botState.dealsCount++;
+        indicatorsData.avgDealPriceDownSignalCount = 0;
+        indicatorsData.avgDealPriceUpSignalCount = 0;
+        indicatorsData.avgDealPriceSignal = null;
+        indicatorsData.avgDealPriceDiff = 0;
+        botState.avgDealPrice = 0;
+        botState.dealPricesArr = [];
         if (!stopLoss) botState.updateState('status', 'buy');
         else {
           botState.strategies[`${strategy}`].stopLoss = true;
@@ -329,6 +321,32 @@ export const marketSellAction = async (
             'updateState',
           ]),
         );
+        botState.updateState('sellError', false);
+        await sendToRecipients(`SELL
+                   Strategy: ${strategy}
+                   Reason: ${sellReason}
+                   Deal №: ${botState.dealsCount}
+                   Symbol: ${symbol.toUpperCase()}
+                   Price: ${botState.order.fills[0].price} USDT
+                   Date: ${format(new Date(), DATE_FORMAT)}
+                   Current profit: ${
+                     botState.currentProfit
+                   } USDT (${(currentProfit / botState.cummulativeQuoteQty) *
+          100} %)
+                   Total profit: ${botState.totalProfit} USDT (${
+          botState.totalPercentProfit
+        } %)
+                   Average deal profit: ${botState.totalProfit /
+                     botState.dealsCount} USDT/deal (${botState.totalPercentProfit /
+          botState.dealsCount} %)
+                   Stablecoin balance: ${botState.availableUSDT} USDT
+                   Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
+                   OrderInfo: ${JSON.stringify(botState.order)}
+                   Work duration: ${format(
+                     botState.startTime - new Date().getTime(),
+                     DATE_FORMAT,
+                   )}
+               `);
       } catch (e) {
         await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
@@ -340,6 +358,7 @@ export const marketSellAction = async (
           'availableCryptoCoin',
           +refreshedCryptoCoinBalance,
         );
+        botState.updateState('sellError', true);
         botState.updateState('status', 'sell');
       }
     } else {

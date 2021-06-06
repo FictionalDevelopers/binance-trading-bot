@@ -84,80 +84,80 @@ import {
     process.exit(1);
   }
 
-  const botState = {
-    dealPricesArr: [],
-    avgDealPrice: null,
-    prevAvgDealPrice: null,
-    avgPrice: null,
-    prevAvgPrice: null,
-    maxAvailableProfit: 0,
-    totalMaxAvailableProfit: 0,
-    minAvailableProfit: 0,
-    totalMinAvailableProfit: 0,
-    profitDiff: 0,
-    isPricesStreamAlive: false,
-    local: true,
-    logToTelegram: true,
-    strategies: {
-      scalper: { enabled: true, stopLoss: false },
-      upTrend: { enabled: false, stopLoss: false },
-      downTrend: { enabled: false, stopLoss: false },
-      upFlat: { enabled: false, stopLoss: false },
-      downFlat: { enabled: false, stopLoss: false },
-      stochRsi: { enabled: false, stopLoss: false },
-      trendsCatcher: { enabled: false, stopLoss: false },
-    },
-    buyReason: null,
-    enabledLimits: false,
-    sellError: false,
-    emaStartPoint: null,
-    strategy: 'Strategy 1(take prof)',
-    testMode: true,
-    useProfitLevels: false,
-    useEMAStopLoss: false,
-    status: 'buy',
-    // status: 'buy',
-    profitLevels: {
-      '1': {
-        id: 1,
-        profitPercent: 1,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-      '2': {
-        id: 2,
-        profitPercent: 2,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-      '3': {
-        id: 3,
-        profitPercent: 4,
-        amountPercent: 0.5,
-        isFilled: false,
-      },
-    },
-    currentProfit: null,
-    totalProfit: null,
-    totalPercentProfit: null,
-    tradeAmountPercent: 0.95,
-    availableUSDT: initialUSDTBalance,
-    availableCryptoCoin: initialCryptoCoinBalance,
-    cummulativeQuoteQty: null,
-    buyPrice: null,
-    lastBid: null,
-    currentPrice: null,
-    order: null,
-    avrDealProfit: null,
-    dealsCount: 1,
-    startTime: new Date().getTime(),
-    workDuration: null,
-    stopLoss: null,
-    prevPrice: null,
-    updateState: function(fieldName, value) {
-      this[`${fieldName}`] = value;
-    },
-  };
+  // const botState = {
+  //   dealPricesArr: [],
+  //   avgDealPrice: null,
+  //   prevAvgDealPrice: null,
+  //   avgPrice: null,
+  //   prevAvgPrice: null,
+  //   maxAvailableProfit: 0,
+  //   totalMaxAvailableProfit: 0,
+  //   minAvailableProfit: 0,
+  //   totalMinAvailableProfit: 0,
+  //   profitDiff: 0,
+  //   isPricesStreamAlive: false,
+  //   local: true,
+  //   logToTelegram: true,
+  //   strategies: {
+  //     scalper: { enabled: true, stopLoss: false },
+  //     upTrend: { enabled: false, stopLoss: false },
+  //     downTrend: { enabled: false, stopLoss: false },
+  //     upFlat: { enabled: false, stopLoss: false },
+  //     downFlat: { enabled: false, stopLoss: false },
+  //     stochRsi: { enabled: false, stopLoss: false },
+  //     trendsCatcher: { enabled: false, stopLoss: false },
+  //   },
+  //   buyReason: null,
+  //   enabledLimits: false,
+  //   sellError: false,
+  //   emaStartPoint: null,
+  //   strategy: 'Strategy 1(take prof)',
+  //   testMode: true,
+  //   useProfitLevels: false,
+  //   useEMAStopLoss: false,
+  //   status: 'buy',
+  //   // status: 'buy',
+  //   profitLevels: {
+  //     '1': {
+  //       id: 1,
+  //       profitPercent: 1,
+  //       amountPercent: 0.5,
+  //       isFilled: false,
+  //     },
+  //     '2': {
+  //       id: 2,
+  //       profitPercent: 2,
+  //       amountPercent: 0.5,
+  //       isFilled: false,
+  //     },
+  //     '3': {
+  //       id: 3,
+  //       profitPercent: 4,
+  //       amountPercent: 0.5,
+  //       isFilled: false,
+  //     },
+  //   },
+  //   currentProfit: null,
+  //   totalProfit: null,
+  //   totalPercentProfit: null,
+  //   tradeAmountPercent: 0.95,
+  //   availableUSDT: initialUSDTBalance,
+  //   availableCryptoCoin: initialCryptoCoinBalance,
+  //   cummulativeQuoteQty: null,
+  //   buyPrice: null,
+  //   lastBid: null,
+  //   currentPrice: null,
+  //   order: null,
+  //   avrDealProfit: null,
+  //   dealsCount: 1,
+  //   startTime: new Date().getTime(),
+  //   workDuration: null,
+  //   stopLoss: null,
+  //   prevPrice: null,
+  //   updateState: function(fieldName, value) {
+  //     this[`${fieldName}`] = value;
+  //   },
+  // };
 
   const indicatorsData = {
     avgDealPriceUpSignalCount: 0,
@@ -1141,6 +1141,8 @@ import {
 
   const scalper = async pricesStream => {
     const { tradeAmountPercent } = botState;
+    botState.updateState('isPricesStreamAlive', true);
+    indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount = 0;
     if (botState.status === 'isPending') return;
     botState.updateState(
       'currentPrice',
@@ -1153,10 +1155,10 @@ import {
       : 0;
     if (expectedProfitPercent > botState.maxAvailableProfit)
       botState.updateState('maxAvailableProfit', expectedProfitPercent);
-    botState.updateState(
-      'profitDiff',
-      botState.maxAvailableProfit / expectedProfitPercent,
-    );
+    // botState.updateState(
+    //   'profitDiff',
+    //   Number(botState.maxAvailableProfit / expectedProfitPercent),
+    // );
 
     const conditions = {
       scalper: {
@@ -1725,7 +1727,7 @@ import {
     if (botState.strategies.scalper.enabled) {
       if (conditions.scalper.buy) {
         await marketBuyAction(
-          false,
+          true,
           symbol,
           botState,
           cryptoCoin,
@@ -1739,6 +1741,8 @@ import {
         botState.buyReason = 'scalper';
         return;
       }
+      botState.updateState('prevPrice', botState.currentPrice);
+      botState.updateState('currentProfit', expectedProfitPercent);
     }
 
     /** *****************************************SELL ACTIONS********************************************************/
@@ -1998,83 +2002,76 @@ import {
       return;
     }
     if (conditions.scalper.sell.stopLoss) {
+      botState.updateState('status', 'isPending');
+      let openOrders;
       try {
-        botState.updateState('status', 'isPending');
-        const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
-        if (
-          openOrders.length === 0 &&
-          !botState.sellError &&
-          botState.enabledLimits
-        ) {
-          const { available: refreshedUSDTBalance } = await getBalances('USDT');
-          botState.updateState('availableUSDT', +refreshedUSDTBalance);
-          botState.dealsCount++;
-          await sendToRecipients(`INFO
-          No open limit sell orders found
-          Bot was switched to the BUY
-      `);
-          botState.updateState('status', 'buy');
-          return;
-        } else {
-          if (openOrders.length !== 0) {
-            await cancelAllOpenOrders(symbol.toUpperCase());
-            await marketSellAction(
-              'scalper',
-              true,
-              symbol,
-              botState,
-              cryptoCoin,
-              expectedProfitPercent,
-              pricesStream,
-              stepSize,
-              initialUSDTBalance,
-              'STOP LOSS',
-              indicatorsData,
-            );
-            botState.sellError = false;
-            botState.enabledLimits = false;
-            // botState.rebuy = true;
-            return;
-          }
-          // await marketSellAction(
-          //   'scalper',
-          //   false,
-          //   symbol,
-          //   botState,
-          //   cryptoCoin,
-          //   expectedProfitPercent,
-          //   pricesStream,
-          //   stepSize,
-          //   initialUSDTBalance,
-          //   'TRENDS CATCHER 2 (STOP LOSS)',
-          //   indicatorsData,
-          // );
-          // botState.sellError = false;
-          // botState.enabledLimits = false;
-          // return;
-        }
+        openOrders = await checkAllOpenOrders(symbol.toUpperCase());
       } catch (e) {
-        await sendToRecipients(`SELL ERROR
+        await sendToRecipients(`OPEN ORDERS CHECKING ERROR
             ${JSON.stringify(e)}
       `);
-        const { available: refreshedCryptoCoinBalance } = await getBalances(
-          cryptoCoin,
-        );
-        botState.updateState(
-          'availableCryptoCoin',
-          +refreshedCryptoCoinBalance,
-        );
-        botState.sellError = true;
-        botState.updateState('status', 'sell');
       }
-
+      if (
+        openOrders.length === 0 &&
+        !botState.sellError &&
+        botState.enabledLimits
+      ) {
+        const { available: refreshedUSDTBalance } = await getBalances('USDT');
+        botState.updateState('availableUSDT', +refreshedUSDTBalance);
+        botState.updateState('enabledLimits', false);
+        botState.dealsCount++;
+        await sendToRecipients(`INFO
+          No open limit sell orders found
+          Bot was switched to the BUY status!
+      `);
+        botState.updateState('status', 'buy');
+        return;
+      } else if (openOrders.length !== 0) {
+        await cancelAllOpenOrders(symbol.toUpperCase());
+        await marketSellAction(
+          'scalper',
+          true,
+          symbol,
+          botState,
+          cryptoCoin,
+          expectedProfitPercent,
+          pricesStream,
+          stepSize,
+          initialUSDTBalance,
+          'STOP LOSS',
+          indicatorsData,
+        );
+        return;
+      }
+      await marketSellAction(
+        'scalper',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'TRENDS CATCHER 2 (STOP LOSS)',
+        indicatorsData,
+      );
       return;
+      // catch (e) {
+      //   const { available: refreshedCryptoCoinBalance } = await getBalances(
+      //     cryptoCoin,
+      //   );
+      //   botState.updateState(
+      //     'availableCryptoCoin',
+      //     +refreshedCryptoCoinBalance,
+      //   );
+      //   botState.sellError = true;
+      //   botState.updateState('status', 'sell');
+      // }
     }
 
     botState.updateState('prevPrice', botState.currentPrice);
     botState.updateState('currentProfit', expectedProfitPercent);
-    botState.updateState('isPricesStreamAlive', true);
-    indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount = 0;
   };
 
   // getRocSignal(symbol, '1m', indicatorsData.roc);
