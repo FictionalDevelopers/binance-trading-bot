@@ -2137,7 +2137,7 @@ import {
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
-    await sendToRecipients(`INIT (LOCAL)
+    await sendToRecipients(`INIT REAL MODE (LOCAL)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
   Strategies: ${JSON.stringify(botState.strategies)}
