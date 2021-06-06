@@ -7,7 +7,13 @@ import { getTradeStream } from './api/trades.js';
 import { sendToRecipients } from './services/telegram';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
-import { marketSellAction, marketBuyAction, getOrdersList } from './api/order';
+import {
+  marketSellAction,
+  marketBuyAction,
+  getOrdersList,
+  checkAllOpenOrders,
+  cancelAllOpenOrders,
+} from './api/order';
 
 import _maxBy from 'lodash/maxBy';
 import { binance } from './api/binance';
@@ -51,35 +57,34 @@ import {
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
-  // const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
-  // const ordersList = await getOrdersList(symbol.toUpperCase());
-  // const lastOrder = ordersList[ordersList.length - 1] || null;
-  const workingDeposit = 400;
+  const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+  const ordersList = await getOrdersList(symbol.toUpperCase());
+  const lastOrder = ordersList[ordersList.length - 1] || null;
+  const workingDeposit = 25;
   // const symbol = process.argv[2];
-  // let botState;
+  let botState;
   //
-  // try {
-  //   const response = await botStateService.getBotState();
-  //   const initialState = JSON.parse(JSON.stringify(_head(response)));
-  //
-  //   botState = {
-  //     ...initialState,
-  //     availableUSDT: initialUSDTBalance,
-  //     availableCryptoCoin: initialCryptoCoinBalance,
-  //     updateState: function(fieldName, value) {
-  //       this[`${fieldName}`] = value;
-  //     },
-  //   };
-  // } catch (e) {
-  //   await sendToRecipients(`ERROR
-  //   ${JSON.stringify(e)};
-  // `);
-  //
-  //   process.exit(1);
-  // }
+  try {
+    const response = await botStateService.getBotState();
+    const initialState = JSON.parse(JSON.stringify(_head(response)));
+
+    botState = {
+      ...initialState,
+      availableUSDT: initialUSDTBalance,
+      availableCryptoCoin: initialCryptoCoinBalance,
+      updateState: function(fieldName, value) {
+        this[`${fieldName}`] = value;
+      },
+    };
+  } catch (e) {
+    await sendToRecipients(`BOT STATE INITIALIZING ERROR
+    ${JSON.stringify(e)};
+  `);
+
+    process.exit(1);
+  }
 
   const botState = {
-    prevAvgPriceAvgDealPriceDiff: null,
     dealPricesArr: [],
     avgDealPrice: null,
     prevAvgDealPrice: null,
@@ -155,7 +160,6 @@ import {
   };
 
   const indicatorsData = {
-    avgPriceAvgDealPriceDiff: 0,
     avgDealPriceUpSignalCount: 0,
     avgDealPriceDownSignalCount: 0,
     avgDealPriceSignal: null,
@@ -1994,19 +1998,76 @@ import {
       return;
     }
     if (conditions.scalper.sell.stopLoss) {
-      await marketSellAction(
-        'scalper',
-        false,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        stepSize,
-        initialUSDTBalance,
-        'TRENDS CATCHER 2 (STOP LOSS)',
-        indicatorsData,
-      );
+      try {
+        botState.updateState('status', 'isPending');
+        const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+        if (
+          openOrders.length === 0 &&
+          !botState.sellError &&
+          botState.enabledLimits
+        ) {
+          const { available: refreshedUSDTBalance } = await getBalances('USDT');
+          botState.updateState('availableUSDT', +refreshedUSDTBalance);
+          botState.dealsCount++;
+          await sendToRecipients(`INFO
+          No open limit sell orders found
+          Bot was switched to the BUY
+      `);
+          botState.updateState('status', 'buy');
+          return;
+        } else {
+          if (openOrders.length !== 0) {
+            await cancelAllOpenOrders(symbol.toUpperCase());
+            await marketSellAction(
+              'scalper',
+              true,
+              symbol,
+              botState,
+              cryptoCoin,
+              expectedProfitPercent,
+              pricesStream,
+              stepSize,
+              initialUSDTBalance,
+              'STOP LOSS',
+              indicatorsData,
+            );
+            botState.sellError = false;
+            botState.enabledLimits = false;
+            // botState.rebuy = true;
+            return;
+          }
+          // await marketSellAction(
+          //   'scalper',
+          //   false,
+          //   symbol,
+          //   botState,
+          //   cryptoCoin,
+          //   expectedProfitPercent,
+          //   pricesStream,
+          //   stepSize,
+          //   initialUSDTBalance,
+          //   'TRENDS CATCHER 2 (STOP LOSS)',
+          //   indicatorsData,
+          // );
+          // botState.sellError = false;
+          // botState.enabledLimits = false;
+          // return;
+        }
+      } catch (e) {
+        await sendToRecipients(`SELL ERROR
+            ${JSON.stringify(e)}
+      `);
+        const { available: refreshedCryptoCoinBalance } = await getBalances(
+          cryptoCoin,
+        );
+        botState.updateState(
+          'availableCryptoCoin',
+          +refreshedCryptoCoinBalance,
+        );
+        botState.sellError = true;
+        botState.updateState('status', 'sell');
+      }
+
       return;
     }
 

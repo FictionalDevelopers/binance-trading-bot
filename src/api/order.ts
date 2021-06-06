@@ -46,7 +46,7 @@ export const limitSell = (
 
 export const setLimitSellOrders = async (symbol, botState, stepSize) => {
   const limitSellOrderAmount = binance.roundStep(
-    Number(botState.availableCryptoCoin) * 0.33,
+    Number(botState.availableCryptoCoin) * 0.5,
     stepSize,
   );
 
@@ -55,18 +55,18 @@ export const setLimitSellOrders = async (symbol, botState, stepSize) => {
       limitSell(
         symbol.toUpperCase(),
         +limitSellOrderAmount,
+        +Number(botState.buyPrice * 1.005).toPrecision(4),
+      ),
+      limitSell(
+        symbol.toUpperCase(),
+        +limitSellOrderAmount,
         +Number(botState.buyPrice * 1.01).toPrecision(4),
       ),
-      limitSell(
-        symbol.toUpperCase(),
-        +limitSellOrderAmount,
-        +Number(botState.buyPrice * 1.02).toPrecision(4),
-      ),
-      limitSell(
-        symbol.toUpperCase(),
-        +limitSellOrderAmount,
-        +Number(botState.buyPrice * 1.04).toPrecision(4),
-      ),
+      // limitSell(
+      //   symbol.toUpperCase(),
+      //   +limitSellOrderAmount,
+      //   +Number(botState.buyPrice * 1.04).toPrecision(4),
+      // ),
     ]);
     // botState.enabledLimits = true;
   } catch (e) {
