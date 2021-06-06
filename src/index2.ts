@@ -79,6 +79,7 @@ import {
   // }
 
   const botState = {
+    prevAvgPriceAvgDealPriceDiff: null,
     dealPricesArr: [],
     avgDealPrice: null,
     prevAvgDealPrice: null,
@@ -154,6 +155,7 @@ import {
   };
 
   const indicatorsData = {
+    avgPriceAvgDealPriceDiff: 0,
     avgDealPriceUpSignalCount: 0,
     avgDealPriceDownSignalCount: 0,
     avgDealPriceSignal: null,
@@ -1158,12 +1160,12 @@ import {
           botState.status === 'buy' &&
           // indicatorsData.avgPriceSignal === 'buy' &&
           indicatorsData.obv5m.signal === 'buy' &&
-          indicatorsData.obv1m.signal === 'buy' &&
+          // indicatorsData.obv1m.signal === 'buy' &&
           indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-          indicatorsData.haCandle.ha5mCandle.signal === 'buy',
-        // indicatorsData.obv1h.signal === 'buy' &&
-        // (indicatorsData.dmi5m.adxUpCount >= 2 ||
-        //   indicatorsData.dmi5m.adxDownCount >= 2),
+          // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+          // indicatorsData.obv1h.signal === 'buy' &&
+          (indicatorsData.dmi1m.adxUpCount >= 2 ||
+            indicatorsData.dmi1m.adxDownCount >= 2),
 
         // indicatorsData.stochRsi.stoch1h.signal === 'buy',
 
@@ -1263,9 +1265,13 @@ import {
             indicatorsData.avgDealPriceSignal === 'sell' &&
             indicatorsData.avgPriceSignal === 'sell' &&
             indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-            indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
+            // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
             indicatorsData.obv5m.signal === 'sell' &&
-            indicatorsData.obv1m.signal === 'sell',
+            // indicatorsData.obv1m.signal === 'sell') &&
+            Number((botState.avgPrice / botState.avgDealPrice) * 100 - 100) <
+              0 &&
+            (indicatorsData.dmi1m.adxDownCount >= 2 ||
+              indicatorsData.dmi1m.adxUpCount >= 2),
 
           // indicatorsData.obv1h.signal === 'sell' &&
           // indicatorsData.obv15m.signal === 'sell' &&
@@ -1277,8 +1283,6 @@ import {
           // (indicatorsData.dmi1h.adxUpCount >= 1 ||
           //   indicatorsData.dmi1h.adxDownCount >= 1),
 
-          // (indicatorsData.dmi1m.adxDownCount >= 2 ||
-          //   indicatorsData.dmi1m.adxUpCount >= 2)) ||
           // (indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
           //   (indicatorsData.dmi1m.adxDownCount >= 2 ||
           //     indicatorsData.dmi1m.adxUpCount >= 2))),
@@ -2186,11 +2190,11 @@ import {
 
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 2);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 2);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
   getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
-  getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
+  getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
 
   // getHeikinAshiSignal(symbol, '1h', 3, 3, indicatorsData.haCandle.ha1hCandle);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
@@ -2325,15 +2329,15 @@ import {
       //     indicatorsData.dmi5m.adxDownCount +
       //     ')',
       // );
-      // console.log(
-      //   'ADX 1m: ' +
-      //     '(UP: ' +
-      //     indicatorsData.dmi1m.adxUpCount +
-      //     ' ' +
-      //     'DOWN: ' +
-      //     indicatorsData.dmi1m.adxDownCount +
-      //     ')',
-      // );
+      console.log(
+        'ADX 1m: ' +
+          '(UP: ' +
+          indicatorsData.dmi1m.adxUpCount +
+          ' ' +
+          'DOWN: ' +
+          indicatorsData.dmi1m.adxDownCount +
+          ')',
+      );
 
       // console.log('OBV 5m Val: ' + indicatorsData.obv5m.prevObv);
       // console.log('OBV 5m Diff: ' + indicatorsData.obv5m.obvDiff + ' %');

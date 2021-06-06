@@ -33,7 +33,7 @@ export const calculateAvgDealPriceChange = (botState, indicatorsData) => {
     }
     if (indicatorsData.avgDealPriceUpSignalCount >= 3)
       indicatorsData.avgDealPriceSignal = 'buy';
-    else if (indicatorsData.avgDealPriceDownSignalCount >= 3)
+    else if (indicatorsData.avgDealPriceDownSignalCount >= 1)
       indicatorsData.avgDealPriceSignal = 'sell';
   }
 };
@@ -79,7 +79,7 @@ export const calculateAvgPriceChange = (
       }
       if (indicatorsData.avgPriceUpSignalCount >= 2)
         indicatorsData.avgPriceSignal = 'buy';
-      else if (indicatorsData.avgPriceDownSignalCount >= 2)
+      else if (indicatorsData.avgPriceDownSignalCount >= 1)
         indicatorsData.avgPriceSignal = 'sell';
     });
 };
