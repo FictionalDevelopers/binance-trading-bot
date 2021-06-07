@@ -361,7 +361,22 @@ export const marketSellAction = async (
     } else {
       botState.updateState('status', 'isPending');
       botState.strategies[`${strategy}`].stopLoss = false;
+      botState.updateState('enabledLimits', false);
+      const { available: refreshedUSDTBalance } = await getBalances('USDT');
+      botState.updateState('availableUSDT', +refreshedUSDTBalance);
+      const { available: refreshedCryptoCoinBalance } = await getBalances(
+        cryptoCoin,
+      );
+      botState.updateState('availableCryptoCoin', refreshedCryptoCoinBalance);
+      botState.dealsCount++;
       botState.updateState('status', 'buy');
+      await botStateService.trackBotState(
+        _omit(botState, [
+          'availableUSDT',
+          'availableCryptoCoin',
+          'updateState',
+        ]),
+      );
     }
   }
 };

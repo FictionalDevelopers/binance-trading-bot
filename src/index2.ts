@@ -2017,21 +2017,23 @@ import {
         !botState.sellError &&
         botState.enabledLimits
       ) {
-        const { available: refreshedUSDTBalance } = await getBalances('USDT');
-        botState.updateState('availableUSDT', +refreshedUSDTBalance);
-        botState.updateState('enabledLimits', false);
-        botState.dealsCount++;
         await sendToRecipients(`INFO
           No open limit sell orders found
           Bot was switched to the BUY status!
       `);
-        botState.updateState('status', 'buy');
-        await botStateService.trackBotState(
-          _omit(botState, [
-            'availableUSDT',
-            'availableCryptoCoin',
-            'updateState',
-          ]),
+        await marketSellAction(
+          'scalper',
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          expectedProfitPercent,
+          pricesStream,
+          stepSize,
+          initialUSDTBalance,
+          'STOP LOSS',
+          indicatorsData,
+          true,
         );
         return;
       } else if (openOrders.length !== 0) {
