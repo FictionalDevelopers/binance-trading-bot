@@ -1,6 +1,7 @@
 import { pluck, bufferCount } from 'rxjs/operators';
 import { format } from 'date-fns';
 import { connect } from './db/connection';
+import _omit from 'lodash/omit';
 import { RESOURCES } from './constants';
 import { DATE_FORMAT } from './constants/date';
 import { getTradeStream } from './api/trades.js';
@@ -60,7 +61,7 @@ import {
   const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
   const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1] || null;
-  const workingDeposit = 25;
+  const workingDeposit = 35;
   // const symbol = process.argv[2];
   let botState;
   //
@@ -1168,7 +1169,7 @@ import {
           indicatorsData.obv5m.signal === 'buy' &&
           // indicatorsData.obv1m.signal === 'buy' &&
           indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-          // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+          indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
           // indicatorsData.obv1h.signal === 'buy' &&
           (indicatorsData.dmi1m.adxUpCount >= 2 ||
             indicatorsData.dmi1m.adxDownCount >= 2),
@@ -1271,7 +1272,7 @@ import {
             indicatorsData.avgDealPriceSignal === 'sell' &&
             indicatorsData.avgPriceSignal === 'sell' &&
             indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-            // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
+            indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
             indicatorsData.obv5m.signal === 'sell' &&
             // indicatorsData.obv1m.signal === 'sell') &&
             Number((botState.avgPrice / botState.avgDealPrice) * 100 - 100) <
@@ -2025,6 +2026,13 @@ import {
           Bot was switched to the BUY status!
       `);
         botState.updateState('status', 'buy');
+        await botStateService.trackBotState(
+          _omit(botState, [
+            'availableUSDT',
+            'availableCryptoCoin',
+            'updateState',
+          ]),
+        );
         return;
       } else if (openOrders.length !== 0) {
         await cancelAllOpenOrders(symbol.toUpperCase());
@@ -2141,6 +2149,7 @@ import {
   Status: ${botState.status.toUpperCase()}
   Symbol: ${symbol.toUpperCase()}
   Initial USDT balance: ${initialUSDTBalance} USDT
+  Working deposit: ${workingDeposit} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
   `);
   }
@@ -2251,7 +2260,7 @@ import {
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
   getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
-  // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
+  getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
   getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
 
   // getHeikinAshiSignal(symbol, '1h', 3, 3, indicatorsData.haCandle.ha1hCandle);
@@ -2492,7 +2501,7 @@ import {
       if (
         indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount >= 20
       )
-        await sendToRecipients(`WARNING !!! ${botState.strategy}
+        await sendToRecipients(`WARNING !!! TRENDS CATCHER
         Prices stream is DEAD!!! Restart bot immediately!
   `);
     }, 500);
