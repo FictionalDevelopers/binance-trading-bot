@@ -74,7 +74,8 @@ import determineDealType from './tools/determineDealType';
       ...initialState,
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
-      local: false,
+      dealType: 'undetermined',
+      local: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
         this[`${fieldName}`] = value;

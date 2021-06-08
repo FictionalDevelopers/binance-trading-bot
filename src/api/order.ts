@@ -482,7 +482,7 @@ export const marketBuyAction = async (
       if (profitLevels) {
         await setLimitSellOrders(symbol, botState, stepSize);
       }
-      botState.updateState('dealType', 'long');
+      botState.updateState('dealType', dealType);
       botState.updateState('status', 'sell');
       botState.updateState('prevPrice', botState.currentPrice);
       await botStateService.trackBotState(
