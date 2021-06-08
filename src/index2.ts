@@ -1177,24 +1177,28 @@ import determineDealType from './tools/determineDealType';
 
     const conditions = {
       scalper: {
-        buy:
-          botState.status === 'buy' &&
-          ((indicatorsData.dealType === 'long' &&
+        buy: {
+          long:
+            botState.status === 'buy' &&
+            indicatorsData.dealType === 'long' &&
             // indicatorsData.avgPriceSignal === 'buy' &&
             indicatorsData.obv5m.signal === 'buy' &&
             indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
             indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
             // indicatorsData.obv1h.signal === 'buy' &&
             (indicatorsData.dmi1m.adxUpCount >= 2 ||
-              indicatorsData.dmi1m.adxDownCount >= 2)) ||
-            (indicatorsData.dealType === 'short' &&
-              // indicatorsData.avgPriceSignal === 'buy' &&
-              indicatorsData.obv5m.signal === 'sell' &&
-              indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-              indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
-              // indicatorsData.obv1h.signal === 'buy' &&
-              (indicatorsData.dmi1m.adxUpCount >= 2 ||
-                indicatorsData.dmi1m.adxDownCount >= 2))),
+              indicatorsData.dmi1m.adxDownCount >= 2),
+          short:
+            botState.status === 'buy' &&
+            indicatorsData.dealType === 'short' &&
+            // indicatorsData.avgPriceSignal === 'buy' &&
+            indicatorsData.obv5m.signal === 'sell' &&
+            indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+            indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
+            // indicatorsData.obv1h.signal === 'buy' &&
+            (indicatorsData.dmi1m.adxUpCount >= 2 ||
+              indicatorsData.dmi1m.adxDownCount >= 2),
+        },
 
         // indicatorsData.stochRsi.stoch1h.signal === 'buy',
 
@@ -1289,9 +1293,10 @@ import determineDealType from './tools/determineDealType';
           // botState.status === 'sell' &&
           // expectedProfitPercent > 0.2 &&ects
           // indicatorsData.obv5m.sellSignalCount >= 1,
-          stopLoss:
-            botState.status === 'sell' &&
-            ((indicatorsData.avgDealPriceSignal === 'sell' &&
+          stopLoss: {
+            long:
+              botState.status === 'sell' &&
+              indicatorsData.avgDealPriceSignal === 'sell' &&
               indicatorsData.avgPriceSignal === 'sell' &&
               indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
               indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
@@ -1299,16 +1304,19 @@ import determineDealType from './tools/determineDealType';
               // indicatorsData.obv1m.signal === 'sell') &&
               // Number((botState.avgPrice / botState.avgDealPrice) * 100 - 100) < 0
               (indicatorsData.dmi1m.adxDownCount >= 2 ||
-                indicatorsData.dmi1m.adxUpCount >= 2)) ||
-              (indicatorsData.avgDealPriceSignal === 'buy' &&
-                indicatorsData.avgPriceSignal === 'buy' &&
-                indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-                indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
-                indicatorsData.obv5m.signal === 'buy' &&
-                // indicatorsData.obv1m.signal === 'sell') &&
-                // Number((botState.avgPrice / botState.avgDealPrice) * 100 - 100) < 0
-                (indicatorsData.dmi1m.adxDownCount >= 2 ||
-                  indicatorsData.dmi1m.adxUpCount >= 2))),
+                indicatorsData.dmi1m.adxUpCount >= 2),
+            short:
+              botState.status === 'sell' &&
+              indicatorsData.avgDealPriceSignal === 'buy' &&
+              indicatorsData.avgPriceSignal === 'buy' &&
+              indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+              indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+              indicatorsData.obv5m.signal === 'buy' &&
+              // indicatorsData.obv1m.signal === 'sell') &&
+              // Number((botState.avgPrice / botState.avgDealPrice) * 100 - 100) < 0
+              (indicatorsData.dmi1m.adxDownCount >= 2 ||
+                indicatorsData.dmi1m.adxUpCount >= 2),
+          },
 
           // indicatorsData.obv1h.signal === 'sell' &&
           // indicatorsData.obv15m.signal === 'sell' &&
@@ -1756,9 +1764,30 @@ import determineDealType from './tools/determineDealType';
     // }
 
     if (botState.strategies.scalper.enabled) {
-      if (conditions.scalper.buy) {
+      if (conditions.scalper.buy.long) {
         await marketBuyAction(
           'long',
+          true,
+          symbol,
+          botState,
+          cryptoCoin,
+          pricesStream,
+          stepSize,
+          'TRENDS CATCHER 2',
+          workingDeposit,
+          'TRENDS CATCHER 2',
+          indicatorsData,
+        );
+        botState.buyReason = 'scalper';
+        return;
+      }
+      botState.updateState('prevPrice', botState.currentPrice);
+      botState.updateState('currentProfit', expectedProfitPercent);
+    }
+    if (botState.strategies.scalper.enabled) {
+      if (conditions.scalper.buy.short) {
+        await marketBuyAction(
+          'short',
           true,
           symbol,
           botState,
@@ -2033,7 +2062,7 @@ import determineDealType from './tools/determineDealType';
       );
       return;
     }
-    if (conditions.scalper.sell.stopLoss) {
+    if (conditions.scalper.sell.stopLoss.long) {
       botState.updateState('status', 'isPending');
       let openOrders;
       try {
@@ -2109,6 +2138,22 @@ import determineDealType from './tools/determineDealType';
       //   botState.sellError = true;
       //   botState.updateState('status', 'sell');
       // }
+    }
+    if (conditions.scalper.sell.stopLoss.short) {
+      await marketSellAction(
+        'scalper',
+        true,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'STOP LOSS',
+        indicatorsData,
+      );
+      return;
     }
 
     botState.updateState('prevPrice', botState.currentPrice);
