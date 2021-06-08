@@ -1,6 +1,7 @@
 import { model, Schema, Document } from 'mongoose';
 
 export interface BotState extends Document {
+  dealType: string;
   strategyId: number;
   strategies: any;
   buyReason: string;
@@ -220,6 +221,10 @@ const schema = new Schema({
   prevAvgPrice: {
     type: Number,
     default: 0,
+  },
+  dealType: {
+    type: String,
+    default: '',
   },
 });
 

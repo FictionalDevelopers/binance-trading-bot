@@ -145,6 +145,7 @@ export const marketSellAction = async (
             botState.local ? '(LOCAL)' : '(REMOTE)'
           }
                                     Strategy: ${strategy}
+                                    Deal Type: ${botState.dealType.toUpperCase()}
                                     Sell reason: ${sellReason}
                                     Deal №: ${botState.dealsCount}
                                     Symbol: ${symbol.toUpperCase()}
@@ -324,6 +325,7 @@ export const marketSellAction = async (
         await sendToRecipients(`SELL
                  Strategy: ${strategy}
                  Reason: ${sellReason}
+                 Deal Type: ${botState.dealType.toUpperCase()}
                  Deal №: ${botState.dealsCount}
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.order.fills[0].price} USDT
@@ -382,6 +384,7 @@ export const marketSellAction = async (
 };
 
 export const marketBuyAction = async (
+  dealType,
   profitLevels,
   symbol,
   botState,
@@ -405,6 +408,7 @@ export const marketBuyAction = async (
         await sendToRecipients(`BUY ${botState.local ? '(LOCAL)' : '(REMOTE)'}
                                Strategy:${strategy}
                                Reason: ${buyReason}
+                               Deal Type: ${dealType.toUpperCase()}
                                Deal №: ${botState.dealsCount}
                                Symbol: ${symbol.toUpperCase()}
                                Price: ${botState.buyPrice}
@@ -414,12 +418,14 @@ export const marketBuyAction = async (
       console.log(`BUY
                              Strategy:${strategy}
                              Reason: ${buyReason}
+                             Deal Type: ${dealType.toUpperCase()}
                              Deal №: ${botState.dealsCount}
                              Symbol: ${symbol.toUpperCase()}
                              Price: ${botState.buyPrice}
                              Date: ${format(new Date(), DATE_FORMAT)}
               `);
       botState.confirmation = false;
+      botState.updateState('dealType', dealType);
       botState.updateState('status', 'sell');
       botState.updateState('prevPrice', botState.currentPrice);
       if (!botState.local) {
@@ -464,6 +470,7 @@ export const marketBuyAction = async (
                  Strategy: ${strategy}
                  Reason: ${buyReason}
                  ${botState.strategy}
+                 Deal Type: ${botState.dealType.toUpperCase()}
                  Deal №: ${botState.dealsCount}
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.buyPrice} USDT
@@ -475,6 +482,7 @@ export const marketBuyAction = async (
       if (profitLevels) {
         await setLimitSellOrders(symbol, botState, stepSize);
       }
+      botState.updateState('dealType', 'long');
       botState.updateState('status', 'sell');
       botState.updateState('prevPrice', botState.currentPrice);
       await botStateService.trackBotState(

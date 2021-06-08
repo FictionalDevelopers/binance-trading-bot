@@ -47,6 +47,7 @@ import {
   calculateAvgDealPriceChange,
   calculateAvgPriceChange,
 } from './tools/avgPriceTools';
+import determineDealType from './tools/determineDealType';
 // import { indicatorsData } from './index2';
 
 (async function() {
@@ -73,6 +74,8 @@ import {
       ...initialState,
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
+      local: true,
+      logToTelegram: true,
       updateState: function(fieldName, value) {
         this[`${fieldName}`] = value;
       },
@@ -161,6 +164,7 @@ import {
   // };
 
   const indicatorsData = {
+    dealType: '',
     avgDealPriceUpSignalCount: 0,
     avgDealPriceDownSignalCount: 0,
     avgDealPriceSignal: null,
@@ -289,6 +293,14 @@ import {
     obvBuySignalCount: 0,
     obvSellSignalCount: 0,
     prevObv: null,
+    obv4h: {
+      signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+      obv: null,
+      prevObv: null,
+      obvDiff: null,
+    },
     obv1h: {
       signal: null,
       buySignalCount: 0,
@@ -1156,6 +1168,8 @@ import {
       : 0;
     if (expectedProfitPercent > botState.maxAvailableProfit)
       botState.updateState('maxAvailableProfit', expectedProfitPercent);
+    if (expectedProfitPercent < botState.minAvailableProfit)
+      botState.updateState('minAvailableProfit', expectedProfitPercent);
     // botState.updateState(
     //   'profitDiff',
     //   Number(botState.maxAvailableProfit / expectedProfitPercent),
@@ -1165,9 +1179,9 @@ import {
       scalper: {
         buy:
           botState.status === 'buy' &&
+          indicatorsData.dealType === 'long' &&
           // indicatorsData.avgPriceSignal === 'buy' &&
           indicatorsData.obv5m.signal === 'buy' &&
-          // indicatorsData.obv1m.signal === 'buy' &&
           indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
           indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
           // indicatorsData.obv1h.signal === 'buy' &&
@@ -1265,7 +1279,7 @@ import {
           //     indicatorsData.obv1m.sellSignalCount >= 4)),
 
           // botState.status === 'sell' &&
-          // expectedProfitPercent > 0.2 &&ect
+          // expectedProfitPercent > 0.2 &&ects
           // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss:
             botState.status === 'sell' &&
@@ -1275,8 +1289,7 @@ import {
             indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
             indicatorsData.obv5m.signal === 'sell' &&
             // indicatorsData.obv1m.signal === 'sell') &&
-            Number((botState.avgPrice / botState.avgDealPrice) * 100 - 100) <
-              0 &&
+            // Number((botState.avgPrice / botState.avgDealPrice) * 100 - 100) < 0
             (indicatorsData.dmi1m.adxDownCount >= 2 ||
               indicatorsData.dmi1m.adxUpCount >= 2),
 
@@ -1728,6 +1741,7 @@ import {
     if (botState.strategies.scalper.enabled) {
       if (conditions.scalper.buy) {
         await marketBuyAction(
+          'long',
           true,
           symbol,
           botState,
@@ -2257,9 +2271,10 @@ import {
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
 
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 2);
+  getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 2);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
   getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
   getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
@@ -2300,7 +2315,7 @@ import {
     setInterval(async () => {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
       calculateAvgDealPriceChange(botState, indicatorsData);
-
+      indicatorsData.dealType = determineDealType(indicatorsData);
       // console.log(
       //   'OBV 1h: ' +
       //     indicatorsData.obv1h.signal +
@@ -2323,6 +2338,8 @@ import {
       //     indicatorsData.obv15m.sellSignalCount +
       //     ')',
       // );
+      if (indicatorsData.dealType)
+        console.log('Deal Type: ' + indicatorsData.dealType.toUpperCase());
       console.log(
         'Candle: ' +
           // 'open: ' +
@@ -2341,6 +2358,17 @@ import {
           ' ' +
           'Sell Count: ' +
           indicatorsData.haCandle.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 4h: ' +
+          indicatorsData.obv4h.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv4h.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv4h.sellSignalCount +
           ')',
       );
       console.log(

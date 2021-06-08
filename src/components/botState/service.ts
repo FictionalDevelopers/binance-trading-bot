@@ -1,6 +1,7 @@
 import BotStateModel, { BotState } from './model';
 
 export async function trackBotState(botState: {
+  dealType: string;
   maxAvailableProfit: number;
   totalMaxAvailableProfit: number;
   profitDiff: number;
