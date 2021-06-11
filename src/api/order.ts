@@ -494,7 +494,7 @@ export const marketBuyAction = async (
                  Strategy: ${strategy}
                  Reason: ${buyReason}
                  ${botState.strategy}
-                 Deal Type: ${botState.dealType.toUpperCase()}
+                 Deal Type: ${dealType.toUpperCase()}
                  Deal №: ${botState.dealsCount}
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.buyPrice} USDT
