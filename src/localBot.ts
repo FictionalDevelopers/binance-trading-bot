@@ -77,6 +77,7 @@ import determineDealType from './tools/determineDealType';
       dealType: 'undetermined',
       local: true,
       logToTelegram: true,
+      status: 'pending',
       updateState: function(fieldName, value) {
         this[`${fieldName}`] = value;
       },
@@ -2327,15 +2328,15 @@ import determineDealType from './tools/determineDealType';
   //   2,
   //   2,
   // );
-  getStochRSISignal(
-    symbol,
-    '5m',
-    indicatorsData.stochRsi.stoch5m,
-    1.5,
-    1.5,
-    2,
-    2,
-  );
+  // getStochRSISignal(
+  //   symbol,
+  //   '5m',
+  //   indicatorsData.stochRsi.stoch5m,
+  //   1.5,
+  //   1.5,
+  //   2,
+  //   2,
+  // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
 
   getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
