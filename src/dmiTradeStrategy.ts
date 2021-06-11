@@ -1270,7 +1270,10 @@ import determineDealType from './tools/determineDealType';
         // indicatorsData.scalper.tradesVolume.buySignalCount >= 1,
 
         sell: {
-          takeProfit: null,
+          takeProfit: {
+            long: null,
+            short: null,
+          },
           //     {
           //   long:
           //     botState.status === 'sell' &&
