@@ -1270,16 +1270,18 @@ import determineDealType from './tools/determineDealType';
         // indicatorsData.scalper.tradesVolume.buySignalCount >= 1,
 
         sell: {
-          takeProfit: {
-            long:
-              botState.status === 'sell' &&
-              botState.dealType === 'long' &&
-              expectedProfitPercent < 0,
-            short:
-              botState.status === 'sell' &&
-              botState.dealType === 'short' &&
-              expectedProfitPercent > 0,
-          },
+          takeProfit: null,
+          //     {
+          //   long:
+          //     botState.status === 'sell' &&
+          //     botState.dealType === 'long' &&
+          //     expectedProfitPercent < 0,
+          //   short:
+          //     botState.status === 'sell' &&
+          //     botState.dealType === 'short' &&
+          //     expectedProfitPercent > 0,
+          // },
+
           // botState.status === 'sell' &&
           // indicatorsData.avgDealPriceSignal === 'sell' &&
           // indicatorsData.avgPriceSignal === 'sell' &&
@@ -1308,6 +1310,7 @@ import determineDealType from './tools/determineDealType';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
+              indicatorsData.dealType === 'short' &&
               indicatorsData.avgDealPriceSignal === 'sell' &&
               indicatorsData.avgPriceSignal === 'sell' &&
               indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
@@ -1320,6 +1323,7 @@ import determineDealType from './tools/determineDealType';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
+              indicatorsData.dealType === 'long' &&
               indicatorsData.avgDealPriceSignal === 'buy' &&
               indicatorsData.avgPriceSignal === 'buy' &&
               indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
@@ -2369,7 +2373,7 @@ import determineDealType from './tools/determineDealType';
   getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 2);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
   getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
   getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
@@ -2410,7 +2414,7 @@ import determineDealType from './tools/determineDealType';
     setInterval(async () => {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
       calculateAvgDealPriceChange(botState, indicatorsData);
-      indicatorsData.dealType = determineDealType(indicatorsData, 2);
+      indicatorsData.dealType = determineDealType(indicatorsData, 6);
       // console.log(
       //   'OBV 1h: ' +
       //     indicatorsData.obv1h.signal +
