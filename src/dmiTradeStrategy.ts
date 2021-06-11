@@ -1181,7 +1181,7 @@ import determineDealType from './tools/determineDealType';
           long:
             botState.status === 'buy' &&
             indicatorsData.dealType === 'long' &&
-            indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
+            // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
             // indicatorsData.avgPriceSignal === 'buy' &&
             indicatorsData.obv5m.signal === 'buy' &&
             indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
@@ -1192,7 +1192,7 @@ import determineDealType from './tools/determineDealType';
           short:
             botState.status === 'buy' &&
             indicatorsData.dealType === 'short' &&
-            indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
+            // indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
             // indicatorsData.avgPriceSignal === 'buy' &&
             indicatorsData.obv5m.signal === 'sell' &&
             indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
