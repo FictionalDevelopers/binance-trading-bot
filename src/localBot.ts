@@ -2383,7 +2383,7 @@ import determineDealType from './tools/determineDealType';
     setInterval(async () => {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
       calculateAvgDealPriceChange(botState, indicatorsData);
-      indicatorsData.dealType = determineDealType(indicatorsData, 2);
+      indicatorsData.dealType = determineDealType(indicatorsData, 4);
       // console.log(
       //   'OBV 1h: ' +
       //     indicatorsData.obv1h.signal +

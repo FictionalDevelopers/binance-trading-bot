@@ -268,7 +268,7 @@ export const marketSellAction = async (
           if (botState.dealType === 'long') {
             amount = binance.roundStep(+botState.order.executedQty, stepSize);
           } else if (botState.dealType === 'short') {
-            amount = binance.roundStep(botState.order.executedQty, stepSize);
+            amount = binance.roundStep(+botState.order.executedQty, stepSize);
           }
 
           let order;
