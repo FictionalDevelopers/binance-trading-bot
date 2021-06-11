@@ -264,11 +264,19 @@ export const marketSellAction = async (
           botState.updateState('order', order);
           botState.updateState('enabledLimits', false);
         } else {
-          const amount = binance.roundStep(
-            Number(botState.availableCryptoCoin),
-            stepSize,
-          );
-          const order = await marketSell(symbol.toUpperCase(), +amount);
+          let amount;
+          if (botState.dealType === 'long') {
+            amount = binance.roundStep(+botState.order.executedQty, stepSize);
+          } else if (botState.dealType === 'short') {
+            amount = binance.roundStep(botState.order.executedQty, stepSize);
+          }
+
+          let order;
+          if (botState.dealType === 'long') {
+            order = await marketSell(symbol.toUpperCase(), +amount);
+          } else if (botState.dealType === 'short') {
+            order = await marketBuy(symbol.toUpperCase(), +amount);
+          }
           botState.updateState('order', order);
         }
 
@@ -392,7 +400,7 @@ export const marketBuyAction = async (
   pricesStream,
   stepSize,
   strategy,
-  usdtAmount,
+  assetAmount,
   buyReason,
   indicatorsData,
 ) => {
@@ -451,11 +459,23 @@ export const marketBuyAction = async (
         Number(pricesStream[pricesStream.length - 1]),
       );
 
-      const amount = binance.roundStep(
-        usdtAmount / botState.currentPrice,
-        stepSize,
-      );
-      const order = await marketBuy(symbol.toUpperCase(), +amount);
+      let amount;
+      if (dealType === 'long') {
+        amount = binance.roundStep(
+          assetAmount / botState.currentPrice,
+          stepSize,
+        );
+      } else if (dealType === 'short') {
+        amount = binance.roundStep(Number(assetAmount), stepSize);
+      }
+
+      let order;
+      if (dealType === 'long') {
+        order = await marketBuy(symbol.toUpperCase(), +amount);
+      } else if (dealType === 'short') {
+        order = await marketSell(symbol.toUpperCase(), +amount);
+      }
+
       botState.updateState('buyPrice', Number(order.fills[0].price));
       botState.updateState('order', order);
       botState.updateState(
@@ -465,7 +485,11 @@ export const marketBuyAction = async (
       const { available: refreshedCryptoCoinBalance } = await getBalances(
         cryptoCoin,
       );
+      const { available: refreshedStableCoinBalance } = await getBalances(
+        'USDT',
+      );
       botState.updateState('availableCryptoCoin', refreshedCryptoCoinBalance);
+      botState.updateState('availableUSDT', refreshedStableCoinBalance);
       await sendToRecipients(`BUY
                  Strategy: ${strategy}
                  Reason: ${buyReason}
@@ -475,8 +499,14 @@ export const marketBuyAction = async (
                  Symbol: ${symbol.toUpperCase()}
                  Price: ${botState.buyPrice} USDT
                  Date: ${format(new Date(), DATE_FORMAT)}
-                 Prebuy stablecoin balance: ${botState.availableUSDT} USDT
+                 Stablecoin balance: ${botState.availableUSDT} USDT
+                 Stablecoin deal amount: ${Number(
+                   order.cummulativeQuoteQty,
+                 )} USDT
                  Cryptocoin balance: ${+botState.availableCryptoCoin} ${cryptoCoin}
+                 Cryptocoin deal amount: ${Number(
+                   order.executedQty,
+                 )} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
       if (profitLevels) {
