@@ -1270,7 +1270,16 @@ import determineDealType from './tools/determineDealType';
         // indicatorsData.scalper.tradesVolume.buySignalCount >= 1,
 
         sell: {
-          takeProfit: null,
+          takeProfit: {
+            long:
+              botState.status === 'sell' &&
+              botState.dealType === 'long' &&
+              expectedProfitPercent < 0,
+            short:
+              botState.status === 'sell' &&
+              botState.dealType === 'short' &&
+              expectedProfitPercent > 0,
+          },
           // botState.status === 'sell' &&
           // indicatorsData.avgDealPriceSignal === 'sell' &&
           // indicatorsData.avgPriceSignal === 'sell' &&
@@ -2047,7 +2056,27 @@ import determineDealType from './tools/determineDealType';
     //   return;
     // }
     if (
-      conditions.scalper.sell.takeProfit &&
+      conditions.scalper.sell.takeProfit.long &&
+      !botState.strategies.scalper.stopLoss
+    ) {
+      await marketSellAction(
+        'scalper',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'TRENDS CATCHER 2 (TAKE PROFIT)',
+        indicatorsData,
+        true,
+      );
+      return;
+    }
+    if (
+      conditions.scalper.sell.takeProfit.short &&
       !botState.strategies.scalper.stopLoss
     ) {
       await marketSellAction(
