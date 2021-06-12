@@ -1204,10 +1204,10 @@ import determineDealType from './tools/determineDealType';
             // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
             // indicatorsData.obv1h.signal === 'buy' &&
             ((indicatorsData.dmi1m.adxUpCount >= 2 &&
-              indicatorsData.rsi1m.rsiValue > 50) ||
+              indicatorsData.rsi1m.rsiValue !== null &&
+              indicatorsData.rsi1m.rsiValue < 50) ||
               (indicatorsData.dmi1m.adxDownCount >= 2 &&
-                indicatorsData.rsi1m.rsiValue !== null &&
-                indicatorsData.rsi1m.rsiValue < 50)),
+                indicatorsData.rsi1m.rsiValue > 50)),
         },
 
         // indicatorsData.stochRsi.stoch1h.signal === 'buy',
@@ -1308,10 +1308,10 @@ import determineDealType from './tools/determineDealType';
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
               ((indicatorsData.dmi1m.adxUpCount >= 2 &&
-                indicatorsData.rsi1m.rsiValue > 50) ||
+                indicatorsData.rsi1m.rsiValue !== null &&
+                indicatorsData.rsi1m.rsiValue < 50) ||
                 (indicatorsData.dmi1m.adxDownCount >= 2 &&
-                  indicatorsData.rsi1m.rsiValue !== null &&
-                  indicatorsData.rsi1m.rsiValue < 50)) &&
+                  indicatorsData.rsi1m.rsiValue > 50)) &&
               // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
               ((indicatorsData.avgDealPriceSignal === 'sell' &&
                 indicatorsData.avgPriceSignal === 'sell' &&
