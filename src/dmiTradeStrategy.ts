@@ -1301,8 +1301,8 @@ import determineDealType from './tools/determineDealType';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              (indicatorsData.dmi1m.adxUpCount >= 2 ||
-                indicatorsData.dmi1m.adxDownCount >= 2) &&
+              // (indicatorsData.dmi1m.adxUpCount >= 2 ||
+              //   indicatorsData.dmi1m.adxDownCount >= 2) &&
               // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
               ((indicatorsData.avgDealPriceSignal === 'sell' &&
                 indicatorsData.avgPriceSignal === 'sell' &&
@@ -1318,8 +1318,8 @@ import determineDealType from './tools/determineDealType';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              (indicatorsData.dmi1m.adxUpCount >= 2 ||
-                indicatorsData.dmi1m.adxDownCount >= 2) &&
+              // (indicatorsData.dmi1m.adxUpCount >= 2 ||
+              //   indicatorsData.dmi1m.adxDownCount >= 2) &&
               // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
               ((indicatorsData.avgDealPriceSignal === 'buy' &&
                 indicatorsData.avgPriceSignal === 'buy' &&
