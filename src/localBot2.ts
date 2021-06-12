@@ -1180,26 +1180,22 @@ import determineDealType from './tools/determineDealType';
     const conditions = {
       scalper: {
         buy: {
-          long:
-            botState.status === 'buy' &&
-            indicatorsData.dealType === 'long' &&
-            // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
-            // indicatorsData.avgPriceSignal === 'buy' &&
-            // indicatorsData.obv1m.signal === 'buy' &&
-            // indicatorsData.obv5m.signal === 'buy' &&
-            // indicatorsData.obv15m.signal === 'buy' &&
-            indicatorsData.haCandle.ha1mCandle.signal === 'buy',
+          long: botState.status === 'buy' && indicatorsData.dealType === 'long',
+          // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
+          // indicatorsData.avgPriceSignal === 'buy' &&
+          // indicatorsData.obv1m.signal === 'buy' &&
+          // indicatorsData.obv5m.signal === 'buy' &&
+          // indicatorsData.obv15m.signal === 'buy',
           // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
           // indicatorsData.obv1h.signal === 'buy' &&
           // (indicatorsData.dmi1m.adxUpCount >= 2 ||
           //   indicatorsData.dmi1m.adxDownCount >= 2),
           short:
-            botState.status === 'buy' &&
-            indicatorsData.dealType === 'short' &&
-            // indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
-            // indicatorsData.avgPriceSignal === 'buy' &&
-            // indicatorsData.obv5m.signal === 'sell' &&
-            indicatorsData.haCandle.ha1mCandle.signal === 'sell',
+            botState.status === 'buy' && indicatorsData.dealType === 'short',
+          // indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
+          // indicatorsData.avgPriceSignal === 'buy' &&
+          // indicatorsData.obv5m.signal === 'sell' &&
+          // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
           // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
           // indicatorsData.obv1h.signal === 'buy' &&
           // (indicatorsData.dmi1m.adxUpCount >= 2 ||
@@ -1305,7 +1301,7 @@ import determineDealType from './tools/determineDealType';
               botState.dealType === 'long' &&
               indicatorsData.avgDealPriceSignal === 'sell' &&
               indicatorsData.avgPriceSignal === 'sell' &&
-              indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+              // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
               // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
               indicatorsData.obv5m.signal === 'sell' &&
               indicatorsData.obv1m.signal === 'sell',
@@ -1317,7 +1313,7 @@ import determineDealType from './tools/determineDealType';
               botState.dealType === 'short' &&
               indicatorsData.avgDealPriceSignal === 'buy' &&
               indicatorsData.avgPriceSignal === 'buy' &&
-              indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+              // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
               // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
               indicatorsData.obv5m.signal === 'buy' &&
               indicatorsData.obv1m.signal === 'buy',
@@ -1781,9 +1777,9 @@ import determineDealType from './tools/determineDealType';
           cryptoCoin,
           pricesStream,
           stepSize,
-          'TRENDS CATCHER 2',
+          'TRENDS CATCHER 1',
           workingDeposit,
-          'TRENDS CATCHER 2',
+          'TRENDS CATCHER 1',
           indicatorsData,
         );
         botState.buyReason = 'scalper';
@@ -2099,7 +2095,7 @@ import determineDealType from './tools/determineDealType';
           pricesStream,
           stepSize,
           initialUSDTBalance,
-          'STOP LOSS',
+          'TRENDS CATCHER 1 (STOP LOSS)',
           indicatorsData,
           true,
         );
@@ -2116,7 +2112,7 @@ import determineDealType from './tools/determineDealType';
           pricesStream,
           stepSize,
           initialUSDTBalance,
-          'STOP LOSS',
+          'TRENDS CATCHER 1 (STOP LOSS)',
           indicatorsData,
         );
         return;
@@ -2131,7 +2127,7 @@ import determineDealType from './tools/determineDealType';
         pricesStream,
         stepSize,
         initialUSDTBalance,
-        'TRENDS CATCHER 2 (STOP LOSS)',
+        'TRENDS CATCHER 1 (STOP LOSS)',
         indicatorsData,
       );
       return;
@@ -2346,7 +2342,7 @@ import determineDealType from './tools/determineDealType';
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
-  getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
+  // getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
   // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
 

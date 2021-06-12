@@ -1,12 +1,14 @@
 const determineDealType = (indicatorsData, sens) => {
   if (
-    indicatorsData.obv1h.buySignalCount > sens &&
-    indicatorsData.obv4h.buySignalCount > sens
+    indicatorsData.obv15m.buySignalCount >= 2 &&
+    indicatorsData.obv5m.buySignalCount >= 2 &&
+    indicatorsData.obv1m.buySignalCount >= 2
   )
     return 'long';
   else if (
-    indicatorsData.obv1h.sellSignalCount > sens &&
-    indicatorsData.obv4h.sellSignalCount > sens
+    indicatorsData.obv15m.sellSignalCount >= 2 &&
+    indicatorsData.obv5m.sellSignalCount >= 2 &&
+    indicatorsData.obv1m.sellSignalCount >= 2
   )
     return 'short';
   return 'undetermined';

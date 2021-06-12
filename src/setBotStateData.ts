@@ -38,7 +38,7 @@ const botState = {
     stochRsi: { enabled: false, stopLoss: false },
     trendsCatcher: { enabled: false, stopLoss: false },
   },
-  testMode: false,
+  testMode: true,
   totalPercentProfit: null,
   totalProfit: 0,
   tradeAmountPercent: 0.95,
