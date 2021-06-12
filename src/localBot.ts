@@ -2339,14 +2339,14 @@ import determineDealType from './tools/determineDealType';
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
 
-  getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 2);
+  // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 2);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
-  getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
-  getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
-  getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
+  // getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
+  // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
 
   // getHeikinAshiSignal(symbol, '1h', 3, 3, indicatorsData.haCandle.ha1hCandle);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
