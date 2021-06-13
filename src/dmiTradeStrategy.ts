@@ -1187,7 +1187,7 @@ import determineDealType from './tools/determineDealType';
             // indicatorsData.obv5m.signal === 'buy' &&
             // indicatorsData.obv15m.signal === 'buy' &&
             indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-            // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+            indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
             // indicatorsData.obv1h.signal === 'buy' &&
             (indicatorsData.dmi1m.adxUpCount >= 2 ||
               indicatorsData.dmi1m.adxDownCount >= 2),
@@ -1198,7 +1198,7 @@ import determineDealType from './tools/determineDealType';
             // indicatorsData.avgPriceSignal === 'buy' &&
             // indicatorsData.obv5m.signal === 'sell' &&
             indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-            // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
+            indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
             // indicatorsData.obv1h.signal === 'buy' &&
             (indicatorsData.dmi1m.adxUpCount >= 2 ||
               indicatorsData.dmi1m.adxDownCount >= 2),
@@ -1307,7 +1307,7 @@ import determineDealType from './tools/determineDealType';
               ((indicatorsData.avgDealPriceSignal === 'sell' &&
                 indicatorsData.avgPriceSignal === 'sell' &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-                // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
+                indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
                 indicatorsData.obv5m.signal === 'sell' &&
                 indicatorsData.obv1m.signal === 'sell') ||
                 (indicatorsData.dealType === 'short' &&
@@ -1324,7 +1324,7 @@ import determineDealType from './tools/determineDealType';
               ((indicatorsData.avgDealPriceSignal === 'buy' &&
                 indicatorsData.avgPriceSignal === 'buy' &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-                // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+                indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
                 indicatorsData.obv5m.signal === 'buy' &&
                 indicatorsData.obv1m.signal === 'buy') ||
                 (indicatorsData.dealType === 'long' &&
