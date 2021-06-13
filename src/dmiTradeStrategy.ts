@@ -2355,7 +2355,7 @@ import determineDealType from './tools/determineDealType';
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
   getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
-  // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
+  getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
   getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
 
   // getHeikinAshiSignal(symbol, '1h', 3, 3, indicatorsData.haCandle.ha1hCandle);
