@@ -1304,8 +1304,8 @@ import determineDealType from './tools/determineDealType';
               // (indicatorsData.dmi1m.adxUpCount >= 2 ||
               //   indicatorsData.dmi1m.adxDownCount >= 2) &&
               // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
-              indicatorsData.avgDealPriceSignal === 'sell' &&
-              indicatorsData.avgPriceSignal === 'sell' &&
+              // indicatorsData.avgDealPriceSignal === 'sell' &&
+              // indicatorsData.avgPriceSignal === 'sell' &&
               indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
               // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
               indicatorsData.obv5m.signal === 'sell' &&
@@ -1322,8 +1322,8 @@ import determineDealType from './tools/determineDealType';
               // (indicatorsData.dmi1m.adxUpCount >= 2 ||
               //   indicatorsData.dmi1m.adxDownCount >= 2) &&
               // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
-              indicatorsData.avgDealPriceSignal === 'buy' &&
-              indicatorsData.avgPriceSignal === 'buy' &&
+              // indicatorsData.avgDealPriceSignal === 'buy' &&
+              // indicatorsData.avgPriceSignal === 'buy' &&
               indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
               // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
               indicatorsData.obv5m.signal === 'buy' &&
