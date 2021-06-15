@@ -1181,6 +1181,8 @@ import determineDealType from './tools/determineDealType';
           long:
             botState.status === 'buy' &&
             indicatorsData.dealType === 'long' &&
+            indicatorsData.rsi5m.rsiValue > 50 &&
+            indicatorsData.rsi1m.rsiValue > 50 &&
             // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
             // indicatorsData.avgPriceSignal === 'buy' &&
             // indicatorsData.obv1m.signal === 'buy' &&
@@ -1194,6 +1196,10 @@ import determineDealType from './tools/determineDealType';
           short:
             botState.status === 'buy' &&
             indicatorsData.dealType === 'short' &&
+            indicatorsData.rsi5m.rsiValue !== null &&
+            indicatorsData.rsi5m.rsiValue < 50 &&
+            indicatorsData.rsi1m.rsiValue !== null &&
+            indicatorsData.rsi1m.rsiValue < 50 &&
             // indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
             // indicatorsData.avgPriceSignal === 'buy' &&
             // indicatorsData.obv5m.signal === 'sell' &&
@@ -2366,7 +2372,8 @@ import determineDealType from './tools/determineDealType';
   // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
 
-  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
