@@ -2,8 +2,16 @@ import BotStateModel, { BotState } from './model';
 
 export async function trackBotState(botState: {
   dealType: string;
-  maxAvailableProfit: number;
-  totalMaxAvailableProfit: number;
+  totalLongProfit: number;
+  totalShortProfit: number;
+  maxAvailableLongProfit: number;
+  maxAvailableShortProfit: number;
+  totalMaxAvailableLongProfit: number;
+  totalMaxAvailableShortProfit: number;
+  minAvailableLongProfit: number;
+  totalMinAvailableLongProfit: number;
+  minAvailableShortProfit: number;
+  totalMinAvailableShortProfit: number;
   profitDiff: number;
   isPricesStreamAlive: boolean;
   strategyId: number;
@@ -15,7 +23,6 @@ export async function trackBotState(botState: {
   testMode: boolean;
   status: string;
   currentProfit: number;
-  totalProfit: number;
   tradeAmountPercent: number;
   totalPercentProfit: number;
   buyPrice: number;

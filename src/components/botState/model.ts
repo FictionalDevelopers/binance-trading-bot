@@ -11,7 +11,8 @@ export interface BotState extends Document {
   testMode: boolean;
   status: string;
   currentProfit: number;
-  totalProfit: number;
+  totalLongProfit: number;
+  totalShortProfit: number;
   tradeAmountPercent: number;
   totalPercentProfit: number;
   buyPrice: number;
@@ -26,10 +27,14 @@ export interface BotState extends Document {
   dealPricesArr: Array<number>;
   avgDealPrice: number;
   prevAvgDealPrice: number;
-  maxAvailableProfit: number;
-  totalMaxAvailableProfit: number;
-  minAvailableProfit: number;
-  totalMinAvailableProfit: number;
+  maxAvailableLongProfit: number;
+  maxAvailableShortProfit: number;
+  totalMaxAvailableLongProfit: number;
+  totalMaxAvailableShortProfit: number;
+  minAvailableLongProfit: number;
+  minAvailableShortProfit: number;
+  totalMinAvailableLongProfit: number;
+  totalMinAvailableShortProfit: number;
   profitDiff: number;
 }
 const schema = new Schema({
@@ -138,7 +143,11 @@ const schema = new Schema({
     type: Number,
     default: null,
   },
-  totalProfit: {
+  totalLongProfit: {
+    type: Number,
+    default: null,
+  },
+  totalShortProfit: {
     type: Number,
     default: null,
   },
@@ -178,11 +187,19 @@ const schema = new Schema({
     type: Number,
     default: null,
   },
-  maxAvailableProfit: {
+  maxAvailableLongProfit: {
     type: Number,
     default: 0,
   },
-  totalMaxAvailableProfit: {
+  maxAvailableShortProfit: {
+    type: Number,
+    default: 0,
+  },
+  totalMaxAvailableLongProfit: {
+    type: Number,
+    default: 0,
+  },
+  totalMaxAvailableShortProfit: {
     type: Number,
     default: 0,
   },
@@ -194,11 +211,19 @@ const schema = new Schema({
     type: Boolean,
     default: false,
   },
-  minAvailableProfit: {
+  minAvailableLongProfit: {
     type: Number,
     default: 0,
   },
-  totalMinAvailableProfit: {
+  totalMinAvailableLongProfit: {
+    type: Number,
+    default: 0,
+  },
+  minAvailableShortProfit: {
+    type: Number,
+    default: 0,
+  },
+  totalMinAvailableShortProfit: {
     type: Number,
     default: 0,
   },

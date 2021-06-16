@@ -126,20 +126,41 @@ export const marketSellAction = async (
       try {
         botState.updateState('status', 'isPending');
         botState.updateState('buyPrice', null);
-        botState.updateState(
-          'totalProfit',
-          (botState.totalProfit += expectedProfitPercent - 0.2),
-        );
-        botState.updateState(
-          'totalMaxAvailableProfit',
-          (botState.totalMaxAvailableProfit +=
-            botState.maxAvailableProfit - 0.2),
-        );
-        botState.updateState(
-          'totalMinAvailableProfit',
-          (botState.totalMinAvailableProfit +=
-            botState.minAvailableProfit - 0.2),
-        );
+        if (botState.dealType === 'long')
+          botState.updateState(
+            'totalLongProfit',
+            (botState.totalLongProfit += expectedProfitPercent - 0.2),
+          );
+        else if (botState.dealType === 'short')
+          botState.updateState(
+            'totalShortProfit',
+            (botState.totalShortProfit += expectedProfitPercent + 0.2),
+          );
+
+        if (botState.dealType === 'long') {
+          botState.updateState(
+            'totalMinAvailableLongProfit',
+            (botState.totalMinAvailableLongProfit +=
+              botState.minAvailableLongProfit - 0.2),
+          );
+          botState.updateState(
+            'totalMaxAvailableLongProfit',
+            (botState.totalMaxAvailableLongProfit +=
+              botState.maxAvailableLongProfit - 0.2),
+          );
+        } else if (botState.dealType === 'short') {
+          botState.updateState(
+            'totalMaxAvailableShortProfit',
+            (botState.totalMaxAvailableShortProfit +=
+              botState.maxAvailableShortProfit + 0.2),
+          );
+          botState.updateState(
+            'totalMinAvailableShortProfit',
+            (botState.totalMinAvailableShortProfit +=
+              botState.minAvailableShortProfit + 0.2),
+          );
+        }
+
         if (botState.logToTelegram) {
           await sendToRecipients(`SELL ${
             botState.local ? '(LOCAL)' : '(REMOTE)'
@@ -153,20 +174,40 @@ export const marketSellAction = async (
                                       pricesStream[pricesStream.length - 1]
                                     }
                                     Date: ${format(new Date(), DATE_FORMAT)}
-                                    Current profit: ${expectedProfitPercent -
-                                      0.2} %
-                                    Total profit: ${botState.totalProfit} %
+                                    Current profit: ${
+                                      botState.dealType === 'long'
+                                        ? expectedProfitPercent - 0.2
+                                        : expectedProfitPercent + 0.2
+                                    } %
+                                    Max av profit: ${
+                                      botState.dealType === 'long'
+                                        ? botState.maxAvailableLongProfit - 0.2
+                                        : botState.maxAvailableShortProfit + 0.2
+                                    } %
+                                    Min av profit: ${
+                                      botState.dealType === 'long'
+                                        ? botState.minAvailableLongProfit - 0.2
+                                        : botState.minAvailableShortProfit + 0.2
+                                    } %
+                                    Total Long profit: ${
+                                      botState.totalLongProfit
+                                    } %
+                                    Total Short profit: ${
+                                      botState.totalShortProfit
+                                    } %
                                     Avg Deal Profit: ${botState.totalProfit /
                                       botState.dealsCount} %
-                                    Max av profit: ${botState.maxAvailableProfit -
-                                      0.2} %
-                                    Total max av profit: ${
-                                      botState.totalMaxAvailableProfit
+                                    Total max av Long profit: ${
+                                      botState.totalMaxAvailableLongProfit
                                     } %
-                                    Min av profit: ${botState.minAvailableProfit -
-                                      0.2} %
-                                    Total min av profit: ${
-                                      botState.totalMinAvailableProfit
+                                    Total max av Short profit: ${
+                                      botState.totalMaxAvailableShortProfit
+                                    } %
+                                    Total min av Long profit: ${
+                                      botState.totalMinAvailableLongProfit
+                                    } %
+                                    Total min av Short profit: ${
+                                      botState.totalMinAvailableShortProfit
                                     } %
                       `);
         }
@@ -195,8 +236,10 @@ export const marketSellAction = async (
                                   } %
                     `);
         botState.dealsCount++;
-        botState.maxAvailableProfit = 0;
-        botState.minAvailableProfit = 0;
+        botState.maxAvailableLongProfit = 0;
+        botState.maxAvailableShortProfit = 0;
+        botState.minAvailableLongProfit = 0;
+        botState.minAvailableShortProfit = 0;
         indicatorsData.avgDealPriceDownSignalCount = 0;
         indicatorsData.avgDealPriceUpSignalCount = 0;
         indicatorsData.avgDealPriceSignal = null;

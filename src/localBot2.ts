@@ -74,10 +74,8 @@ import determineDealType from './tools/determineDealType';
       ...initialState,
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
-      dealType: 'undetermined',
       local: true,
       logToTelegram: true,
-      status: 'buy',
       updateState: function(fieldName, value) {
         this[`${fieldName}`] = value;
       },
@@ -166,6 +164,7 @@ import determineDealType from './tools/determineDealType';
   // };
 
   const indicatorsData = {
+    askBidDiff: null,
     dealType: '',
     avgDealPriceUpSignalCount: 0,
     avgDealPriceDownSignalCount: 0,
@@ -203,6 +202,7 @@ import determineDealType from './tools/determineDealType';
         buySignalCount: 0,
         sellSignalCount: 0,
         signal: null,
+        shadowSignal: null,
       },
       ha1mCandle: {
         open: null,
@@ -212,6 +212,7 @@ import determineDealType from './tools/determineDealType';
         buySignalCount: 0,
         sellSignalCount: 0,
         signal: null,
+        shadowSignal: null,
       },
     },
     maxAvailableProfit: 0,
@@ -1168,10 +1169,19 @@ import determineDealType from './tools/determineDealType';
         ? Number((botState.currentPrice / botState.buyPrice) * 100 - 100)
         : Number(-1 * (100 - (botState.currentPrice / botState.buyPrice) * 100))
       : 0;
-    if (expectedProfitPercent > botState.maxAvailableProfit)
-      botState.updateState('maxAvailableProfit', expectedProfitPercent);
-    if (expectedProfitPercent < botState.minAvailableProfit)
-      botState.updateState('minAvailableProfit', expectedProfitPercent);
+
+    if (botState.dealType === 'long') {
+      if (expectedProfitPercent > botState.maxAvailableLongProfit)
+        botState.updateState('maxAvailableLongProfit', expectedProfitPercent);
+      if (expectedProfitPercent < botState.minAvailableLongProfit)
+        botState.updateState('minAvailableLongProfit', expectedProfitPercent);
+    } else if (botState.dealType === 'short') {
+      if (expectedProfitPercent > botState.maxAvailableShortProfit)
+        botState.updateState('maxAvailableShortProfit', expectedProfitPercent);
+      if (expectedProfitPercent < botState.minAvailableShortProfit)
+        botState.updateState('minAvailableShortProfit', expectedProfitPercent);
+    }
+
     // botState.updateState(
     //   'profitDiff',
     //   Number(botState.maxAvailableProfit / expectedProfitPercent),
@@ -1180,26 +1190,33 @@ import determineDealType from './tools/determineDealType';
     const conditions = {
       scalper: {
         buy: {
-          long: botState.status === 'buy' && indicatorsData.dealType === 'long',
-          // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
-          // indicatorsData.avgPriceSignal === 'buy' &&
-          // indicatorsData.obv1m.signal === 'buy' &&
-          // indicatorsData.obv5m.signal === 'buy' &&
-          // indicatorsData.obv15m.signal === 'buy',
-          // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+          long:
+            botState.status === 'buy' &&
+            // indicatorsData.askBidDiff < 0.45 &&
+            // indicatorsData.dealType === 'long' &&
+            // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
+            // indicatorsData.avgPriceSignal === 'buy' &&
+            // indicatorsData.obv1m.signal === 'buy' &&
+            indicatorsData.obv5m.signal === 'buy' &&
+            // indicatorsData.obv15m.signal === 'buy',
+            indicatorsData.haCandle.ha1mCandle.signal === 'buy',
           // indicatorsData.obv1h.signal === 'buy' &&
           // (indicatorsData.dmi1m.adxUpCount >= 2 ||
           //   indicatorsData.dmi1m.adxDownCount >= 2),
-          short:
-            botState.status === 'buy' && indicatorsData.dealType === 'short',
+          short: null,
+          // botState.status === 'buy' &&
+          // indicatorsData.dealType === 'short',
           // indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
           // indicatorsData.avgPriceSignal === 'buy' &&
           // indicatorsData.obv5m.signal === 'sell' &&
           // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
           // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
           // indicatorsData.obv1h.signal === 'buy' &&
-          // (indicatorsData.dmi1m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi1m.adxDownCount >= 2),
+          // ((indicatorsData.dmi1m.adxUpCount >= 2 &&
+          //   indicatorsData.rsi1m.rsiValue > 50) ||
+          //   (indicatorsData.dmi1m.adxDownCount >= 2 &&
+          // indicatorsData.rsi1m.rsiValue !== null &&
+          // indicatorsData.rsi1m.rsiValue < 50,
         },
 
         // indicatorsData.stochRsi.stoch1h.signal === 'buy',
@@ -1299,12 +1316,16 @@ import determineDealType from './tools/determineDealType';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.avgDealPriceSignal === 'sell' &&
-              indicatorsData.avgPriceSignal === 'sell' &&
-              // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-              // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
-              indicatorsData.obv5m.signal === 'sell' &&
-              indicatorsData.obv1m.signal === 'sell',
+              indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+              (indicatorsData.obv5m.signal === 'sell' ||
+                (indicatorsData.obv1m.signal === 'sell' &&
+                  indicatorsData.avgDealPriceSignal === 'sell')),
+            // indicatorsData.avgDealPriceSignal === 'sell' &&
+            // indicatorsData.avgPriceSignal === 'sell' &&
+            // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+            // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
+            // indicatorsData.obv5m.signal === 'sell' &&
+            // indicatorsData.obv1m.signal === 'sell',
             // Number((botState.avgPrice / botState.avgDealPrice) * 100 - 100) < 0
             // (indicatorsData.dmi1m.adxDownCount >= 2 ||
             //   indicatorsData.dmi1m.adxUpCount >= 2),
@@ -1777,9 +1798,9 @@ import determineDealType from './tools/determineDealType';
           cryptoCoin,
           pricesStream,
           stepSize,
-          'TRENDS CATCHER 1',
+          'TRENDS CATCHER 2',
           workingDeposit,
-          'TRENDS CATCHER 1',
+          'STRATEGY 2',
           indicatorsData,
         );
         botState.buyReason = 'scalper';
@@ -1800,7 +1821,7 @@ import determineDealType from './tools/determineDealType';
           stepSize,
           'TRENDS CATCHER 2',
           workingDeposit,
-          'TRENDS CATCHER 2',
+          'STRATEGY 2',
           indicatorsData,
         );
         botState.buyReason = 'scalper';
@@ -2095,7 +2116,7 @@ import determineDealType from './tools/determineDealType';
           pricesStream,
           stepSize,
           initialUSDTBalance,
-          'TRENDS CATCHER 1 (STOP LOSS)',
+          'STRATEGY 2',
           indicatorsData,
           true,
         );
@@ -2112,7 +2133,7 @@ import determineDealType from './tools/determineDealType';
           pricesStream,
           stepSize,
           initialUSDTBalance,
-          'TRENDS CATCHER 1 (STOP LOSS)',
+          'STOP LOSS',
           indicatorsData,
         );
         return;
@@ -2127,7 +2148,7 @@ import determineDealType from './tools/determineDealType';
         pricesStream,
         stepSize,
         initialUSDTBalance,
-        'TRENDS CATCHER 1 (STOP LOSS)',
+        'STRATEGY 2',
         indicatorsData,
       );
       return;
@@ -2339,10 +2360,10 @@ import determineDealType from './tools/determineDealType';
 
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
-  // getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
+  getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
   // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
 
@@ -2353,7 +2374,6 @@ import determineDealType from './tools/determineDealType';
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
 
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
@@ -2376,6 +2396,8 @@ import determineDealType from './tools/determineDealType';
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
 
   /** *************************DATA LOGGER********************************/
+  const getSum = (numbers = []) =>
+    numbers.reduce((sum, number) => Number(sum) + Number(number), 0);
 
   (() => {
     setInterval(async () => {
@@ -2405,41 +2427,73 @@ import determineDealType from './tools/determineDealType';
       //     ')',
       // );
       console.log('Deal Type: ' + indicatorsData.dealType.toUpperCase());
-      console.log('Candle 5m: ' + indicatorsData.haCandle.ha5mCandle.signal);
-      console.log('Candle 1m: ' + indicatorsData.haCandle.ha1mCandle.signal);
+      console.log('Ask Bid Diff: ' + indicatorsData.askBidDiff);
+      // console.log('Last bid: ' + indicatorsData.scalper.lastBid);
       console.log(
-        'OBV 4h: ' +
-          indicatorsData.obv4h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv4h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv4h.sellSignalCount +
-          ')',
+        'Candle 5m: ' +
+          indicatorsData.haCandle.ha5mCandle.signal +
+          ' : ' +
+          'Shadow: ' +
+          indicatorsData.haCandle.ha5mCandle.shadowSignal,
       );
-      console.log(
-        'OBV 1h: ' +
-          indicatorsData.obv1h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1h.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 15m: ' +
-          indicatorsData.obv15m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv15m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv15m.sellSignalCount +
-          ')',
-      );
+      if (indicatorsData.haCandle.ha5mCandle.signal === 'buy')
+        console.log(
+          ': L/O: ' +
+            indicatorsData.haCandle.ha5mCandle.low /
+              indicatorsData.haCandle.ha5mCandle.open +
+            ' H/C: ' +
+            indicatorsData.haCandle.ha5mCandle.high /
+              indicatorsData.haCandle.ha5mCandle.close,
+        );
+      else if (indicatorsData.haCandle.ha5mCandle.signal === 'sell')
+        console.log(
+          ': H/O: ' +
+            indicatorsData.haCandle.ha5mCandle.high /
+              indicatorsData.haCandle.ha5mCandle.open +
+            ' L/C: ' +
+            indicatorsData.haCandle.ha5mCandle.low /
+              indicatorsData.haCandle.ha5mCandle.close,
+        );
+      // console.log(
+      //   'Candle 1m: ' +
+      //     indicatorsData.haCandle.ha1mCandle.signal +
+      //     ' : ' +
+      //     'Shadow: ' +
+      //     indicatorsData.haCandle.ha1mCandle.shadowSignal,
+      // );
+      // console.log(
+      //   'OBV 4h: ' +
+      //     indicatorsData.obv4h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv4h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv4h.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 1h: ' +
+      //     indicatorsData.obv1h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1h.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 15m: ' +
+      //     indicatorsData.obv15m.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv15m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv15m.sellSignalCount +
+      //     ')',
+      // );
       console.log(
         'OBV 5m: ' +
           indicatorsData.obv5m.signal +
@@ -2463,23 +2517,23 @@ import determineDealType from './tools/determineDealType';
           ')',
       );
 
-      console.log(
-        'ADX 1m: ' +
-          '(UP: ' +
-          indicatorsData.dmi1m.adxUpCount +
-          ' ' +
-          'DOWN: ' +
-          indicatorsData.dmi1m.adxDownCount +
-          ')',
-      );
-      console.log(
-        'Avg Deal Price: ' +
-          botState.avgDealPrice +
-          '( ' +
-          indicatorsData.avgDealPriceDiff +
-          ' %' +
-          ' )',
-      );
+      // console.log(
+      //   'ADX 1m: ' +
+      //     '(UP: ' +
+      //     indicatorsData.dmi1m.adxUpCount +
+      //     ' ' +
+      //     'DOWN: ' +
+      //     indicatorsData.dmi1m.adxDownCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'Avg Deal Price: ' +
+      //     botState.avgDealPrice +
+      //     '( ' +
+      //     indicatorsData.avgDealPriceDiff +
+      //     ' %' +
+      //     ' )',
+      // );
       console.log(
         'Avg Deal Price Diff: ' +
           indicatorsData.avgDealPriceSignal +
@@ -2513,10 +2567,22 @@ import determineDealType from './tools/determineDealType';
       );
       // console.log('Max Price / Avg Price Diff: ' + indicatorsData.avgPriceDiff);
       console.log(
-        'MAX av profit: ' + Number(botState.maxAvailableProfit - 0.2) + ' %',
+        botState.dealType === 'long'
+          ? 'MAX av profit: ' +
+              Number(botState.maxAvailableLongProfit - 0.2) +
+              ' %'
+          : 'MAX av profit: ' +
+              Number(botState.maxAvailableShortProfit + 0.2) +
+              ' %',
       );
       console.log(
-        'MIN av profit: ' + Number(botState.minAvailableProfit - 0.2) + ' %',
+        botState.dealType === 'long'
+          ? 'MIN av profit: ' +
+              Number(botState.minAvailableLongProfit - 0.2) +
+              ' %'
+          : 'MIN av profit: ' +
+              Number(botState.minAvailableShortProfit + 0.2) +
+              ' %',
       );
       console.log(
         'Profit diff (Max/Current): ' +
@@ -2532,7 +2598,9 @@ import determineDealType from './tools/determineDealType';
               '\n' +
               'Current profit: ' +
               (botState.status === 'sell'
-                ? Number(botState.currentProfit - 0.2) + ' %'
+                ? botState.dealType === 'long'
+                  ? Number(botState.currentProfit - 0.2) + ' %'
+                  : Number(botState.currentProfit + 0.2) + ' %'
                 : '-'),
           )
         : botState.strategies.scalper.stopLoss
@@ -2550,6 +2618,168 @@ import determineDealType from './tools/determineDealType';
   `);
     }, 500);
   })();
+  // binance.websockets.depthCache(
+  //     ['LINKUSDT'],
+  //     _throttle((symbol, depth) => {
+  //       const bids = binance.sortBids(depth.bids);
+  //       const asks = binance.sortAsks(depth.asks);
+  //       const shortBids = binance.array(bids).slice(0, 5);
+  //       const shortAsks = binance.array(asks).slice(0, 100);
+  //       const bestAsk = binance.first(asks);
+  //       const bestBid = binance.first(bids);
+  //       const highPriceLevel = binance.array(asks).slice(0, 30)[29][0];
+  //       const maxBidSize = _maxBy(shortBids, arrItem => arrItem[1]);
+  //       indicatorsData.scalper.maxBidSize = maxBidSize[1];
+  //       const maxAskSize = _maxBy(shortAsks, arrItem => arrItem[1]);
+  //       indicatorsData.scalper.maxAskSize = maxAskSize[1];
+  //       const lastBid = shortBids[4][0];
+  //       const lastAsk = shortAsks[19][0];
+  //       const bidsSum = getSum(shortBids.map(arr => arr[1]));
+  //       const asksSum = getSum(shortAsks.map(arr => arr[1]));
+  //
+  //       // console.log('Max BID: ' + maxBidSize);
+  //       // console.log('Max ASK: ' + maxAskSize);
+  //
+  //       // const bidsSum = getSum(shortBids.map(arr => arr[1]));
+  //       // const asksSum = getSum(shortAsks.map(arr => arr[1]));
+  //       // console.log((bidsSum / asksSum) * 100 - 100);
+  //
+  //       // console.log('bids', shortBids);
+  //       // console.log('asks', shortAsks);
+  //       // console.info('best bid: ' + binance.first(bids));
+  //       // console.info('best ask: ' + binance.first(asks));
+  //       // console.info('last bid: ' + shortBids[4][0]);
+  //       // console.info('last ask: ' + shortAsks[99][0]);
+  //
+  //       indicatorsData.scalper.bidsAsksDiff = (bidsSum / asksSum) * 100 - 100;
+  //       // console.log(
+  //       //   'Ask size / Bid size: (LONG) ' +
+  //       //     Number((asksSum / bidsSum) * 100 - 100).toString() +
+  //       //     '%',
+  //       // );
+  //       // console.log(
+  //       //   'Ask size / Bid size: (SHORT) ' +
+  //       //     Number(
+  //       //       (getSum(
+  //       //         binance
+  //       //           .array(asks)
+  //       //           .slice(0, 5)
+  //       //           .map(arr => arr[1]),
+  //       //       ) /
+  //       //         getSum(
+  //       //           binance
+  //       //             .array(bids)
+  //       //             .slice(0, 5)
+  //       //             .map(arr => arr[1]),
+  //       //         )) *
+  //       //         100 -
+  //       //         100,
+  //       //     ).toString() +
+  //       //     '%',
+  //       // );
+  //       // console.log(
+  //       //   'Best Ask / Best Bid: ' +
+  //       //     Number((bestAsk / bestBid) * 100 - 100).toString() +
+  //       //     '%',
+  //       // );
+  //       // console.log('High price: ' + highPriceLevel);
+  //       //
+  //       indicatorsData.askBidDiff = Number((lastAsk / lastBid) * 100 - 100);
+  //       // console.log(
+  //       //   'Last Ask/ Last Bid: ' +
+  //       //     Number((lastAsk / lastBid) * 100 - 100).toString(),
+  //       // );
+  //       //
+  //       // if (
+  //       //   indicatorsData.rsi5m.rsiValue !== null &&
+  //       //   indicatorsData.rsi5m.rsiValue > indicatorsData.rsi5m.prevRsi
+  //       // )
+  //       //   indicatorsData.rsi5m.rsiSignal = 'buy';
+  //       // else if (
+  //       //   indicatorsData.rsi5m.rsiValue !== null &&
+  //       //   indicatorsData.rsi5m.rsiValue < indicatorsData.rsi5m.prevRsi
+  //       // )
+  //       //   indicatorsData.rsi5m.rsiSignal = 'sell';
+  //       // if (Number((lastAsk / lastBid) * 100 - 100) >= 0.6)
+  //       //   indicatorsData.scalper.askBidSignal = 'buy';
+  //       // else if (Number((lastAsk / lastBid) * 100 - 100) <= 0.3)
+  //       //   indicatorsData.scalper.askBidSignal = 'sell';
+  //
+  //       // console.log('Stoch 15m: ' + indicatorsData.stochRsi.stoch15m.signal);
+  //       // console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
+  //       // console.log(
+  //       //   'ADX 1h: ' +
+  //       //     indicatorsData.dmi1h.adxDiff +
+  //       //     ' ' +
+  //       //     indicatorsData.dmi1h.adxDirection +
+  //       //     ' ' +
+  //       //     (indicatorsData.dmi1h.adxUpCount
+  //       //       ? indicatorsData.dmi1h.adxUpCount
+  //       //       : indicatorsData.dmi1h.adxDownCount),
+  //       // );
+  //       // console.log('RSI 1h: ' + indicatorsData.rsi1h.rsiValue);
+  //       // console.log(
+  //       //   'ADX 5m: ' +
+  //       //     indicatorsData.dmi5m.adxDiff +
+  //       //     ' ' +
+  //       //     indicatorsData.dmi5m.adxDirection +
+  //       //     ' ' +
+  //       //     (indicatorsData.dmi5m.adxUpCount
+  //       //       ? indicatorsData.dmi5m.adxUpCount
+  //       //       : indicatorsData.dmi5m.adxDownCount),
+  //       // );
+  //       // console.log('RSI 5m: ' + indicatorsData.rsi5m.rsiValue);
+  //       // console.log(
+  //       //   'ADX 1m: ' +
+  //       //     indicatorsData.dmi1m.adxDiff +
+  //       //     ' ' +
+  //       //     indicatorsData.dmi1m.adxDirection +
+  //       //     ' ' +
+  //       //     (indicatorsData.dmi1m.adxUpCount
+  //       //       ? indicatorsData.dmi1m.adxUpCount
+  //       //       : indicatorsData.dmi1m.adxDownCount),
+  //       // );
+  //       // console.log('RSI 1m: ' + indicatorsData.rsi1m.rsiValue);
+  //       // // console.log(
+  //       // //   'Stoch 1m: ' +
+  //       // //     indicatorsData.stochRsi.stoch1m.data.k +
+  //       // //     ' : ' +
+  //       // //     indicatorsData.stochRsi.stoch1m.data.d,
+  //       // // );
+  //       // if (
+  //       //   // (shortBids[1][1] / shortAsks[1][1]) * 100 - 100 >= 50 &&
+  //       //   // Number((shortBids[9][1] / shortAsks[9][1]) * 100 - 100) >= 50
+  //       //   // indicatorsData.scalper.maxBidSize > indicatorsData.scalper.maxAskSize &&
+  //       //   (bidsSum / asksSum) * 100 - 100 >=
+  //       //   300
+  //       //
+  //       //   // (highPriceLevel / binance.first(asks)[0]) * 100 - 100 >= 0.3
+  //       //   // (lastAsk / lastBid) * 100 - 100 >= 0.3
+  //       //
+  //       //   // Number((lastBid / lastAsk) * 100 - 100) > -0.08
+  //       // ) {
+  //       //   indicatorsData.scalper.buySignalCount++;
+  //       //   indicatorsData.scalper.sellSignalCount = 0;
+  //       //   // if (indicatorsData.scalper.buySignalCount >= 2)
+  //       //   //   indicatorsData.scalper.signal = 'buy';
+  //       // } else if (
+  //       //   // (highPriceLevel / binance.first(asks)[0]) * 100 - 100 < 0.3 &&
+  //       //   (asksSum / bidsSum) * 100 - 100 >=
+  //       //   40
+  //       //   // (shortAsks[1][1] / shortBids[1][1]) * 100 - 100 >= 50 &&
+  //       //   // Number((shortAsks[9][1] / shortBids[9][1]) * 100 - 100) >= 50
+  //       // ) {
+  //       //   // indicatorsData.scalper.maxBidSize < indicatorsData.scalper.maxAskSize &&
+  //       //   // Number((lastBid / lastAsk) * 100 - 100) < -0.08
+  //       //   indicatorsData.scalper.sellSignalCount++;
+  //       //   indicatorsData.scalper.buySignalCount = 0;
+  //       //   // if (indicatorsData.scalper.sellSignalCount >= 2)
+  //       //   //   indicatorsData.scalper.signal = 'sell';
+  //       // }
+  //       indicatorsData.scalper.lastBid = lastBid;
+  //       indicatorsData.scalper.prevAsk = lastAsk;
+  //     }, 500),
+  // );
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {

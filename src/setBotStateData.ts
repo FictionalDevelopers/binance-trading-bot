@@ -5,10 +5,14 @@ import { service as botStateService } from './components/botState';
 
 const botState = {
   dealType: 'undetermined',
-  maxAvailableProfit: 0,
-  minAvailableProfit: 0,
-  totalMinAvailableProfit: 0,
-  totalMaxAvailableProfit: 0,
+  maxAvailableLongProfit: 0,
+  minAvailableLongProfit: 0,
+  maxAvailableShortProfit: 0,
+  minAvailableShortProfit: 0,
+  totalMinAvailableLongProfit: 0,
+  totalMinAvailableShortProfit: 0,
+  totalMaxAvailableLongProfit: 0,
+  totalMaxAvailableShortProfit: 0,
   dealPricesArr: [],
   avgDealPrice: null,
   prevAvgDealPrice: null,
@@ -40,7 +44,8 @@ const botState = {
   },
   testMode: true,
   totalPercentProfit: null,
-  totalProfit: 0,
+  totalLongProfit: 0,
+  totalShortProfit: 0,
   tradeAmountPercent: 0.95,
 };
 
