@@ -1194,7 +1194,7 @@ import determineDealType from './tools/determineDealType';
             botState.status === 'buy' &&
             // indicatorsData.askBidDiff < 0.45 &&
             // indicatorsData.dealType === 'long' &&
-            // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
+            indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
             // indicatorsData.avgPriceSignal === 'buy' &&
             // indicatorsData.obv1m.signal === 'buy' &&
             indicatorsData.obv5m.signal === 'buy' &&
@@ -1316,6 +1316,7 @@ import determineDealType from './tools/determineDealType';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
+              // indicatorsData.stochRsi.stoch1m.signal === 'sell' &&
               indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
               (indicatorsData.obv5m.signal === 'sell' ||
                 (indicatorsData.obv1m.signal === 'sell' &&
@@ -2347,23 +2348,23 @@ import determineDealType from './tools/determineDealType';
   //   2,
   //   2,
   // );
-  // getStochRSISignal(
-  //   symbol,
-  //   '5m',
-  //   indicatorsData.stochRsi.stoch5m,
-  //   1.5,
-  //   1.5,
-  //   2,
-  //   2,
-  // );
+  getStochRSISignal(
+    symbol,
+    '5m',
+    indicatorsData.stochRsi.stoch5m,
+    1.5,
+    1.5,
+    2,
+    2,
+  );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
 
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 2, 2);
-  getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
+  getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
   // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
 
@@ -2526,14 +2527,14 @@ import determineDealType from './tools/determineDealType';
       //     indicatorsData.dmi1m.adxDownCount +
       //     ')',
       // );
-      // console.log(
-      //   'Avg Deal Price: ' +
-      //     botState.avgDealPrice +
-      //     '( ' +
-      //     indicatorsData.avgDealPriceDiff +
-      //     ' %' +
-      //     ' )',
-      // );
+      console.log(
+        'Avg Deal Price: ' +
+          botState.avgDealPrice +
+          '( ' +
+          indicatorsData.avgDealPriceDiff +
+          ' %' +
+          ' )',
+      );
       console.log(
         'Avg Deal Price Diff: ' +
           indicatorsData.avgDealPriceSignal +
