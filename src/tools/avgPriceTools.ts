@@ -77,7 +77,7 @@ export const calculateAvgPriceChange = (
         indicatorsData.avgPriceDownSignalCount = 0;
         indicatorsData.avgPriceUpSignalCount = 0;
       }
-      if (indicatorsData.avgPriceUpSignalCount >= 2)
+      if (indicatorsData.avgPriceUpSignalCount >= 1)
         indicatorsData.avgPriceSignal = 'buy';
       else if (indicatorsData.avgPriceDownSignalCount >= 1)
         indicatorsData.avgPriceSignal = 'sell';
