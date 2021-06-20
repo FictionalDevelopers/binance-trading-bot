@@ -21,33 +21,33 @@ export const getRocSignal = (
 
     rocData.diff = (roc / rocData.prevValue) * 100 - 100;
 
-    if (rocData.prevValue > roc) {
-      rocData.buySignalCount = 0;
-      rocData.sellSignalCount++;
-    } else if (rocData.prevValue < roc) {
-      rocData.sellSignalCount = 0;
-      rocData.buySignalCount++;
-    } else if (rocData.prevValue === roc) {
-      rocData.sellSignalCount = 0;
-      rocData.buySignalCount = 0;
-      rocData.signal = null;
-    }
-
-    // if (rocData.diff <= sellSens) {
+    // if (rocData.prevValue > roc) {
     //   rocData.buySignalCount = 0;
     //   rocData.sellSignalCount++;
-    // } else if (rocData.diff >= buySens) {
+    // } else if (rocData.prevValue < roc) {
     //   rocData.sellSignalCount = 0;
     //   rocData.buySignalCount++;
-    // } else if (rocData.diff === 0) {
+    // } else if (rocData.prevValue === roc) {
     //   rocData.sellSignalCount = 0;
     //   rocData.buySignalCount = 0;
     //   rocData.signal = null;
     // }
 
-    if (rocData.buySignalCount >= buySignalCount) rocData.signal = 'buy';
-    else if (rocData.sellSignalCount >= sellSignalCount)
-      rocData.signal = 'sell';
+    if (rocData.diff <= sellSens) {
+      rocData.buySignalCount = 0;
+      rocData.sellSignalCount++;
+    } else if (rocData.diff >= buySens) {
+      rocData.sellSignalCount = 0;
+      rocData.buySignalCount++;
+    } else if (rocData.diff === 0) {
+      rocData.sellSignalCount = 0;
+      rocData.buySignalCount = 0;
+      rocData.signal = null;
+    }
+
+    // if (rocData.buySignalCount >= buySignalCount) rocData.signal = 'buy';
+    // else if (rocData.sellSignalCount >= sellSignalCount)
+    //   rocData.signal = 'sell';
 
     rocData.prevValue = roc;
   });
