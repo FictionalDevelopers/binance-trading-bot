@@ -1209,7 +1209,7 @@ import determineDealType from './tools/determineDealType';
             // indicatorsData.askBidDiff <= 0.14,
             // indicatorsData.obv5m.signal === 'buy' &&
             // indicatorsData.obv15m.signal === 'buy' &&
-            indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+            // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
             // indicatorsData.haCandle.ha5mCandle.signal === 'buy',
             // indicatorsData.obv1h.signal === 'buy' &&
             // (indicatorsData.dmi15m.adxUpCount >= 2 ||
@@ -1231,11 +1231,11 @@ import determineDealType from './tools/determineDealType';
             (indicatorsData.dmi5m.adxUpCount >= 2 ||
               indicatorsData.dmi5m.adxDownCount >= 2) &&
             (indicatorsData.dmi1m.adxUpCount >= 2 ||
-              indicatorsData.dmi1m.adxDownCount >= 2) &&
-            // indicatorsData.roc.roc5m.signal === 'sell' &&
-            // indicatorsData.roc.roc1m.signal === 'sell',
-            // indicatorsData.obv15m.signal === 'sell' &&
-            indicatorsData.haCandle.ha1mCandle.signal === 'sell',
+              indicatorsData.dmi1m.adxDownCount >= 2),
+          // indicatorsData.roc.roc5m.signal === 'sell' &&
+          // indicatorsData.roc.roc1m.signal === 'sell',
+          // indicatorsData.obv15m.signal === 'sell' &&
+          // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
           // indicatorsData.haCandle.ha5mCandle.signal === 'sell',
           // indicatorsData.obv1h.signal === 'buy' &&
           // (indicatorsData.dmi5m.adxUpCount >= 2 ||
@@ -1361,8 +1361,8 @@ import determineDealType from './tools/determineDealType';
               (indicatorsData.dmi5m.adxUpCount >= 2 ||
                 indicatorsData.dmi5m.adxDownCount >= 2) &&
               (indicatorsData.dmi1m.adxUpCount >= 2 ||
-                indicatorsData.dmi1m.adxDownCount >= 2) &&
-              indicatorsData.haCandle.ha1mCandle.signal === 'sell',
+                indicatorsData.dmi1m.adxDownCount >= 2),
+            // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
             // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
             // indicatorsData.avgDealPriceSignal === 'sell' &&
             // indicatorsData.obv5m.signal === 'sell' &&
@@ -1399,8 +1399,8 @@ import determineDealType from './tools/determineDealType';
               (indicatorsData.dmi5m.adxUpCount >= 2 ||
                 indicatorsData.dmi5m.adxDownCount >= 2) &&
               (indicatorsData.dmi1m.adxUpCount >= 2 ||
-                indicatorsData.dmi1m.adxDownCount >= 2) &&
-              indicatorsData.haCandle.ha1mCandle.signal === 'buy',
+                indicatorsData.dmi1m.adxDownCount >= 2),
+            // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
             // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
             // indicatorsData.avgDealPriceSignal === 'buy' &&
             // indicatorsData.obv5m.signal === 'buy' &&
@@ -2446,12 +2446,12 @@ import determineDealType from './tools/determineDealType';
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
-  getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
+  // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
   // getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
 
