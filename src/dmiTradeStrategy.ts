@@ -464,6 +464,7 @@ import determineDealType from './tools/determineDealType';
         buy: {
           long:
             botState.status === 'buy' &&
+            indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
             indicatorsData.obv1h.signal === 'buy' &&
             indicatorsData.obv15m.signal === 'buy' &&
             indicatorsData.obv5m.signal === 'buy' &&
@@ -474,6 +475,7 @@ import determineDealType from './tools/determineDealType';
               indicatorsData.dmi1m.adxDownCount >= 2),
           short:
             botState.status === 'buy' &&
+            indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
             indicatorsData.obv1h.signal === 'sell' &&
             indicatorsData.obv15m.signal === 'sell' &&
             indicatorsData.obv5m.signal === 'sell' &&
@@ -489,6 +491,7 @@ import determineDealType from './tools/determineDealType';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
+              indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
               indicatorsData.obv5m.sellSignalCount >= 4 &&
               indicatorsData.obv1m.sellSignalCount >= 4 &&
               (indicatorsData.dmi5m.adxUpCount >= 2 ||
@@ -498,6 +501,7 @@ import determineDealType from './tools/determineDealType';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
+              indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
               indicatorsData.obv5m.buySignalCount >= 4 &&
               indicatorsData.obv1m.buySignalCount >= 4 &&
               (indicatorsData.dmi5m.adxUpCount >= 2 ||
@@ -701,6 +705,7 @@ import determineDealType from './tools/determineDealType';
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
+  getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
 
   /** *************************DATA LOGGER********************************/
 
