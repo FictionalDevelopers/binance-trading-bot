@@ -47,6 +47,16 @@ const botState = {
   totalLongProfit: 0,
   totalShortProfit: 0,
   tradeAmountPercent: 0.95,
+  dmi5m: {
+    adx: null,
+    adxUpCount: 0,
+    adxDownCount: 0,
+  },
+  dmi1m: {
+    adx: null,
+    adxUpCount: 0,
+    adxDownCount: 0,
+  },
 };
 
 (async function() {

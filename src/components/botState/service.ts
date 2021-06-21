@@ -37,6 +37,8 @@ export async function trackBotState(botState: {
   prevAvgDealPrice: number;
   avgPrice: number;
   prevAvgPrice: number;
+  dmi5m: any;
+  dmi1m: any;
 }): Promise<BotState> {
   return BotStateModel.findOneAndUpdate(
     {

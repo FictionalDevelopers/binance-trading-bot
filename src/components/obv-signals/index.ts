@@ -77,9 +77,9 @@ export const getObvSignal = (
         indicatorsData.sellSignalCount = 0;
         indicatorsData.buySignalCount++;
       } else if (indicatorsData.prevObv === obv) {
-        indicatorsData.sellSignalCount = 0;
-        indicatorsData.buySignalCount = 0;
-        indicatorsData.signal = null;
+        // indicatorsData.sellSignalCount = 0;
+        // indicatorsData.buySignalCount = 0;
+        // indicatorsData.signal = null;
       }
 
       if (indicatorsData.buySignalCount >= buySignalCount)

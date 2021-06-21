@@ -36,6 +36,8 @@ export interface BotState extends Document {
   totalMinAvailableLongProfit: number;
   totalMinAvailableShortProfit: number;
   profitDiff: number;
+  dmi5m: any;
+  dmi1m: any;
 }
 const schema = new Schema({
   strategyId: {
@@ -250,6 +252,14 @@ const schema = new Schema({
   dealType: {
     type: String,
     default: '',
+  },
+  dmi5m: {
+    type: Object,
+    default: {},
+  },
+  dmi1m: {
+    type: Object,
+    default: {},
   },
 });
 
