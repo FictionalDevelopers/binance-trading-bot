@@ -493,7 +493,22 @@ import determineDealType from './tools/determineDealType';
           //   indicatorsData.dmi1m.adxDownCount >= 2),
         },
         sell: {
-          takeProfit: null,
+          takeProfit: {
+            long:
+              botState.status === 'sell' &&
+              botState.dealType === 'long' &&
+              indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+              (indicatorsData.obv5m.sellSignalCount >= 10 ||
+                indicatorsData.obv1m.sellSignalCount >= 10) &&
+              indicatorsData.avgDealPriceSignal === 'sell',
+            short:
+              botState.status === 'sell' &&
+              botState.dealType === 'short' &&
+              indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+              (indicatorsData.obv5m.buySignalCount >= 10 ||
+                indicatorsData.obv1m.buySignalCount >= 10) &&
+              indicatorsData.avgDealPriceSignal === 'buy',
+          },
           stopLoss: {
             long:
               botState.status === 'sell' &&
@@ -581,7 +596,27 @@ import determineDealType from './tools/determineDealType';
 
     /** ********SCALPER*********/
     if (
-      conditions.scalper.sell.takeProfit &&
+      conditions.scalper.sell.takeProfit.long &&
+      !botState.strategies.scalper.stopLoss
+    ) {
+      await marketSellAction(
+        'scalper',
+        false,
+        symbol,
+        botState,
+        cryptoCoin,
+        expectedProfitPercent,
+        pricesStream,
+        stepSize,
+        initialUSDTBalance,
+        'TRENDS CATCHER 2 (TAKE PROFIT)',
+        indicatorsData,
+        true,
+      );
+      return;
+    }
+    if (
+      conditions.scalper.sell.takeProfit.short &&
       !botState.strategies.scalper.stopLoss
     ) {
       await marketSellAction(
@@ -722,8 +757,8 @@ import determineDealType from './tools/determineDealType';
 
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 4);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 4);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 4);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 2, 1);
 
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
