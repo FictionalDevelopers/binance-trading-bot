@@ -575,7 +575,10 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   `);
   } else {
     await sendToRecipients(
-      `Bot started working at: ${format(new Date(), DATE_FORMAT)}`,
+      `Bot started working at: ${format(
+        new Date(),
+        DATE_FORMAT,
+      )} ${botState.status.toUpperCase()}`,
     );
   }
 
