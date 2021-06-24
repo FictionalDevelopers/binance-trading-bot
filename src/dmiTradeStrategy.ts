@@ -574,16 +574,9 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
-    await sendToRecipients(`INIT REAL MODE (LOCAL)
-  Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  Revision N: ${revisionNumber}
-  Strategies: ${JSON.stringify(botState.strategies)}
-  Status: ${botState.status.toUpperCase()}
-  Symbol: ${symbol.toUpperCase()}
-  Initial USDT balance: ${initialUSDTBalance} USDT
-  Working deposit: ${workingDeposit} USDT
-  Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
-  `);
+    await sendToRecipients(
+      `Bot started working at: ${format(new Date(), DATE_FORMAT)}`,
+    );
   }
 
   getTradeStream({
