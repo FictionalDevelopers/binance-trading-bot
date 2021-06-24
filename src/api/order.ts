@@ -260,21 +260,6 @@ export const marketSellAction = async (
         botState.avgDealPrice = 0;
         botState.dealPricesArr = [];
         botState.confirmation = false;
-        // indicatorsData.obv5m.signal = null;
-        // indicatorsData.obv5m.buySignalCount = 0;
-        // indicatorsData.obv1h.signal = null;
-        // indicatorsData.obv1h.buySignalCount = 0;
-
-        // indicatorsData.obv5m.sellSignalCount = 0;
-        // indicatorsData.obv1m.signal = null;
-        // indicatorsData.obv1m.sellSignalCount = 0;
-        // indicatorsData.obv1m.buySignalCount = 0;
-        // indicatorsData.scalper.tradesVolume.signal = null;
-        // indicatorsData.scalper.tradesVolume.buySignalCount = null;
-        // indicatorsData.scalper.signal = null;
-        // indicatorsData.scalper.buySignalCount = 0;
-        // indicatorsData.dmi1h.signal = null;
-        // indicatorsData.dmi1h.buySignalCount = 0;
         if (!stopLoss) botState.updateState('status', 'buy');
         else {
           botState.strategies[`${strategy}`].stopLoss = true;
