@@ -709,11 +709,15 @@ import determineDealType from './tools/determineDealType';
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
-    await sendToRecipients(`
-  ${format(
-    new Date(),
-    DATE_FORMAT,
-  )} ${botState.status.toUpperCase()} ${initialUSDTBalance} USDT ${workingDeposit} ${initialCryptoCoinBalance} ${cryptoCoin}
+    await sendToRecipients(`INIT REAL MODE (LOCAL)
+  Bot started working at: ${format(new Date(), DATE_FORMAT)}
+  Revision N: ${revisionNumber}
+  Strategies: ${JSON.stringify(botState.strategies)}
+  Status: ${botState.status.toUpperCase()}
+  Symbol: ${symbol.toUpperCase()}
+  Initial USDT balance: ${initialUSDTBalance} USDT
+  Working deposit: ${workingDeposit} USDT
+  Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
   `);
   }
 
