@@ -21,7 +21,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
-  const workingDeposit = 20;
+  const workingDeposit = 600;
   let botState;
 
   try {
@@ -574,12 +574,12 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
-    await sendToRecipients(
-      `Bot started working at: ${format(
-        new Date(),
-        DATE_FORMAT,
-      )} ${botState.status.toUpperCase()}`,
-    );
+    await sendToRecipients(`
+  ${format(
+    new Date(),
+    DATE_FORMAT,
+  )} ${botState.status.toUpperCase()} ${initialUSDTBalance} USDT ${workingDeposit} ${initialCryptoCoinBalance} ${cryptoCoin}
+  `);
   }
 
   getTradeStream({

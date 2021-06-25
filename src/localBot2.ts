@@ -462,32 +462,33 @@ import determineDealType from './tools/determineDealType';
     const conditions = {
       scalper: {
         buy: {
-          long:
-            botState.status === 'buy' &&
-            // indicatorsData.haCandle.ha15mCandle.signal === 'buy' &&
-            // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
-            // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
+          long: null,
+          // botState.status === 'buy' &&
+          // indicatorsData.haCandle.ha15mCandle.signal === 'buy' &&
+          // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+          // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
 
-            indicatorsData.obv4h.signal === 'buy' &&
-            indicatorsData.obv1h.signal === 'buy' &&
-            indicatorsData.obv15m.signal === 'buy' &&
-            indicatorsData.obv5m.signal === 'buy' &&
-            indicatorsData.obv1m.signal === 'buy',
+          // indicatorsData.obv4h.signal === 'buy' &&
+          // indicatorsData.obv1h.signal === 'buy' &&
+          // indicatorsData.obv15m.signal === 'buy' &&
+          // indicatorsData.obv5m.signal === 'buy' &&
+          // indicatorsData.obv1m.signal === 'buy',
+
           // (indicatorsData.dmi5m.adxUpCount >= 2 ||
           //   indicatorsData.dmi5m.adxDownCount >= 2 ||
           //   indicatorsData.dmi1m.adxUpCount >= 2 ||
           //   indicatorsData.dmi1m.adxDownCount >= 2),
-          short:
-            botState.status === 'buy' &&
-            // indicatorsData.haCandle.ha15mCandle.signal === 'sell' &&
-            // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
-            // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
+          short: null,
+          // botState.status === 'buy' &&
+          // indicatorsData.haCandle.ha15mCandle.signal === 'sell' &&
+          // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
+          // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
 
-            indicatorsData.obv4h.signal === 'sell' &&
-            indicatorsData.obv1h.signal === 'sell' &&
-            indicatorsData.obv15m.signal === 'sell' &&
-            indicatorsData.obv5m.signal === 'sell' &&
-            indicatorsData.obv1m.signal === 'sell',
+          // indicatorsData.obv4h.signal === 'sell' &&
+          // indicatorsData.obv1h.signal === 'sell' &&
+          // indicatorsData.obv15m.signal === 'sell' &&
+          // indicatorsData.obv5m.signal === 'sell' &&
+          // indicatorsData.obv1m.signal === 'sell',
           // (indicatorsData.dmi5m.adxUpCount >= 2 ||
           //   indicatorsData.dmi5m.adxDownCount >= 2 ||
           //   indicatorsData.dmi1m.adxUpCount >= 2 ||
@@ -708,15 +709,11 @@ import determineDealType from './tools/determineDealType';
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
-    await sendToRecipients(`INIT REAL MODE (LOCAL)
-  Bot started working at: ${format(new Date(), DATE_FORMAT)}
-  Revision N: ${revisionNumber}
-  Strategies: ${JSON.stringify(botState.strategies)}
-  Status: ${botState.status.toUpperCase()}
-  Symbol: ${symbol.toUpperCase()}
-  Initial USDT balance: ${initialUSDTBalance} USDT
-  Working deposit: ${workingDeposit} USDT
-  Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
+    await sendToRecipients(`
+  ${format(
+    new Date(),
+    DATE_FORMAT,
+  )} ${botState.status.toUpperCase()} ${initialUSDTBalance} USDT ${workingDeposit} ${initialCryptoCoinBalance} ${cryptoCoin}
   `);
   }
 
@@ -732,8 +729,8 @@ import determineDealType from './tools/determineDealType';
   // getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
   // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
 
-  getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
+  // getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
@@ -776,28 +773,28 @@ import determineDealType from './tools/determineDealType';
       //     ')',
       // );
 
-      console.log(
-        'OBV 4h: ' +
-          indicatorsData.obv4h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv4h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv4h.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 1h: ' +
-          indicatorsData.obv1h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1h.sellSignalCount +
-          ')',
-      );
+      // console.log(
+      //   'OBV 4h: ' +
+      //     indicatorsData.obv4h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv4h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv4h.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 1h: ' +
+      //     indicatorsData.obv1h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1h.sellSignalCount +
+      //     ')',
+      // );
       console.log(
         'OBV 15m: ' +
           indicatorsData.obv15m.signal +
