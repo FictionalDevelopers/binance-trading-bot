@@ -433,6 +433,8 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           long:
             botState.status === 'buy' &&
             indicatorsData.haCandle.ha30mCandle.signal === 'buy' &&
+            indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+            indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
             indicatorsData.obv4h.signal === 'buy' &&
             indicatorsData.obv1h.signal === 'buy' &&
             indicatorsData.obv15m.signal === 'buy' &&
@@ -446,11 +448,15 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.obv4h.signal === 'sell' &&
-              indicatorsData.obv1h.signal === 'sell' &&
-              indicatorsData.obv15m.signal === 'sell' &&
-              indicatorsData.obv5m.signal === 'sell' &&
-              indicatorsData.obv1m.signal === 'sell',
+              ((indicatorsData.obv4h.signal === 'sell' &&
+                indicatorsData.obv1h.signal === 'sell' &&
+                indicatorsData.obv15m.signal === 'sell' &&
+                indicatorsData.obv5m.signal === 'sell' &&
+                indicatorsData.obv1m.signal === 'sell') ||
+                (indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+                  indicatorsData.obv15m.signal === 'sell' &&
+                  indicatorsData.obv5m.signal === 'sell' &&
+                  indicatorsData.obv1m.signal === 'sell')),
             short: null,
           },
         },
@@ -591,6 +597,8 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
   /** *******************************INDICATORS SECTION**************************************/
   getHeikinAshiSignal(symbol, '30m', 6, 6, indicatorsData.haCandle.ha30mCandle);
+  getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
+  getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
   getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);

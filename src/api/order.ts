@@ -352,12 +352,30 @@ export const marketSellAction = async (
           'availableCryptoCoin',
           +afterSellCryptoCoinBalance,
         );
+        botState.dmi5m.adx = indicatorsData.dmi5m.adx;
+        botState.dmi5m.adxUpCount = indicatorsData.dmi5m.adxUpCount;
+        botState.dmi5m.adxDownCount = indicatorsData.dmi5m.adxDownCount;
+        botState.dmi1m.adx = indicatorsData.dmi1m.adx;
+        botState.dmi1m.adxUpCount = indicatorsData.dmi1m.adxUpCount;
+        botState.dmi1m.adxDownCount = indicatorsData.dmi1m.adxDownCount;
+        indicatorsData.obv15m.buySignalCount = 0;
+        indicatorsData.obv5m.buySignalCount = 0;
+        indicatorsData.obv1m.buySignalCount = 0;
+        indicatorsData.dmi1m.adxUpCount = 0;
+        indicatorsData.dmi1m.adxDownCount = 0;
+        indicatorsData.dmi5m.adxUpCount = 0;
+        indicatorsData.dmi5m.adxDownCount = 0;
+        botState.maxAvailableLongProfit = 0;
+        botState.maxAvailableShortProfit = 0;
+        botState.minAvailableLongProfit = 0;
+        botState.minAvailableShortProfit = 0;
         indicatorsData.avgDealPriceDownSignalCount = 0;
         indicatorsData.avgDealPriceUpSignalCount = 0;
         indicatorsData.avgDealPriceSignal = null;
         indicatorsData.avgDealPriceDiff = 0;
         botState.avgDealPrice = 0;
         botState.dealPricesArr = [];
+        botState.confirmation = false;
         if (!stopLoss) botState.updateState('status', 'buy');
         else {
           botState.strategies[`${strategy}`].stopLoss = true;

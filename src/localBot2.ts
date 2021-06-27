@@ -24,7 +24,7 @@ import getAvarage from './utils/getAverage';
 import { getEmaStream } from '../src/indicators/ema';
 import { getObvStream } from './indicators/obv';
 
-import { getRSISignal } from './components/rsi-signals';
+import { getRSISignal, getRsiSignal } from './components/rsi-signals';
 import { getTrixSignal, runTrixInterval } from './components/trix-signal';
 import {
   getStochRSISignal,
@@ -33,6 +33,7 @@ import {
 import { getObvSignal } from './components/obv-signals';
 import { service as botStateService } from './components/botState';
 import _head from 'lodash/head';
+
 import { getForceIndexSignal, runEFIInterval } from './components/forceIndex';
 import { getForceIndexStream } from './indicators/forceIndex';
 import { getStochRsiStream } from './indicators/stochRSI';
@@ -380,6 +381,14 @@ import determineDealType from './tools/determineDealType';
       sellSignalCount: 0,
     },
     rsi1m: {
+      growCount: 0,
+      downCount: 0,
+      rsiSignal: null,
+      rsiValue: null,
+      prevRsi: null,
+      signal: null,
+    },
+    rsi4h: {
       growCount: 0,
       downCount: 0,
       rsiSignal: null,
@@ -735,10 +744,15 @@ import determineDealType from './tools/determineDealType';
 
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
   // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 2, 1);
+  getRSISignal(symbol, '4h', indicatorsData.rsi4h);
+  getRSISignal(symbol, '1h', indicatorsData.rsi1h);
+  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
 
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
@@ -750,6 +764,11 @@ import determineDealType from './tools/determineDealType';
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
       console.log('Deal Type: ' + botState.dealType.toUpperCase());
       // calculateAvgDealPriceChange(botState, indicatorsData);
+      console.log('RSI 4h: ' + indicatorsData.rsi4h.rsiValue);
+      console.log('RSI 1h: ' + indicatorsData.rsi1h.rsiValue);
+      console.log('RSI 15m: ' + indicatorsData.rsi15m.rsiValue);
+      console.log('RSI 5m: ' + indicatorsData.rsi5m.rsiValue);
+      console.log('RSI 1m: ' + indicatorsData.rsi1m.rsiValue);
 
       // console.log(
       //   'OBV 1h: ' +
@@ -799,76 +818,76 @@ import determineDealType from './tools/determineDealType';
       //     indicatorsData.obv1h.sellSignalCount +
       //     ')',
       // );
-      console.log(
-        'OBV 15m: ' +
-          indicatorsData.obv15m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv15m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv15m.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 5m: ' +
-          indicatorsData.obv5m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv5m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv5m.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 1m: ' +
-          indicatorsData.obv1m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1m.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'ADX 5m: ' +
-          '(UP: ' +
-          indicatorsData.dmi5m.adxUpCount +
-          '(' +
-          botState.dmi5m.adxUpCount +
-          ') ' +
-          'DOWN: ' +
-          indicatorsData.dmi5m.adxDownCount +
-          '(' +
-          botState.dmi5m.adxDownCount +
-          ')' +
-          ') ' +
-          'BUY: ' +
-          botState.dmi5m.adx +
-          ' ' +
-          'Current: ' +
-          indicatorsData.dmi5m.adx,
-      );
-      console.log(
-        'ADX 1m: ' +
-          '(UP: ' +
-          indicatorsData.dmi1m.adxUpCount +
-          '(' +
-          botState.dmi1m.adxUpCount +
-          ') ' +
-          'DOWN: ' +
-          indicatorsData.dmi1m.adxDownCount +
-          '(' +
-          botState.dmi1m.adxDownCount +
-          ') ' +
-          'BUY: ' +
-          botState.dmi1m.adx +
-          ' ' +
-          'Current: ' +
-          indicatorsData.dmi1m.adx,
-      );
+      // console.log(
+      //   'OBV 15m: ' +
+      //     indicatorsData.obv15m.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv15m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv15m.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 5m: ' +
+      //     indicatorsData.obv5m.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv5m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv5m.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 1m: ' +
+      //     indicatorsData.obv1m.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1m.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'ADX 5m: ' +
+      //     '(UP: ' +
+      //     indicatorsData.dmi5m.adxUpCount +
+      //     '(' +
+      //     botState.dmi5m.adxUpCount +
+      //     ') ' +
+      //     'DOWN: ' +
+      //     indicatorsData.dmi5m.adxDownCount +
+      //     '(' +
+      //     botState.dmi5m.adxDownCount +
+      //     ')' +
+      //     ') ' +
+      //     'BUY: ' +
+      //     botState.dmi5m.adx +
+      //     ' ' +
+      //     'Current: ' +
+      //     indicatorsData.dmi5m.adx,
+      // );
+      // console.log(
+      //   'ADX 1m: ' +
+      //     '(UP: ' +
+      //     indicatorsData.dmi1m.adxUpCount +
+      //     '(' +
+      //     botState.dmi1m.adxUpCount +
+      //     ') ' +
+      //     'DOWN: ' +
+      //     indicatorsData.dmi1m.adxDownCount +
+      //     '(' +
+      //     botState.dmi1m.adxDownCount +
+      //     ') ' +
+      //     'BUY: ' +
+      //     botState.dmi1m.adx +
+      //     ' ' +
+      //     'Current: ' +
+      //     indicatorsData.dmi1m.adx,
+      // );
       console.log('     *****AVG DEAL PRICE*****');
       console.log(
         'Avg Deal Price: ' +
