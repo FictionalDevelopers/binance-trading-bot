@@ -432,7 +432,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
         buy: {
           long:
             botState.status === 'buy' &&
-            indicatorsData.haCandle.ha30mCandle.signal === 'buy' &&
+            // indicatorsData.haCandle.ha30mCandle.signal === 'buy' &&
             indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
             indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
             indicatorsData.obv4h.signal === 'buy' &&
@@ -596,7 +596,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
     .subscribe(scalper);
 
   /** *******************************INDICATORS SECTION**************************************/
-  getHeikinAshiSignal(symbol, '30m', 6, 6, indicatorsData.haCandle.ha30mCandle);
+  // getHeikinAshiSignal(symbol, '30m', 6, 6, indicatorsData.haCandle.ha30mCandle);
   getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
   getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
   getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
