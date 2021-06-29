@@ -12,6 +12,7 @@ import { getObvSignal } from './components/obv-signals';
 import { service as botStateService } from './components/botState';
 import _head from 'lodash/head';
 import { getHeikinAshiSignal } from './indicators/heikinAshi';
+import { getStochRSISignal } from './components/stochRSI-signals';
 
 (async function() {
   await connect();
@@ -432,9 +433,11 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
         buy: {
           long:
             botState.status === 'buy' &&
-            // indicatorsData.haCandle.ha30mCandle.signal === 'buy' &&
-            indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
-            indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+            indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
+            indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
+            indicatorsData.haCandle.ha30mCandle.signal === 'buy' &&
+            // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+            // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
             indicatorsData.obv4h.signal === 'buy' &&
             indicatorsData.obv1h.signal === 'buy' &&
             indicatorsData.obv15m.signal === 'buy' &&
@@ -453,13 +456,15 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
                 indicatorsData.obv15m.signal === 'sell' &&
                 indicatorsData.obv5m.signal === 'sell' &&
                 indicatorsData.obv1m.signal === 'sell') ||
-                // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-                (indicatorsData.obv15m.signal === 'sell' &&
-                  indicatorsData.obv5m.signal === 'sell') ||
-                (indicatorsData.obv5m.signal === 'sell' &&
-                  indicatorsData.obv1m.signal === 'sell') ||
-                (indicatorsData.obv15m.signal === 'sell' &&
-                  indicatorsData.obv1m.signal === 'sell')),
+                (indicatorsData.stochRsi.stoch15m.signal === 'sell' &&
+                  indicatorsData.stochRsi.stoch5m.signal === 'sell')),
+            // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+            // (indicatorsData.obv15m.signal === 'sell' &&
+            //   indicatorsData.obv5m.signal === 'sell') ||
+            // (indicatorsData.obv5m.signal === 'sell' &&
+            //   indicatorsData.obv1m.signal === 'sell') ||
+            // (indicatorsData.obv15m.signal === 'sell' &&
+            //   indicatorsData.obv1m.signal === 'sell')),
             short: null,
           },
         },
@@ -599,14 +604,32 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
     .subscribe(scalper);
 
   /** *******************************INDICATORS SECTION**************************************/
-  // getHeikinAshiSignal(symbol, '30m', 6, 6, indicatorsData.haCandle.ha30mCandle);
-  getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
-  getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
-  getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 2);
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 2);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 2);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 2);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
+  getHeikinAshiSignal(symbol, '30m', 6, 6, indicatorsData.haCandle.ha30mCandle);
+  getStochRSISignal(
+    symbol,
+    '15m',
+    indicatorsData.stochRsi.stoch15m,
+    1.5,
+    1.5,
+    2,
+    2,
+  );
+  getStochRSISignal(
+    symbol,
+    '5m',
+    indicatorsData.stochRsi.stoch5m,
+    1.5,
+    1.5,
+    2,
+    2,
+  );
+  getHeikinAshiSignal(symbol, '30m', 6, 6, indicatorsData.haCandle.ha30mCandle);
+  // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
+  getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
 
   /** *************************DATA LOGGER********************************/
 
