@@ -453,9 +453,12 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
                 indicatorsData.obv15m.signal === 'sell' &&
                 indicatorsData.obv5m.signal === 'sell' &&
                 indicatorsData.obv1m.signal === 'sell') ||
-                (indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-                  indicatorsData.obv15m.signal === 'sell' &&
-                  indicatorsData.obv5m.signal === 'sell' &&
+                // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+                (indicatorsData.obv15m.signal === 'sell' &&
+                  indicatorsData.obv5m.signal === 'sell') ||
+                (indicatorsData.obv5m.signal === 'sell' &&
+                  indicatorsData.obv1m.signal === 'sell') ||
+                (indicatorsData.obv15m.signal === 'sell' &&
                   indicatorsData.obv1m.signal === 'sell')),
             short: null,
           },
@@ -599,11 +602,11 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   // getHeikinAshiSignal(symbol, '30m', 6, 6, indicatorsData.haCandle.ha30mCandle);
   getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
   getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
-  getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 4);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 4);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
+  getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 2);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 4, 2);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 4, 2);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 2);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 2);
 
   /** *************************DATA LOGGER********************************/
 
