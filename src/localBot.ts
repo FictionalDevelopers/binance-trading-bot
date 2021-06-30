@@ -2447,9 +2447,10 @@ import determineDealType from './tools/determineDealType';
 
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 20, 20);
+  getObvSignal(symbol, '1d', indicatorsData.obv15m, 20, 20);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 20, 20);
+
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
