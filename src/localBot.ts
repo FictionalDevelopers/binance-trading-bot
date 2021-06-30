@@ -76,6 +76,7 @@ import determineDealType from './tools/determineDealType';
       availableCryptoCoin: initialCryptoCoinBalance,
       local: true,
       logToTelegram: true,
+      status: 'pending',
       updateState: function(fieldName, value) {
         this[`${fieldName}`] = value;
       },
@@ -1195,18 +1196,18 @@ import determineDealType from './tools/determineDealType';
     const conditions = {
       scalper: {
         buy: {
-          long:
-            botState.status === 'buy' &&
-            // indicatorsData.roc.roc5m.signal === 'buy' &&
-            // indicatorsData.roc.roc1m.signal === 'buy' &&
-            // indicatorsData.askBidDiff < 0.45 &&
-            // indicatorsData.dealType === 'long' &&
-            // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
-            // indicatorsData.avgPriceSignal === 'buy' &&
-            // indicatorsData.obv15m.signal === 'buy' &&
-            indicatorsData.obv15m.signal === 'buy' &&
-            indicatorsData.obv5m.signal === 'buy' &&
-            indicatorsData.obv1m.signal === 'buy',
+          long: null,
+          // botState.status === 'buy' &&
+          // indicatorsData.roc.roc5m.signal === 'buy' &&
+          // indicatorsData.roc.roc1m.signal === 'buy' &&
+          // indicatorsData.askBidDiff < 0.45 &&
+          // indicatorsData.dealType === 'long' &&
+          // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
+          // indicatorsData.avgPriceSignal === 'buy' &&
+          // indicatorsData.obv15m.signal === 'buy' &&
+          // indicatorsData.obv15m.signal === 'buy' &&
+          // indicatorsData.obv5m.signal === 'buy' &&
+          // indicatorsData.obv1m.signal === 'buy',
           // indicatorsData.askBidDiff <= 0.14,
           // indicatorsData.obv5m.signal === 'buy' &&
           // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
