@@ -453,7 +453,9 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           // indicatorsData.obv1m.signal === 'sell',
         },
         sell: {
-          takeProfit: null,
+          takeProfit:
+            botState.status === 'sell' && expectedProfitPercent <= -0.2,
+
           stopLoss: {
             long:
               botState.status === 'sell' &&
@@ -641,9 +643,9 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   // );
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 7, 7);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 7, 7);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 7, 7);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 20, 20);
 
   /** *************************DATA LOGGER********************************/
 
