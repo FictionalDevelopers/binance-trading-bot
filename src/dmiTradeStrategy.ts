@@ -445,12 +445,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             indicatorsData.obv15m.signal === 'buy' &&
             indicatorsData.obv5m.signal === 'buy' &&
             indicatorsData.obv1m.signal === 'buy',
-          short:
-            botState.status === 'buy' &&
-            // indicatorsData.obv1h.signal === 'sell' &&
-            indicatorsData.obv15m.signal === 'sell' &&
-            indicatorsData.obv5m.signal === 'sell' &&
-            indicatorsData.obv1m.signal === 'sell',
+          short: null,
+          // botState.status === 'buy' &&
+          // indicatorsData.obv1h.signal === 'sell' &&
+          // indicatorsData.obv15m.signal === 'sell' &&
+          // indicatorsData.obv5m.signal === 'sell' &&
+          // indicatorsData.obv1m.signal === 'sell',
         },
         sell: {
           takeProfit: null,
@@ -641,9 +641,9 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   // );
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 20, 20);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 7, 7);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 7, 7);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 7, 7);
 
   /** *************************DATA LOGGER********************************/
 
