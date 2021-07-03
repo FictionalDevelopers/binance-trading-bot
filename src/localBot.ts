@@ -1204,7 +1204,7 @@ import determineDealType from './tools/determineDealType';
             // indicatorsData.dealType === 'long' &&
             // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
             // indicatorsData.avgPriceSignal === 'buy' &&
-            indicatorsData.obv1h.signal === 'buy' &&
+            // indicatorsData.obv1h.signal === 'buy' &&
             indicatorsData.obv15m.signal === 'buy' &&
             indicatorsData.obv1m.signal === 'buy' &&
             indicatorsData.obv5m.signal === 'buy',
@@ -1220,12 +1220,12 @@ import determineDealType from './tools/determineDealType';
           // (indicatorsData.dmi1m.adxUpCount >= 2 ||
           //   indicatorsData.dmi1m.adxDownCount >= 2),
 
-          short: null,
-          // botState.status === 'buy' &&
-          // indicatorsData.avgPriceSignal === 'sell' &&
-          // indicatorsData.obv15m.signal === 'sell' &&
-          // indicatorsData.obv15m.signal === 'sell' &&
-          // indicatorsData.obv1m.signal === 'sell' &&
+          short:
+            botState.status === 'buy' &&
+            // indicatorsData.avgPriceSignal === 'sell' &&
+            indicatorsData.obv15m.signal === 'sell' &&
+            indicatorsData.obv5m.signal === 'sell' &&
+            indicatorsData.obv1m.signal === 'sell',
           // indicatorsData.askBidDiff <= 0.17 &&
           // indicatorsData.obv5m.signal === 'sell',
           // (indicatorsData.dmi15m.adxUpCount >= 2 ||
@@ -1354,11 +1354,15 @@ import determineDealType from './tools/determineDealType';
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
               // indicatorsData.obv15m.signal === 'sell' &&
-              ((indicatorsData.obv1h.signal === 'sell' &&
-                indicatorsData.obv15m.signal === 'sell' &&
+              ((indicatorsData.obv15m.signal === 'sell' &&
                 indicatorsData.obv5m.signal === 'sell' &&
                 indicatorsData.obv1m.signal === 'sell') ||
-                expectedProfitPercent <= -0.15),
+                (indicatorsData.obv15m.sellSignalCount >= 2 &&
+                  indicatorsData.obv5m.sellSignalCount >= 2) ||
+                (indicatorsData.obv1m.sellSignalCount >= 2 &&
+                  indicatorsData.obv15m.sellSignalCount >= 2) ||
+                (indicatorsData.obv5m.sellSignalCount >= 2 &&
+                  indicatorsData.obv1m.sellSignalCount >= 2)),
             // indicatorsData.askBidDiff >= 0.17,
 
             // (indicatorsData.dmi15m.adxUpCount >= 2 ||
@@ -1394,10 +1398,19 @@ import determineDealType from './tools/determineDealType';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.obv1h.signal === 'buy' &&
-              indicatorsData.obv15m.signal === 'buy' &&
-              indicatorsData.obv1m.signal === 'buy' &&
-              indicatorsData.obv5m.signal === 'buy',
+              ((indicatorsData.obv15m.signal === 'buy' &&
+                indicatorsData.obv5m.signal === 'buy' &&
+                indicatorsData.obv1m.signal === 'buy') ||
+                (indicatorsData.obv15m.buySignalCount >= 2 &&
+                  indicatorsData.obv5m.buySignalCount >= 2) ||
+                (indicatorsData.obv1m.buySignalCount >= 2 &&
+                  indicatorsData.obv15m.buySignalCount >= 2) ||
+                (indicatorsData.obv5m.buySignalCount >= 2 &&
+                  indicatorsData.obv1m.buySignalCount >= 2)),
+            // indicatorsData.obv1h.signal === 'buy' &&
+            // indicatorsData.obv15m.signal === 'buy' &&
+            // indicatorsData.obv1m.signal === 'buy' &&
+            // indicatorsData.obv5m.signal === 'buy',
             // indicatorsData.askBidDiff <= 0.14,
 
             // indicatorsData.obv1m.signal === 'buy' &&
@@ -1435,70 +1448,6 @@ import determineDealType from './tools/determineDealType';
             //   indicatorsData.dmi1m.adxUpCount >= 2),
           },
 
-          // indicatorsData.obv1h.signal === 'sell' &&
-          // indicatorsData.obv15m.signal === 'sell' &&
-          // indicatorsData.obv5m.signal === 'sell' &&
-          // indicatorsData.obv1m.signal === 'sell',
-
-          // indicatorsData.obv5m.signal === 'sell',
-          // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
-          // (indicatorsData.dmi1h.adxUpCount >= 1 ||
-          //   indicatorsData.dmi1h.adxDownCount >= 1),
-
-          // (indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-          //   (indicatorsData.dmi1m.adxDownCount >= 2 ||
-          //     indicatorsData.dmi1m.adxUpCount >= 2))),
-
-          //   indicatorsData.haCandle.ha1mCandle.signal === 'sell'
-
-          // (indicatorsData.dmi5m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi5m.adxDownCount >= 2),
-
-          // ((indicatorsData.obv5m.signal === 'sell' &&
-          //   indicatorsData.haCandle.signal === 'sell') ||
-          //   (indicatorsData.obv5m.buySignalCount === 0 &&
-          //     indicatorsData.roc.roc5m.signal === 'sell')),
-
-          // botState.status === 'sell' &&
-          // indicatorsData.obv5m.signal === 'sell' &&
-          // indicatorsData.haCandle.signal === 'sell',
-          // indicatorsData.obv1m.sellSignalCount >= 0 &&
-          // indicatorsData.roc.roc1m.signal === 'sell',
-
-          // indicatorsData.obv1m.signal === 'sell',
-
-          // indicatorsData.obv5m.obvDiff >= 10,
-          // indicatorsData.rsi5m.signal === 'sell' &&
-          // indicatorsData.rsi1m.signal === 'sell' &&
-          // (indicatorsData.dmi1m.adxUpCount >= 1 ||
-          //   indicatorsData.dmi1m.adxDownCount >= 1),
-          // // indicatorsData.scalper.askBidSignal === 'sell',
-
-          // ((indicatorsData.rsi5m.rsiValue !== null &&
-          //   indicatorsData.rsi5m.rsiValue >= 51 &&
-          //   indicatorsData.dmi5m.adxDownCount >= 1) ||
-          //   (indicatorsData.rsi5m.rsiValue !== null &&
-          //     indicatorsData.rsi5m.rsiValue <= 49 &&
-          //     indicatorsData.dmi5m.adxUpCount >= 1)) &&
-          //
-          // ((indicatorsData.rsi1m.rsiValue !== null &&
-          //   indicatorsData.rsi1m.rsiValue >= 51 &&
-          //   indicatorsData.dmi1m.adxDownCount >= 2) ||
-          //   (indicatorsData.rsi1m.rsiValue !== null &&
-          //     indicatorsData.rsi1m.rsiValue <= 49 &&
-          //     indicatorsData.dmi1m.adxUpCount >= 2)),
-          // indicatorsData.scalper.tradesVolume.signal === 'sell' &&
-          // indicatorsData.scalper.sellSignalCount >= 1 &&
-          // expectedProfitPercent < 0,
-          // (botState.lastBid / indicatorsData.scalper.lastBid) * 100 - 100 >=
-          //   0)
-          // expectedProfitPercent >= 0.3,
-          // ||
-          // expectedProfitPercent >= 0.3
-          // ||
-          // && expectedProfitPercent >= 0.3
-
-          // ((indicatorsData.scalper.signal === 'sell' &&
           //   expectedProfitPercent <= -0.5) ||
           //   expectedProfitPercent >= 1.5),
         },
@@ -2453,10 +2402,10 @@ import determineDealType from './tools/determineDealType';
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
 
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 20, 20);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
+  // getObvSignal(symbol, '1d', indicatorsData.obv1h, 20, 20);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
 
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
@@ -2594,26 +2543,26 @@ import determineDealType from './tools/determineDealType';
       //     indicatorsData.obv15m.sellSignalCount +
       //     ')',
       // );
-      console.log(
-        'OBV 1h: ' +
-          indicatorsData.obv1h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1h.sellSignalCount +
-          ') ' +
-          'OBV Curr: ' +
-          indicatorsData.obv1h.obv +
-          ' ' +
-          'Obv Prev: ' +
-          indicatorsData.obv1h.prevObv +
-          ' ' +
-          'Obv Diff: ' +
-          indicatorsData.obv1h.obvDiff +
-          '%',
-      );
+      // console.log(
+      //   'OBV 1h: ' +
+      //     indicatorsData.obv1h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1h.sellSignalCount +
+      //     ') ' +
+      //     'OBV Curr: ' +
+      //     indicatorsData.obv1h.obv +
+      //     ' ' +
+      //     'Obv Prev: ' +
+      //     indicatorsData.obv1h.prevObv +
+      //     ' ' +
+      //     'Obv Diff: ' +
+      //     indicatorsData.obv1h.obvDiff +
+      //     '%',
+      // );
       console.log(
         'OBV 15m: ' +
           indicatorsData.obv15m.signal +

@@ -441,13 +441,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         buy: {
           long:
             botState.status === 'buy' &&
-            indicatorsData.obv1h.signal === 'buy' &&
+            // indicatorsData.obv1h.signal === 'buy' &&
             indicatorsData.obv15m.signal === 'buy' &&
             indicatorsData.obv5m.signal === 'buy' &&
             indicatorsData.obv1m.signal === 'buy',
           short:
             botState.status === 'buy' &&
-            indicatorsData.obv1h.signal === 'sell' &&
+            // indicatorsData.obv1h.signal === 'sell' &&
             indicatorsData.obv15m.signal === 'sell' &&
             indicatorsData.obv5m.signal === 'sell' &&
             indicatorsData.obv1m.signal === 'sell',
@@ -458,17 +458,40 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.obv1h.signal === 'sell' &&
-              indicatorsData.obv15m.signal === 'sell' &&
-              indicatorsData.obv5m.signal === 'sell' &&
-              indicatorsData.obv1m.signal === 'sell',
+              // indicatorsData.obv15m.signal === 'sell' &&
+              ((indicatorsData.obv15m.signal === 'sell' &&
+                indicatorsData.obv5m.signal === 'sell' &&
+                indicatorsData.obv1m.signal === 'sell') ||
+                (indicatorsData.obv15m.sellSignalCount >= 2 &&
+                  indicatorsData.obv5m.sellSignalCount >= 2) ||
+                (indicatorsData.obv1m.sellSignalCount >= 2 &&
+                  indicatorsData.obv15m.sellSignalCount >= 2) ||
+                (indicatorsData.obv5m.sellSignalCount >= 2 &&
+                  indicatorsData.obv1m.sellSignalCount >= 2)),
+            // botState.status === 'sell' &&
+            // botState.dealType === 'long' &&
+            // indicatorsData.obv1h.signal === 'sell' &&
+            // indicatorsData.obv15m.signal === 'sell' &&
+            // indicatorsData.obv5m.signal === 'sell' &&
+            // indicatorsData.obv1m.signal === 'sell',
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.obv1h.signal === 'buy' &&
-              indicatorsData.obv15m.signal === 'buy' &&
-              indicatorsData.obv5m.signal === 'buy' &&
-              indicatorsData.obv1m.signal === 'buy',
+              ((indicatorsData.obv15m.signal === 'buy' &&
+                indicatorsData.obv5m.signal === 'buy' &&
+                indicatorsData.obv1m.signal === 'buy') ||
+                (indicatorsData.obv15m.buySignalCount >= 2 &&
+                  indicatorsData.obv5m.buySignalCount >= 2) ||
+                (indicatorsData.obv1m.buySignalCount >= 2 &&
+                  indicatorsData.obv15m.buySignalCount >= 2) ||
+                (indicatorsData.obv5m.buySignalCount >= 2 &&
+                  indicatorsData.obv1m.buySignalCount >= 2)),
+            // botState.status === 'sell' &&
+            // botState.dealType === 'short' &&
+            // indicatorsData.obv1h.signal === 'buy' &&
+            // indicatorsData.obv15m.signal === 'buy' &&
+            // indicatorsData.obv5m.signal === 'buy' &&
+            // indicatorsData.obv1m.signal === 'buy',
           },
         },
       },
@@ -583,7 +606,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   };
 
   if (botState.testMode) {
-    await sendToRecipients(`INIT TEST MODE (LOCAL)
+    await sendToRecipients(`INIT TEST MODE (REMOTE)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
   Strategies: TRENDS CATCHER 2
@@ -617,10 +640,10 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   //   2,
   // );
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 20, 20);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
 
   /** *************************DATA LOGGER********************************/
 
