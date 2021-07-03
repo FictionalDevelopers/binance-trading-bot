@@ -1214,7 +1214,7 @@ import determineDealType from './tools/determineDealType';
           // indicatorsData.haCandle.ha5mCandle.signal === 'buy',
           // indicatorsData.obv1h.signal === 'buy' &&
           // (indicatorsData.dmi15m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi15m.adxDownCount >= 2) &&
+          //   indicatorsData.dmi15m.adxDsownCount >= 2) &&
           // (indicatorsData.dmi5m.adxUpCount >= 2 ||
           //   indicatorsData.dmi5m.adxDownCount >= 2) &&
           // (indicatorsData.dmi1m.adxUpCount >= 2 ||

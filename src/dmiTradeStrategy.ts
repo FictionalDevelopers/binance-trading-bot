@@ -442,6 +442,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           long:
             botState.status === 'buy' &&
             // indicatorsData.obv1h.signal === 'buy' &&
+            indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
             indicatorsData.obv15m.signal === 'buy' &&
             indicatorsData.obv5m.signal === 'buy' &&
             indicatorsData.obv1m.signal === 'buy',
@@ -646,6 +647,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 20, 20);
+  getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
 
   /** *************************DATA LOGGER********************************/
 
