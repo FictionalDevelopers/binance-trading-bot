@@ -440,31 +440,18 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       scalper: {
         buy: {
           long:
-            botState.status === 'buy' &&
-            // indicatorsData.obv1h.signal === 'buy' &&
-            indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
-            indicatorsData.obv15m.signal === 'buy' &&
-            indicatorsData.obv5m.signal === 'buy' &&
-            indicatorsData.obv1m.signal === 'buy',
-          short: null,
-          // botState.status === 'buy' &&
-          // indicatorsData.obv1h.signal === 'sell' &&
-          // indicatorsData.obv15m.signal === 'sell' &&
-          // indicatorsData.obv5m.signal === 'sell' &&
-          // indicatorsData.obv1m.signal === 'sell',
+            botState.status === 'buy' && indicatorsData.obv4h.signal === 'buy',
+          short:
+            botState.status === 'buy' && indicatorsData.obv4h.signal === 'sell',
         },
         sell: {
-          takeProfit:
-            botState.status === 'sell' && expectedProfitPercent <= -0.2,
-
+          takeProfit: null,
           stopLoss: {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              // indicatorsData.obv15m.signal === 'sell' &&
-              indicatorsData.obv15m.signal === 'sell' &&
-              indicatorsData.obv5m.signal === 'sell' &&
-              indicatorsData.obv1m.signal === 'sell',
+              indicatorsData.obv4h.signal === 'sell',
+            // indicatorsData.obv15m.signal === 'sell' &&
             // (indicatorsData.obv15m.sellSignalCount >= 2 &&
             //   indicatorsData.obv5m.sellSignalCount >= 2) ||
             // (indicatorsData.obv1m.sellSignalCount >= 2 &&
@@ -480,9 +467,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.obv15m.signal === 'buy' &&
-              indicatorsData.obv5m.signal === 'buy' &&
-              indicatorsData.obv1m.signal === 'buy',
+              indicatorsData.obv4h.signal === 'buy',
             // (indicatorsData.obv15m.buySignalCount >= 2 &&
             //   indicatorsData.obv5m.buySignalCount >= 2) ||
             // (indicatorsData.obv1m.buySignalCount >= 2 &&
@@ -644,10 +629,10 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   // );
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 20, 20);
-  getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
+  getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 20, 20);
+  // getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
 
   /** *************************DATA LOGGER********************************/
 

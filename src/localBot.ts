@@ -75,7 +75,7 @@ import determineDealType from './tools/determineDealType';
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
       local: true,
-      status: 'buy',
+      status: 'pending',
       logToTelegram: true,
       updateState: function(fieldName, value) {
         this[`${fieldName}`] = value;
@@ -2406,8 +2406,8 @@ import determineDealType from './tools/determineDealType';
 
   // getObvSignal(symbol, '1d', indicatorsData.obv1h, 20, 20);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 15, 5);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 15, 5);
+  getObvSignal(symbol, '4h', indicatorsData.obv1m, 15, 5);
+  getObvSignal(symbol, '1d', indicatorsData.obv5m, 15, 5);
 
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
