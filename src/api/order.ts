@@ -269,6 +269,7 @@ export const marketSellAction = async (
         botState.avgDealPrice = 0;
         botState.dealPricesArr = [];
         botState.confirmation = false;
+        botState.initialDealType = null;
         if (!stopLoss) botState.updateState('status', 'buy');
         else {
           botState.strategies[`${strategy}`].stopLoss = true;
@@ -290,6 +291,7 @@ export const marketSellAction = async (
         botState.updateState('status', 'sell');
       }
     } else {
+      botState.initialDealType = null;
       botState.updateState('status', 'isPending');
       botState.strategies[`${strategy}`].stopLoss = false;
       botState.updateState('status', 'buy');
@@ -395,6 +397,7 @@ export const marketSellAction = async (
         botState.avgDealPrice = 0;
         botState.dealPricesArr = [];
         botState.confirmation = false;
+        botState.initialDealType = null;
         if (!stopLoss) botState.updateState('status', 'buy');
         else {
           botState.strategies[`${strategy}`].stopLoss = true;
@@ -457,6 +460,7 @@ export const marketSellAction = async (
       );
       botState.updateState('availableCryptoCoin', refreshedCryptoCoinBalance);
       botState.dealsCount++;
+      botState.initialDealType = null;
       botState.updateState('status', 'buy');
       await botStateService.trackBotState(
         _omit(botState, [
