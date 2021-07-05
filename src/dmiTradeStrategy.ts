@@ -639,8 +639,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
   getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 20, 20);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 20, 20);
 
   /** *************************DATA LOGGER********************************/
 
