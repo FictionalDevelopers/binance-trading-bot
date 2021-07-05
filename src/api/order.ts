@@ -174,6 +174,17 @@ export const marketSellAction = async (
                                       pricesStream[pricesStream.length - 1]
                                     }
                                     Date: ${format(new Date(), DATE_FORMAT)}
+                                    Indicators data: 
+                                    OBV 5m: BSC: ${
+                                      indicatorsData.obv5m.buySignalCount
+                                    } SSC: ${
+            indicatorsData.obv5m.sellSignalCount
+          }
+                                    OBV 1m: BSC: ${
+                                      indicatorsData.obv1m.buySignalCount
+                                    } SSC: ${
+            indicatorsData.obv1m.sellSignalCount
+          }
                                     Current profit: ${
                                       botState.dealType === 'long'
                                         ? expectedProfitPercent - 0.2
@@ -513,6 +524,13 @@ export const marketBuyAction = async (
                                Symbol: ${symbol.toUpperCase()}
                                Price: ${botState.buyPrice}
                                Date: ${format(new Date(), DATE_FORMAT)}
+                               Indicators data: 
+                               OBV 5m: BSC: ${
+                                 indicatorsData.obv5m.buySignalCount
+                               } SSC: ${indicatorsData.obv5m.sellSignalCount}
+                               OBV 1m: BSC: ${
+                                 indicatorsData.obv1m.buySignalCount
+                               } SSC: ${indicatorsData.obv1m.sellSignalCount}
                 `);
       }
       console.log(`BUY
