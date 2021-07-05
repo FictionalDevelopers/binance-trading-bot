@@ -76,6 +76,7 @@ import determineDealType from './tools/determineDealType';
       availableCryptoCoin: initialCryptoCoinBalance,
       local: true,
       status: 'pending',
+      initialDealType: null,
       logToTelegram: true,
       updateState: function(fieldName, value) {
         this[`${fieldName}`] = value;

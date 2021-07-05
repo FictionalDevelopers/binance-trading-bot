@@ -1,6 +1,7 @@
 import { model, Schema, Document } from 'mongoose';
 
 export interface BotState extends Document {
+  initialDealType: string;
   dealType: string;
   strategyId: number;
   strategies: any;
@@ -40,6 +41,10 @@ export interface BotState extends Document {
   dmi1m: any;
 }
 const schema = new Schema({
+  initialDealType: {
+    type: String,
+    default: null,
+  },
   strategyId: {
     type: Number,
     default: 1,

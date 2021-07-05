@@ -440,13 +440,17 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       scalper: {
         buy: {
           long:
-            botState.status === 'buy' &&
-            indicatorsData.obv4h.signal === 'buy' &&
-            indicatorsData.haCandle.ha1hCandle.signal === 'buy',
+            botState.initialDealType === 'short'
+              ? null
+              : botState.status === 'buy' &&
+                indicatorsData.obv4h.signal === 'buy' &&
+                indicatorsData.haCandle.ha1hCandle.signal === 'buy',
           short:
-            botState.status === 'buy' &&
-            indicatorsData.obv4h.signal === 'sell' &&
-            indicatorsData.haCandle.ha1hCandle.signal === 'sell',
+            botState.initialDealType === 'long'
+              ? null
+              : botState.status === 'buy' &&
+                indicatorsData.obv4h.signal === 'sell' &&
+                indicatorsData.haCandle.ha1hCandle.signal === 'sell',
         },
         sell: {
           takeProfit: null,
