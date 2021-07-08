@@ -59,6 +59,7 @@ import determineDealType from './tools/determineDealType';
   const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1] || null;
   const workingDeposit = 35;
+  const assetAmount = 5;
   // const symbol = process.argv[2];
   let botState;
   //
@@ -1879,7 +1880,7 @@ import determineDealType from './tools/determineDealType';
             pricesStream,
             stepSize,
             'TRENDS CATCHER 2',
-            workingDeposit,
+            assetAmount,
             'STRATEGY 2',
             indicatorsData,
           );
@@ -1893,7 +1894,7 @@ import determineDealType from './tools/determineDealType';
             pricesStream,
             stepSize,
             'TRENDS CATCHER 2',
-            workingDeposit,
+            assetAmount,
             'STRATEGY 2',
             indicatorsData,
           );
