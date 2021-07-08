@@ -58,8 +58,8 @@ import determineDealType from './tools/determineDealType';
   const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
   const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1] || null;
-  const workingDeposit = 35;
-  const assetAmount = 5;
+  const spotDealUSDTAmount = 10;
+  const futuresDealUSDTAmount = 6;
   // const symbol = process.argv[2];
   let botState;
   //
@@ -71,7 +71,8 @@ import determineDealType from './tools/determineDealType';
       ...initialState,
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
-      local: true,
+      traidingMarket: 'futures',
+      local: false,
       status: 'buy',
       initialDealType: null,
       logToTelegram: true,
@@ -1202,10 +1203,10 @@ import determineDealType from './tools/determineDealType';
             // indicatorsData.dealType === 'long' &&
             // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
             // indicatorsData.avgPriceSignal === 'buy' &&
-            // indicatorsData.obv1h.signal === 'buy' &&
+            // indicatorsData.obv4h.signal === 'buy' &&
             // indicatorsData.obv15m.signal === 'buy' &&
-            indicatorsData.obv5m.signal === 'buy' &&
-            indicatorsData.obv1m.signal === 'buy',
+            indicatorsData.obv5m.signal === 'buy',
+          // indicatorsData.obv1m.signal === 'buy',
           // indicatorsData.askBidDiff <= 0.14,
           // indicatorsData.obv5m.signal === 'buy' &&
           // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
@@ -1222,8 +1223,9 @@ import determineDealType from './tools/determineDealType';
             botState.status === 'buy' &&
             // indicatorsData.avgPriceSignal === 'sell' &&
             // indicatorsData.obv15m.signal === 'sell' &&
-            indicatorsData.obv5m.signal === 'sell' &&
-            indicatorsData.obv1m.signal === 'sell',
+            // indicatorsData.obv4h.signal === 'sell' &&
+            indicatorsData.obv5m.signal === 'sell',
+          // indicatorsData.obv1m.signal === 'sell',
           // indicatorsData.askBidDiff <= 0.17 &&
           // indicatorsData.obv5m.signal === 'sell',
           // (indicatorsData.dmi15m.adxUpCount >= 2 ||
@@ -1353,8 +1355,9 @@ import determineDealType from './tools/determineDealType';
               botState.dealType === 'long' &&
               // indicatorsData.obv15m.signal === 'sell' &&
               // indicatorsData.obv5m.sellSignalCount >= 4,
-              indicatorsData.obv1m.signal === 'sell' &&
+              // indicatorsData.obv4h.signal === 'sell' &&
               indicatorsData.obv5m.signal === 'sell',
+            // indicatorsData.obv1m.signal === 'sell',
 
             // ||
             // (indicatorsData.obv15m.sellSignalCount >= 2 &&
@@ -1410,9 +1413,9 @@ import determineDealType from './tools/determineDealType';
               //     indicatorsData.obv1m.buySignalCount >= 2)),
               // indicatorsData.obv1h.signal === 'buy' &&
               // indicatorsData.obv15m.signal === 'buy' &&
-              // indicatorsData.obv1m.signal === 'buy' &&
-              indicatorsData.obv5m.signal === 'buy' &&
-              indicatorsData.obv1m.signal === 'buy',
+              indicatorsData.obv4h.signal === 'buy' &&
+              indicatorsData.obv5m.signal === 'buy',
+            // indicatorsData.obv1m.signal === 'buy',
             // indicatorsData.askBidDiff <= 0.14,
 
             // indicatorsData.obv1m.signal === 'buy' &&
@@ -1843,21 +1846,21 @@ import determineDealType from './tools/determineDealType';
             pricesStream,
             stepSize,
             'TRENDS CATCHER 2',
-            workingDeposit,
+            spotDealUSDTAmount,
             'STRATEGY 2',
             indicatorsData,
           );
         } else if (botState.traidingMarket === 'futures') {
           await marketFuturesBuyAction(
             'long',
-            true,
+            false,
             symbol,
             botState,
             cryptoCoin,
             pricesStream,
             stepSize,
             'TRENDS CATCHER 2',
-            workingDeposit,
+            futuresDealUSDTAmount,
             'STRATEGY 2',
             indicatorsData,
           );
@@ -1880,21 +1883,21 @@ import determineDealType from './tools/determineDealType';
             pricesStream,
             stepSize,
             'TRENDS CATCHER 2',
-            assetAmount,
+            spotDealUSDTAmount,
             'STRATEGY 2',
             indicatorsData,
           );
         } else if (botState.traidingMarket === 'futures') {
           await marketFuturesBuyAction(
             'short',
-            true,
+            false,
             symbol,
             botState,
             cryptoCoin,
             pricesStream,
             stepSize,
             'TRENDS CATCHER 2',
-            assetAmount,
+            futuresDealUSDTAmount,
             'STRATEGY 2',
             indicatorsData,
           );
@@ -2416,14 +2419,21 @@ import determineDealType from './tools/determineDealType';
   `);
   } else {
     await sendToRecipients(`INIT REAL MODE (LOCAL)
+  Traiding market: ${botState.traidingMarket.toUpperCase()}  
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
   Strategies: ${JSON.stringify(botState.strategies)}
   Status: ${botState.status.toUpperCase()}
   Symbol: ${symbol.toUpperCase()}
+  ***SPOT***
   Initial USDT balance: ${initialUSDTBalance} USDT
-  Working deposit: ${workingDeposit} USDT
+  Working USDT deposit: ${spotDealUSDTAmount} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
+  ***FUTURES***
+  Initial USDT balance: ${initialFuturesUSDTBalance} USDT
+  Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
+  Working USDT deposit: ${futuresDealUSDTAmount} USDT
+
   `);
   }
 
@@ -2533,9 +2543,9 @@ import determineDealType from './tools/determineDealType';
 
   // getObvSignal(symbol, '1d', indicatorsData.obv1h, 20, 20);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
-  // getObvSignal(symbol, '1d', indicatorsData.obv5m, 15, 5);
+  getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
 
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
@@ -2582,6 +2592,17 @@ import determineDealType from './tools/determineDealType';
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
       calculateAvgDealPriceChange(botState, indicatorsData);
       // indicatorsData.dealType = determineDealType(indicatorsData, 4);
+      console.log(
+        'OBV 4h: ' +
+          indicatorsData.obv4h.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv4h.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv4h.sellSignalCount +
+          ')',
+      );
       console.log(
         'OBV 5m: ' +
           indicatorsData.obv5m.signal +

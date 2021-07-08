@@ -22,7 +22,7 @@ export const marketFuturesBuy = (
   quantity: number,
 ): Promise<unknown> =>
   new Promise((resolve, reject) => {
-    binance.marketBuy(symbol, quantity, (error, response) => {
+    binance.futuresMarketBuy(symbol, quantity, (error, response) => {
       if (error) {
         return reject(error);
       }
@@ -1139,7 +1139,10 @@ export const marketFuturesBuyAction = async (
           stepSize,
         );
       } else if (dealType === 'short') {
-        amount = binance.roundStep(Number(assetAmount), stepSize);
+        amount = binance.roundStep(
+          assetAmount / botState.currentPrice,
+          stepSize,
+        );
       }
 
       let order;
