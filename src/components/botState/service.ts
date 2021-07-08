@@ -1,6 +1,7 @@
 import BotStateModel, { BotState } from './model';
 
 export async function trackBotState(botState: {
+  traidingMarket: string;
   initialDealType: string;
   dealType: string;
   totalLongProfit: number;

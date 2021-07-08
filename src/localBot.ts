@@ -6,7 +6,7 @@ import { RESOURCES } from './constants';
 import { DATE_FORMAT } from './constants/date';
 import { getTradeStream } from './api/trades.js';
 import { sendToRecipients } from './services/telegram';
-import getBalances from './api/balance';
+import { getBalances, getFuturesBalances } from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import {
   marketSellAction,
@@ -14,6 +14,8 @@ import {
   getOrdersList,
   checkAllOpenOrders,
   cancelAllOpenOrders,
+  marketFuturesBuyAction,
+  marketFuturesSellAction,
 } from './api/order';
 
 import _maxBy from 'lodash/maxBy';
@@ -33,13 +35,6 @@ import {
 import { getObvSignal } from './components/obv-signals';
 import { service as botStateService } from './components/botState';
 import _head from 'lodash/head';
-import { getForceIndexSignal, runEFIInterval } from './components/forceIndex';
-import { getForceIndexStream } from './indicators/forceIndex';
-import { getStochRsiStream } from './indicators/stochRSI';
-import { getTrixStream } from './indicators/trix';
-import { getRocSignal } from './components/roc-signals';
-import { getRocStream } from './indicators/roc';
-import { getDMISignal } from './components/dmi-signals';
 import _throttle from 'lodash/throttle';
 import _debounce from 'lodash/debounce';
 import { getHeikinAshiSignal } from './indicators/heikinAshi';
@@ -58,6 +53,7 @@ import determineDealType from './tools/determineDealType';
   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
+  const initialFuturesUSDTBalance = await getFuturesBalances('USDT');
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
   const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
   const ordersList = await getOrdersList(symbol.toUpperCase());
@@ -1836,19 +1832,35 @@ import determineDealType from './tools/determineDealType';
 
     if (botState.strategies.scalper.enabled) {
       if (conditions.scalper.buy.long) {
-        await marketBuyAction(
-          'long',
-          true,
-          symbol,
-          botState,
-          cryptoCoin,
-          pricesStream,
-          stepSize,
-          'TRENDS CATCHER 2',
-          workingDeposit,
-          'STRATEGY 2',
-          indicatorsData,
-        );
+        if (botState.traidingMarket === 'spot') {
+          await marketBuyAction(
+            'long',
+            true,
+            symbol,
+            botState,
+            cryptoCoin,
+            pricesStream,
+            stepSize,
+            'TRENDS CATCHER 2',
+            workingDeposit,
+            'STRATEGY 2',
+            indicatorsData,
+          );
+        } else if (botState.traidingMarket === 'futures') {
+          await marketFuturesBuyAction(
+            'long',
+            true,
+            symbol,
+            botState,
+            cryptoCoin,
+            pricesStream,
+            stepSize,
+            'TRENDS CATCHER 2',
+            workingDeposit,
+            'STRATEGY 2',
+            indicatorsData,
+          );
+        }
         botState.buyReason = 'scalper';
         return;
       }
@@ -1857,19 +1869,35 @@ import determineDealType from './tools/determineDealType';
     }
     if (botState.strategies.scalper.enabled) {
       if (conditions.scalper.buy.short) {
-        await marketBuyAction(
-          'short',
-          true,
-          symbol,
-          botState,
-          cryptoCoin,
-          pricesStream,
-          stepSize,
-          'TRENDS CATCHER 2',
-          workingDeposit,
-          'STRATEGY 2',
-          indicatorsData,
-        );
+        if (botState.traidingMarket === 'spot') {
+          await marketBuyAction(
+            'short',
+            true,
+            symbol,
+            botState,
+            cryptoCoin,
+            pricesStream,
+            stepSize,
+            'TRENDS CATCHER 2',
+            workingDeposit,
+            'STRATEGY 2',
+            indicatorsData,
+          );
+        } else if (botState.traidingMarket === 'futures') {
+          await marketFuturesBuyAction(
+            'short',
+            true,
+            symbol,
+            botState,
+            cryptoCoin,
+            pricesStream,
+            stepSize,
+            'TRENDS CATCHER 2',
+            workingDeposit,
+            'STRATEGY 2',
+            indicatorsData,
+          );
+        }
         botState.buyReason = 'scalper';
         return;
       }
@@ -2117,41 +2145,91 @@ import determineDealType from './tools/determineDealType';
       conditions.scalper.sell.takeProfit &&
       !botState.strategies.scalper.stopLoss
     ) {
-      await marketSellAction(
-        'scalper',
-        false,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        stepSize,
-        initialUSDTBalance,
-        'TRENDS CATCHER 2 (TAKE PROFIT)',
-        indicatorsData,
-        true,
-      );
+      if (botState.traidingMarket === 'spot') {
+        await marketSellAction(
+          'scalper',
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          expectedProfitPercent,
+          pricesStream,
+          stepSize,
+          initialUSDTBalance,
+          'TRENDS CATCHER 2 (TAKE PROFIT)',
+          indicatorsData,
+          true,
+        );
+      } else if (botState.traidingMarket === 'futures') {
+        await marketFuturesSellAction(
+          'scalper',
+          false,
+          symbol,
+          botState,
+          cryptoCoin,
+          expectedProfitPercent,
+          pricesStream,
+          stepSize,
+          initialUSDTBalance,
+          'TRENDS CATCHER 2 (TAKE PROFIT)',
+          indicatorsData,
+          true,
+        );
+      }
       return;
     }
     if (conditions.scalper.sell.stopLoss.long) {
-      botState.updateState('status', 'isPending');
-      let openOrders;
-      try {
-        openOrders = await checkAllOpenOrders(symbol.toUpperCase());
-      } catch (e) {
-        await sendToRecipients(`OPEN ORDERS CHECKING ERROR
+      if (botState.traidingMarket === 'spot') {
+        botState.updateState('status', 'isPending');
+        let openOrders;
+        try {
+          openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+        } catch (e) {
+          await sendToRecipients(`OPEN ORDERS CHECKING ERROR
             ${JSON.stringify(e)}
       `);
-      }
-      if (
-        openOrders.length === 0 &&
-        !botState.sellError &&
-        botState.enabledLimits
-      ) {
-        await sendToRecipients(`INFO
+        }
+        if (
+          openOrders.length === 0 &&
+          !botState.sellError &&
+          botState.enabledLimits
+        ) {
+          await sendToRecipients(`INFO
           No open limit sell orders found
           Bot was switched to the BUY status!
       `);
+          await marketSellAction(
+            'scalper',
+            false,
+            symbol,
+            botState,
+            cryptoCoin,
+            expectedProfitPercent,
+            pricesStream,
+            stepSize,
+            initialUSDTBalance,
+            'STRATEGY 2',
+            indicatorsData,
+            true,
+          );
+          return;
+        } else if (openOrders.length !== 0) {
+          await cancelAllOpenOrders(symbol.toUpperCase());
+          await marketSellAction(
+            'scalper',
+            true,
+            symbol,
+            botState,
+            cryptoCoin,
+            expectedProfitPercent,
+            pricesStream,
+            stepSize,
+            initialUSDTBalance,
+            'STOP LOSS',
+            indicatorsData,
+          );
+          return;
+        }
         await marketSellAction(
           'scalper',
           false,
@@ -2164,14 +2242,73 @@ import determineDealType from './tools/determineDealType';
           initialUSDTBalance,
           'STRATEGY 2',
           indicatorsData,
-          true,
         );
         return;
-      } else if (openOrders.length !== 0) {
-        await cancelAllOpenOrders(symbol.toUpperCase());
-        await marketSellAction(
+        // catch (e) {
+        //   const { available: refreshedCryptoCoinBalance } = await getBalances(
+        //     cryptoCoin,
+        //   );
+        //   botState.updateState(
+        //     'availableCryptoCoin',
+        //     +refreshedCryptoCoinBalance,
+        //   );
+        //   botState.sellError = true;
+        //   botState.updateState('status', 'sell');
+        // }
+      } else if (botState.traidingMarket === 'futures') {
+        // botState.updateState('status', 'isPending');
+        // let openOrders;
+        // try {
+        //   openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+        // } catch (e) {
+        //   await sendToRecipients(`OPEN ORDERS CHECKING ERROR
+        //     ${JSON.stringify(e)}
+        // `);
+        //   }
+        //   if (
+        //     openOrders.length === 0 &&
+        //     !botState.sellError &&
+        //     botState.enabledLimits
+        //   ) {
+        //     await sendToRecipients(`INFO
+        //     No open limit sell orders found
+        //     Bot was switched to the BUY status!
+        // `);
+        //     await marketSellAction(
+        //       'scalper',
+        //       false,
+        //       symbol,
+        //       botState,
+        //       cryptoCoin,
+        //       expectedProfitPercent,
+        //       pricesStream,
+        //       stepSize,
+        //       initialUSDTBalance,
+        //       'STRATEGY 2',
+        //       indicatorsData,
+        //       true,
+        //     );
+        //     return;
+        //   } else if (openOrders.length !== 0) {
+        //     await cancelAllOpenOrders(symbol.toUpperCase());
+        //     await marketSellAction(
+        //       'scalper',
+        //       true,
+        //       symbol,
+        //       botState,
+        //       cryptoCoin,
+        //       expectedProfitPercent,
+        //       pricesStream,
+        //       stepSize,
+        //       initialUSDTBalance,
+        //       'STOP LOSS',
+        //       indicatorsData,
+        //     );
+        //     return;
+        //   }
+        await marketFuturesSellAction(
           'scalper',
-          true,
+          false,
           symbol,
           botState,
           cryptoCoin,
@@ -2179,41 +2316,27 @@ import determineDealType from './tools/determineDealType';
           pricesStream,
           stepSize,
           initialUSDTBalance,
-          'STOP LOSS',
+          'STRATEGY 2',
           indicatorsData,
         );
         return;
+        // catch (e) {
+        //   const { available: refreshedCryptoCoinBalance } = await getBalances(
+        //     cryptoCoin,
+        //   );
+        //   botState.updateState(
+        //     'availableCryptoCoin',
+        //     +refreshedCryptoCoinBalance,
+        //   );
+        //   botState.sellError = true;
+        //   botState.updateState('status', 'sell');
+        // }
       }
-      await marketSellAction(
-        'scalper',
-        false,
-        symbol,
-        botState,
-        cryptoCoin,
-        expectedProfitPercent,
-        pricesStream,
-        stepSize,
-        initialUSDTBalance,
-        'STRATEGY 2',
-        indicatorsData,
-      );
-      return;
-      // catch (e) {
-      //   const { available: refreshedCryptoCoinBalance } = await getBalances(
-      //     cryptoCoin,
-      //   );
-      //   botState.updateState(
-      //     'availableCryptoCoin',
-      //     +refreshedCryptoCoinBalance,
-      //   );
-      //   botState.sellError = true;
-      //   botState.updateState('status', 'sell');
-      // }
     }
     if (conditions.scalper.sell.stopLoss.short) {
-      await marketSellAction(
+      await marketFuturesSellAction(
         'scalper',
-        true,
+        false,
         symbol,
         botState,
         cryptoCoin,

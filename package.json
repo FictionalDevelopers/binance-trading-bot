@@ -36,6 +36,7 @@
     "rxjs": "^6.5.5",
     "technicalindicators": "^3.1.0",
     "trading-indicator": "^1.0.4-beta",
+    "typescript": "^4.3.5",
     "ws": "^7.3.0"
   },
   "devDependencies": {

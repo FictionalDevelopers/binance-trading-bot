@@ -4,6 +4,7 @@ import { sendToRecipients } from './services/telegram';
 import { service as botStateService } from './components/botState';
 
 const botState = {
+  traidingMarket: 'spot',
   initialDealType: null,
   dealType: 'undetermined',
   maxAvailableLongProfit: 0,
