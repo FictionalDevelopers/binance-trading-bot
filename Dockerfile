@@ -5,7 +5,7 @@ WORKDIR /var/www/binance/server
 COPY ./package.json ./
 COPY ./yarn.lock ./
 
-RUN yarn
+RUN yarn -
 
 COPY ./ ./
 

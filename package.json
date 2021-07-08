@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "ccxt": "^1.52.62",
     "date-fns": "^2.14.0",
     "dotenv-extended": "^2.8.0",
     "lodash": "^4.17.15",
