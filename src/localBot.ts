@@ -845,16 +845,16 @@ import {
               : botState.status === 'buy' &&
                 indicatorsData.obv4h.signal === 'buy' &&
                 indicatorsData.obv5m.signal === 'buy' &&
-                indicatorsData.obv1m.signal === 'buy' &&
-                indicatorsData.haCandle.ha1hCandle.signal === 'buy',
+                indicatorsData.obv1m.signal === 'buy',
+          // indicatorsData.haCandle.ha1hCandle.signal === 'buy',
           short:
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.obv4h.signal === 'sell' &&
                 indicatorsData.obv5m.signal === 'sell' &&
-                indicatorsData.obv1m.signal === 'sell' &&
-                indicatorsData.haCandle.ha1hCandle.signal === 'sell',
+                indicatorsData.obv1m.signal === 'sell',
+          // indicatorsData.haCandle.ha1hCandle.signal === 'sell',
         },
         sell: {
           takeProfit: null,
@@ -1198,7 +1198,7 @@ import {
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
-  getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
+  // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
   // getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
 
