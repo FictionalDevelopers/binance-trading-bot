@@ -22,7 +22,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
-  const workingDeposit = 600;
+  const workingDeposit = 10;
   let botState;
 
   try {
@@ -33,6 +33,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       ...initialState,
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
+      testMode: true,
       local: false,
       logToTelegram: true,
       updateState: function(fieldName, value) {
