@@ -13,8 +13,9 @@ export async function getBalances(symbol = '') {
 export async function getFuturesBalances(symbol = '') {
   try {
     const data = await binance.futuresBalance();
-    return data.find(({ asset }) => asset === symbol.toUpperCase())
-      .withdrawAvailable;
+    const balance = data.find(({ asset }) => asset === symbol.toUpperCase());
+    console.log(balance);
+    return balance.withdrawAvailable ? balance.withdrawAvailable : balance;
   } catch (e) {
     console.log(e);
   }

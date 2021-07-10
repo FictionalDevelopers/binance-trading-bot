@@ -7,7 +7,7 @@ import { DATE_FORMAT } from './constants/date';
 import { getTradeStream } from './api/trades.js';
 import { sendToRecipients } from './services/telegram';
 import { getBalances, getFuturesBalances } from './api/balance';
-import { getExchangeInfo } from './api/exchangeInfo';
+import { getExchangeInfo, getFuturesExchangeInfo } from './api/exchangeInfo';
 import {
   marketSellAction,
   marketBuyAction,
@@ -42,8 +42,6 @@ import {
   calculateAvgDealPriceChange,
   calculateAvgPriceChange,
 } from './tools/avgPriceTools';
-import determineDealType from './tools/determineDealType';
-// import { indicatorsData } from './index2';
 
 (async function() {
   await connect();
@@ -54,7 +52,12 @@ import determineDealType from './tools/determineDealType';
   const { available: initialUSDTBalance } = await getBalances('USDT');
   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
   const initialFuturesUSDTBalance = await getFuturesBalances('USDT');
+  // const initialFuturesCryptocoinBalance = await getFuturesBalances(cryptoCoin);
   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
+  const { stepFuturesSize } = await getFuturesExchangeInfo(
+    symbol.toUpperCase(),
+    'LOT_SIZE',
+  );
   const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
   const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1] || null;
@@ -69,11 +72,13 @@ import determineDealType from './tools/determineDealType';
 
     botState = {
       ...initialState,
+      traidingMarket: 'futures',
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
-      traidingMarket: 'futures',
-      local: false,
+      availableFuturesUSDT: initialFuturesUSDTBalance,
+      // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       status: 'buy',
+      local: false,
       initialDealType: null,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -798,367 +803,6 @@ import determineDealType from './tools/determineDealType';
   //   };
   //
   //   /** ******************************************BUY ACTIONS********************************************************/
-  //
-  //   /** *********************UP TREND***********************/
-  //   if (botState.strategies.upTrend.enabled) {
-  //     if (conditions.upTrend.buy) {
-  //       await marketBuyAction(
-  //         false,
-  //         symbol,
-  //         botState,
-  //         cryptoCoin,
-  //         pricesStream,
-  //         stepSize,
-  //         'TRENDS CATCHER',
-  //         workingDeposit,
-  //         'RESISTANCE LEVEL',
-  //       );
-  //       botState.buyReason = 'upTrend';
-  //       return;
-  //     }
-  //   }
-  //
-  //   /** *********************DOWN TREND***********************/
-  //
-  //   if (botState.strategies.downTrend.enabled) {
-  //     if (conditions.downTrend.buy) {
-  //       await marketBuyAction(
-  //         false,
-  //         symbol,
-  //         botState,
-  //         cryptoCoin,
-  //         pricesStream,
-  //         stepSize,
-  //         'WAVES CATCHER',
-  //         workingDeposit,
-  //         'DOWN TREND CORRECTION LEVEL',
-  //       );
-  //       botState.buyReason = 'downTrend';
-  //       indicatorsData.rsiRebuy.value = false;
-  //       return;
-  //     }
-  //   }
-  //
-  //   /** *********************UP FLAT***********************/
-  //
-  //   if (botState.strategies.upFlat.enabled) {
-  //     if (conditions.upFlat.buy) {
-  //       await marketBuyAction(
-  //         false,
-  //         symbol,
-  //         botState,
-  //         cryptoCoin,
-  //         pricesStream,
-  //         stepSize,
-  //         'WAVES CATCHER',
-  //         workingDeposit,
-  //         'UP FLAT ',
-  //       );
-  //       botState.buyReason = 'upFlat';
-  //       return;
-  //     }
-  //   }
-  //
-  //   /** *********************DOWN FLAT***********************/
-  //
-  //   if (botState.strategies.downFlat.enabled) {
-  //     if (conditions.downFlat.buy) {
-  //       await marketBuyAction(
-  //         false,
-  //         symbol,
-  //         botState,
-  //         cryptoCoin,
-  //         pricesStream,
-  //         stepSize,
-  //         'WAVES CATCHER',
-  //         workingDeposit,
-  //         'DOWN FLAT',
-  //       );
-  //       botState.buyReason = 'downFlat';
-  //       return;
-  //     }
-  //   }
-  //
-  //   /** *********************StochRSI Strategy***********************/
-  //
-  //   if (botState.strategies.stochRsi.enabled) {
-  //     if (conditions.stochRsiStrategy.buy) {
-  //       await marketBuyAction(
-  //         false,
-  //         symbol,
-  //         botState,
-  //         cryptoCoin,
-  //         pricesStream,
-  //         stepSize,
-  //         'STOCH RSI',
-  //         workingDeposit,
-  //         'STOCH RSI SIGNAL',
-  //       );
-  //       botState.buyReason = 'stochRsi';
-  //       indicatorsData.obvBuySignalCount = 0;
-  //       return;
-  //     }
-  //   }
-  //
-  //   /** ******************** TRENDS CATHCER ***********************/
-  //
-  //   if (botState.strategies.trendsCatcher.enabled) {
-  //     if (conditions.trendsCatcher.buy) {
-  //       await marketBuyAction(
-  //         false,
-  //         symbol,
-  //         botState,
-  //         cryptoCoin,
-  //         pricesStream,
-  //         stepSize,
-  //         'TRENDS CATCHER',
-  //         workingDeposit,
-  //         'ADX SIGNAL',
-  //       );
-  //       botState.buyReason = 'trendsCatcher';
-  //       return;
-  //     }
-  //   }
-  //
-  //   /** *****************************************SELL ACTIONS********************************************************/
-  //
-  //   /** *********************UP TREND***********************/
-  //
-  //   if (conditions.upTrend.sell.stopLoss) {
-  //     await marketSellAction(
-  //       'upTrend',
-  //       false,
-  //       symbol,
-  //       botState,
-  //       cryptoCoin,
-  //       expectedProfitPercent,
-  //       pricesStream,
-  //       stepSize,
-  //       initialUSDTBalance,
-  //       'STOP LOSS OR TAKE PROFIT',
-  //       indicatorsData,
-  //     );
-  //     indicatorsData.rsiRebuy.value = true;
-  //     return;
-  //   }
-  //
-  //   /** *********************DOWN TREND***********************/
-  //
-  //   if (conditions.downTrend.sell.takeProfit) {
-  //     await marketSellAction(
-  //       'downTrend',
-  //       false,
-  //       symbol,
-  //       botState,
-  //       cryptoCoin,
-  //       expectedProfitPercent,
-  //       pricesStream,
-  //       stepSize,
-  //       initialUSDTBalance,
-  //       'DOWNTREND CORRECTION TAKE PROFIT',
-  //       indicatorsData,
-  //     );
-  //     indicatorsData.rsiRebuy.value = false;
-  //     return;
-  //   }
-  //
-  //   if (conditions.downTrend.sell.stopLoss) {
-  //     await marketSellAction(
-  //       'downTrend',
-  //       false,
-  //       symbol,
-  //       botState,
-  //       cryptoCoin,
-  //       expectedProfitPercent,
-  //       pricesStream,
-  //       stepSize,
-  //       initialUSDTBalance,
-  //       'DOWNTREND CORRECTION STOP LOSS',
-  //       indicatorsData,
-  //     );
-  //     indicatorsData.rsiRebuy.value = true;
-  //     return;
-  //   }
-  //
-  //   /** *********************UP FLAT***********************/
-  //
-  //   if (conditions.upFlat.sell.takeProfit) {
-  //     if (
-  //       false
-  //       // Number(
-  //       //   (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-  //       // ) >= 0.1 &&
-  //       // Number(
-  //       //   (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
-  //       // ) >= 0.1
-  //     ) {
-  //       botState.buyReason = 'upTrend';
-  //       await sendToRecipients(` INFO
-  //                    Bot was switched to the TRENDS CATCHER strategy!
-  //       `);
-  //       indicatorsData.rsiRebuy.value = true;
-  //       return;
-  //     } else {
-  //       await marketSellAction(
-  //         'upFlat',
-  //         false,
-  //         symbol,
-  //         botState,
-  //         cryptoCoin,
-  //         expectedProfitPercent,
-  //         pricesStream,
-  //         stepSize,
-  //         initialUSDTBalance,
-  //         'UP FLAT TAKE PROFIT',
-  //         indicatorsData,
-  //       );
-  //       indicatorsData.rsiRebuy.value = true;
-  //       return;
-  //     }
-  //   }
-  //   //
-  //   if (conditions.upFlat.sell.stopLoss) {
-  //     await marketSellAction(
-  //       'upFlat',
-  //       false,
-  //       symbol,
-  //       botState,
-  //       cryptoCoin,
-  //       expectedProfitPercent,
-  //       pricesStream,
-  //       stepSize,
-  //       initialUSDTBalance,
-  //       'UP FLAT STOP LOSS',
-  //       indicatorsData,
-  //     );
-  //     indicatorsData.rsiRebuy.value = true;
-  //     return;
-  //   }
-  //
-  //   /** *********************DOWN FLAT***********************/
-  //
-  //   if (conditions.downFlat.sell.takeProfit) {
-  //     await marketSellAction(
-  //       'downFlat',
-  //       false,
-  //       symbol,
-  //       botState,
-  //       cryptoCoin,
-  //       expectedProfitPercent,
-  //       pricesStream,
-  //       stepSize,
-  //       initialUSDTBalance,
-  //       'DOWN FLAT TAKE PROFIT',
-  //       indicatorsData,
-  //     );
-  //     indicatorsData.rsiRebuy.value = true;
-  //     return;
-  //   }
-  //
-  //   if (conditions.downFlat.sell.stopLoss) {
-  //     await marketSellAction(
-  //       'downFlat',
-  //       false,
-  //       symbol,
-  //       botState,
-  //       cryptoCoin,
-  //       expectedProfitPercent,
-  //       pricesStream,
-  //       stepSize,
-  //       initialUSDTBalance,
-  //       'DOWN FLAT LEVEL STOP LOSS',
-  //       indicatorsData,
-  //     );
-  //     indicatorsData.rsiRebuy.value = true;
-  //     return;
-  //   }
-  //
-  //   /** *********************STOCH RSI ***********************/
-  //
-  //   if (
-  //     conditions.stochRsiStrategy.sell.takeProfit &&
-  //     !botState.strategies.stochRsi.stopLoss
-  //   ) {
-  //     await marketSellAction(
-  //       'stochRsi',
-  //       false,
-  //       symbol,
-  //       botState,
-  //       cryptoCoin,
-  //       expectedProfitPercent,
-  //       pricesStream,
-  //       stepSize,
-  //       initialUSDTBalance,
-  //       'STOCH RSI TAKE PROFIT',
-  //       indicatorsData,
-  //       true,
-  //     );
-  //     return;
-  //   }
-  //
-  //   if (conditions.stochRsiStrategy.sell.stopLoss) {
-  //     await marketSellAction(
-  //       'stochRsi',
-  //       false,
-  //       symbol,
-  //       botState,
-  //       cryptoCoin,
-  //       expectedProfitPercent,
-  //       pricesStream,
-  //       stepSize,
-  //       initialUSDTBalance,
-  //       'ADX STOP LOSS',
-  //       indicatorsData,
-  //       false,
-  //     );
-  //     indicatorsData.obvSellSignalCount = 0;
-  //
-  //     // indicatorsData.priceGrowArea = false;
-  //     return;
-  //   }
-  //
-  //   /** *********************TRENDS CATCHER***********************/
-  //
-  //   if (
-  //     conditions.trendsCatcher.sell.takeProfit &&
-  //     !botState.strategies.trendsCatcher.stopLoss
-  //   ) {
-  //     await marketSellAction(
-  //       'trendsCatcher',
-  //       false,
-  //       symbol,
-  //       botState,
-  //       cryptoCoin,
-  //       expectedProfitPercent,
-  //       pricesStream,
-  //       stepSize,
-  //       initialUSDTBalance,
-  //       'TRENDS CATCHER TAKE PROFIT',
-  //       indicatorsData,
-  //       true,
-  //     );
-  //     return;
-  //   }
-  //
-  //   if (conditions.trendsCatcher.sell.stopLoss) {
-  //     await marketSellAction(
-  //       'trendsCatcher',
-  //       true,
-  //       symbol,
-  //       botState,
-  //       cryptoCoin,
-  //       expectedProfitPercent,
-  //       pricesStream,
-  //       stepSize,
-  //       initialUSDTBalance,
-  //       'STOP LOSS',
-  //       indicatorsData,
-  //     );
-  //     return;
-  //   }
-  //
-  //   botState.updateState('prevPrice', botState.currentPrice);
-  // };
 
   const scalper = async pricesStream => {
     const { tradeAmountPercent } = botState;
@@ -1196,650 +840,73 @@ import determineDealType from './tools/determineDealType';
       scalper: {
         buy: {
           long:
-            botState.status === 'buy' &&
-            // indicatorsData.roc.roc5m.signal === 'buy' &&
-            // indicatorsData.roc.roc1m.signal === 'buy' &&
-            // indicatorsData.askBidDiff < 0.45 &&
-            // indicatorsData.dealType === 'long' &&
-            // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
-            // indicatorsData.avgPriceSignal === 'buy' &&
-            // indicatorsData.obv4h.signal === 'buy' &&
-            // indicatorsData.obv15m.signal === 'buy' &&
-            indicatorsData.obv5m.signal === 'buy',
-          // indicatorsData.obv1m.signal === 'buy',
-          // indicatorsData.askBidDiff <= 0.14,
-          // indicatorsData.obv5m.signal === 'buy' &&
-          // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
-          // indicatorsData.haCandle.ha5mCandle.signal === 'buy',
-          // indicatorsData.obv1h.signal === 'buy' &&
-          // (indicatorsData.dmi15m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi15m.adxDsownCount >= 2) &&
-          // (indicatorsData.dmi5m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi5m.adxDownCount >= 2) &&
-          // (indicatorsData.dmi1m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi1m.adxDownCount >= 2),
-
+            botState.initialDealType === 'short'
+              ? null
+              : botState.status === 'buy' &&
+                indicatorsData.obv4h.signal === 'buy' &&
+                indicatorsData.obv5m.signal === 'buy' &&
+                indicatorsData.obv1m.signal === 'buy' &&
+                indicatorsData.haCandle.ha1hCandle.signal === 'buy',
           short:
-            botState.status === 'buy' &&
-            // indicatorsData.avgPriceSignal === 'sell' &&
-            // indicatorsData.obv15m.signal === 'sell' &&
-            // indicatorsData.obv4h.signal === 'sell' &&
-            indicatorsData.obv5m.signal === 'sell',
-          // indicatorsData.obv1m.signal === 'sell',
-          // indicatorsData.askBidDiff <= 0.17 &&
-          // indicatorsData.obv5m.signal === 'sell',
-          // (indicatorsData.dmi15m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi15m.adxDownCount >= 2) &&
-          // (indicatorsData.dmi5m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi5m.adxDownCount >= 2) &&
-          // (indicatorsData.dmi1m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi1m.adxDownCount >= 2),
-          // indicatorsData.roc.roc5m.signal === 'sell' &&
-          // indicatorsData.roc.roc1m.signal === 'sell',
-          // indicatorsData.obv15m.signal === 'sell' &&
-          // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
-          // indicatorsData.haCandle.ha5mCandle.signal === 'sell',
-          // indicatorsData.obv1h.signal === 'buy' &&
-          // (indicatorsData.dmi5m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi5m.adxDownCount >= 2),
-          // indicatorsData.dealType === 'short',
-          // indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
-          // indicatorsData.avgPriceSignal === 'buy' &&
-          // indicatorsData.obv5m.signal === 'sell' &&
-          // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-          // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
-          // indicatorsData.obv1h.signal === 'buy' &&
-          // ((indicatorsData.dmi1m.adxUpCount >= 2 &&
-          //   indicatorsData.rsi1m.rsiValue > 50) ||
-          //   (indicatorsData.dmi1m.adxDownCount >= 2 &&
-          // indicatorsData.rsi1m.rsiValue !== null &&
-          // indicatorsData.rsi1m.rsiValue < 50,
+            botState.initialDealType === 'long'
+              ? null
+              : botState.status === 'buy' &&
+                indicatorsData.obv4h.signal === 'sell' &&
+                indicatorsData.obv5m.signal === 'sell' &&
+                indicatorsData.obv1m.signal === 'sell' &&
+                indicatorsData.haCandle.ha1hCandle.signal === 'sell',
         },
-
-        // indicatorsData.stochRsi.stoch1h.signal === 'buy',
-
-        // indicatorsData.obv1h.signal === 'buy' &&
-        // indicatorsData.obv15m.signal === 'buy' &&
-        // indicatorsData.obv5m.signal === 'buy' &&
-        // indicatorsData.obv1m.signal === 'buy',
-        // (indicatorsData.dmi5m.adxUpCount >= 2 ||
-        //   indicatorsData.dmi5m.adxDownCount >= 2) &&
-        // (indicatorsData.obv5m.signal === 'buy' ||
-        //   indicatorsData.obv1m.signal === 'buy'),
-        // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
-
-        // indicatorsData.rsi5m.rsiValue > 40 &&
-        // indicatorsData.rsi1m.rsiValue > 40 &&
-        // indicatorsData.roc.roc5m.signal === 'buy',
-
-        // botState.status === 'buy' &&
-        // indicatorsData.haCandle.signal === 'buy' &&
-        // indicatorsData.obv5m.signal === 'buy',
-        // indicatorsData.roc.roc1m.signal === 'buy' &&
-        // indicatorsData.obv5m.signal === 'buy' &&
-        // indicatorsData.stochRsi.stoch1m.signal === 'buy',
-        // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-
-        // indicatorsData.obv1m.signal === 'buy',
-        // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
-        // indicatorsData.obv5m.obvDiff >= 10,
-        // (indicatorsData.dmi5m.adxUpCount >= 2 ||
-        //   indicatorsData.dmi5m.adxDownCount >= 2) &&
-
-        // indicatorsData.obv1m.signal === 'buy' &&
-        // indicatorsData.roc.roc1m.value > 0 &&
-        // indicatorsData.obv1m.signal === 'buy',
-        // indicatorsData.rsi5m.signal === 'buy' &&
-        // indicatorsData.rsi1m.signal === 'buy' &&
-        // indicatorsData.stochRsi.stoch1m.data.k < 20 &&
-        // indicatorsData.stochRsi.stoch1m.data.d < 25 &&
-        // (indicatorsData.dmi1m.adxUpCount >= 2 ||
-        //   indicatorsData.dmi1m.adxDownCount >= 2),
-        // indicatorsData.scalper.askBidSignal === 'buy' &&
-        // ((indicatorsData.rsi5m.rsiValue !== null &&
-        //   indicatorsData.rsi5m.rsiValue >= 51 &&
-        //   indicatorsData.dmi5m.adxUpCount >= 1) ||
-        // indicatorsData.rsi5m.rsiValue !== null &&
-        // indicatorsData.rsi5m.rsiValue >= 51 &&
-        // indicatorsData.dmi5m.adxUpCount >= 1
-        // (indicatorsData.rsi5m.rsiValue !== null &&
-        //   indicatorsData.rsi5m.rsiValue <= 49 &&
-        //   indicatorsData.dmi5m.adxDownCount >= 1)) &&
-        // ((indicatorsData.rsi1m.rsiValue !== null &&
-        //   indicatorsData.rsi1m.rsiValue >= 51 &&
-        //   indicatorsData.dmi1m.adxUpCount >= 2) ||
-        // indicatorsData.rsi5m.rsiValue !== null &&
-        // indicatorsData.rsi5m.rsiValue >= 51 &&
-        // indicatorsData.dmi5m.adxUpCount >= 1
-        // (indicatorsData.rsi1m.rsiValue !== null &&
-        //   indicatorsData.rsi1m.rsiValue <= 49 &&
-        //   indicatorsData.dmi1m.adxDownCount >= 2)),
-        // indicatorsData.rsi5m.rsiValue !== null &&
-        // indicatorsData.rsi5m.rsiValue <= 49 &&
-        // indicatorsData.dmi5m.adxDownCount >= 1)
-
-        // indicatorsData.scalper.signal === 'buy' &&
-        // indicatorsData.scalper.buySignalCount >= 1,
-        // indicatorsData.scalper.tradesVolume.signal === 'buy' &&
-        // indicatorsData.scalper.tradesVolume.buySignalCount >= 1,
-
         sell: {
           takeProfit: null,
-          // botState.status === 'sell' &&
-          // indicatorsData.avgDealPriceSignal === 'sell' &&
-          // indicatorsData.avgPriceSignal === 'sell' &&
-          // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-          // (indicatorsData.obv5m.signal === 'sell' ||
-          //   indicatorsData.obv1m.signal === 'sell'),
-
-          // botState.status === 'sell' &&
-          // indicatorsData.avgDealPriceSignal === 'sell' &&
-          // (indicatorsData.obv5m.signal === 'sell' ||
-          //   indicatorsData.obv1m.signal === 'sell'),
-          // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
-          // indicatorsData.roc.roc1m.signal === 'sell',
-          // (indicatorsData.obv5m.signal === 'sell' ||
-          // (botState.profitDiff === 0 &&
-          //     indicatorsData.obv1m.sellSignalCount >= 4) ||
-          // (botState.profitDiff >= 1.1 &&
-          //     indicatorsData.obv1m.sellSignalCount >= 4) ||
-          // (botState.profitDiff < 0 &&
-          //     indicatorsData.obv1m.sellSignalCount >= 4)),
-
-          // botState.status === 'sell' &&
-          // expectedProfitPercent > 0.2 &&ects
-          // indicatorsData.obv5m.sellSignalCount >= 1,
           stopLoss: {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              // indicatorsData.obv15m.signal === 'sell' &&
-              // indicatorsData.obv5m.sellSignalCount >= 4,
-              // indicatorsData.obv4h.signal === 'sell' &&
-              indicatorsData.obv5m.signal === 'sell',
-            // indicatorsData.obv1m.signal === 'sell',
-
-            // ||
+              indicatorsData.obv4h.signal === 'sell' &&
+              indicatorsData.obv5m.signal === 'sell' &&
+              indicatorsData.obv1m.signal === 'sell',
             // (indicatorsData.obv15m.sellSignalCount >= 2 &&
             //   indicatorsData.obv5m.sellSignalCount >= 2) ||
             // (indicatorsData.obv1m.sellSignalCount >= 2 &&
             //   indicatorsData.obv15m.sellSignalCount >= 2) ||
             // (indicatorsData.obv5m.sellSignalCount >= 2 &&
             //   indicatorsData.obv1m.sellSignalCount >= 2)),
-            //
-            // indicatorsData.askBidDiff >= 0.17,
-
-            // (indicatorsData.dmi15m.adxUpCount >= 2 ||
-            //   indicatorsData.dmi15m.adxDownCount >= 2) &&
-            // (indicatorsData.dmi5m.adxUpCount >= 2 ||
-            //   indicatorsData.dmi5m.adxDownCount >= 2) &&
-            // (indicatorsData.dmi1m.adxUpCount >= 2 ||
-            //   indicatorsData.dmi1m.adxDownCount >= 2),
-            // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
-            // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
-            // indicatorsData.avgDealPriceSignal === 'sell' &&
+            // botState.status === 'sell' &&
+            // botState.dealType === 'long' &&
+            // indicatorsData.obv1h.signal === 'sell' &&
+            // indicatorsData.obv15m.signal === 'sell' &&
             // indicatorsData.obv5m.signal === 'sell' &&
             // indicatorsData.obv1m.signal === 'sell',
-            // indicatorsData.roc.roc5m.signal === 'sell' &&
-            // indicatorsData.roc.roc1m.signal === 'sell' &&
-            // indicatorsData.avgPriceSignal === 'sell',
-
-            // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
-            // indicatorsData.stochRsi.stoch1m.signal === 'sell' &&
-            // ((indicatorsData.obv5m.signal === 'sell' &&
-            //   indicatorsData.avgDealPriceSignal === 'sell') ||
-            //   (indicatorsData.obv1m.signal === 'sell' &&
-            //     indicatorsData.avgDealPriceSignal === 'sell')),
-            // indicatorsData.avgDealPriceSignal === 'sell' &&
-            // indicatorsData.avgPriceSignal === 'sell' &&
-            // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-            // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
-            // indicatorsData.obv5m.signal === 'sell' &&
-            // indicatorsData.obv1m.signal === 'sell',
-            // Number((botState.avgPrice / botState.avgDealPrice) * 100 - 100) < 0
-            // (indicatorsData.dmi1m.adxDownCount >= 2 ||
-            //   indicatorsData.dmi1m.adxUpCount >= 2),
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              // ((indicatorsData.obv15m.signal === 'buy' &&
-              //   indicatorsData.obv5m.signal === 'buy' &&
-              //   indicatorsData.obv1m.signal === 'buy') ||
-              //   (indicatorsData.obv15m.buySignalCount >= 2 &&
-              //     indicatorsData.obv5m.buySignalCount >= 2) ||
-              //   (indicatorsData.obv1m.buySignalCount >= 2 &&
-              //     indicatorsData.obv15m.buySignalCount >= 2) ||
-              //   (indicatorsData.obv5m.buySignalCount >= 2 &&
-              //     indicatorsData.obv1m.buySignalCount >= 2)),
-              // indicatorsData.obv1h.signal === 'buy' &&
-              // indicatorsData.obv15m.signal === 'buy' &&
               indicatorsData.obv4h.signal === 'buy' &&
-              indicatorsData.obv5m.signal === 'buy',
-            // indicatorsData.obv1m.signal === 'buy',
-            // indicatorsData.askBidDiff <= 0.14,
-
-            // indicatorsData.obv1m.signal === 'buy' &&
-            // (indicatorsData.dmi15m.adxUpCount >= 2 ||
-            //   indicatorsData.dmi15m.adxDownCount >= 2) &&
-            // (indicatorsData.dmi5m.adxUpCount >= 2 ||
-            //   indicatorsData.dmi5m.adxDownCount >= 2) &&
-            // (indicatorsData.dmi1m.adxUpCount >= 2 ||
-            //   indicatorsData.dmi1m.adxDownCount >= 2),
-            // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
-            // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
-            // indicatorsData.avgDealPriceSignal === 'buy' &&
-            // indicatorsData.obv5m.signal === 'buy' &&
-            // indicatorsData.obv1m.signal === 'buy',
-            // indicatorsData.roc.roc5m.signal === 'buy' &&
-            // indicatorsData.roc.roc1m.signal === 'buy' &&
-            // indicatorsData.avgPriceSignal === 'buy',
-
+              indicatorsData.obv5m.signal === 'buy' &&
+              indicatorsData.obv1m.signal === 'buy',
+            // (indicatorsData.obv15m.buySignalCount >= 2 &&
+            //   indicatorsData.obv5m.buySignalCount >= 2) ||
+            // (indicatorsData.obv1m.buySignalCount >= 2 &&
+            //   indicatorsData.obv15m.buySignalCount >= 2) ||
+            // (indicatorsData.obv5m.buySignalCount >= 2 &&
+            //   indicatorsData.obv1m.buySignalCount >= 2)),
             // botState.status === 'sell' &&
             // botState.dealType === 'short' &&
-            // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-            // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
-            // ((indicatorsData.obv5m.signal === 'buy' &&
-            //   indicatorsData.avgDealPriceSignal === 'buy') ||
-            //   (indicatorsData.obv1m.signal === 'buy' &&
-            //     indicatorsData.avgDealPriceSignal === 'buy')),
-            // indicatorsData.avgDealPriceSignal === 'buy' &&
-            // indicatorsData.avgPriceSignal === 'buy' &&
-            // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-            // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+            // indicatorsData.obv1h.signal === 'buy' &&
+            // indicatorsData.obv15m.signal === 'buy' &&
             // indicatorsData.obv5m.signal === 'buy' &&
             // indicatorsData.obv1m.signal === 'buy',
-            // Number((botState.avgPrice / botState.avgDealPrice) * 100 - 100) < 0
-            // (indicatorsData.dmi1m.adxDownCount >= 2 ||
-            //   indicatorsData.dmi1m.adxUpCount >= 2),
           },
-
-          //   expectedProfitPercent <= -0.5) ||
-          //   expectedProfitPercent >= 1.5),
         },
       },
-      // downTrend: {
-      //   buy:
-      //     botState.status === 'buy' &&
-      //     indicatorsData.rsi1m.rsiValue >= 62 &&
-      //     Number(
-      //       (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 - 100,
-      //     ) >= 0.1,
-      //
-      //   // indicatorsData.rsiRebuy.value &&
-      //   // indicatorsData.middle1mEMA < indicatorsData.slow1mEMA &&
-      //   // indicatorsData.rsi1m.rsiValue !== null &&
-      //   // indicatorsData.rsi1m.rsiValue >= 41 &&
-      //   // indicatorsData.rsi1m.rsiValue <= 40 &&
-      //   // indicatorsData.rsi5m.rsiValue !== null &&
-      //   // indicatorsData.rsi5m.rsiValue >= 41 &&
-      //   // indicatorsData.rsi5m.rsiValue <= 45,
-      //
-      //   sell: {
-      //     takeProfit:
-      //       botState.status === 'sell' &&
-      //       botState.buyReason === 'downTrend' &&
-      //       expectedProfitPercent >= 0.7,
-      //
-      //     // // indicatorsData.rsi1m.rsiValue >= 59 &&
-      //     // ((Number(
-      //     //   (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
-      //     //     100,
-      //     // ) >= 0.1 &&
-      //     //   expectedProfitPercent > 0.5) ||
-      //     //   expectedProfitPercent >= 0.7),
-      //     stopLoss:
-      //       botState.status === 'sell' &&
-      //       botState.buyReason === 'downTrend' &&
-      //       Number(
-      //         (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
-      //           100,
-      //       ) >= 0.1,
-      //     // indicatorsData.rsi1m.rsiValue !== null &&
-      //     // indicatorsData.rsi1m.rsiValue < 39 &&
-      //     // indicatorsData.rsi5m.rsiValue !== null &&
-      //     // indicatorsData.rsi5m.rsiValue < 39,
-      //   },
-      // },
-      // upFlat: {
-      //   buy:
-      //     botState.status === 'buy' &&
-      //     indicatorsData.fast5mEMA > indicatorsData.middle5mEMA &&
-      //     // indicatorsData.fast1mEMA > indicatorsData.middle1mEMA &&
-      //     // indicatorsData.emaSignal === 'buy' &&
-      //     indicatorsData.rsi1m.rsiValue <= 50 &&
-      //     indicatorsData.rsi1m.rsiValue !== null,
-      //   sell: {
-      //     takeProfit:
-      //       botState.status === 'sell' &&
-      //       botState.buyReason === 'upFlat' &&
-      //       indicatorsData.rsi1m.rsiValue >= 69 &&
-      //       expectedProfitPercent > 0,
-      //     stopLoss:
-      //       botState.status === 'sell' &&
-      //       botState.buyReason === 'upFlat' &&
-      //       Number(
-      //         (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-      //           100,
-      //       ) >= 0.05,
-      //     // (Number(
-      //     //   (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
-      //     //     100,
-      //     // ) >= 0.1 ||
-      //   },
-      // },
-      // downFlat: {
-      //   buy:
-      //     botState.status === 'buy' &&
-      //     // indicatorsData.fast5mEMA < indicatorsData.middle5mEMA &&
-      //     // indicatorsData.emaSignal === 'buy' &&
-      //     indicatorsData.rsi1m.rsiValue < 35 &&
-      //     indicatorsData.rsi1m.rsiValue !== null &&
-      //     indicatorsData.rsi5m.rsiValue >= 40,
-      //   sell: {
-      //     takeProfit:
-      //       botState.status === 'sell' &&
-      //       botState.buyReason === 'downFlat' &&
-      //       indicatorsData.rsi1m.rsiValue >= 59 &&
-      //       expectedProfitPercent > 0,
-      //     stopLoss:
-      //       botState.status === 'sell' &&
-      //       botState.buyReason === 'downFlat' &&
-      //       indicatorsData.rsi5m.rsiValue !== null &&
-      //       indicatorsData.rsi5m.rsiValue < 39,
-      //   },
-      // },
-      // stochRsiStrategy: {
-      //   buy: botState.status === 'buy' && indicatorsData.emaSignal === 'buy',
-      //   // indicatorsData.roc.roc1m > 0.05 &&
-      //   // indicatorsData.stochRsi.stoch1m.signal === 'buy',
-      //
-      //   // indicatorsData.emaSignal === 'buy',
-      //   // ((indicatorsData.dmi5m.signal === 'BUY' &&
-      //   //   Number(
-      //   //     (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
-      //   //       100,
-      //   //   ) >= 0.05) ||
-      //   //   (indicatorsData.dmi5m.signal === 'SELL' &&
-      //   //     Number(
-      //   //       (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-      //   //         100,
-      //   //     ) >= 0.05)),
-      //   // indicatorsData.dmi5m.willPriceGrow &&
-      //   // indicatorsData.dmi1m.willPriceGrow,
-      //   // && indicatorsData.emaSignal === 'buy',
-      //   // indicatorsData.stochRsi.stoch1m.signal === 'buy' &&
-      //   // indicatorsData.roc.roc1m > 0.05,
-      //   // ((indicatorsData.dmi5m.signal === 'BUY' &&
-      //   //   indicatorsData.rsi5m.rsiValue > 51) ||
-      //   //   (indicatorsData.dmi5m.signal === 'SELL' &&
-      //   //     indicatorsData.rsi5m.rsiValue !== null &&
-      //   //     indicatorsData.rsi5m.rsiValue < 49)),
-      //   // &&
-      //   // ((indicatorsData.rsi1m.rsiValue > 40 &&
-      //   //   indicatorsData.rsi1m.rsiValue !== null &&
-      //   //   indicatorsData.rsi1m.rsiValue < 45) ||
-      //   //   indicatorsData.rsi1m.rsiValue > 60),
-      //   // indicatorsData.dmi5m.adxSignal === 'buy',
-      //   // indicatorsData.dmi5m.willPriceGrow,
-      //   // ((indicatorsData.rsi1m.rsiValue > 40 &&
-      //   //   indicatorsData.rsi1m.rsiValue !== null &&
-      //   //   indicatorsData.rsi1m.rsiValue < 43) ||
-      //   //   (indicatorsData.rsi1m.rsiValue > 60 &&
-      //   //     indicatorsData.rsi1m.rsiValue !== null &&
-      //   //     indicatorsData.rsi1m.rsiValue < 63)),
-      //
-      //   // Number(
-      //   //   (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 - 100,
-      //   // ) >= 0.1 &&
-      //   // indicatorsData.trix.trix5m.signal === 'buy',
-      //   // indicatorsData.rsi1m.rsiValue !== null &&
-      //   // indicatorsData.rsi1m.rsiValue > 50 &&
-      //   // indicatorsData.rsi5m.rsiValue !== null &&
-      //   // indicatorsData.rsi5m.rsiValue < 68 &&
-      //   // indicatorsData.efi1h.efiSignal === 'buy' &&
-      //   // ((indicatorsData.efi5m.efi > 0 &&
-      //   // indicatorsData.stochRsi.stoch5m.signal === 'buy' &&
-      //   // indicatorsData.stochRsi.stoch1m.signal === 'buy',
-      //   // indicatorsData.efi.efi15m.efi > 0 &&
-      //   //   indicatorsData.stochRsiSignal.stoch1m === 'buy' &&
-      //   //   indicatorsData.dmi5m.adx > 20) ||
-      //   //   (indicatorsData.efi1m.efi > 0 &&
-      //   // indicatorsData.efi.efi5m.efi > 0,
-      //   //     indicatorsData.dmi1m.adx > 20 &&
-      //   //     indicatorsData.stochRsiSignal.stoch1m === 'buy')),
-      //   // indicatorsData.obvSignal === 'buy' &&
-      //   // indicatorsData.rsi5m.rsiValue >= 41 &&
-      //   // indicatorsData.rsi15m.rsiValue >= 41 &&
-      //   // indicatorsData.stochRsiSignal.stoch5m === 'buy' &&
-      //   // indicatorsData.stochRsiSignal.stoch1m === 'buy',
-      //   // indicatorsData.efi.efi > 0,
-      //   sell: {
-      //     takeProfit: null,
-      //     // botState.status === 'sell' && expectedProfitPercent >= 0.5,
-      //     // botState.buyReason === 'stochRsi' &&
-      //     // indicatorsData.stochRsiSignal.stoch5m === 'sell' ||
-      //     // expectedProfitPercent <= -1,
-      //
-      //     stopLoss:
-      //       botState.status === 'sell' && indicatorsData.emaSignal === 'sell',
-      //     // indicatorsData.stochRsi.stoch1m.signal === 'sell',
-      //     // indicatorsData.emaSignal === 'sell',
-      //     // ((indicatorsData.dmi5m.signal === 'SELL' &&
-      //     //   Number(
-      //     //     (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 -
-      //     //       100,
-      //     //   ) >= 0.05) ||
-      //     //   (indicatorsData.dmi5m.signal === 'BUY' &&
-      //     //     Number(
-      //     //       (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
-      //     //         100 -
-      //     //         100,
-      //     //     ) >= 0.05) ||
-      //     //   indicatorsData.roc.roc1m < -0.1),
-      //     // indicatorsData.stochRsi.stoch1m.signal === 'sell',
-      //     // indicatorsData.roc.roc1m < -0.1,
-      //     // ((indicatorsData.dmi5m.signal === 'SELL' &&
-      //     //   indicatorsData.rsi5m.rsiValue > 51) ||
-      //     //   (indicatorsData.dmi5m.signal === 'BUY' &&
-      //     //     indicatorsData.rsi5m.rsiValue !== null &&
-      //     //     indicatorsData.rsi5m.rsiValue < 49)),
-      //     // ||
-      //     // (indicatorsData.rsi1m.rsiValue < 40 &&
-      //     //   indicatorsData.rsi1m.rsiValue !== null) ||
-      //     // (indicatorsData.rsi1m.rsiValue !== null &&
-      //     //   indicatorsData.rsi1m.rsiValue < 60 &&
-      //     //   indicatorsData.rsi1m.rsiValue > 58)
-      //     // !indicatorsData.dmi1m.willPriceGrow,
-      //     // indicatorsData.emaSignal === 'sell',
-      //     // indicatorsData.stochRsi.stoch5m.signal === 'sell',
-      //     // indicatorsData.dmi5m.signal === 'SELL',
-      //     // indicatorsData.dmi5m.adxSignal === 'sell',
-      //
-      //     // !indicatorsData.dmi5m.willPriceGrow,
-      //
-      //     // botState.buyReason === 'stochRsi' &&
-      //     // indicatorsData.rsi1m.rsiValue < 40,
-      //
-      //     // indicatorsData.trix.trix5m.signal === 'sell',
-      //     // ((indicatorsData.stochRsi.stoch5m.signal === 'sell' &&
-      //     //   indicatorsData.stochRsi.stoch15m.signal === 'sell') ||
-      //     //   (Number(
-      //     //     (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
-      //     //       100,
-      //     //   ) >= 0.1 &&
-      //     //     expectedProfitPercent < 0)),
-      //     // indicatorsData.efi1h.efiSignal === 'sell',
-      //
-      //     // indicatorsData.obvSignal === 'sell',
-      //     // indicatorsData.stochRsiSignal.stoch15m === 'sell',
-      //     //   expectedProfitPercent >= 1),
-      //
-      //     // ((indicatorsData.stochRsiSignal.stoch5m === 'sell' &&
-      //     //   !indicatorsData.priceGrowArea) ||
-      //     //   (indicatorsData.priceGrowArea &&
-      //     //     Number(
-      //     //       (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) *
-      //     //         100 -
-      //     //         100,
-      //     //     ) >= 0.5)),
-      //
-      //     // (indicatorsData.rsi5m.rsiValue !== null &&
-      //     //   indicatorsData.rsi5m.rsiValue < 39)),)
-      //   },
-      // },
-      // trendsCatcher: {
-      //   buy:
-      //     botState.status === 'buy' && indicatorsData.dmi15m.signal === 'BUY',
-      //   // indicatorsData.dmi1h.willPriceGrow &&
-      //   // Number(
-      //   //   (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-      //   // ) >= 0.1,
-      //   sell: {
-      //     takeProfit:
-      //       expectedProfitPercent >= 1 &&
-      //       botState.buyReason === 'trendsCatcher',
-      //     stopLoss:
-      //       botState.status === 'sell' &&
-      //       indicatorsData.dmi15m.signal === 'SELL' &&
-      //       botState.buyReason === 'trendsCatcher',
-      //     // (Number(
-      //     //   (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-      //     //     100,
-      //     // ) >= 0.5 ||
-      //     //   !indicatorsData.dmi1h.willPriceGrow),
-      //   },
-      // },
     };
 
     /** ******************************************BUY ACTIONS********************************************************/
-
-    /** *********************UP TREND***********************/
-    // if (botState.strategies.upTrend.enabled) {
-    //   if (conditions.upTrend.buy) {
-    //     await marketBuyAction(
-    //       false,
-    //       symbol,
-    //       botState,
-    //       cryptoCoin,
-    //       pricesStream,
-    //       stepSize,
-    //       'TRENDS CATCHER',
-    //       workingDeposit,
-    //       'RESISTANCE LEVEL',
-    //     );
-    //     botState.buyReason = 'upTrend';
-    //     return;
-    //   }
-    // }
-    //
-    // /** *********************DOWN TREND***********************/
-    //
-    // if (botState.strategies.downTrend.enabled) {
-    //   if (conditions.downTrend.buy) {
-    //     await marketBuyAction(
-    //       false,
-    //       symbol,
-    //       botState,
-    //       cryptoCoin,
-    //       pricesStream,
-    //       stepSize,
-    //       'WAVES CATCHER',
-    //       workingDeposit,
-    //       'DOWN TREND CORRECTION LEVEL',
-    //     );
-    //     botState.buyReason = 'downTrend';
-    //     indicatorsData.rsiRebuy.value = false;
-    //     return;
-    //   }
-    // }
-    //
-    // /** *********************UP FLAT***********************/
-    //
-    // if (botState.strategies.upFlat.enabled) {
-    //   if (conditions.upFlat.buy) {
-    //     await marketBuyAction(
-    //       false,
-    //       symbol,
-    //       botState,
-    //       cryptoCoin,
-    //       pricesStream,
-    //       stepSize,
-    //       'WAVES CATCHER',
-    //       workingDeposit,
-    //       'UP FLAT ',
-    //     );
-    //     botState.buyReason = 'upFlat';
-    //     return;
-    //   }
-    // }
-    //
-    // /** *********************DOWN FLAT***********************/
-    //
-    // if (botState.strategies.downFlat.enabled) {
-    //   if (conditions.downFlat.buy) {
-    //     await marketBuyAction(
-    //       false,
-    //       symbol,
-    //       botState,
-    //       cryptoCoin,
-    //       pricesStream,
-    //       stepSize,
-    //       'WAVES CATCHER',
-    //       workingDeposit,
-    //       'DOWN FLAT',
-    //     );
-    //     botState.buyReason = 'downFlat';
-    //     return;
-    //   }
-    // }
-    //
-    // /** *********************StochRSI Strategy***********************/
-    //
-    // if (botState.strategies.stochRsi.enabled) {
-    //   if (conditions.stochRsiStrategy.buy) {
-    //     await marketBuyAction(
-    //       false,
-    //       symbol,
-    //       botState,
-    //       cryptoCoin,
-    //       pricesStream,
-    //       stepSize,
-    //       'STOCH RSI',
-    //       workingDeposit,
-    //       'STOCH RSI SIGNAL',
-    //     );
-    //     botState.buyReason = 'stochRsi';
-    //     indicatorsData.obvBuySignalCount = 0;
-    //     return;
-    //   }
-    // }
-    //
-    // /** ******************** TRENDS CATHCER ***********************/
-
-    // if (botState.strategies.trendsCatcher.enabled) {
-    //   if (conditions.trendsCatcher.buy) {
-    //     await marketBuyAction(
-    //       false,
-    //       symbol,
-    //       botState,
-    //       cryptoCoin,
-    //       pricesStream,
-    //       stepSize,
-    //       'TRENDS CATCHER',
-    //       workingDeposit,
-    //       'ADX SIGNAL',
-    //     );
-    //     botState.buyReason = 'trendsCatcher';
-    //     return;
-    //   }
-    // }
-
     if (botState.strategies.scalper.enabled) {
       if (conditions.scalper.buy.long) {
         if (botState.traidingMarket === 'spot') {
           await marketBuyAction(
             'long',
-            true,
+            false,
             symbol,
             botState,
             cryptoCoin,
@@ -1910,241 +977,6 @@ import determineDealType from './tools/determineDealType';
     }
 
     /** *****************************************SELL ACTIONS********************************************************/
-
-    /** *********************UP TREND***********************/
-
-    // if (conditions.upTrend.sell.stopLoss) {
-    //   await marketSellAction(
-    //     'upTrend',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'STOP LOSS OR TAKE PROFIT',
-    //     indicatorsData,
-    //   );
-    //   indicatorsData.rsiRebuy.value = true;
-    //   return;
-    // }
-    //
-    // /** *********************DOWN TREND***********************/
-    //
-    // if (conditions.downTrend.sell.takeProfit) {
-    //   await marketSellAction(
-    //     'downTrend',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'DOWNTREND CORRECTION TAKE PROFIT',
-    //     indicatorsData,
-    //   );
-    //   indicatorsData.rsiRebuy.value = false;
-    //   return;
-    // }
-    //
-    // if (conditions.downTrend.sell.stopLoss) {
-    //   await marketSellAction(
-    //     'downTrend',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'DOWNTREND CORRECTION STOP LOSS',
-    //     indicatorsData,
-    //   );
-    //   indicatorsData.rsiRebuy.value = true;
-    //   return;
-    // }
-    //
-    // /** *********************UP FLAT***********************/
-    //
-    // if (conditions.upFlat.sell.takeProfit) {
-    //   if (
-    //     false
-    //     // Number(
-    //     //   (indicatorsData.fast5mEMA / indicatorsData.middle5mEMA) * 100 - 100,
-    //     // ) >= 0.1 &&
-    //     // Number(
-    //     //   (indicatorsData.fast15mEMA / indicatorsData.middle15mEMA) * 100 - 100,
-    //     // ) >= 0.1
-    //   ) {
-    //     botState.buyReason = 'upTrend';
-    //     await sendToRecipients(` INFO
-    //                  Bot was switched to the TRENDS CATCHER strategy!
-    //     `);
-    //     indicatorsData.rsiRebuy.value = true;
-    //     return;
-    //   } else {
-    //     await marketSellAction(
-    //       'upFlat',
-    //       false,
-    //       symbol,
-    //       botState,
-    //       cryptoCoin,
-    //       expectedProfitPercent,
-    //       pricesStream,
-    //       stepSize,
-    //       initialUSDTBalance,
-    //       'UP FLAT TAKE PROFIT',
-    //       indicatorsData,
-    //     );
-    //     indicatorsData.rsiRebuy.value = true;
-    //     return;
-    //   }
-    // }
-    // //
-    // if (conditions.upFlat.sell.stopLoss) {
-    //   await marketSellAction(
-    //     'upFlat',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'UP FLAT STOP LOSS',
-    //     indicatorsData,
-    //   );
-    //   indicatorsData.rsiRebuy.value = true;
-    //   return;
-    // }
-    //
-    // /** *********************DOWN FLAT***********************/
-    //
-    // if (conditions.downFlat.sell.takeProfit) {
-    //   await marketSellAction(
-    //     'downFlat',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'DOWN FLAT TAKE PROFIT',
-    //     indicatorsData,
-    //   );
-    //   indicatorsData.rsiRebuy.value = true;
-    //   return;
-    // }
-    //
-    // if (conditions.downFlat.sell.stopLoss) {
-    //   await marketSellAction(
-    //     'downFlat',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'DOWN FLAT LEVEL STOP LOSS',
-    //     indicatorsData,
-    //   );
-    //   indicatorsData.rsiRebuy.value = true;
-    //   return;
-    // }
-    //
-    // /** *********************STOCH RSI ***********************/
-    //
-    // if (
-    //   conditions.stochRsiStrategy.sell.takeProfit &&
-    //   !botState.strategies.stochRsi.stopLoss
-    // ) {
-    //   await marketSellAction(
-    //     'stochRsi',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'STOCH RSI TAKE PROFIT',
-    //     indicatorsData,
-    //     true,
-    //   );
-    //   return;
-    // }
-    //
-    // if (conditions.stochRsiStrategy.sell.stopLoss) {
-    //   await marketSellAction(
-    //     'stochRsi',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'ADX STOP LOSS',
-    //     indicatorsData,
-    //     false,
-    //   );
-    //   indicatorsData.obvSellSignalCount = 0;
-    //
-    //   // indicatorsData.priceGrowArea = false;
-    //   return;
-    // }
-    //
-    // /** *********************TRENDS CATCHER***********************/
-    //
-    // if (
-    //   conditions.trendsCatcher.sell.takeProfit &&
-    //   !botState.strategies.trendsCatcher.stopLoss
-    // ) {
-    //   await marketSellAction(
-    //     'trendsCatcher',
-    //     false,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'TRENDS CATCHER TAKE PROFIT',
-    //     indicatorsData,
-    //     true,
-    //   );
-    //   return;
-    // }
-
-    // if (conditions.trendsCatcher.sell.stopLoss) {
-    //   await marketSellAction(
-    //     'trendsCatcher',
-    //     true,
-    //     symbol,
-    //     botState,
-    //     cryptoCoin,
-    //     expectedProfitPercent,
-    //     pricesStream,
-    //     stepSize,
-    //     initialUSDTBalance,
-    //     'STOP LOSS',
-    //     indicatorsData,
-    //   );
-    //   return;
-    // }
     if (
       conditions.scalper.sell.takeProfit &&
       !botState.strategies.scalper.stopLoss
@@ -2174,7 +1006,7 @@ import determineDealType from './tools/determineDealType';
           expectedProfitPercent,
           pricesStream,
           stepSize,
-          initialUSDTBalance,
+          initialFuturesUSDTBalance,
           'TRENDS CATCHER 2 (TAKE PROFIT)',
           indicatorsData,
           true,
@@ -2260,56 +1092,6 @@ import determineDealType from './tools/determineDealType';
         //   botState.updateState('status', 'sell');
         // }
       } else if (botState.traidingMarket === 'futures') {
-        // botState.updateState('status', 'isPending');
-        // let openOrders;
-        // try {
-        //   openOrders = await checkAllOpenOrders(symbol.toUpperCase());
-        // } catch (e) {
-        //   await sendToRecipients(`OPEN ORDERS CHECKING ERROR
-        //     ${JSON.stringify(e)}
-        // `);
-        //   }
-        //   if (
-        //     openOrders.length === 0 &&
-        //     !botState.sellError &&
-        //     botState.enabledLimits
-        //   ) {
-        //     await sendToRecipients(`INFO
-        //     No open limit sell orders found
-        //     Bot was switched to the BUY status!
-        // `);
-        //     await marketSellAction(
-        //       'scalper',
-        //       false,
-        //       symbol,
-        //       botState,
-        //       cryptoCoin,
-        //       expectedProfitPercent,
-        //       pricesStream,
-        //       stepSize,
-        //       initialUSDTBalance,
-        //       'STRATEGY 2',
-        //       indicatorsData,
-        //       true,
-        //     );
-        //     return;
-        //   } else if (openOrders.length !== 0) {
-        //     await cancelAllOpenOrders(symbol.toUpperCase());
-        //     await marketSellAction(
-        //       'scalper',
-        //       true,
-        //       symbol,
-        //       botState,
-        //       cryptoCoin,
-        //       expectedProfitPercent,
-        //       pricesStream,
-        //       stepSize,
-        //       initialUSDTBalance,
-        //       'STOP LOSS',
-        //       indicatorsData,
-        //     );
-        //     return;
-        //   }
         await marketFuturesSellAction(
           'scalper',
           false,
@@ -2319,23 +1101,12 @@ import determineDealType from './tools/determineDealType';
           expectedProfitPercent,
           pricesStream,
           stepSize,
-          initialUSDTBalance,
+          initialFuturesUSDTBalance,
           'STRATEGY 2',
           indicatorsData,
         );
-        return;
-        // catch (e) {
-        //   const { available: refreshedCryptoCoinBalance } = await getBalances(
-        //     cryptoCoin,
-        //   );
-        //   botState.updateState(
-        //     'availableCryptoCoin',
-        //     +refreshedCryptoCoinBalance,
-        //   );
-        //   botState.sellError = true;
-        //   botState.updateState('status', 'sell');
-        // }
       }
+      return;
     }
     if (conditions.scalper.sell.stopLoss.short) {
       await marketFuturesSellAction(
@@ -2346,8 +1117,8 @@ import determineDealType from './tools/determineDealType';
         cryptoCoin,
         expectedProfitPercent,
         pricesStream,
-        stepSize,
-        initialUSDTBalance,
+        stepFuturesSize,
+        initialFuturesUSDTBalance,
         'STOP LOSS',
         indicatorsData,
       );
@@ -2357,57 +1128,6 @@ import determineDealType from './tools/determineDealType';
     botState.updateState('prevPrice', botState.currentPrice);
     botState.updateState('currentProfit', expectedProfitPercent);
   };
-
-  // getRocSignal(symbol, '1m', indicatorsData.roc);
-  // getTrixSignal(symbol, '5m', indicatorsData.trix.trix5m);
-  // getStochRSISignal(symbol, '1m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
-  // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi.efi5m);
-  // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi.efi15m);
-  // getStochRSISignal(symbol, '5m', indicatorsData.stochRsi.stoch1m, 2.5, 2.5);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 2, 2, 0, 0);
-  // getEMASignal(symbol, '5m', indicatorsData);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0.5, -0.5, 0.5, 0.5);
-  // getDMISignal(symbol, '1m', indicatorsData.dmi1m);
-
-  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
-  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  // getEMASignal(symbol, '5m', indicatorsData);
-  // getEMASignal(symbol, '15m', indicatorsData);
-  // getEMASignal(symbol, '1m', indicatorsData);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m);
-  // runObvInterval(indicatorsData.obv1m);
-  // getForceIndexSignal(symbol, '1h', 13, indicatorsData.efi1h);
-  // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
-  // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
-
-  // getObvStream({
-  //   symbol: symbol,
-  //   interval: '1m',
-  // })
-  //   .pipe(bufferCount(5, 5))
-  //   .subscribe(values => {
-  //     if (!indicatorsData.prevObv) {
-  //       indicatorsData.prevObv = getAvarage(values);
-  //       return;
-  //     }
-  //     const currentObvAv = getAvarage(values);
-  //     if (currentObvAv > indicatorsData.prevObv)
-  //       indicatorsData.obvSignal = 'buy';
-  //     if (currentObvAv < indicatorsData.prevObv)
-  //       indicatorsData.obvSignal = 'sell';
-  //     // console.log(
-  //     //   indicatorsData.emaSignal,
-  //     //   (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
-  //     // );
-  //     console.log('Curr obv:' + currentObvAv);
-  //     console.log('Prev obv:' + indicatorsData.prevObv);
-  //     console.log(
-  //       'Diff: ',
-  //       (Number(currentObvAv / indicatorsData.prevObv) * 100 - 100).toString(),
-  //       '\n',
-  //     );
-  //     indicatorsData.prevObv = currentObvAv;
-  //   });
 
   if (botState.testMode) {
     await sendToRecipients(`INIT (TEST MODE LOCAL)
@@ -2425,79 +1145,15 @@ import determineDealType from './tools/determineDealType';
   Strategies: ${JSON.stringify(botState.strategies)}
   Status: ${botState.status.toUpperCase()}
   Symbol: ${symbol.toUpperCase()}
-  ***SPOT***
-  Initial USDT balance: ${initialUSDTBalance} USDT
-  Working USDT deposit: ${spotDealUSDTAmount} USDT
+    ***SPOT***
+  Initial USDT balance: ${initialUSDTBalance} USDT 
+  Deal USDT amount: ${spotDealUSDTAmount} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
-  ***FUTURES***
+    ***FUTURES***
   Initial USDT balance: ${initialFuturesUSDTBalance} USDT
-  Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
-  Working USDT deposit: ${futuresDealUSDTAmount} USDT
-
+  Deal USDT amount: ${futuresDealUSDTAmount} USDT
   `);
   }
-
-  // runStochRsiInterval(indicatorsData.stochRsi.stoch5m);
-
-  // getTradeStream({
-  //   symbol: symbol,
-  //   resource: RESOURCES.TRADE,
-  // })
-  //   .pipe(pluck('price'), bufferCount(5, 5))
-  //   .subscribe(values => {
-  //     if (!indicatorsData.emaAv) {
-  //       indicatorsData.emaAv = getAvarage(values);
-  //       return;
-  //     }
-  //     const currentEmaAv = getAvarage(values);
-  //     if (currentEmaAv > indicatorsData.emaAv) indicatorsData.growCount++;
-  //     if (indicatorsData.emaAv > currentEmaAv) indicatorsData.fallCount++;
-  //     // if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 >= 0.02) {
-  //     //   indicatorsData.rocSignalBuyCount++;
-  //     //   indicatorsData.rocSignalSellCount = 0;
-  //     // }
-  //     //
-  //     // if ((indicatorsData.emaAv / currentEmaAv) * 100 - 100 >= 0.01) {
-  //     //   indicatorsData.rocSignalSellCount++;
-  //     //   indicatorsData.rocSignalBuyCount = 0;
-  //     // }
-  //     // if (indicatorsData.rocSignalBuyCount >= 2)
-  //     //   indicatorsData.emaSignal = 'buy';
-  //     // if (indicatorsData.rocSignalSellCount >= 1)
-  //     //   indicatorsData.emaSignal = 'sell';
-  //
-  //     // console.log(
-  //     //   indicatorsData.emaSignal,
-  //     //   (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
-  //     // );
-  //     const fallCountPercent =
-  //       (indicatorsData.fallCount /
-  //         (indicatorsData.fallCount + indicatorsData.growCount)) *
-  //       100;
-  //     const growCountPercent =
-  //       100 -
-  //       (indicatorsData.fallCount /
-  //         (indicatorsData.fallCount + indicatorsData.growCount)) *
-  //         100;
-  //     if (growCountPercent >= 55) indicatorsData.emaSignal = 'buy';
-  //     if (growCountPercent < 50) indicatorsData.emaSignal = 'sell';
-  //     console.log('Curr av:' + currentEmaAv);
-  //     console.log('Prev av:' + indicatorsData.emaAv);
-  //     console.log(fallCountPercent + '%)');
-  //     console.log(
-  //       'Fall: ' + indicatorsData.fallCount + ' (' + fallCountPercent + '%)',
-  //     );
-  //     console.log(
-  //       'Grow: ' + indicatorsData.growCount + ' (' + growCountPercent + '%)',
-  //     );
-  //     console.log(
-  //       'Diff: ',
-  //       ((currentEmaAv / indicatorsData.emaAv) * 100 - 100).toString(),
-  //       '\n',
-  //     );
-  //
-  //     indicatorsData.emaAv = currentEmaAv;
-  //   });
 
   getTradeStream({
     symbol: symbol,
@@ -2507,14 +1163,6 @@ import determineDealType from './tools/determineDealType';
     .subscribe(scalper);
 
   calculateAvgPriceChange(symbol, RESOURCES.TRADE, 5, botState, indicatorsData);
-
-  // getTradeStream({
-  //   symbol: symbol,
-  //   resource: RESOURCES.TRADE,
-  // })
-  //   .pipe(pluck('price'), bufferCount(10, 10))
-  //   .subscribe(pricesArr => {
-  //   });
 
   /** *******************************INDICATORS SECTION**************************************/
 
@@ -2541,16 +1189,16 @@ import determineDealType from './tools/determineDealType';
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
 
-  // getObvSignal(symbol, '1d', indicatorsData.obv1h, 20, 20);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 4, 4);
+  getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
-  getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
+  // getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
 
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
-  // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
+  getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
   // getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
 
@@ -2559,10 +1207,6 @@ import determineDealType from './tools/determineDealType';
   // getHeikinAshiSignal(symbol, '15m', 3, 3, indicatorsData.haCandle.ha15mCandle);
   // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
-
-  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0.1, -0.1, 2, 2);
-  // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 2, 2);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
@@ -2920,6 +1564,14 @@ import determineDealType from './tools/determineDealType';
         : botState.strategies.scalper.stopLoss
         ? console.log('STATUS: SELL (TAKE PROFIT)')
         : console.log('STATUS: BUY');
+      // if (botState.currentPrice)
+      //   console.log(
+      //     'Asset: ' +
+      //       binance.roundStep(
+      //         futuresDealUSDTAmount / botState.currentPrice,
+      //         stepFuturesSize,
+      //       ),
+      //   );
       console.log('\n');
       // console.log('OBV 1m: ' + indicatorsData.obv1m.obvDiff);
       botState.updateState('isPricesStreamAlive', false);

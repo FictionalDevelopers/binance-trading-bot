@@ -21,6 +21,7 @@ export interface BotState extends Document {
   currentPrice: number;
   dealsCount: number;
   cummulativeQuoteQty: number;
+  origQty: number;
   order: any;
   avrDealProfit: number;
   avgPrice: number;
@@ -184,6 +185,10 @@ const schema = new Schema({
     default: 1,
   },
   cummulativeQuoteQty: {
+    type: Number,
+    default: null,
+  },
+  origQty: {
     type: Number,
     default: null,
   },
