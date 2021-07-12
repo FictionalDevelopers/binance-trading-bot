@@ -77,7 +77,6 @@ import {
       availableCryptoCoin: initialCryptoCoinBalance,
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
-      status: 'buy',
       local: false,
       initialDealType: null,
       logToTelegram: true,
@@ -844,16 +843,18 @@ import {
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.obv4h.signal === 'buy' &&
-                indicatorsData.obv5m.signal === 'buy' &&
-                indicatorsData.obv1m.signal === 'buy',
+                indicatorsData.obv1h.signal === 'buy' &&
+                indicatorsData.obv5m.signal === 'buy',
+          // indicatorsData.obv1m.signal === 'buy',
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy',
           short:
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.obv4h.signal === 'sell' &&
-                indicatorsData.obv5m.signal === 'sell' &&
-                indicatorsData.obv1m.signal === 'sell',
+                indicatorsData.obv1h.signal === 'sell' &&
+                indicatorsData.obv5m.signal === 'sell',
+          // indicatorsData.obv1m.signal === 'sell',
           // indicatorsData.haCandle.ha1hCandle.signal === 'sell',
         },
         sell: {
@@ -1117,7 +1118,7 @@ import {
         cryptoCoin,
         expectedProfitPercent,
         pricesStream,
-        stepFuturesSize,
+        stepSize,
         initialFuturesUSDTBalance,
         'STOP LOSS',
         indicatorsData,
@@ -1190,6 +1191,7 @@ import {
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
 
   getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 10, 10);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
@@ -1230,6 +1232,7 @@ import {
   /** *************************DATA LOGGER********************************/
   const getSum = (numbers = []) =>
     numbers.reduce((sum, number) => Number(sum) + Number(number), 0);
+  const fee = botState.traidingMarket === 'spot' ? 0.2 : 0.16;
 
   (() => {
     setInterval(async () => {
@@ -1245,6 +1248,17 @@ import {
           ' ' +
           'Sell Count: ' +
           indicatorsData.obv4h.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 1h: ' +
+          indicatorsData.obv1h.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv1h.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv1h.sellSignalCount +
           ')',
       );
       console.log(
@@ -1524,19 +1538,19 @@ import {
       console.log(
         botState.dealType === 'long'
           ? 'MAX av profit: ' +
-              Number(botState.maxAvailableLongProfit - 0.2) +
+              Number(botState.maxAvailableLongProfit - fee) +
               ' %'
           : 'MAX av profit: ' +
-              Number(botState.maxAvailableShortProfit + 0.2) +
+              Number(botState.maxAvailableShortProfit + fee) +
               ' %',
       );
       console.log(
         botState.dealType === 'long'
           ? 'MIN av profit: ' +
-              Number(botState.minAvailableLongProfit - 0.2) +
+              Number(botState.minAvailableLongProfit - fee) +
               ' %'
           : 'MIN av profit: ' +
-              Number(botState.minAvailableShortProfit + 0.2) +
+              Number(botState.minAvailableShortProfit + fee) +
               ' %',
       );
       console.log(
@@ -1557,8 +1571,8 @@ import {
               'Current profit: ' +
               (botState.status === 'sell'
                 ? botState.dealType === 'long'
-                  ? Number(botState.currentProfit - 0.2) + ' %'
-                  : Number(botState.currentProfit + 0.2) + ' %'
+                  ? Number(botState.currentProfit - fee) + ' %'
+                  : Number(botState.currentProfit + fee) + ' %'
                 : '-'),
           )
         : botState.strategies.scalper.stopLoss

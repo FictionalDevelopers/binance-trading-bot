@@ -498,6 +498,7 @@ export const marketFuturesSellAction = async (
     try {
       botState.updateState('status', 'isPending');
       botState.updateState('buyPrice', null);
+      let order;
 
       if (profitLevels) {
         const { available: beforeSellCryptoCoinBalance } = await getBalances(
@@ -511,10 +512,52 @@ export const marketFuturesSellAction = async (
         botState.updateState('order', order);
         botState.updateState('enabledLimits', false);
       } else {
-        const cancelResult = await binance.futuresCancelAll(
-          symbol.toUpperCase(),
+        const getFuturesAccountData = await binance.futuresAccount();
+        const searchSymbol = symbol.toUpperCase();
+        // console.log(getFuturesAccountData);
+        const currentPosition = getFuturesAccountData.positions.find(
+          ({ symbol }) => symbol === searchSymbol,
         );
-        botState.updateState('order', cancelResult);
+        if (currentPosition && +currentPosition.positionAmt !== 0) {
+          const amount = Math.abs(currentPosition.positionAmt);
+          if (botState.dealType === 'long') {
+            order = await binance.futuresMarketSell(
+              symbol.toUpperCase(),
+              +amount,
+              { reduceOnly: true },
+            );
+          } else if (botState.dealType === 'short') {
+            order = await binance.futuresMarketBuy(
+              symbol.toUpperCase(),
+              +amount,
+              { reduceOnly: true },
+            );
+          }
+          botState.updateState('order', order);
+          await sendToRecipients(`SELL
+                 Traiding market: ${botState.traidingMarket.toUpperCase()}
+                 Strategy: ${strategy}
+                 Reason: ${sellReason}
+                 Deal Type: ${botState.dealType.toUpperCase()}
+                 Deal №: ${botState.dealsCount}
+                 Symbol: ${symbol.toUpperCase()}
+                 Price: ${botState.currentPrice} USDT
+                 Date: ${format(new Date(), DATE_FORMAT)}
+                 Stablecoin Futures balance: ${
+                   botState.availableFuturesUSDT
+                 } USDT
+                 OrderInfo: ${JSON.stringify(botState.order)}
+             `);
+        } else {
+          await sendToRecipients(`SELL
+                 No open positions found!
+                 Switched to the BUY status. 
+             `);
+        }
+        // const cancelResult = await binance.futuresCancelAll(
+        //   symbol.toUpperCase(),
+        // );
+        // botState.updateState('order', cancelResult);
       }
 
       const refreshedFuturesUSDTBalance = await getFuturesBalances('USDT');
@@ -556,6 +599,9 @@ export const marketFuturesSellAction = async (
         botState.strategies[`${strategy}`].stopLoss = true;
         botState.updateState('status', 'sell');
       }
+      botState.updateState('order', null);
+      botState.updateState('sellError', false);
+      botState.dealsCount++;
       await botStateService.trackBotState(
         _omit(botState, [
           'availableUSDT',
@@ -565,23 +611,6 @@ export const marketFuturesSellAction = async (
           'updateState',
         ]),
       );
-      botState.updateState('sellError', false);
-      await sendToRecipients(`SELL
-                 Traiding market: ${botState.traidingMarket.toUpperCase()}
-                 Strategy: ${strategy}
-                 Reason: ${sellReason}
-                 Deal Type: ${botState.dealType.toUpperCase()}
-                 Deal №: ${botState.dealsCount}
-                 Symbol: ${symbol.toUpperCase()}
-                 Price: ${botState.currentPrice} USDT
-                 Date: ${format(new Date(), DATE_FORMAT)}
-                 Stablecoin Futures balance: ${
-                   botState.availableFuturesUSDT
-                 } USDT
-                 OrderInfo: ${JSON.stringify(botState.order)}
-             `);
-      botState.dealsCount++;
-      botState.updateState('status', 'buy');
     } catch (e) {
       await sendToRecipients(`SELL ERROR
             ${JSON.stringify(e)}
