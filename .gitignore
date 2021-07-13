@@ -4,4 +4,3 @@ dist/
 *.log
 *.txt
 .env
-package-lock.json

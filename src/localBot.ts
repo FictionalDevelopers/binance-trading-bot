@@ -68,13 +68,13 @@ import {
 
     botState = {
       ...initialState,
-      traidingMarket: 'futures',
+      traidingMarket: 'spot',
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: false,
-      // status: 'buy',
+      status: 'pending',
       initialDealType: null,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -1208,11 +1208,11 @@ import {
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
 
-  getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
-  getObvSignal(symbol, '1h', indicatorsData.obv4h, 20, 20);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
+  // getHeikinAshiSignal(symbol, '5m', 6, 6, indicatorsData.haCandle.ha5mCandle);
+  getObvSignal(symbol, '1d', indicatorsData.obv4h, 20, 20);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
 
