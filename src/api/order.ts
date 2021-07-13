@@ -829,15 +829,14 @@ export const marketFuturesBuyAction = async (
   try {
     let order;
     botState.updateState('status', 'isPending');
+    const amount = +Number(
+      binance.roundStep(assetAmount / botState.currentPrice, stepSize),
+    ).toPrecision(2);
     const refreshedFuturesStableCoinBalance = await getFuturesBalances('USDT');
     botState.updateState(
       'availableFuturesUSDT',
       +refreshedFuturesStableCoinBalance,
     );
-    const amount = +Number(
-      binance.roundStep(assetAmount / botState.currentPrice, stepSize),
-    ).toPrecision(2);
-
     try {
       if (dealType === 'long') {
         order = await binance.futuresMarketBuy(symbol.toUpperCase(), +amount);
@@ -855,6 +854,8 @@ export const marketFuturesBuyAction = async (
         botState.updateState('buyPrice', +botState.currentPrice);
         await sendToRecipients(`BUY
                  Traiding market: ${botState.traidingMarket.toUpperCase()}
+                 Leverage: ${currentPosition.leverage}
+                 Isolated: ${currentPosition.isolated}
                  Strategy: ${strategy}
                  Reason: ${buyReason}
                  ${botState.strategy}

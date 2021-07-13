@@ -668,9 +668,9 @@ import { getStochRSISignal } from './components/stochRSI-signals';
 
 process.on('unhandledRejection', async (reason: Error) => {
   console.error(reason);
-  // await sendToRecipients(`ERROR
-  //   ${JSON.stringify(reason)};
-  // `);
+  await sendToRecipients(`ERROR
+    ${JSON.stringify(reason)};
+  `);
 
   process.exit(1);
 });
