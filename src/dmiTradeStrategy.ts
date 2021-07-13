@@ -670,6 +670,7 @@ process.on('unhandledRejection', async (reason: Error) => {
   console.error(reason);
   await sendToRecipients(`ERROR
     ${JSON.stringify(reason)};
+    ${reason}
   `);
 
   process.exit(1);

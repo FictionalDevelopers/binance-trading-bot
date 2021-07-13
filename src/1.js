@@ -45,21 +45,21 @@ import {
 import determineDealType from './tools/determineDealType';
 // import { indicatorsData } from './index2';
 
-(async () => {
-  await connect();
-  // await processSubscriptions();
-  const revisionNumber = 'ffa2bef39307f7d13bf20d5b92ebaafe4115b081';
-  const symbol = 'linkusdt';
-  const cryptoCoin = symbol.toUpperCase().slice(0, -4);
-  const { available: initialUSDTBalance } = await getBalances('USDT');
-  const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
-  const initialFuturesUSDTBalance = await getFuturesBalances('USDT');
-  const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
-  const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
-  const ordersList = await getOrdersList(symbol.toUpperCase());
-  const lastOrder = ordersList[ordersList.length - 1] || null;
-  const spotDealUSDTAmount = 10;
-  const futuresDealUSDTAmount = 5;
-
-  console.info(await binance.futuresGetDataStream());
-})();
+// (async () => {
+//   await connect();
+//   // await processSubscriptions();
+//   const revisionNumber = 'ffa2bef39307f7d13bf20d5b92ebaafe4115b081';
+//   const symbol = 'linkusdt';
+//   const cryptoCoin = symbol.toUpperCase().slice(0, -4);
+//   const { available: initialUSDTBalance } = await getBalances('USDT');
+//   const { available: initialCryptoCoinBalance } = await getBalances(cryptoCoin);
+//   const initialFuturesUSDTBalance = await getFuturesBalances('USDT');
+//   const { stepSize } = await getExchangeInfo(symbol.toUpperCase(), 'LOT_SIZE');
+//   const openOrders = await checkAllOpenOrders(symbol.toUpperCase());
+//   const ordersList = await getOrdersList(symbol.toUpperCase());
+//   const lastOrder = ordersList[ordersList.length - 1] || null;
+//   const spotDealUSDTAmount = 10;
+//   const futuresDealUSDTAmount = 5;
+//
+//   console.info(await binance.futuresGetDataStream());
+// })();
