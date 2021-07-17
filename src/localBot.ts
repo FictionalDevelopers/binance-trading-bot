@@ -7,7 +7,7 @@ import { DATE_FORMAT } from './constants/date';
 import { getTradeStream } from './api/trades.js';
 import { sendToRecipients } from './services/telegram';
 import { getBalances, getFuturesBalances } from './api/balance';
-import { getExchangeInfo, getFuturesExchangeInfo } from './api/exchangeInfo';
+import { getExchangeInfo } from './api/exchangeInfo';
 import {
   marketSellAction,
   marketBuyAction,
@@ -58,7 +58,7 @@ import {
   const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1] || null;
   const spotDealUSDTAmount = 10;
-  const futuresDealUSDTAmount = 500;
+  const futuresDealUSDTAmount = 10;
   // const symbol = process.argv[2];
   let botState;
   //
@@ -68,7 +68,7 @@ import {
 
     botState = {
       ...initialState,
-      traidingMarket: 'spot',
+      // traidingMarket: 'spot',
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
       availableFuturesUSDT: initialFuturesUSDTBalance,
@@ -840,20 +840,20 @@ import {
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
-                indicatorsData.obv4h.buySignalCount >= 20 &&
-                indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.obv5m.buySignalCount >= 20 &&
-                indicatorsData.obv1m.buySignalCount >= 20,
+                // indicatorsData.obv4h.buySignalCount >= 20 &&
+                // indicatorsData.obv15m.buySignalCount >= 20 &&
+                indicatorsData.obv5m.buySignalCount >= 4,
+          // indicatorsData.obv1m.buySignalCount >= 20,
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy',
           short:
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
-                indicatorsData.obv4h.sellSignalCount >= 20 &&
-                indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.obv5m.sellSignalCount >= 20 &&
-                indicatorsData.obv1m.sellSignalCount >= 20,
+                // indicatorsData.obv4h.sellSignalCount >= 20 &&
+                // indicatorsData.obv15m.sellSignalCount >= 20 &&
+                indicatorsData.obv5m.sellSignalCount >= 4,
+          // indicatorsData.obv1m.sellSignalCount >= 20,
           // indicatorsData.haCandle.ha1hCandle.signal === 'sell',
         },
         sell: {
@@ -862,10 +862,10 @@ import {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.obv4h.sellSignalCount >= 20 &&
-              indicatorsData.obv15m.sellSignalCount >= 20 &&
-              indicatorsData.obv5m.sellSignalCount >= 20 &&
-              indicatorsData.obv1m.sellSignalCount >= 20,
+              // indicatorsData.obv4h.sellSignalCount >= 20 &&
+              // indicatorsData.obv15m.sellSignalCount >= 20 &&
+              indicatorsData.obv5m.sellSignalCount >= 4,
+            // indicatorsData.obv1m.sellSignalCount >= 20,
             // (indicatorsData.obv15m.sellSignalCount >= 2 &&
             //   indicatorsData.obv5m.sellSignalCount >= 2) ||
             // (indicatorsData.obv1m.sellSignalCount >= 2 &&
@@ -881,10 +881,10 @@ import {
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.obv4h.buySignalCount >= 20 &&
-              indicatorsData.obv15m.buySignalCount >= 20 &&
-              indicatorsData.obv5m.buySignalCount >= 20 &&
-              indicatorsData.obv1m.buySignalCount >= 20,
+              // indicatorsData.obv4h.buySignalCount >= 20 &&
+              // indicatorsData.obv15m.buySignalCount >= 20 &&
+              indicatorsData.obv5m.buySignalCount >= 4,
+            // indicatorsData.obv1m.buySignalCount >= 20,
             // (indicatorsData.obv15m.buySignalCount >= 2 &&
             //   indicatorsData.obv5m.buySignalCount >= 2) ||
             // (indicatorsData.obv1m.buySignalCount >= 2 &&
