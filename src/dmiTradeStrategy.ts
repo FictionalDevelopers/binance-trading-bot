@@ -895,9 +895,9 @@ import {
               botState.dealType === 'short' &&
               // indicatorsData.obv4h.buySignalCount >= 20 &&
               // indicatorsData.obv15m.buySignalCount >= 20 &&
-              indicatorsData.obv1d.buySignalCount >= 20 &&
-              indicatorsData.obv4h.buySignalCount >= 50 &&
-              indicatorsData.obv1h.buySignalCount >= 50,
+              (indicatorsData.obv1d.buySignalCount >= 20 ||
+                (indicatorsData.obv4h.buySignalCount >= 50 &&
+                  indicatorsData.obv1h.buySignalCount >= 50)),
             // indicatorsData.obv1m.buySignalCount >= 20,
             // (indicatorsData.obv15m.buySignalCount >= 2 &&
             //   indicatorsData.obv5m.buySignalCount >= 2) ||
