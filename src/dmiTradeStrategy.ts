@@ -849,9 +849,9 @@ import {
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
-                indicatorsData.obv1d.buySignalCount >= 20 &&
-                indicatorsData.obv4h.buySignalCount >= 10 &&
-                indicatorsData.obv1h.buySignalCount >= 10,
+                // indicatorsData.obv1d.buySignalCount >= 20 &&
+                indicatorsData.obv4h.buySignalCount >= 20 &&
+                indicatorsData.obv1h.buySignalCount >= 20,
           // indicatorsData.obv5m.buySignalCount >= 4,
           // indicatorsData.obv1m.buySignalCount >= 20,
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy',
@@ -860,9 +860,9 @@ import {
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
-                indicatorsData.obv1d.sellSignalCount >= 20 &&
-                indicatorsData.obv4h.sellSignalCount >= 10 &&
-                indicatorsData.obv1h.sellSignalCount >= 10,
+                // indicatorsData.obv1d.sellSignalCount >= 20 &&
+                indicatorsData.obv4h.sellSignalCount >= 20 &&
+                indicatorsData.obv1h.sellSignalCount >= 20,
           // indicatorsData.obv5m.sellSignalCount >= 4,
           // indicatorsData.obv1m.sellSignalCount >= 20,
           // indicatorsData.haCandle.ha1hCandle.signal === 'sell',
@@ -873,10 +873,10 @@ import {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              (indicatorsData.obv1d.sellSignalCount >= 20 ||
-                // indicatorsData.obv15m.sellSignalCount >= 20 &&
-                (indicatorsData.obv4h.sellSignalCount >= 20 &&
-                  indicatorsData.obv1h.sellSignalCount >= 20)),
+              // indicatorsData.obv1d.sellSignalCount >= 20 ||
+              // indicatorsData.obv15m.sellSignalCount >= 20 &&
+              indicatorsData.obv4h.sellSignalCount >= 20 &&
+                indicatorsData.obv1h.sellSignalCount >= 20,
             // indicatorsData.obv1m.sellSignalCount >= 20,
             // (indicatorsData.obv15m.sellSignalCount >= 2 &&
             //   indicatorsData.obv5m.sellSignalCount >= 2) ||
@@ -895,9 +895,9 @@ import {
               botState.dealType === 'short' &&
               // indicatorsData.obv4h.buySignalCount >= 20 &&
               // indicatorsData.obv15m.buySignalCount >= 20 &&
-              (indicatorsData.obv1d.buySignalCount >= 20 ||
-                (indicatorsData.obv4h.buySignalCount >= 20 &&
-                  indicatorsData.obv1h.buySignalCount >= 20)),
+              // indicatorsData.obv1d.buySignalCount >= 20 ||
+              indicatorsData.obv4h.buySignalCount >= 20 &&
+                indicatorsData.obv1h.buySignalCount >= 20,
             // indicatorsData.obv1m.buySignalCount >= 20,
             // (indicatorsData.obv15m.buySignalCount >= 2 &&
             //   indicatorsData.obv5m.buySignalCount >= 2) ||
@@ -1223,7 +1223,7 @@ import {
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
 
   // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
-  getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
+  // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
