@@ -300,6 +300,14 @@ import {
     obvBuySignalCount: 0,
     obvSellSignalCount: 0,
     prevObv: null,
+    obv1d: {
+      signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+      obv: null,
+      prevObv: null,
+      obvDiff: null,
+    },
     obv4h: {
       signal: null,
       buySignalCount: 0,
@@ -1209,12 +1217,12 @@ import {
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
 
   // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
-  getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
-  getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
+  // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
 
@@ -1259,39 +1267,39 @@ import {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
       calculateAvgDealPriceChange(botState, indicatorsData);
       // indicatorsData.dealType = determineDealType(indicatorsData, 4);
-      console.log(
-        'OBV 1d: ' +
-          indicatorsData.obv1d.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1d.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1d.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 4h: ' +
-          indicatorsData.obv4h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv4h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv4h.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 1h: ' +
-          indicatorsData.obv1h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1h.sellSignalCount +
-          ')',
-      );
+      // console.log(
+      //   'OBV 1d: ' +
+      //     indicatorsData.obv1d.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1d.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1d.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 4h: ' +
+      //     indicatorsData.obv4h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv4h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv4h.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 1h: ' +
+      //     indicatorsData.obv1h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1h.sellSignalCount +
+      //     ')',
+      // );
       console.log(
         'OBV 15m: ' +
           indicatorsData.obv15m.signal +
