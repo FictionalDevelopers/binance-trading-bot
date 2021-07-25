@@ -140,6 +140,72 @@ export const setLimitSellOrders = async (symbol, botState, stepSize) => {
     botState.updateState('enabledLimits', false);
   }
 };
+export const setFuturesLimitSellOrders = async (
+  symbol,
+  botState,
+  stepSize,
+  dealAmount,
+  dealType,
+) => {
+  const limitSellOrderAmount = binance.roundStep(
+    Number(dealAmount) * 0.33,
+    stepSize,
+  );
+
+  if (dealType === 'long') {
+    try {
+      const data = Promise.all([
+        binance.futuresSell(
+          symbol.toUpperCase(),
+          +limitSellOrderAmount,
+          +Number(botState.buyPrice * 1.005).toPrecision(4),
+        ),
+        binance.futuresSell(
+          symbol.toUpperCase(),
+          +limitSellOrderAmount,
+          +Number(botState.buyPrice * 1.01).toPrecision(4),
+        ),
+        binance.futuresSell(
+          symbol.toUpperCase(),
+          +limitSellOrderAmount,
+          +Number(botState.buyPrice * 1.02).toPrecision(4),
+        ),
+      ]);
+      botState.updateState('enabledLimits', true);
+    } catch (e) {
+      await sendToRecipients(`LIMIT SELL ORDER ERROR
+            ${JSON.stringify(e)}
+      `);
+      botState.updateState('enabledLimits', false);
+    }
+  } else if (dealType === 'short') {
+    try {
+      const data = Promise.all([
+        binance.futuresBuy(
+          symbol.toUpperCase(),
+          +limitSellOrderAmount,
+          +Number(botState.buyPrice * 1.005).toPrecision(4),
+        ),
+        binance.futuresBuy(
+          symbol.toUpperCase(),
+          +limitSellOrderAmount,
+          +Number(botState.buyPrice * 1.01).toPrecision(4),
+        ),
+        binance.futuresBuy(
+          symbol.toUpperCase(),
+          +limitSellOrderAmount,
+          +Number(botState.buyPrice * 1.02).toPrecision(4),
+        ),
+      ]);
+      botState.updateState('enabledLimits', true);
+    } catch (e) {
+      await sendToRecipients(`LIMIT SELL ORDER ERROR
+            ${JSON.stringify(e)}
+      `);
+      botState.updateState('enabledLimits', false);
+    }
+  }
+};
 
 export const getOrdersList = (symbol: string): Promise<unknown> =>
   new Promise((resolve, reject) => {
@@ -501,15 +567,16 @@ export const marketFuturesSellAction = async (
       let order;
 
       if (profitLevels) {
-        const { available: beforeSellCryptoCoinBalance } = await getBalances(
-          cryptoCoin,
-        );
-        const amount = binance.roundStep(
-          Number(beforeSellCryptoCoinBalance),
-          stepSize,
-        );
-        const order = await marketSell(symbol.toUpperCase(), +amount);
-        botState.updateState('order', order);
+        await binance.futuresCancelAll(symbol.toUpperCase());
+        // const { available: beforeSellCryptoCoinBalance } = await getBalances(
+        //   cryptoCoin,
+        // );
+        // const amount = binance.roundStep(
+        //   Number(beforeSellCryptoCoinBalance),
+        //   stepSize,
+        // );
+        // const order = await marketSell(symbol.toUpperCase(), +amount);
+        // botState.updateState('order', order);
         botState.updateState('enabledLimits', false);
       } else {
         const getFuturesAccountData = await binance.futuresAccount();
@@ -873,6 +940,15 @@ export const marketFuturesBuyAction = async (
                  )} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
+        if (profitLevels) {
+          await setFuturesLimitSellOrders(
+            symbol,
+            botState,
+            stepSize,
+            Math.abs(currentPosition.positionAmt),
+            dealType,
+          );
+        }
         botState.updateState('dealType', dealType);
         botState.updateState('status', 'sell');
         botState.updateState('prevPrice', botState.currentPrice);

@@ -74,7 +74,8 @@ import {
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: false,
-      status: 'pending',
+      // status: 'buy',
+      testMode: true,
       initialDealType: null,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -848,9 +849,11 @@ import {
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
+                // indicatorsData.obv1d.buySignalCount >= 20 &&
                 // indicatorsData.obv4h.buySignalCount >= 20 &&
-                // indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.obv5m.buySignalCount >= 4,
+                // indicatorsData.obv1h.buySignalCount >= 20 &&
+                indicatorsData.obv5m.buySignalCount >= 6,
+          // indicatorsData.obv5m.buySignalCount >= 4,
           // indicatorsData.obv1m.buySignalCount >= 20,
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy',
           short:
@@ -858,9 +861,11 @@ import {
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
+                // indicatorsData.obv1d.sellSignalCount >= 20 &&
                 // indicatorsData.obv4h.sellSignalCount >= 20 &&
-                // indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.obv5m.sellSignalCount >= 4,
+                // indicatorsData.obv1h.sellSignalCount >= 20 &&
+                indicatorsData.obv5m.sellSignalCount >= 6,
+          // indicatorsData.obv5m.sellSignalCount >= 4,
           // indicatorsData.obv1m.sellSignalCount >= 20,
           // indicatorsData.haCandle.ha1hCandle.signal === 'sell',
         },
@@ -870,9 +875,11 @@ import {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              // indicatorsData.obv4h.sellSignalCount >= 20 &&
+              // indicatorsData.obv1d.sellSignalCount >= 20 ||
               // indicatorsData.obv15m.sellSignalCount >= 20 &&
-              indicatorsData.obv5m.sellSignalCount >= 4,
+              // indicatorsData.obv4h.sellSignalCount >= 20 &&
+              // indicatorsData.obv1h.sellSignalCount >= 20 &&
+              indicatorsData.obv5m.sellSignalCount >= 6,
             // indicatorsData.obv1m.sellSignalCount >= 20,
             // (indicatorsData.obv15m.sellSignalCount >= 2 &&
             //   indicatorsData.obv5m.sellSignalCount >= 2) ||
@@ -891,7 +898,10 @@ import {
               botState.dealType === 'short' &&
               // indicatorsData.obv4h.buySignalCount >= 20 &&
               // indicatorsData.obv15m.buySignalCount >= 20 &&
-              indicatorsData.obv5m.buySignalCount >= 4,
+              // indicatorsData.obv1d.buySignalCount >= 20 ||
+              // indicatorsData.obv4h.buySignalCount >= 20 &&
+              // indicatorsData.obv1h.buySignalCount >= 20 &&
+              indicatorsData.obv5m.buySignalCount >= 6,
             // indicatorsData.obv1m.buySignalCount >= 20,
             // (indicatorsData.obv15m.buySignalCount >= 2 &&
             //   indicatorsData.obv5m.buySignalCount >= 2) ||
@@ -930,7 +940,7 @@ import {
         } else if (botState.traidingMarket === 'futures') {
           await marketFuturesBuyAction(
             'long',
-            false,
+            true,
             symbol,
             botState,
             cryptoCoin,
@@ -967,7 +977,7 @@ import {
         } else if (botState.traidingMarket === 'futures') {
           await marketFuturesBuyAction(
             'short',
-            false,
+            true,
             symbol,
             botState,
             cryptoCoin,
@@ -1104,7 +1114,7 @@ import {
       } else if (botState.traidingMarket === 'futures') {
         await marketFuturesSellAction(
           'scalper',
-          false,
+          true,
           symbol,
           botState,
           cryptoCoin,
@@ -1137,7 +1147,7 @@ import {
       } else {
         await marketFuturesSellAction(
           'scalper',
-          false,
+          true,
           symbol,
           botState,
           cryptoCoin,
@@ -1166,14 +1176,14 @@ import {
   `);
   } else {
     await sendToRecipients(`INIT REAL MODE (LOCAL)
-  Traiding market: ${botState.traidingMarket.toUpperCase()}  
+  Traiding market: ${botState.traidingMarket.toUpperCase()}
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
   Strategies: ${JSON.stringify(botState.strategies)}
   Status: ${botState.status.toUpperCase()}
   Symbol: ${symbol.toUpperCase()}
     ***SPOT***
-  Initial USDT balance: ${initialUSDTBalance} USDT 
+  Initial USDT balance: ${initialUSDTBalance} USDT
   Deal USDT amount: ${spotDealUSDTAmount} USDT
   Initial ${cryptoCoin} balance: ${initialCryptoCoinBalance} ${cryptoCoin}
     ***FUTURES***
@@ -1218,11 +1228,11 @@ import {
 
   // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
+  // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
 
@@ -1267,39 +1277,17 @@ import {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
       calculateAvgDealPriceChange(botState, indicatorsData);
       // indicatorsData.dealType = determineDealType(indicatorsData, 4);
-      // console.log(
-      //   'OBV 1d: ' +
-      //     indicatorsData.obv1d.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv1d.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv1d.sellSignalCount +
-      //     ')',
-      // );
-      // console.log(
-      //   'OBV 4h: ' +
-      //     indicatorsData.obv4h.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv4h.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv4h.sellSignalCount +
-      //     ')',
-      // );
-      // console.log(
-      //   'OBV 1h: ' +
-      //     indicatorsData.obv1h.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv1h.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv1h.sellSignalCount +
-      //     ')',
-      // );
+      console.log(
+        'OBV 4h: ' +
+          indicatorsData.obv4h.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv4h.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv4h.sellSignalCount +
+          ')',
+      );
       console.log(
         'OBV 15m: ' +
           indicatorsData.obv15m.signal +
