@@ -107,6 +107,33 @@ export const limitSell = (
       return resolve(response);
     });
   });
+export const limitFuturesSell = (
+  symbol: string,
+  quantity: number,
+  price: number,
+): Promise<unknown> =>
+  new Promise((resolve, reject) => {
+    binance.futuresSell(symbol, quantity, price, (error, response) => {
+      if (error) {
+        return reject(error);
+      }
+      return resolve(response);
+    });
+  });
+
+export const limitFuturesBuy = (
+  symbol: string,
+  quantity: number,
+  price: number,
+): Promise<unknown> =>
+  new Promise((resolve, reject) => {
+    binance.futuresBuy(symbol, quantity, price, (error, response) => {
+      if (error) {
+        return reject(error);
+      }
+      return resolve(response);
+    });
+  });
 
 export const setLimitSellOrders = async (symbol, botState, stepSize) => {
   const limitSellOrderAmount = binance.roundStep(
@@ -147,31 +174,40 @@ export const setFuturesLimitSellOrders = async (
   dealAmount,
   dealType,
 ) => {
-  const limitSellOrderAmount = binance.roundStep(
-    Number(dealAmount) * 0.33,
-    stepSize,
-  );
+  const limitSellOrderAmount = +Number(
+    binance.roundStep(dealAmount * 0.245, stepSize),
+  ).toPrecision(2);
 
   if (dealType === 'long') {
     try {
-      const data = Promise.all([
-        binance.futuresSell(
-          symbol.toUpperCase(),
-          +limitSellOrderAmount,
-          +Number(botState.buyPrice * 1.005).toPrecision(4),
-        ),
+      const data = await Promise.all([
         binance.futuresSell(
           symbol.toUpperCase(),
           +limitSellOrderAmount,
           +Number(botState.buyPrice * 1.01).toPrecision(4),
+          { reduceOnly: true },
         ),
         binance.futuresSell(
           symbol.toUpperCase(),
           +limitSellOrderAmount,
           +Number(botState.buyPrice * 1.02).toPrecision(4),
+          { reduceOnly: true },
+        ),
+        binance.futuresSell(
+          symbol.toUpperCase(),
+          +limitSellOrderAmount,
+          +Number(botState.buyPrice * 1.04).toPrecision(4),
+          { reduceOnly: true },
+        ),
+        binance.futuresSell(
+          symbol.toUpperCase(),
+          +limitSellOrderAmount,
+          +Number(botState.buyPrice * 1.06).toPrecision(4),
+          { reduceOnly: true },
         ),
       ]);
       botState.updateState('enabledLimits', true);
+      console.log(data);
     } catch (e) {
       await sendToRecipients(`LIMIT SELL ORDER ERROR
             ${JSON.stringify(e)}
@@ -180,24 +216,34 @@ export const setFuturesLimitSellOrders = async (
     }
   } else if (dealType === 'short') {
     try {
-      const data = Promise.all([
+      const data = await Promise.all([
         binance.futuresBuy(
           symbol.toUpperCase(),
           +limitSellOrderAmount,
-          +Number(botState.buyPrice * 1.005).toPrecision(4),
+          +Number(botState.buyPrice * 0.99).toPrecision(4),
+          { reduceOnly: true },
         ),
         binance.futuresBuy(
           symbol.toUpperCase(),
           +limitSellOrderAmount,
-          +Number(botState.buyPrice * 1.01).toPrecision(4),
+          +Number(botState.buyPrice * 0.98).toPrecision(4),
+          { reduceOnly: true },
         ),
         binance.futuresBuy(
           symbol.toUpperCase(),
           +limitSellOrderAmount,
-          +Number(botState.buyPrice * 1.02).toPrecision(4),
+          +Number(botState.buyPrice * 0.96).toPrecision(4),
+          { reduceOnly: true },
+        ),
+        binance.futuresBuy(
+          symbol.toUpperCase(),
+          +limitSellOrderAmount,
+          +Number(botState.buyPrice * 0.94).toPrecision(4),
+          { reduceOnly: true },
         ),
       ]);
       botState.updateState('enabledLimits', true);
+      console.log(data);
     } catch (e) {
       await sendToRecipients(`LIMIT SELL ORDER ERROR
             ${JSON.stringify(e)}
@@ -578,30 +624,30 @@ export const marketFuturesSellAction = async (
         // const order = await marketSell(symbol.toUpperCase(), +amount);
         // botState.updateState('order', order);
         botState.updateState('enabledLimits', false);
-      } else {
-        const getFuturesAccountData = await binance.futuresAccount();
-        const searchSymbol = symbol.toUpperCase();
-        // console.log(getFuturesAccountData);
-        const currentPosition = getFuturesAccountData.positions.find(
-          ({ symbol }) => symbol === searchSymbol,
-        );
-        if (currentPosition && +currentPosition.positionAmt !== 0) {
-          const amount = Math.abs(currentPosition.positionAmt);
-          if (botState.dealType === 'long') {
-            order = await binance.futuresMarketSell(
-              symbol.toUpperCase(),
-              +amount,
-              { reduceOnly: true },
-            );
-          } else if (botState.dealType === 'short') {
-            order = await binance.futuresMarketBuy(
-              symbol.toUpperCase(),
-              +amount,
-              { reduceOnly: true },
-            );
-          }
-          botState.updateState('order', order);
-          await sendToRecipients(`SELL
+      }
+      const getFuturesAccountData = await binance.futuresAccount();
+      const searchSymbol = symbol.toUpperCase();
+      // console.log(getFuturesAccountData);
+      const currentPosition = getFuturesAccountData.positions.find(
+        ({ symbol }) => symbol === searchSymbol,
+      );
+      if (currentPosition && +currentPosition.positionAmt !== 0) {
+        const amount = Math.abs(currentPosition.positionAmt);
+        if (botState.dealType === 'long') {
+          order = await binance.futuresMarketSell(
+            symbol.toUpperCase(),
+            +amount,
+            { reduceOnly: true },
+          );
+        } else if (botState.dealType === 'short') {
+          order = await binance.futuresMarketBuy(
+            symbol.toUpperCase(),
+            +amount,
+            { reduceOnly: true },
+          );
+        }
+        botState.updateState('order', order);
+        await sendToRecipients(`SELL
                  Traiding market: ${botState.traidingMarket.toUpperCase()}
                  Strategy: ${strategy}
                  Reason: ${sellReason}
@@ -615,17 +661,16 @@ export const marketFuturesSellAction = async (
                  } USDT
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
-        } else {
-          await sendToRecipients(`SELL
+      } else {
+        await sendToRecipients(`SELL
                  No open positions found!
                  Switched to the BUY status. 
              `);
-        }
-        // const cancelResult = await binance.futuresCancelAll(
-        //   symbol.toUpperCase(),
-        // );
-        // botState.updateState('order', cancelResult);
       }
+      // const cancelResult = await binance.futuresCancelAll(
+      //   symbol.toUpperCase(),
+      // );
+      // botState.updateState('order', cancelResult);
 
       const refreshedFuturesUSDTBalance = await getFuturesBalances('USDT');
       const currentProfit =
@@ -904,6 +949,7 @@ export const marketFuturesBuyAction = async (
       'availableFuturesUSDT',
       +refreshedFuturesStableCoinBalance,
     );
+
     try {
       if (dealType === 'long') {
         order = await binance.futuresMarketBuy(symbol.toUpperCase(), +amount);
@@ -940,15 +986,6 @@ export const marketFuturesBuyAction = async (
                  )} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}
              `);
-        if (profitLevels) {
-          await setFuturesLimitSellOrders(
-            symbol,
-            botState,
-            stepSize,
-            Math.abs(currentPosition.positionAmt),
-            dealType,
-          );
-        }
         botState.updateState('dealType', dealType);
         botState.updateState('status', 'sell');
         botState.updateState('prevPrice', botState.currentPrice);
@@ -961,6 +998,14 @@ export const marketFuturesBuyAction = async (
             'updateState',
           ]),
         );
+        if (profitLevels)
+          await setFuturesLimitSellOrders(
+            symbol,
+            botState,
+            stepSize,
+            Math.abs(botState.order.positionAmt),
+            dealType,
+          );
       } else throw new Error('OPEN FUTURES POSITION ERROR');
     } catch (e) {
       // if (+currentPosition.positionAmt > 0) {

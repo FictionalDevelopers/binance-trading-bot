@@ -4,8 +4,8 @@ import { sendToRecipients } from './services/telegram';
 import { service as botStateService } from './components/botState';
 
 const botState = {
-  traidingMarket: 'spot',
-  initialDealType: null,
+  traidingMarket: 'futures',
+  initialDealType: 'long',
   dealType: 'undetermined',
   maxAvailableLongProfit: 0,
   minAvailableLongProfit: 0,
@@ -44,7 +44,7 @@ const botState = {
     stochRsi: { enabled: false, stopLoss: false },
     trendsCatcher: { enabled: false, stopLoss: false },
   },
-  testMode: true,
+  testMode: false,
   totalProfit: 0,
   totalPercentProfit: null,
   totalLongProfit: 0,

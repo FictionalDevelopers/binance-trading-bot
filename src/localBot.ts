@@ -58,7 +58,7 @@ import {
   const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1] || null;
   const spotDealUSDTAmount = 10;
-  const futuresDealUSDTAmount = 10;
+  const futuresDealUSDTAmount = 35;
   // const symbol = process.argv[2];
   let botState;
   //
@@ -74,7 +74,7 @@ import {
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: false,
-      // status: 'buy',
+      status: 'pending',
       testMode: true,
       initialDealType: null,
       logToTelegram: true,
@@ -849,10 +849,10 @@ import {
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
-                // indicatorsData.obv1d.buySignalCount >= 20 &&
-                // indicatorsData.obv4h.buySignalCount >= 20 &&
-                // indicatorsData.obv1h.buySignalCount >= 20 &&
-                indicatorsData.obv5m.buySignalCount >= 6,
+                indicatorsData.obv1d.buySignalCount >= 30,
+          // indicatorsData.obv4h.buySignalCount >= 20 &&
+          // indicatorsData.obv1h.buySignalCount >= 20 &&
+          // indicatorsData.obv5m.buySignalCount >= 6,
           // indicatorsData.obv5m.buySignalCount >= 4,
           // indicatorsData.obv1m.buySignalCount >= 20,
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy',
@@ -861,10 +861,10 @@ import {
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
-                // indicatorsData.obv1d.sellSignalCount >= 20 &&
-                // indicatorsData.obv4h.sellSignalCount >= 20 &&
-                // indicatorsData.obv1h.sellSignalCount >= 20 &&
-                indicatorsData.obv5m.sellSignalCount >= 6,
+                indicatorsData.obv1d.sellSignalCount >= 30,
+          // indicatorsData.obv4h.sellSignalCount >= 20 &&
+          // indicatorsData.obv1h.sellSignalCount >= 20 &&
+          // indicatorsData.obv5m.sellSignalCount >= 6,
           // indicatorsData.obv5m.sellSignalCount >= 4,
           // indicatorsData.obv1m.sellSignalCount >= 20,
           // indicatorsData.haCandle.ha1hCandle.signal === 'sell',
@@ -875,11 +875,11 @@ import {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              // indicatorsData.obv1d.sellSignalCount >= 20 ||
-              // indicatorsData.obv15m.sellSignalCount >= 20 &&
-              // indicatorsData.obv4h.sellSignalCount >= 20 &&
-              // indicatorsData.obv1h.sellSignalCount >= 20 &&
-              indicatorsData.obv5m.sellSignalCount >= 6,
+              indicatorsData.obv1d.sellSignalCount >= 30,
+            // indicatorsData.obv15m.sellSignalCount >= 20 &&
+            // indicatorsData.obv4h.sellSignalCount >= 20 &&
+            // indicatorsData.obv1h.sellSignalCount >= 20 &&
+            // indicatorsData.obv5m.sellSignalCount >= 6,
             // indicatorsData.obv1m.sellSignalCount >= 20,
             // (indicatorsData.obv15m.sellSignalCount >= 2 &&
             //   indicatorsData.obv5m.sellSignalCount >= 2) ||
@@ -898,10 +898,10 @@ import {
               botState.dealType === 'short' &&
               // indicatorsData.obv4h.buySignalCount >= 20 &&
               // indicatorsData.obv15m.buySignalCount >= 20 &&
-              // indicatorsData.obv1d.buySignalCount >= 20 ||
-              // indicatorsData.obv4h.buySignalCount >= 20 &&
-              // indicatorsData.obv1h.buySignalCount >= 20 &&
-              indicatorsData.obv5m.buySignalCount >= 6,
+              indicatorsData.obv1d.buySignalCount >= 30,
+            // indicatorsData.obv4h.buySignalCount >= 20 &&
+            // indicatorsData.obv1h.buySignalCount >= 20 &&
+            // indicatorsData.obv5m.buySignalCount >= 6,
             // indicatorsData.obv1m.buySignalCount >= 20,
             // (indicatorsData.obv15m.buySignalCount >= 2 &&
             //   indicatorsData.obv5m.buySignalCount >= 2) ||
@@ -1227,10 +1227,10 @@ import {
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
 
   // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
-  // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
+  getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
@@ -1277,6 +1277,17 @@ import {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
       calculateAvgDealPriceChange(botState, indicatorsData);
       // indicatorsData.dealType = determineDealType(indicatorsData, 4);
+      console.log(
+        'OBV 1D: ' +
+          indicatorsData.obv1d.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv1d.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv1d.sellSignalCount +
+          ')',
+      );
       console.log(
         'OBV 4h: ' +
           indicatorsData.obv4h.signal +
@@ -1681,196 +1692,197 @@ import {
   `);
     }, 500);
   })();
-  // binance.websockets.depthCache(
-  //   ['LINKUSDT'],
-  //   _throttle((symbol, depth) => {
-  //     const bids = binance.sortBids(depth.bids);
-  //     const asks = binance.sortAsks(depth.asks);
-  //     const shortBids = binance.array(bids).slice(0, 10);
-  //     const shortAsks = binance.array(asks).slice(0, 30);
-  //     const bestAsk = binance.first(asks);
-  //     const bestBid = binance.first(bids);
-  //     const highPriceLevel = binance.array(asks).slice(0, 30)[29][0];
-  //     const maxBidSize = _maxBy(shortBids, arrItem => arrItem[1]);
-  //     indicatorsData.scalper.maxBidSize = maxBidSize[1];
-  //     const maxAskSize = _maxBy(shortAsks, arrItem => arrItem[1]);
-  //     indicatorsData.scalper.maxAskSize = maxAskSize[1];
-  //     const lastBid = shortBids[9][0];
-  //     const lastAsk = shortAsks[29][0];
-  //     const bidsSum = getSum(shortBids.map(arr => arr[1]));
-  //     const asksSum = getSum(shortAsks.map(arr => arr[1]));
-  //
-  //     console.log('Max BID: ' + maxBidSize);
-  //     console.log('Max ASK: ' + maxAskSize);
-  //
-  //     // const bidsSum = getSum(shortBids.map(arr => arr[1]));
-  //     // const asksSum = getSum(shortAsks.map(arr => arr[1]));
-  //     // console.log((bidsSum / asksSum) * 100 - 100);
-  //
-  //     // console.log('bids', shortBids);
-  //     // console.log('asks', shortAsks);
-  //     // console.info('best bid: ' + binance.first(bids));
-  //     // console.info('best ask: ' + binance.first(asks));
-  //     // console.info('last bid: ' + shortBids[4][0]);
-  //     // console.info('last ask: ' + shortAsks[99][0]);
-  //
-  //     indicatorsData.scalper.bidsAsksDiff = (bidsSum / asksSum) * 100 - 100;
-  //     console.log(
-  //       'Ask size / Bid size: (LONG) ' +
-  //         Number((asksSum / bidsSum) * 100 - 100).toString() +
-  //         '%',
-  //     );
-  //     console.log(
-  //       'Ask size / Bid size: (SHORT) ' +
-  //         Number(
-  //           (getSum(
-  //             binance
-  //               .array(asks)
-  //               .slice(0, 5)
-  //               .map(arr => arr[1]),
-  //           ) /
-  //             getSum(
-  //               binance
-  //                 .array(bids)
-  //                 .slice(0, 5)
-  //                 .map(arr => arr[1]),
-  //             )) *
-  //             100 -
-  //             100,
-  //         ).toString() +
-  //         '%',
-  //     );
-  //     console.log(
-  //       'Best Ask / Best Bid: ' +
-  //         Number((bestAsk / bestBid) * 100 - 100).toString() +
-  //         '%',
-  //     );
-  //
-  //     console.log(
-  //       'Last Ask/ Last Bid: ' +
-  //         Number((lastAsk / lastBid) * 100 - 100).toString(),
-  //     );
-  //     console.log('High price: ' + highPriceLevel);
-  //     console.log('');
-  //     //
-  //     // if (
-  //     //   indicatorsData.rsi5m.rsiValue !== null &&
-  //     //   indicatorsData.rsi5m.rsiValue > indicatorsData.rsi5m.prevRsi
-  //     // )
-  //     //   indicatorsData.rsi5m.rsiSignal = 'buy';
-  //     // else if (
-  //     //   indicatorsData.rsi5m.rsiValue !== null &&
-  //     //   indicatorsData.rsi5m.rsiValue < indicatorsData.rsi5m.prevRsi
-  //     // )
-  //     //   indicatorsData.rsi5m.rsiSignal = 'sell';
-  //     // if (Number((lastAsk / lastBid) * 100 - 100) >= 0.6)
-  //     //   indicatorsData.scalper.askBidSignal = 'buy';
-  //     // else if (Number((lastAsk / lastBid) * 100 - 100) <= 0.3)
-  //     //   indicatorsData.scalper.askBidSignal = 'sell';
-  //
-  //     // console.log('Stoch 15m: ' + indicatorsData.stochRsi.stoch15m.signal);
-  //     // console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
-  //     // console.log(
-  //     //   'ADX 1h: ' +
-  //     //     indicatorsData.dmi1h.adxDiff +
-  //     //     ' ' +
-  //     //     indicatorsData.dmi1h.adxDirection +
-  //     //     ' ' +
-  //     //     (indicatorsData.dmi1h.adxUpCount
-  //     //       ? indicatorsData.dmi1h.adxUpCount
-  //     //       : indicatorsData.dmi1h.adxDownCount),
-  //     // );
-  //     // console.log('RSI 1h: ' + indicatorsData.rsi1h.rsiValue);
-  //     // console.log(
-  //     //   'ADX 5m: ' +
-  //     //     indicatorsData.dmi5m.adxDiff +
-  //     //     ' ' +
-  //     //     indicatorsData.dmi5m.adxDirection +
-  //     //     ' ' +
-  //     //     (indicatorsData.dmi5m.adxUpCount
-  //     //       ? indicatorsData.dmi5m.adxUpCount
-  //     //       : indicatorsData.dmi5m.adxDownCount),
-  //     // );
-  //     // console.log('RSI 5m: ' + indicatorsData.rsi5m.rsiValue);
-  //     // console.log(
-  //     //   'ADX 1m: ' +
-  //     //     indicatorsData.dmi1m.adxDiff +
-  //     //     ' ' +
-  //     //     indicatorsData.dmi1m.adxDirection +
-  //     //     ' ' +
-  //     //     (indicatorsData.dmi1m.adxUpCount
-  //     //       ? indicatorsData.dmi1m.adxUpCount
-  //     //       : indicatorsData.dmi1m.adxDownCount),
-  //     // );
-  //     // console.log('RSI 1m: ' + indicatorsData.rsi1m.rsiValue);
-  //     // // console.log(
-  //     // //   'Stoch 1m: ' +
-  //     // //     indicatorsData.stochRsi.stoch1m.data.k +
-  //     // //     ' : ' +
-  //     // //     indicatorsData.stochRsi.stoch1m.data.d,
-  //     // // );
-  //     // if (
-  //     //   // (shortBids[1][1] / shortAsks[1][1]) * 100 - 100 >= 50 &&
-  //     //   // Number((shortBids[9][1] / shortAsks[9][1]) * 100 - 100) >= 50
-  //     //   // indicatorsData.scalper.maxBidSize > indicatorsData.scalper.maxAskSize &&
-  //     //   (bidsSum / asksSum) * 100 - 100 >=
-  //     //   300
-  //     //
-  //     //   // (highPriceLevel / binance.first(asks)[0]) * 100 - 100 >= 0.3
-  //     //   // (lastAsk / lastBid) * 100 - 100 >= 0.3
-  //     //
-  //     //   // Number((lastBid / lastAsk) * 100 - 100) > -0.08
-  //     // ) {
-  //     //   indicatorsData.scalper.buySignalCount++;
-  //     //   indicatorsData.scalper.sellSignalCount = 0;
-  //     //   // if (indicatorsData.scalper.buySignalCount >= 2)
-  //     //   //   indicatorsData.scalper.signal = 'buy';
-  //     // } else if (
-  //     //   // (highPriceLevel / binance.first(asks)[0]) * 100 - 100 < 0.3 &&
-  //     //   (asksSum / bidsSum) * 100 - 100 >=
-  //     //   40
-  //     //   // (shortAsks[1][1] / shortBids[1][1]) * 100 - 100 >= 50 &&
-  //     //   // Number((shortAsks[9][1] / shortBids[9][1]) * 100 - 100) >= 50
-  //     // ) {
-  //     //   // indicatorsData.scalper.maxBidSize < indicatorsData.scalper.maxAskSize &&
-  //     //   // Number((lastBid / lastAsk) * 100 - 100) < -0.08
-  //     //   indicatorsData.scalper.sellSignalCount++;
-  //     //   indicatorsData.scalper.buySignalCount = 0;
-  //     //   // if (indicatorsData.scalper.sellSignalCount >= 2)
-  //     //   //   indicatorsData.scalper.signal = 'sell';
-  //     // }
-  //     indicatorsData.scalper.lastBid = lastBid;
-  //     indicatorsData.scalper.prevAsk = lastAsk;
-  //     // if (indicatorsData.askBidDiffArr.length < 20) {
-  //     //   indicatorsData.askBidDiffArr.push(
-  //     //     (indicatorsData.askBidDiff = Number((lastAsk / lastBid) * 100 - 100)),
-  //     //   );
-  //     // } else {
-  //     //   const avg = getAvarage(indicatorsData.askBidDiffArr);
-  //     //   indicatorsData.askBidDiffArr.length = 0;
-  //     //   indicatorsData.askBidDiffArr.push(
-  //     //     (indicatorsData.askBidDiff = Number((lastAsk / lastBid) * 100 - 100)),
-  //     //   );
-  //     // if (indicatorsData.prevAvgAskBidDiff) {
-  //     //   indicatorsData.avgAskBidDiff =
-  //     //     (avg / indicatorsData.prevAvgAskBidDiff) * 100 - 100;
-  //     //   indicatorsData.askBidDiffArr.push(
-  //     //     (indicatorsData.askBidDiff = Number((lastAsk / lastBid) * 100 - 100)),
-  //     //   );
-  //     // } else {
-  //     //   indicatorsData.prevAvgAskBidDiff = avg;
-  //     //   return;
-  //     // }
-  //     // indicatorsData.prevAvgAskBidDiff = avg;
-  //     // }
-  //   }, 500),
-  // );
+  binance.websockets.depthCache(
+    ['LINKUSDT'],
+    _throttle((symbol, depth) => {
+      const bids = binance.sortBids(depth.bids);
+      const asks = binance.sortAsks(depth.asks);
+      const shortBids = binance.array(bids).slice(0, 10);
+      const shortAsks = binance.array(asks).slice(0, 30);
+      const bestAsk = binance.first(asks);
+      const bestBid = binance.first(bids);
+      const highPriceLevel = binance.array(asks).slice(0, 30)[29][0];
+      const maxBidSize = _maxBy(shortBids, arrItem => arrItem[1]);
+      indicatorsData.scalper.maxBidSize = maxBidSize[1];
+      const maxAskSize = _maxBy(shortAsks, arrItem => arrItem[1]);
+      indicatorsData.scalper.maxAskSize = maxAskSize[1];
+      const lastBid = shortBids[9][0];
+      const lastAsk = shortAsks[29][0];
+      const bidsSum = getSum(shortBids.map(arr => arr[1]));
+      const asksSum = getSum(shortAsks.map(arr => arr[1]));
+
+      console.log('Max BID: ' + maxBidSize);
+      console.log('Max ASK: ' + maxAskSize);
+
+      // const bidsSum = getSum(shortBids.map(arr => arr[1]));
+      // const asksSum = getSum(shortAsks.map(arr => arr[1]));
+      // console.log((bidsSum / asksSum) * 100 - 100);
+
+      // console.log('bids', shortBids);
+      // console.log('asks', shortAsks);
+      // console.info('best bid: ' + binance.first(bids));
+      // console.info('best ask: ' + binance.first(asks));
+      // console.info('last bid: ' + shortBids[4][0]);
+      // console.info('last ask: ' + shortAsks[99][0]);
+
+      indicatorsData.scalper.bidsAsksDiff = (bidsSum / asksSum) * 100 - 100;
+      console.log(
+        'Ask size / Bid size: (LONG) ' +
+          Number((asksSum / bidsSum) * 100 - 100).toString() +
+          '%',
+      );
+      console.log(
+        'Ask size / Bid size: (SHORT) ' +
+          Number(
+            (getSum(
+              binance
+                .array(asks)
+                .slice(0, 5)
+                .map(arr => arr[1]),
+            ) /
+              getSum(
+                binance
+                  .array(bids)
+                  .slice(0, 5)
+                  .map(arr => arr[1]),
+              )) *
+              100 -
+              100,
+          ).toString() +
+          '%',
+      );
+      console.log(
+        'Best Ask / Best Bid: ' +
+          Number((bestAsk / bestBid) * 100 - 100).toString() +
+          '%',
+      );
+
+      console.log(
+        'Last Ask/ Last Bid: ' +
+          Number((lastAsk / lastBid) * 100 - 100).toString(),
+      );
+      console.log('High price: ' + highPriceLevel);
+      console.log('');
+      //
+      // if (
+      //   indicatorsData.rsi5m.rsiValue !== null &&
+      //   indicatorsData.rsi5m.rsiValue > indicatorsData.rsi5m.prevRsi
+      // )
+      //   indicatorsData.rsi5m.rsiSignal = 'buy';
+      // else if (
+      //   indicatorsData.rsi5m.rsiValue !== null &&
+      //   indicatorsData.rsi5m.rsiValue < indicatorsData.rsi5m.prevRsi
+      // )
+      //   indicatorsData.rsi5m.rsiSignal = 'sell';
+      // if (Number((lastAsk / lastBid) * 100 - 100) >= 0.6)
+      //   indicatorsData.scalper.askBidSignal = 'buy';
+      // else if (Number((lastAsk / lastBid) * 100 - 100) <= 0.3)
+      //   indicatorsData.scalper.askBidSignal = 'sell';
+
+      // console.log('Stoch 15m: ' + indicatorsData.stochRsi.stoch15m.signal);
+      // console.log('Stoch 5m: ' + indicatorsData.stochRsi.stoch5m.signal);
+      // console.log(
+      //   'ADX 1h: ' +
+      //     indicatorsData.dmi1h.adxDiff +
+      //     ' ' +
+      //     indicatorsData.dmi1h.adxDirection +
+      //     ' ' +
+      //     (indicatorsData.dmi1h.adxUpCount
+      //       ? indicatorsData.dmi1h.adxUpCount
+      //       : indicatorsData.dmi1h.adxDownCount),
+      // );
+      // console.log('RSI 1h: ' + indicatorsData.rsi1h.rsiValue);
+      // console.log(
+      //   'ADX 5m: ' +
+      //     indicatorsData.dmi5m.adxDiff +
+      //     ' ' +
+      //     indicatorsData.dmi5m.adxDirection +
+      //     ' ' +
+      //     (indicatorsData.dmi5m.adxUpCount
+      //       ? indicatorsData.dmi5m.adxUpCount
+      //       : indicatorsData.dmi5m.adxDownCount),
+      // );
+      // console.log('RSI 5m: ' + indicatorsData.rsi5m.rsiValue);
+      // console.log(
+      //   'ADX 1m: ' +
+      //     indicatorsData.dmi1m.adxDiff +
+      //     ' ' +
+      //     indicatorsData.dmi1m.adxDirection +
+      //     ' ' +
+      //     (indicatorsData.dmi1m.adxUpCount
+      //       ? indicatorsData.dmi1m.adxUpCount
+      //       : indicatorsData.dmi1m.adxDownCount),
+      // );
+      // console.log('RSI 1m: ' + indicatorsData.rsi1m.rsiValue);
+      // // console.log(
+      // //   'Stoch 1m: ' +
+      // //     indicatorsData.stochRsi.stoch1m.data.k +
+      // //     ' : ' +
+      // //     indicatorsData.stochRsi.stoch1m.data.d,
+      // // );
+      // if (
+      //   // (shortBids[1][1] / shortAsks[1][1]) * 100 - 100 >= 50 &&
+      //   // Number((shortBids[9][1] / shortAsks[9][1]) * 100 - 100) >= 50
+      //   // indicatorsData.scalper.maxBidSize > indicatorsData.scalper.maxAskSize &&
+      //   (bidsSum / asksSum) * 100 - 100 >=
+      //   300
+      //
+      //   // (highPriceLevel / binance.first(asks)[0]) * 100 - 100 >= 0.3
+      //   // (lastAsk / lastBid) * 100 - 100 >= 0.3
+      //
+      //   // Number((lastBid / lastAsk) * 100 - 100) > -0.08
+      // ) {
+      //   indicatorsData.scalper.buySignalCount++;
+      //   indicatorsData.scalper.sellSignalCount = 0;
+      //   // if (indicatorsData.scalper.buySignalCount >= 2)
+      //   //   indicatorsData.scalper.signal = 'buy';
+      // } else if (
+      //   // (highPriceLevel / binance.first(asks)[0]) * 100 - 100 < 0.3 &&
+      //   (asksSum / bidsSum) * 100 - 100 >=
+      //   40
+      //   // (shortAsks[1][1] / shortBids[1][1]) * 100 - 100 >= 50 &&
+      //   // Number((shortAsks[9][1] / shortBids[9][1]) * 100 - 100) >= 50
+      // ) {
+      //   // indicatorsData.scalper.maxBidSize < indicatorsData.scalper.maxAskSize &&
+      //   // Number((lastBid / lastAsk) * 100 - 100) < -0.08
+      //   indicatorsData.scalper.sellSignalCount++;
+      //   indicatorsData.scalper.buySignalCount = 0;
+      //   // if (indicatorsData.scalper.sellSignalCount >= 2)
+      //   //   indicatorsData.scalper.signal = 'sell';
+      // }
+      indicatorsData.scalper.lastBid = lastBid;
+      indicatorsData.scalper.prevAsk = lastAsk;
+      // if (indicatorsData.askBidDiffArr.length < 20) {
+      //   indicatorsData.askBidDiffArr.push(
+      //     (indicatorsData.askBidDiff = Number((lastAsk / lastBid) * 100 - 100)),
+      //   );
+      // } else {
+      //   const avg = getAvarage(indicatorsData.askBidDiffArr);
+      //   indicatorsData.askBidDiffArr.length = 0;
+      //   indicatorsData.askBidDiffArr.push(
+      //     (indicatorsData.askBidDiff = Number((lastAsk / lastBid) * 100 - 100)),
+      //   );
+      // if (indicatorsData.prevAvgAskBidDiff) {
+      //   indicatorsData.avgAskBidDiff =
+      //     (avg / indicatorsData.prevAvgAskBidDiff) * 100 - 100;
+      //   indicatorsData.askBidDiffArr.push(
+      //     (indicatorsData.askBidDiff = Number((lastAsk / lastBid) * 100 - 100)),
+      //   );
+      // } else {
+      //   indicatorsData.prevAvgAskBidDiff = avg;
+      //   return;
+      // }
+      // indicatorsData.prevAvgAskBidDiff = avg;
+      // }
+    }, 500),
+  );
 })();
 
 process.on('unhandledRejection', async (reason: Error) => {
   console.error(reason);
   await sendToRecipients(`ERROR
     ${JSON.stringify(reason)};
+    ${reason};
   `);
 
   process.exit(1);
