@@ -76,7 +76,6 @@ import {
       local: false,
       // status: 'pending',
       // testMode: true,
-      initialDealType: null,
       logToTelegram: true,
       updateState: function(fieldName, value) {
         this[`${fieldName}`] = value;
