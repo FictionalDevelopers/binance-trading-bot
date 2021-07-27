@@ -180,6 +180,15 @@ import {
     avgPriceDiff: null,
     avgPriceDiffPerTimes: null,
     haCandle: {
+      ha4hCandle: {
+        open: null,
+        close: null,
+        high: null,
+        low: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
       ha1hCandle: {
         open: null,
         close: null,
@@ -847,7 +856,7 @@ import {
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
+                indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
                 indicatorsData.obv1d.buySignalCount >= 30,
           // indicatorsData.obv4h.buySignalCount >= 20 &&
           // indicatorsData.obv1h.buySignalCount >= 20 &&
@@ -859,7 +868,7 @@ import {
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
+                indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
                 indicatorsData.obv1d.sellSignalCount >= 30,
           // indicatorsData.obv4h.sellSignalCount >= 20 &&
           // indicatorsData.obv1h.sellSignalCount >= 20 &&
@@ -874,7 +883,9 @@ import {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.obv1d.sellSignalCount >= 30,
+              (indicatorsData.obv1d.sellSignalCount >= 30 ||
+                (indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
+                  indicatorsData.haCandle.ha4hCandle.signal === 'sell')),
             // indicatorsData.obv15m.sellSignalCount >= 20 &&
             // indicatorsData.obv4h.sellSignalCount >= 20 &&
             // indicatorsData.obv1h.sellSignalCount >= 20 &&
@@ -897,7 +908,9 @@ import {
               botState.dealType === 'short' &&
               // indicatorsData.obv4h.buySignalCount >= 20 &&
               // indicatorsData.obv15m.buySignalCount >= 20 &&
-              indicatorsData.obv1d.buySignalCount >= 30,
+              (indicatorsData.obv1d.buySignalCount >= 30 ||
+                (indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
+                  indicatorsData.haCandle.ha4hCandle.signal === 'buy')),
             // indicatorsData.obv4h.buySignalCount >= 20 &&
             // indicatorsData.obv1h.buySignalCount >= 20 &&
             // indicatorsData.obv5m.buySignalCount >= 6,
@@ -1225,7 +1238,8 @@ import {
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
 
-  // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
+  getHeikinAshiSignal(symbol, '4h', 6, 6, indicatorsData.haCandle.ha4hCandle);
+  getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
   getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
@@ -1274,7 +1288,7 @@ import {
   (() => {
     setInterval(async () => {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
-      calculateAvgDealPriceChange(botState, indicatorsData);
+      // calculateAvgDealPriceChange(botState, indicatorsData);
       // indicatorsData.dealType = determineDealType(indicatorsData, 4);
       console.log(
         'OBV 1D: ' +
@@ -1578,11 +1592,11 @@ import {
             indicatorsData.avgPriceDownSignalCount +
             ')',
         );
-        console.log(
-          'Avg Price / Avg Deal Price: ' +
-            Number((botState.avgPrice / botState.avgDealPrice) * 100 - 100) +
-            '%',
-        );
+        // console.log(
+        //   'Avg Price / Avg Deal Price: ' +
+        //     Number((botState.avgPrice / botState.avgDealPrice) * 100 - 100) +
+        //     '%',
+        // );
         // console.log('Max Price / Avg Price Diff: ' + indicatorsData.avgPriceDiff);
         console.log(
           botState.dealType === 'long'
