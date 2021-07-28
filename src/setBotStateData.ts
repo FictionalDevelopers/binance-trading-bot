@@ -6,7 +6,7 @@ import { service as botStateService } from './components/botState';
 const botState = {
   traidingMarket: 'spot',
   initialDealType: null,
-  dealType: 'undetermined',
+  dealType: 'long',
   maxAvailableLongProfit: 0,
   minAvailableLongProfit: 0,
   maxAvailableShortProfit: 0,

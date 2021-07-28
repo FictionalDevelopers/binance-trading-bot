@@ -857,6 +857,7 @@ import {
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
+                indicatorsData.haCandle.ha4hCandle.signal === 'buy' &&
                 indicatorsData.obv1d.buySignalCount >= 30,
           // indicatorsData.obv4h.buySignalCount >= 20 &&
           // indicatorsData.obv1h.buySignalCount >= 20 &&
@@ -869,6 +870,7 @@ import {
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
+                indicatorsData.haCandle.ha4hCandle.signal === 'sell' &&
                 indicatorsData.obv1d.sellSignalCount >= 30,
           // indicatorsData.obv4h.sellSignalCount >= 20 &&
           // indicatorsData.obv1h.sellSignalCount >= 20 &&
