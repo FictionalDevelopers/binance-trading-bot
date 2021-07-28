@@ -34,7 +34,7 @@ const botState = {
   order: null,
   prevPrice: 0,
   sellError: false,
-  status: 'buy',
+  status: 'sell',
   strategies: {
     scalper: { enabled: true, stopLoss: false },
     upTrend: { enabled: false, stopLoss: false },
