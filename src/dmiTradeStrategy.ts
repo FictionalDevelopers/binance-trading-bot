@@ -1700,7 +1700,7 @@ import {
       botState.updateState('isPricesStreamAlive', false);
       indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount++;
       if (
-        indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount >= 20
+        indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount >= 100
       )
         await sendToRecipients(`WARNING (LOCAL) !!! TRENDS CATCHER
         Prices stream is DEAD!!! Be ready to restart the bot!

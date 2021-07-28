@@ -6,7 +6,7 @@ import { service as botStateService } from './components/botState';
 const botState = {
   traidingMarket: 'spot',
   initialDealType: null,
-  dealType: 'long',
+  dealType: 'undetermined',
   maxAvailableLongProfit: 0,
   minAvailableLongProfit: 0,
   maxAvailableShortProfit: 0,
@@ -34,7 +34,7 @@ const botState = {
   order: null,
   prevPrice: 0,
   sellError: false,
-  status: 'sell',
+  status: 'buy',
   strategies: {
     scalper: { enabled: true, stopLoss: false },
     upTrend: { enabled: false, stopLoss: false },
