@@ -58,7 +58,7 @@ import {
   const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1] || null;
   const spotDealUSDTAmount = 10;
-  const futuresDealUSDTAmount = 35;
+  const futuresDealUSDTAmount = 500;
   // const symbol = process.argv[2];
   let botState;
   //
