@@ -943,7 +943,7 @@ export const marketFuturesBuyAction = async (
     botState.updateState('status', 'isPending');
     const amount = +Number(
       binance.roundStep(assetAmount / botState.currentPrice, stepSize),
-    ).toPrecision(2);
+    ).toFixed(2);
     const refreshedFuturesStableCoinBalance = await getFuturesBalances('USDT');
     botState.updateState(
       'availableFuturesUSDT',
