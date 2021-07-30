@@ -888,8 +888,8 @@ import {
               // indicatorsData.obv1d.sellSignalCount >= 30 &&
               // (indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
               //   indicatorsData.haCandle.ha4hCandle.signal === 'sell')),
-              (indicatorsData.obv1h.signal === 'sell' ||
-                indicatorsData.obv15m.signal === 'sell'),
+              indicatorsData.obv1h.signal === 'sell' &&
+                indicatorsData.obv15m.signal === 'sell',
             // indicatorsData.obv1h.sellSignalCount >= 20 &&
             // indicatorsData.obv5m.sellSignalCount >= 6,
             // indicatorsData.obv1m.sellSignalCount >= 20,
@@ -913,8 +913,8 @@ import {
               // indicatorsData.obv1d.buySignalCount >= 30 &&
               // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
               //   indicatorsData.haCandle.ha4hCandle.signal === 'buy',
-              (indicatorsData.obv1h.signal === 'buy' ||
-                indicatorsData.obv15m.signal === 'buy'),
+              indicatorsData.obv1h.signal === 'buy' &&
+                indicatorsData.obv15m.signal === 'buy',
             // indicatorsData.obv5m.buySignalCount >= 6,
             // indicatorsData.obv1m.buySignalCount >= 20,
             // (indicatorsData.obv15m.buySignalCount >= 2 &&
