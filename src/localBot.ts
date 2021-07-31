@@ -1231,8 +1231,8 @@ import {
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 20, 20);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
 
@@ -1275,7 +1275,7 @@ import {
   (() => {
     setInterval(async () => {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
-      calculateAvgDealPriceChange(botState, indicatorsData);
+      // calculateAvgDealPriceChange(botState, indicatorsData);
       // indicatorsData.dealType = determineDealType(indicatorsData, 4);
       // console.log(
       //   'OBV 1D: ' +
@@ -1321,28 +1321,28 @@ import {
           indicatorsData.obv15m.sellSignalCount +
           ')',
       );
-      // console.log(
-      //   'OBV 5m: ' +
-      //     indicatorsData.obv5m.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv5m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv5m.sellSignalCount +
-      //     ')',
-      // );
-      // console.log(
-      //   'OBV 1m: ' +
-      //     indicatorsData.obv1m.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv1m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv1m.sellSignalCount +
-      //     ')',
-      // );
+      console.log(
+        'OBV 5m: ' +
+          indicatorsData.obv5m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv5m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv5m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 1m: ' +
+          indicatorsData.obv1m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv1m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv1m.sellSignalCount +
+          ')',
+      );
       // console.log('Deal Type: ' + botState.dealType.toUpperCase());
       // console.log('Avg Ask Bid Diff: ' + indicatorsData.prevAvgAskBidDiff);
       // console.log('Bids ask diff: ' + indicatorsData.scalper.bidsAsksDiff);
