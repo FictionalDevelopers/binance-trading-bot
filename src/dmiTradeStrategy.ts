@@ -861,7 +861,7 @@ import {
                 // indicatorsData.obv1d.buySignalCount >= 30 &&
                 // indicatorsData.obv4h.buySignalCount >= 30 &&
                 // indicatorsData.obv1h.signal === 'buy' &&
-                indicatorsData.obv15m.signal === 'buy',
+                indicatorsData.obv15m.buySignalCount >= 100,
           // indicatorsData.obv5m.signal === 'buy',
           // indicatorsData.obv5m.buySignalCount >= 4,
           // indicatorsData.obv1m.buySignalCount >= 20,
@@ -875,7 +875,7 @@ import {
                 // indicatorsData.obv1d.sellSignalCount >= 30 &&
                 // indicatorsData.obv4h.sellSignalCount >= 30 &&
                 // indicatorsData.obv1h.signal === 'sell' &&
-                indicatorsData.obv15m.signal === 'sell',
+                indicatorsData.obv15m.sellSignalCount >= 100,
           // indicatorsData.obv5m.signal === 'sell',
           // indicatorsData.obv5m.sellSignalCount >= 4,
           // indicatorsData.obv1m.sellSignalCount >= 20,
