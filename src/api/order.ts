@@ -174,7 +174,9 @@ export const setFuturesLimitSellOrders = async (
   dealAmount,
   dealType,
 ) => {
-  const limitSellOrderAmount = +Number(binance.roundStep(dealAmount, stepSize));
+  const limitSellOrderAmount = +Number(
+    binance.roundStep(dealAmount, stepSize),
+  ).toPrecision(2);
 
   if (dealType === 'long') {
     try {
@@ -182,7 +184,7 @@ export const setFuturesLimitSellOrders = async (
         binance.futuresSell(
           symbol.toUpperCase(),
           +limitSellOrderAmount,
-          +Number(botState.buyPrice * 0.995).toFixed(4),
+          +Number(botState.buyPrice * 0.995).toPrecision(4),
           { reduceOnly: true },
         ),
       ]);
@@ -200,7 +202,7 @@ export const setFuturesLimitSellOrders = async (
         binance.futuresBuy(
           symbol.toUpperCase(),
           +limitSellOrderAmount,
-          +Number(botState.buyPrice * 1.005).toFixed(4),
+          +Number(botState.buyPrice * 1.005).toPrecision(4),
           { reduceOnly: true },
         ),
       ]);
