@@ -956,7 +956,7 @@ import {
         } else if (botState.traidingMarket === 'futures') {
           await marketFuturesBuyAction(
             'long',
-            false,
+            true,
             symbol,
             botState,
             cryptoCoin,
@@ -993,7 +993,7 @@ import {
         } else if (botState.traidingMarket === 'futures') {
           await marketFuturesBuyAction(
             'short',
-            false,
+            true,
             symbol,
             botState,
             cryptoCoin,
@@ -1130,7 +1130,7 @@ import {
       } else if (botState.traidingMarket === 'futures') {
         await marketFuturesSellAction(
           'scalper',
-          false,
+          true,
           symbol,
           botState,
           cryptoCoin,
@@ -1163,7 +1163,7 @@ import {
       } else {
         await marketFuturesSellAction(
           'scalper',
-          false,
+          true,
           symbol,
           botState,
           cryptoCoin,

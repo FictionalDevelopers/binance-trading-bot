@@ -174,9 +174,7 @@ export const setFuturesLimitSellOrders = async (
   dealAmount,
   dealType,
 ) => {
-  const limitSellOrderAmount = +Number(
-    binance.roundStep(dealAmount * 0.245, stepSize),
-  ).toPrecision(2);
+  const limitSellOrderAmount = +Number(binance.roundStep(dealAmount, stepSize));
 
   if (dealType === 'long') {
     try {
@@ -184,25 +182,7 @@ export const setFuturesLimitSellOrders = async (
         binance.futuresSell(
           symbol.toUpperCase(),
           +limitSellOrderAmount,
-          +Number(botState.buyPrice * 1.01).toPrecision(4),
-          { reduceOnly: true },
-        ),
-        binance.futuresSell(
-          symbol.toUpperCase(),
-          +limitSellOrderAmount,
-          +Number(botState.buyPrice * 1.02).toPrecision(4),
-          { reduceOnly: true },
-        ),
-        binance.futuresSell(
-          symbol.toUpperCase(),
-          +limitSellOrderAmount,
-          +Number(botState.buyPrice * 1.04).toPrecision(4),
-          { reduceOnly: true },
-        ),
-        binance.futuresSell(
-          symbol.toUpperCase(),
-          +limitSellOrderAmount,
-          +Number(botState.buyPrice * 1.06).toPrecision(4),
+          +Number(botState.buyPrice * 0.995).toFixed(4),
           { reduceOnly: true },
         ),
       ]);
@@ -220,25 +200,7 @@ export const setFuturesLimitSellOrders = async (
         binance.futuresBuy(
           symbol.toUpperCase(),
           +limitSellOrderAmount,
-          +Number(botState.buyPrice * 0.99).toPrecision(4),
-          { reduceOnly: true },
-        ),
-        binance.futuresBuy(
-          symbol.toUpperCase(),
-          +limitSellOrderAmount,
-          +Number(botState.buyPrice * 0.98).toPrecision(4),
-          { reduceOnly: true },
-        ),
-        binance.futuresBuy(
-          symbol.toUpperCase(),
-          +limitSellOrderAmount,
-          +Number(botState.buyPrice * 0.96).toPrecision(4),
-          { reduceOnly: true },
-        ),
-        binance.futuresBuy(
-          symbol.toUpperCase(),
-          +limitSellOrderAmount,
-          +Number(botState.buyPrice * 0.94).toPrecision(4),
+          +Number(botState.buyPrice * 1.005).toFixed(4),
           { reduceOnly: true },
         ),
       ]);
