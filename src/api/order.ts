@@ -184,7 +184,7 @@ export const setFuturesLimitSellOrders = async (
         binance.futuresSell(
           symbol.toUpperCase(),
           +limitSellOrderAmount,
-          +Number(botState.buyPrice * 0.995).toPrecision(4),
+          +Number(botState.buyPrice * 1.005).toPrecision(4),
           { reduceOnly: true },
         ),
       ]);
@@ -202,7 +202,7 @@ export const setFuturesLimitSellOrders = async (
         binance.futuresBuy(
           symbol.toUpperCase(),
           +limitSellOrderAmount,
-          +Number(botState.buyPrice * 1.005).toPrecision(4),
+          +Number(botState.buyPrice * 0.995).toPrecision(4),
           { reduceOnly: true },
         ),
       ]);
@@ -676,6 +676,9 @@ export const marketFuturesSellAction = async (
       else {
         botState.strategies[`${strategy}`].stopLoss = true;
         botState.updateState('status', 'sell');
+        await sendToRecipients(`INFO 
+                                      Wait for the STOP LOSS condition activating!
+        `);
       }
       botState.updateState('order', null);
       botState.updateState('sellError', false);
@@ -716,9 +719,12 @@ export const marketFuturesSellAction = async (
     //   'availableFuturesCryptoCoin',
     //   refreshedFuturesCryptoCoinBalance,
     // );
-    botState.dealsCount++;
     botState.initialDealType = null;
     botState.updateState('status', 'buy');
+    await sendToRecipients(`INFO
+                               STOP LOSS condition was activated and bot was switched to the BUY status!
+                `);
+
     await botStateService.trackBotState(
       _omit(botState, [
         'availableUSDT',

@@ -58,7 +58,7 @@ import {
   const ordersList = await getOrdersList(symbol.toUpperCase());
   const lastOrder = ordersList[ordersList.length - 1] || null;
   const spotDealUSDTAmount = 10;
-  const futuresDealUSDTAmount = 50;
+  const futuresDealUSDTAmount = 12;
   // const symbol = process.argv[2];
   let botState;
   //
@@ -74,7 +74,7 @@ import {
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: false,
-      // status: 'pending',
+      // status: 'buy',
       // testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -882,7 +882,13 @@ import {
           // indicatorsData.haCandle.ha1hCandle.signal === 'sell',
         },
         sell: {
-          takeProfit: null,
+          takeProfit:
+            (botState.status === 'sell' &&
+              botState.dealType === 'long' &&
+              expectedProfitPercent <= -0.1) ||
+            (botState.status === 'sell' &&
+              botState.dealType === 'short' &&
+              expectedProfitPercent >= 0.1),
           stopLoss: {
             long:
               botState.status === 'sell' &&
@@ -892,6 +898,7 @@ import {
               //   indicatorsData.haCandle.ha4hCandle.signal === 'sell')),
               indicatorsData.obv1h.signal === 'sell' &&
               indicatorsData.obv15m.signal === 'sell',
+            // indicatorsData.obv5m.signal === 'sell',
             // indicatorsData.obv1h.sellSignalCount >= 20 &&
             // indicatorsData.obv5m.sellSignalCount >= 6,
             // indicatorsData.obv1m.sellSignalCount >= 20,
@@ -917,6 +924,7 @@ import {
               //   indicatorsData.haCandle.ha4hCandle.signal === 'buy',
               indicatorsData.obv1h.signal === 'buy' &&
               indicatorsData.obv15m.signal === 'buy',
+            // indicatorsData.obv5m.signal === 'buy',
             // indicatorsData.obv5m.buySignalCount >= 6,
             // indicatorsData.obv1m.buySignalCount >= 20,
             // (indicatorsData.obv15m.buySignalCount >= 2 &&
@@ -956,7 +964,7 @@ import {
         } else if (botState.traidingMarket === 'futures') {
           await marketFuturesBuyAction(
             'long',
-            true,
+            false,
             symbol,
             botState,
             cryptoCoin,
@@ -993,7 +1001,7 @@ import {
         } else if (botState.traidingMarket === 'futures') {
           await marketFuturesBuyAction(
             'short',
-            true,
+            false,
             symbol,
             botState,
             cryptoCoin,
@@ -1130,7 +1138,7 @@ import {
       } else if (botState.traidingMarket === 'futures') {
         await marketFuturesSellAction(
           'scalper',
-          true,
+          false,
           symbol,
           botState,
           cryptoCoin,
@@ -1163,7 +1171,7 @@ import {
       } else {
         await marketFuturesSellAction(
           'scalper',
-          true,
+          false,
           symbol,
           botState,
           cryptoCoin,
@@ -1607,7 +1615,7 @@ import {
             ? 'MAX av profit: ' +
                 Number(botState.maxAvailableLongProfit - fee) +
                 ' % : ' +
-                (botState.traidingMarket === 'futures'
+                (botState.traidingMarket === 'futures' && botState.order
                   ? (Number(botState.maxAvailableLongProfit - fee) *
                       Math.abs(Number(botState.order.initialMargin))) /
                       100 +
@@ -1617,7 +1625,7 @@ import {
             : 'MAX av profit: ' +
                 Number(botState.maxAvailableShortProfit + fee) +
                 ' % : ' +
-                (botState.traidingMarket === 'futures'
+                (botState.traidingMarket === 'futures' && botState.order
                   ? (Number(botState.maxAvailableShortProfit + fee) *
                       Math.abs(Number(botState.order.initialMargin))) /
                       100 +
@@ -1630,7 +1638,7 @@ import {
             ? 'MIN av profit: ' +
                 Number(botState.minAvailableLongProfit - fee) +
                 ' % : ' +
-                (botState.traidingMarket === 'futures'
+                (botState.traidingMarket === 'futures' && botState.order
                   ? (Number(botState.minAvailableLongProfit - fee) *
                       Math.abs(Number(botState.order.initialMargin))) /
                       100 +
@@ -1640,7 +1648,7 @@ import {
             : 'MIN av profit: ' +
                 Number(botState.minAvailableShortProfit + fee) +
                 ' % : ' +
-                (botState.traidingMarket === 'futures'
+                (botState.traidingMarket === 'futures' && botState.order
                   ? (Number(botState.minAvailableShortProfit + fee) *
                       Math.abs(Number(botState.order.initialMargin))) /
                       100 +
@@ -1668,7 +1676,7 @@ import {
                 ? botState.dealType === 'long'
                   ? Number(botState.currentProfit - fee) +
                     ' % : ' +
-                    (botState.traidingMarket === 'futures'
+                    (botState.traidingMarket === 'futures' && botState.order
                       ? (Number(botState.currentProfit - fee) *
                           Math.abs(Number(botState.order.initialMargin))) /
                           100 +
