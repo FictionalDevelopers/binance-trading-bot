@@ -628,6 +628,8 @@ export const marketFuturesSellAction = async (
       } else {
         await sendToRecipients(`SELL
                  No open positions found!
+                 Price: ${botState.currentPrice} USDT
+                 Date: ${format(new Date(), DATE_FORMAT)}
                  Switched to the BUY status. 
              `);
       }
