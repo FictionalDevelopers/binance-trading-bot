@@ -74,8 +74,8 @@ import {
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: false,
-      // status: 'buy',
-      // testMode: true,
+      status: 'pending',
+      testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
         this[`${fieldName}`] = value;
@@ -1251,7 +1251,7 @@ import {
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
 
   // getHeikinAshiSignal(symbol, '4h', 6, 6, indicatorsData.haCandle.ha4hCandle);
-  getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
+  // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
@@ -1302,26 +1302,37 @@ import {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
       // calculateAvgDealPriceChange(botState, indicatorsData);
       // indicatorsData.dealType = determineDealType(indicatorsData, 4);
+      // console.log(
+      //   'OBV 1D: ' +
+      //     indicatorsData.obv1d.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1d.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1d.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 4h: ' +
+      //     indicatorsData.obv4h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv4h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv4h.sellSignalCount +
+      //     ')',
+      // );
       console.log(
-        'OBV 1D: ' +
-          indicatorsData.obv1d.signal +
+        'OBV 1h: ' +
+          indicatorsData.obv1h.signal +
           ' ' +
           '(Buy Count: ' +
-          indicatorsData.obv1d.buySignalCount +
+          indicatorsData.obv1h.buySignalCount +
           ' ' +
           'Sell Count: ' +
-          indicatorsData.obv1d.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 4h: ' +
-          indicatorsData.obv4h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv4h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv4h.sellSignalCount +
+          indicatorsData.obv1h.sellSignalCount +
           ')',
       );
       console.log(
