@@ -629,14 +629,14 @@ export const marketFuturesSellAction = async (
                    botState.availableFuturesUSDT
                  } USDT
                  OrderInfo: ${JSON.stringify(botState.order)}
-                 ADX 15m: BSC: ${indicatorsData.dmi15m.buySignalCount} SSC: ${
-          indicatorsData.dmi15m.sellSignalCount
+                 ADX 15m: BSC: ${indicatorsData.dmi15m.adxUpCount} SSC: ${
+          indicatorsData.dmi15m.adxDownCount
         }
-                 ADX 5m: BSC: ${indicatorsData.dmi5m.buySignalCount} SSC: ${
-          indicatorsData.dmi5m.sellSignalCount
+                 ADX 5m: BSC: ${indicatorsData.dmi5m.adxUpCount} SSC: ${
+          indicatorsData.dmi5m.adxDownCount
         }
-                 ADX 1m: BSC: ${indicatorsData.dmi1m.buySignalCount} SSC: ${
-          indicatorsData.dmi1m.sellSignalCount
+                 ADX 1m: BSC: ${indicatorsData.dmi1m.adxUpCount} SSC: ${
+          indicatorsData.dmi1m.adxDownCount
         }
              `);
       } else {
@@ -977,14 +977,14 @@ export const marketFuturesBuyAction = async (
                    botState.order.positionAmt,
                  )} ${cryptoCoin}
                  OrderInfo: ${JSON.stringify(botState.order)}
-                 ADX 15m: BSC: ${indicatorsData.dmi15m.buySignalCount} SSC: ${
-          indicatorsData.dmi15m.sellSignalCount
+                 ADX 15m: BSC: ${indicatorsData.dmi15m.adxUpCount} SSC: ${
+          indicatorsData.dmi15m.adxDownCount
         }
-                 ADX 5m: BSC: ${indicatorsData.dmi5m.buySignalCount} SSC: ${
-          indicatorsData.dmi5m.sellSignalCount
+                 ADX 5m: BSC: ${indicatorsData.dmi5m.adxUpCount} SSC: ${
+          indicatorsData.dmi5m.adxDownCount
         }
-                 ADX 1m: BSC: ${indicatorsData.dmi1m.buySignalCount} SSC: ${
-          indicatorsData.dmi1m.sellSignalCount
+                 ADX 1m: BSC: ${indicatorsData.dmi1m.adxUpCount} SSC: ${
+          indicatorsData.dmi1m.adxDownCount
         }
              `);
         botState.updateState('dealType', dealType);
