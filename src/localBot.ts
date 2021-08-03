@@ -133,7 +133,7 @@ import {
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: true,
-      status: 'buy',
+      status: 'pending',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
