@@ -25,6 +25,7 @@ import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import getAvarage from './utils/getAverage';
 import { getEmaStream } from '../src/indicators/ema';
 import { getObvStream } from './indicators/obv';
+import { getDMISignal } from './components/dmi-signals';
 
 import { getRSISignal } from './components/rsi-signals';
 import { getTrixSignal, runTrixInterval } from './components/trix-signal';
@@ -1264,6 +1265,9 @@ import {
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
+  getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
 

@@ -146,8 +146,8 @@ export const getDMISignal = (
         // if (indicatorsData.sellSignalCount >= sellCount)
         //   indicatorsData.signal = 'SELL';
       } else if ((indicatorsData.prevDmi.adx / dmi.adx) * 100 - 100 === 0) {
-        indicatorsData.adxDownCount = 0;
-        indicatorsData.adxUpCount = 0;
+        // indicatorsData.adxDownCount = 0;
+        // indicatorsData.adxUpCount = 0;
       }
     }
 
