@@ -628,16 +628,7 @@ export const marketFuturesSellAction = async (
                  Stablecoin Futures balance: ${
                    botState.availableFuturesUSDT
                  } USDT
-                 OrderInfo: ${JSON.stringify(botState.order)}
-                 ADX 15m: BSC: ${indicatorsData.dmi15m.adxUpCount} SSC: ${
-          indicatorsData.dmi15m.adxDownCount
-        }
-                 ADX 5m: BSC: ${indicatorsData.dmi5m.adxUpCount} SSC: ${
-          indicatorsData.dmi5m.adxDownCount
-        }
-                 ADX 1m: BSC: ${indicatorsData.dmi1m.adxUpCount} SSC: ${
-          indicatorsData.dmi1m.adxDownCount
-        }
+                 OrderInfo: ${JSON.stringify(botState.order)}                 
              `);
       } else {
         await sendToRecipients(`SELL
@@ -976,16 +967,7 @@ export const marketFuturesBuyAction = async (
                  Cryptocoin deal amount: ${Number(
                    botState.order.positionAmt,
                  )} ${cryptoCoin}
-                 OrderInfo: ${JSON.stringify(botState.order)}
-                 ADX 15m: BSC: ${indicatorsData.dmi15m.adxUpCount} SSC: ${
-          indicatorsData.dmi15m.adxDownCount
-        }
-                 ADX 5m: BSC: ${indicatorsData.dmi5m.adxUpCount} SSC: ${
-          indicatorsData.dmi5m.adxDownCount
-        }
-                 ADX 1m: BSC: ${indicatorsData.dmi1m.adxUpCount} SSC: ${
-          indicatorsData.dmi1m.adxDownCount
-        }
+                 OrderInfo: ${JSON.stringify(botState.order)}                
              `);
         botState.updateState('dealType', dealType);
         botState.updateState('status', 'sell');
