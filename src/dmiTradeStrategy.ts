@@ -885,10 +885,10 @@ import {
           takeProfit:
             (botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              expectedProfitPercent <= -0.3) ||
+              expectedProfitPercent <= -0.5) ||
             (botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              expectedProfitPercent >= 0.3),
+              expectedProfitPercent >= 0.5),
           stopLoss: {
             long:
               botState.status === 'sell' &&
