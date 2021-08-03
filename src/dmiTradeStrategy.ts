@@ -882,13 +882,13 @@ import {
           // indicatorsData.haCandle.ha1hCandle.signal === 'sell',
         },
         sell: {
-          takeProfit: null,
-          // (botState.status === 'sell' &&
-          //   botState.dealType === 'long' &&
-          //   expectedProfitPercent <= -0.3) ||
-          // (botState.status === 'sell' &&
-          //   botState.dealType === 'short' &&
-          //   expectedProfitPercent >= 0.3),
+          takeProfit:
+            (botState.status === 'sell' &&
+              botState.dealType === 'long' &&
+              expectedProfitPercent <= -0.3) ||
+            (botState.status === 'sell' &&
+              botState.dealType === 'short' &&
+              expectedProfitPercent >= 0.3),
           stopLoss: {
             long:
               botState.status === 'sell' &&
