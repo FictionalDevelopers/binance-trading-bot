@@ -867,7 +867,7 @@ import {
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.haCandle.ha4hCandle.signal === 'buy' &&
-                indicatorsData.obv1d.signal === 'buy' &&
+                indicatorsData.obv4h.signal === 'buy' &&
                 indicatorsData.obv1h.signal === 'buy' &&
                 indicatorsData.obv15m.signal === 'buy',
           // indicatorsData.obv5m.buySignalCount >= 25 &&
@@ -879,7 +879,7 @@ import {
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv1d.signal === 'sell' &&
+                indicatorsData.obv4h.signal === 'sell' &&
                 indicatorsData.obv1h.signal === 'sell' &&
                 indicatorsData.obv15m.signal === 'sell',
           // indicatorsData.haCandle.ha1dCandle.signal === 'sell',
@@ -906,7 +906,7 @@ import {
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
               // indicatorsData.obv5m.sellSignalCount >= 5,
-              indicatorsData.obv15m.signal === 'sell',
+                (indicatorsData.obv4h.signal === 'sell' || indicatorsData.obv1h.signal === 'sell' || indicatorsData.obv15m.signal === 'sell'),
             // (indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
             //   indicatorsData.haCandle.ha4hCandle.signal === 'sell')),
             // ((indicatorsData.obv1h.signal === 'sell' &&
@@ -931,10 +931,11 @@ import {
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
+                (indicatorsData.obv4h.signal === 'buy' || indicatorsData.obv1h.signal === 'buy' || indicatorsData.obv15m.signal === 'buy'),
               // indicatorsData.obv15m.buySignalCount > 0 &&
               // indicatorsData.obv5m.buySignalCount >= 5,
               // indicatorsData.obv4h.buySignalCount >= 20 &&
-              indicatorsData.obv15m.signal === 'buy',
+              // indicatorsData.obv15m.signal === 'buy',
             // indicatorsData.obv1d.buySignalCount >= 100,
             // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
             //   indicatorsData.haCandle.ha4hCandle.signal === 'buy',
@@ -984,7 +985,7 @@ import {
             false,
             symbol,
             botState,
-            cryptoCoin,
+            cryptoCoin,se
             pricesStream,
             stepSize,
             'TRENDS CATCHER 2',
@@ -1269,7 +1270,7 @@ import {
 
   // getHeikinAshiSignal(symbol, '4h', 6, 6, indicatorsData.haCandle.ha4hCandle);
   // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
-  getObvSignal(symbol, '1d', indicatorsData.obv1d, 200, 200);
+  getObvSignal(symbol, '4h', indicatorsData.obv4h, 100, 100);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 100, 100);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 100, 100);
