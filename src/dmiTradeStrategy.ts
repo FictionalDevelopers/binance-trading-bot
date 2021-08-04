@@ -906,7 +906,9 @@ import {
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
               // indicatorsData.obv5m.sellSignalCount >= 5,
-                (indicatorsData.obv4h.signal === 'sell' || indicatorsData.obv1h.signal === 'sell' || indicatorsData.obv15m.signal === 'sell'),
+              (indicatorsData.obv4h.signal === 'sell' ||
+                indicatorsData.obv1h.signal === 'sell' ||
+                indicatorsData.obv15m.signal === 'sell'),
             // (indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
             //   indicatorsData.haCandle.ha4hCandle.signal === 'sell')),
             // ((indicatorsData.obv1h.signal === 'sell' &&
@@ -931,11 +933,13 @@ import {
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-                (indicatorsData.obv4h.signal === 'buy' || indicatorsData.obv1h.signal === 'buy' || indicatorsData.obv15m.signal === 'buy'),
-              // indicatorsData.obv15m.buySignalCount > 0 &&
-              // indicatorsData.obv5m.buySignalCount >= 5,
-              // indicatorsData.obv4h.buySignalCount >= 20 &&
-              // indicatorsData.obv15m.signal === 'buy',
+              (indicatorsData.obv4h.signal === 'buy' ||
+                indicatorsData.obv1h.signal === 'buy' ||
+                indicatorsData.obv15m.signal === 'buy'),
+            // indicatorsData.obv15m.buySignalCount > 0 &&
+            // indicatorsData.obv5m.buySignalCount >= 5,
+            // indicatorsData.obv4h.buySignalCount >= 20 &&
+            // indicatorsData.obv15m.signal === 'buy',
             // indicatorsData.obv1d.buySignalCount >= 100,
             // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
             //   indicatorsData.haCandle.ha4hCandle.signal === 'buy',
@@ -985,7 +989,7 @@ import {
             false,
             symbol,
             botState,
-            cryptoCoin,se
+            cryptoCoin,
             pricesStream,
             stepSize,
             'TRENDS CATCHER 2',
