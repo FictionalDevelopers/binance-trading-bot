@@ -875,9 +875,9 @@ import {
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv15m.buySignalCount >= 2 &&
-                indicatorsData.obv5m.buySignalCount >= 2 &&
-                indicatorsData.obv1m.buySignalCount >= 2 &&
+                indicatorsData.obv15m.buySignalCount >= 30 &&
+                indicatorsData.obv5m.buySignalCount >= 25 &&
+                indicatorsData.obv1m.buySignalCount >= 15 &&
                 indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 1 &&
                 indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4,
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
@@ -892,9 +892,9 @@ import {
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv15m.sellSignalCount >= 2 &&
-                indicatorsData.obv5m.sellSignalCount >= 2 &&
-                indicatorsData.obv1m.sellSignalCount >= 2 &&
+                indicatorsData.obv15m.sellSignalCount >= 30 &&
+                indicatorsData.obv5m.sellSignalCount >= 25 &&
+                indicatorsData.obv1m.sellSignalCount >= 15 &&
                 indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 1 &&
                 indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4,
 
