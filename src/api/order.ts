@@ -14,9 +14,16 @@ const resetValuesAfterSell = (botState, indicatorsData) => {
   botState.dmi1m.adx = indicatorsData.dmi1m.adx;
   botState.dmi1m.adxUpCount = indicatorsData.dmi1m.adxUpCount;
   botState.dmi1m.adxDownCount = indicatorsData.dmi1m.adxDownCount;
-  // indicatorsData.obv4h.buySignalCount = 0;
-  // indicatorsData.obv1h.buySignalCount = 0;
-  // indicatorsData.obv15m.buySignalCount = 0;
+  if (botState.dealType === 'long') {
+    indicatorsData.obv4h.buySignalCount = 0;
+    indicatorsData.obv1h.buySignalCount = 0;
+    indicatorsData.obv15m.buySignalCount = 0;
+  } else if (botState.dealType === 'short') {
+    indicatorsData.obv4h.sellSignalCount = 0;
+    indicatorsData.obv1h.sellSignalCount = 0;
+    indicatorsData.obv15m.sellSignalCount = 0;
+  }
+
   // indicatorsData.obv5m.buySignalCount = 0;
   // indicatorsData.obv1m.buySignalCount = 0;
   // indicatorsData.obv15m.sellSignalCount = 0;

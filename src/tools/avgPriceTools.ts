@@ -51,21 +51,21 @@ export const calculateAvgPriceChange = (
   })
     .pipe(pluck('price'), bufferCount(bufferCountSize, bufferCountSize))
     .subscribe(prices => {
-      botState.avgPrice = getAvarage(prices);
-      const avgPriceProfit = botState.avgPrice
-        ? botState.avgPrice / botState.buyPrice > 1
-          ? Number((botState.avgPrice / botState.buyPrice) * 100 - 100)
-          : Number(-1 * (100 - (botState.avgPrice / botState.buyPrice) * 100))
-        : 0;
+      indicatorsData.avgPrice = getAvarage(prices);
+      // const avgPriceProfit = botState.avgPrice
+      //   ? botState.avgPrice / botState.buyPrice > 1
+      //     ? Number((botState.avgPrice / botState.buyPrice) * 100 - 100)
+      //     : Number(-1 * (100 - (botState.avgPrice / botState.buyPrice) * 100))
+      //   : 0;
       // indicatorsData.avgPriceDiffPerTimes =
       //   (botState.maxAvailableProfit / avgPriceProfit) * 100 - 100;
 
-      if (!botState.prevAvgPrice) {
-        botState.prevAvgPrice = botState.avgPrice;
+      if (!indicatorsData.prevAvgPrice) {
+        indicatorsData.prevAvgPrice = indicatorsData.avgPrice;
       } else {
         indicatorsData.avgPriceDiff =
-          (botState.avgPrice / botState.prevAvgPrice) * 100 - 100;
-        botState.prevAvgPrice = botState.avgPrice;
+          (indicatorsData.avgPrice / indicatorsData.prevAvgPrice) * 100 - 100;
+        indicatorsData.prevAvgPrice = indicatorsData.avgPrice;
       }
       if (indicatorsData.avgPriceDiff > 0) {
         indicatorsData.avgPriceUpSignalCount++;
@@ -77,9 +77,9 @@ export const calculateAvgPriceChange = (
         indicatorsData.avgPriceDownSignalCount = 0;
         indicatorsData.avgPriceUpSignalCount = 0;
       }
-      if (indicatorsData.avgPriceUpSignalCount >= 1)
+      if (indicatorsData.avgPriceUpSignalCount >= 4)
         indicatorsData.avgPriceSignal = 'buy';
-      else if (indicatorsData.avgPriceDownSignalCount >= 1)
+      else if (indicatorsData.avgPriceDownSignalCount >= 4)
         indicatorsData.avgPriceSignal = 'sell';
     });
 };
