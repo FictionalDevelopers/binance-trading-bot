@@ -935,7 +935,9 @@ import {
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2 &&
+                indicatorsData.obv5m.buySignalCount >= 2 &&
+                indicatorsData.obv1m.buySignalCount >= 2 &&
+                indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 1 &&
                 indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4,
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
           // indicatorsData.haCandle.ha4hCandle.signal === 'buy' &&
@@ -943,14 +945,15 @@ import {
           // indicatorsData.obv4h.buySignalCount >= 30 &&
           // indicatorsData.obv1h.signal === 'buy' &&
           // indicatorsData.obv15m.buySignalCount >= 20,
-          // indicatorsData.obv5m.buySignalCount >= 25 &&
           // indicatorsData.obv1m.buySignalCount >= 15,
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy',
           short:
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2 &&
+                indicatorsData.obv5m.sellSignalCount >= 2 &&
+                indicatorsData.obv1m.sellSignalCount >= 2 &&
+                indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 1 &&
                 indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4,
 
           // indicatorsData.avgPriceSignal === 'sell',
@@ -960,7 +963,6 @@ import {
           // indicatorsData.obv4h.sellSignalCount >= 30 &&
           // indicatorsData.obv1h.signal === 'sell' &&
           // indicatorsData.obv15m.sellSignalCount >= 20,
-          // indicatorsData.obv5m.sellSignalCount >= 25 &&
           // indicatorsData.obv1m.sellSignalCount >= 15,
 
           // indicatorsData.obv5m.sellSignalCount >= 4,
@@ -979,7 +981,10 @@ import {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4,
+              indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 1 &&
+              indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4 &&
+              indicatorsData.obv5m.sellSignalCount >= 2 &&
+              indicatorsData.obv1m.sellSignalCount >= 2,
 
             // indicatorsData.avgPriceSignal === 'sell',
             // indicatorsData.obv1d.sellSignalCount >= 30 &&
@@ -987,7 +992,6 @@ import {
             //   indicatorsData.haCandle.ha4hCandle.signal === 'sell')),
             // indicatorsData.obv1h.signal === 'sell' &&
             // indicatorsData.obv15m.sellSignalCount >= 4,
-            // indicatorsData.obv5m.sellSignalCount >= 5,
             // indicatorsData.obv1h.sellSignalCount >= 20 &&
             // indicatorsData.obv5m.sellSignalCount >= 6,
             // (indicatorsData.obv15m.sellSignalCount >= 2 &&
@@ -1005,7 +1009,10 @@ import {
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4,
+              indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 1 &&
+              indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4 &&
+              indicatorsData.obv5m.buySignalCount >= 2 &&
+              indicatorsData.obv1m.buySignalCount >= 2,
 
             // indicatorsData.avgPriceSignal === 'buy',
             // indicatorsData.obv4h.buySignalCount >= 20 &&
@@ -1359,8 +1366,8 @@ import {
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
 
