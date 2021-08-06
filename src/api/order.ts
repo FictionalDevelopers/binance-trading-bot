@@ -8,36 +8,16 @@ import _omit from 'lodash/omit';
 import { isObject } from 'rxjs/internal-compatibility';
 
 const resetValuesAfterSell = (botState, indicatorsData) => {
-  botState.dmi5m.adx = indicatorsData.dmi5m.adx;
-  botState.dmi5m.adxUpCount = indicatorsData.dmi5m.adxUpCount;
-  botState.dmi5m.adxDownCount = indicatorsData.dmi5m.adxDownCount;
-  botState.dmi1m.adx = indicatorsData.dmi1m.adx;
-  botState.dmi1m.adxUpCount = indicatorsData.dmi1m.adxUpCount;
-  botState.dmi1m.adxDownCount = indicatorsData.dmi1m.adxDownCount;
-  // if (botState.dealType === 'long') {
-  //   indicatorsData.obv4h.buySignalCount = 0;
-  //   indicatorsData.obv1h.buySignalCount = 0;
-  //   indicatorsData.obv15m.buySignalCount = 0;
-  // } else if (botState.dealType === 'short') {
-  //   indicatorsData.obv4h.sellSignalCount = 0;
-  //   indicatorsData.obv1h.sellSignalCount = 0;
-  //   indicatorsData.obv15m.sellSignalCount = 0;
-  // }
-
-  // indicatorsData.obv5m.buySignalCount = 0;
-  // indicatorsData.obv1m.buySignalCount = 0;
-  // indicatorsData.obv15m.sellSignalCount = 0;
-  // indicatorsData.obv1h.sellSignalCount = 0;
-  // indicatorsData.obv5m.sellSignalCount = 0;
-  // indicatorsData.obv1m.sellSignalCount = 0;
-  // indicatorsData.obv5m.signal = null;
-  // indicatorsData.obv1m.signal = null;
-  // indicatorsData.obv15m.signal = null;
-  // indicatorsData.obv1h.signal = null;
-  indicatorsData.dmi1m.adxUpCount = 0;
-  indicatorsData.dmi1m.adxDownCount = 0;
-  indicatorsData.dmi5m.adxUpCount = 0;
-  indicatorsData.dmi5m.adxDownCount = 0;
+  // botState.dmi5m.adx = indicatorsData.dmi5m.adx;
+  // botState.dmi5m.adxUpCount = indicatorsData.dmi5m.adxUpCount;
+  // botState.dmi5m.adxDownCount = indicatorsData.dmi5m.adxDownCount;
+  // botState.dmi1m.adx = indicatorsData.dmi1m.adx;
+  // botState.dmi1m.adxUpCount = indicatorsData.dmi1m.adxUpCount;
+  // botState.dmi1m.adxDownCount = indicatorsData.dmi1m.adxDownCount;
+  // indicatorsData.dmi1m.adxUpCount = 0;
+  // indicatorsData.dmi1m.adxDownCount = 0;
+  // indicatorsData.dmi5m.adxUpCount = 0;
+  // indicatorsData.dmi5m.adxDownCount = 0;
   botState.maxAvailableLongProfit = 0;
   botState.maxAvailableShortProfit = 0;
   botState.minAvailableLongProfit = 0;

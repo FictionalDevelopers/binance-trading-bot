@@ -63,6 +63,6 @@
 //
 //   console.info(await binance.futuresGetDataStream());
 // })();
-console.log(Number(12.5647).toFixed(2));
+// console.log(Number(12.5647).toFixed(2));
 console.log(Number(12.5647).toFixed(2));
 console.log(Number(12.5647).toFixed(2));
