@@ -966,6 +966,8 @@ import { getDMISignal } from './components/dmi-signals';
               (indicatorsData.dmi15m.adxUpCount > 0 ||
                 indicatorsData.dmi15m.adxDownCount > 0),
             short:
+              botState.status === 'sell' &&
+              botState.dealType === 'short' &&
               indicatorsData.obv1h.buySignalCount > 0 &&
               indicatorsData.obv15m.buySignalCount > 0 &&
               (indicatorsData.dmi15m.adxUpCount > 0 ||
