@@ -890,29 +890,23 @@ import { getDMISignal } from './components/dmi-signals';
                   indicatorsData.dmi15m.adxDownCount > 0),
         },
         sell: {
-          takeProfit:
-            (botState.status === 'sell' &&
-              botState.dealType === 'long' &&
-              indicatorsData.obv15m.sellSignalCount >= 30) ||
-            (botState.status === 'sell' &&
-              botState.dealType === 'short' &&
-              indicatorsData.obv15m.buySignalCount >= 30),
+          takeProfit: null,
+          // (botState.status === 'sell' &&
+          //   botState.dealType === 'long' &&
+          //   indicatorsData.obv15m.sellSignalCount >= 30) ||
+          // (botState.status === 'sell' &&
+          //   botState.dealType === 'short' &&
+          //   indicatorsData.obv15m.buySignalCount >= 30),
 
           stopLoss: {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.obv1h.sellSignalCount >= 30 &&
-              indicatorsData.obv15m.sellSignalCount >= 30 &&
-              (indicatorsData.dmi15m.adxUpCount > 0 ||
-                indicatorsData.dmi15m.adxDownCount > 0),
+              indicatorsData.obv15m.sellSignalCount >= 30,
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.obv1h.buySignalCount >= 30 &&
-              indicatorsData.obv15m.buySignalCount >= 30 &&
-              (indicatorsData.dmi15m.adxUpCount > 0 ||
-                indicatorsData.dmi15m.adxDownCount > 0),
+              indicatorsData.obv15m.buySignalCount >= 30,
           },
         },
       },

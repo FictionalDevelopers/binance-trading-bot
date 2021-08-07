@@ -1303,9 +1303,9 @@ import { getDMISignal } from './components/dmi-signals';
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
-  getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
+  // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
   getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
 
