@@ -905,12 +905,12 @@ import { getDMISignal } from './components/dmi-signals';
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
               (indicatorsData.obv15m.sellSignalCount > 0 ||
-                indicatorsData.obv5m.sellSignalCount >= 20),
+                indicatorsData.obv5m.sellSignalCount >= 40),
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              (indicatorsData.obv15m.buySignalCount >= 0 ||
-                indicatorsData.obv5m.buySignalCount >= 20),
+              (indicatorsData.obv15m.buySignalCount > 0 ||
+                indicatorsData.obv5m.buySignalCount >= 40),
           },
         },
       },
