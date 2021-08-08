@@ -938,8 +938,8 @@ import { getDMISignal } from './components/dmi-signals';
               : botState.status === 'buy' &&
                 indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 1 &&
                 indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4 &&
-                indicatorsData.obv5m.buySignalCount >= 20 &&
-                indicatorsData.obv1m.buySignalCount >= 10 &&
+                indicatorsData.obv5m.buySignalCount >= 4 &&
+                indicatorsData.obv1m.buySignalCount >= 4 &&
                 (indicatorsData.dmi5m.adxUpCount > 0 ||
                   indicatorsData.dmi5m.adxDownCount > 0),
           short:
@@ -949,8 +949,8 @@ import { getDMISignal } from './components/dmi-signals';
                 indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 1 &&
                 indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
                   4 &&
-                indicatorsData.obv5m.sellSignalCount >= 20 &&
-                indicatorsData.obv1m.sellSignalCount >= 10 &&
+                indicatorsData.obv5m.sellSignalCount >= 4 &&
+                indicatorsData.obv1m.sellSignalCount >= 4 &&
                 (indicatorsData.dmi5m.adxUpCount > 0 ||
                   indicatorsData.dmi5m.adxDownCount > 0),
         },
@@ -966,10 +966,11 @@ import { getDMISignal } from './components/dmi-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              ((indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2 &&
-                indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
-                  4) ||
-                indicatorsData.obv5m.sellSignalCount > 0),
+              // ((indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2 &&
+              //   indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
+              //     4) ||
+              indicatorsData.obv5m.sellSignalCount >= 4 &&
+              indicatorsData.obv1m.sellSignalCount >= 4,
             // &&
             // indicatorsData.obv1m.sellSignalCount > 0)
             // (indicatorsData.dmi5m.adxUpCount > 0 ||
@@ -977,9 +978,10 @@ import { getDMISignal } from './components/dmi-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              ((indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2 &&
-                indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4) ||
-                indicatorsData.obv5m.buySignalCount > 0),
+              // ((indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2 &&
+              //   indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4) ||
+              indicatorsData.obv5m.buySignalCount >= 4 &&
+              indicatorsData.obv1m.buySignalCount >= 4,
             // &&
             // indicatorsData.obv1m.buySignalCount > 0)
             // indicatorsData.obv1h.buySignalCount > 0 &&
@@ -1329,12 +1331,12 @@ import { getDMISignal } from './components/dmi-signals';
   // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
 

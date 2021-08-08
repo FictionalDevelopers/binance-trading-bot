@@ -301,7 +301,12 @@ export const marketSellAction = async (
                                       pricesStream[pricesStream.length - 1]
                                     }
                                     Date: ${format(new Date(), DATE_FORMAT)}
-                                    Indicators data: 
+                                    Indicators data:
+                                    OBV 1h: BSC: ${
+                                      indicatorsData.obv1h.buySignalCount
+                                    } SSC: ${
+            indicatorsData.obv1h.sellSignalCount
+          } 
                                     OBV 15m: BSC: ${
                                       indicatorsData.obv15m.buySignalCount
                                     } SSC: ${
@@ -770,6 +775,9 @@ export const marketBuyAction = async (
                                Price: ${botState.buyPrice}
                                Date: ${format(new Date(), DATE_FORMAT)}
                                Indicators data: 
+                                OBV 1h: BSC: ${
+                                  indicatorsData.obv1h.buySignalCount
+                                } SSC: ${indicatorsData.obv1h.sellSignalCount} 
                                OBV 15m: BSC: ${
                                  indicatorsData.obv15m.buySignalCount
                                } SSC: ${indicatorsData.obv15m.sellSignalCount}
