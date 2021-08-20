@@ -935,11 +935,11 @@ import {
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv5m.buySignalCount >= 20 &&
-                indicatorsData.obv1m.buySignalCount >= 10 &&
-                indicatorsData.rsi15m.rsiValue > 50 &&
-                indicatorsData.rsi5m.rsiValue > 50 &&
-                indicatorsData.rsi1m.rsiValue > 50,
+                // indicatorsData.obv5m.buySignalCount >= 2 &&
+                // indicatorsData.obv1m.buySignalCount >= 2,
+                indicatorsData.rsi15m.rsiValue > 50,
+          // indicatorsData.rsi5m.rsiValue > 50 &&
+          // indicatorsData.rsi1m.rsiValue > 50,
           // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 1 &&
           // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4,
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
@@ -954,14 +954,14 @@ import {
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv5m.sellSignalCount >= 20 &&
-                indicatorsData.obv1m.sellSignalCount >= 10 &&
-                indicatorsData.rsi15m.rsiValue < 50 &&
-                indicatorsData.rsi15m.rsiValue !== null &&
-                indicatorsData.rsi5m.rsiValue < 50 &&
-                indicatorsData.rsi5m.rsiValue !== null &&
-                indicatorsData.rsi1m.rsiValue < 50 &&
-                indicatorsData.rsi1m.rsiValue !== null,
+                // indicatorsData.obv5m.sellSignalCount >= 2 &&
+                // indicatorsData.obv1m.sellSignalCount >= 2,
+                indicatorsData.rsi15m.rsiValue < 50,
+          // indicatorsData.rsi15m.rsiValue !== null &&
+          // indicatorsData.rsi5m.rsiValue < 50 &&
+          // indicatorsData.rsi5m.rsiValue !== null &&
+          // indicatorsData.rsi1m.rsiValue < 50 &&
+          // indicatorsData.rsi1m.rsiValue !== null,
           // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 1 &&
           // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4,
 
@@ -1373,8 +1373,8 @@ import {
   // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
