@@ -302,16 +302,9 @@ export const marketSellAction = async (
                                     }
                                     Date: ${format(new Date(), DATE_FORMAT)}
                                     Indicators data:
-                                    OBV 1h: BSC: ${
-                                      indicatorsData.obv1h.buySignalCount
-                                    } SSC: ${
-            indicatorsData.obv1h.sellSignalCount
-          } 
-                                    OBV 15m: BSC: ${
-                                      indicatorsData.obv15m.buySignalCount
-                                    } SSC: ${
-            indicatorsData.obv15m.sellSignalCount
-          }
+                                  RSI 15m: ${indicatorsData.rsi15m.rsiValue}
+                               RSI 5m: ${indicatorsData.rsi5m.rsiValue}
+                               RSI 1m: ${indicatorsData.rsi1m.rsiValue}
                                     OBV 5m: BSC: ${
                                       indicatorsData.obv5m.buySignalCount
                                     } SSC: ${
@@ -775,12 +768,9 @@ export const marketBuyAction = async (
                                Price: ${botState.buyPrice}
                                Date: ${format(new Date(), DATE_FORMAT)}
                                Indicators data: 
-                                OBV 1h: BSC: ${
-                                  indicatorsData.obv1h.buySignalCount
-                                } SSC: ${indicatorsData.obv1h.sellSignalCount} 
-                               OBV 15m: BSC: ${
-                                 indicatorsData.obv15m.buySignalCount
-                               } SSC: ${indicatorsData.obv15m.sellSignalCount}
+                               RSI 15m: ${indicatorsData.rsi15m.rsiValue}
+                               RSI 5m: ${indicatorsData.rsi5m.rsiValue}
+                               RSI 1m: ${indicatorsData.rsi1m.rsiValue}
                                     OBV 5m: BSC: ${
                                       indicatorsData.obv5m.buySignalCount
                                     } SSC: ${

@@ -935,10 +935,13 @@ import {
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv5m.buySignalCount >= 2 &&
-                indicatorsData.obv1m.buySignalCount >= 2 &&
-                indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 1 &&
-                indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4,
+                indicatorsData.obv5m.buySignalCount >= 20 &&
+                indicatorsData.obv1m.buySignalCount >= 10 &&
+                indicatorsData.rsi15m.rsiValue > 50 &&
+                indicatorsData.rsi5m.rsiValue > 50 &&
+                indicatorsData.rsi1m.rsiValue > 50,
+          // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 1 &&
+          // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4,
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
           // indicatorsData.haCandle.ha4hCandle.signal === 'buy' &&
           // indicatorsData.obv1d.buySignalCount >= 30 &&
@@ -951,10 +954,16 @@ import {
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv5m.sellSignalCount >= 2 &&
-                indicatorsData.obv1m.sellSignalCount >= 2 &&
-                indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 1 &&
-                indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4,
+                indicatorsData.obv5m.sellSignalCount >= 20 &&
+                indicatorsData.obv1m.sellSignalCount >= 10 &&
+                indicatorsData.rsi15m.rsiValue < 50 &&
+                indicatorsData.rsi15m.rsiValue !== null &&
+                indicatorsData.rsi5m.rsiValue < 50 &&
+                indicatorsData.rsi5m.rsiValue !== null &&
+                indicatorsData.rsi1m.rsiValue < 50 &&
+                indicatorsData.rsi1m.rsiValue !== null,
+          // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 1 &&
+          // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4,
 
           // indicatorsData.avgPriceSignal === 'sell',
           // indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
@@ -981,10 +990,10 @@ import {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 1 &&
-              indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4 &&
-              indicatorsData.obv5m.sellSignalCount >= 2 &&
-              indicatorsData.obv1m.sellSignalCount >= 2,
+              // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 1 &&
+              // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4 &&
+              indicatorsData.obv5m.sellSignalCount >= 10 &&
+              indicatorsData.obv1m.sellSignalCount >= 10,
 
             // indicatorsData.avgPriceSignal === 'sell',
             // indicatorsData.obv1d.sellSignalCount >= 30 &&
@@ -1009,10 +1018,10 @@ import {
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 1 &&
-              indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4 &&
-              indicatorsData.obv5m.buySignalCount >= 2 &&
-              indicatorsData.obv1m.buySignalCount >= 2,
+              // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 1 &&
+              // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4 &&
+              indicatorsData.obv5m.buySignalCount >= 10 &&
+              indicatorsData.obv1m.buySignalCount >= 10,
 
             // indicatorsData.avgPriceSignal === 'buy',
             // indicatorsData.obv4h.buySignalCount >= 20 &&
@@ -1320,20 +1329,20 @@ import {
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(scalper);
 
-  calculateAvgPriceChange(
-    symbol,
-    RESOURCES.TRADE,
-    50,
-    botState,
-    indicatorsData.avgPrices.avgBig,
-  );
-  calculateAvgPriceChange(
-    symbol,
-    RESOURCES.TRADE,
-    10,
-    botState,
-    indicatorsData.avgPrices.avgSmall,
-  );
+  // calculateAvgPriceChange(
+  //   symbol,
+  //   RESOURCES.TRADE,
+  //   50,
+  //   botState,
+  //   indicatorsData.avgPrices.avgBig,
+  // );
+  // calculateAvgPriceChange(
+  //   symbol,
+  //   RESOURCES.TRADE,
+  //   10,
+  //   botState,
+  //   indicatorsData.avgPrices.avgSmall,
+  // );
 
   /** *******************************INDICATORS SECTION**************************************/
 
@@ -1366,6 +1375,9 @@ import {
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
+  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
@@ -1410,40 +1422,40 @@ import {
   (() => {
     setInterval(async () => {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
-      console.log(
-        'Avg Price Big: ' +
-          indicatorsData.avgPrices.avgBig.avgPrice +
-          '( ' +
-          indicatorsData.avgPrices.avgBig.avgPriceDiff +
-          ' %' +
-          ' )',
-      );
-      console.log(
-        'Avg Price Big Diff: ' +
-          indicatorsData.avgPrices.avgBig.avgPriceSignal +
-          '(UP: ' +
-          indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount +
-          ' DOWN: ' +
-          indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount +
-          ')',
-      );
-      console.log(
-        'Avg Price Small: ' +
-          indicatorsData.avgPrices.avgSmall.avgPrice +
-          '( ' +
-          indicatorsData.avgPrices.avgSmall.avgPriceDiff +
-          ' %' +
-          ' )',
-      );
-      console.log(
-        'Avg Price Small Diff: ' +
-          indicatorsData.avgPrices.avgSmall.avgPriceSignal +
-          '(UP: ' +
-          indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount +
-          ' DOWN: ' +
-          indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount +
-          ')',
-      );
+      // console.log(
+      //   'Avg Price Big: ' +
+      //     indicatorsData.avgPrices.avgBig.avgPrice +
+      //     '( ' +
+      //     indicatorsData.avgPrices.avgBig.avgPriceDiff +
+      //     ' %' +
+      //     ' )',
+      // );
+      // console.log(
+      //   'Avg Price Big Diff: ' +
+      //     indicatorsData.avgPrices.avgBig.avgPriceSignal +
+      //     '(UP: ' +
+      //     indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount +
+      //     ' DOWN: ' +
+      //     indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'Avg Price Small: ' +
+      //     indicatorsData.avgPrices.avgSmall.avgPrice +
+      //     '( ' +
+      //     indicatorsData.avgPrices.avgSmall.avgPriceDiff +
+      //     ' %' +
+      //     ' )',
+      // );
+      // console.log(
+      //   'Avg Price Small Diff: ' +
+      //     indicatorsData.avgPrices.avgSmall.avgPriceSignal +
+      //     '(UP: ' +
+      //     indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount +
+      //     ' DOWN: ' +
+      //     indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount +
+      //     ')',
+      // );
       // calculateAvgDealPriceChange(botState, indicatorsData);
       // indicatorsData.dealType = determineDealType(indicatorsData, 4);
       // console.log(
@@ -1457,62 +1469,62 @@ import {
       //     indicatorsData.obv1d.sellSignalCount +
       //     ')',
       // );
-      console.log(
-        'OBV 4h: ' +
-          indicatorsData.obv4h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv4h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv4h.sellSignalCount +
-          ')',
-      );
-
-      console.log(
-        'OBV 1h: ' +
-          indicatorsData.obv1h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1h.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 15m: ' +
-          indicatorsData.obv15m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv15m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv15m.sellSignalCount +
-          ')',
-      );
       // console.log(
-      //   'OBV 5m: ' +
-      //     indicatorsData.obv5m.signal +
+      //   'OBV 4h: ' +
+      //     indicatorsData.obv4h.signal +
       //     ' ' +
       //     '(Buy Count: ' +
-      //     indicatorsData.obv5m.buySignalCount +
+      //     indicatorsData.obv4h.buySignalCount +
       //     ' ' +
       //     'Sell Count: ' +
-      //     indicatorsData.obv5m.sellSignalCount +
+      //     indicatorsData.obv4h.sellSignalCount +
+      //     ')',
+      // );
+      //
+      // console.log(
+      //   'OBV 1h: ' +
+      //     indicatorsData.obv1h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1h.sellSignalCount +
       //     ')',
       // );
       // console.log(
-      //   'OBV 1m: ' +
-      //     indicatorsData.obv1m.signal +
+      //   'OBV 15m: ' +
+      //     indicatorsData.obv15m.signal +
       //     ' ' +
       //     '(Buy Count: ' +
-      //     indicatorsData.obv1m.buySignalCount +
+      //     indicatorsData.obv15m.buySignalCount +
       //     ' ' +
       //     'Sell Count: ' +
-      //     indicatorsData.obv1m.sellSignalCount +
+      //     indicatorsData.obv15m.sellSignalCount +
       //     ')',
       // );
+      console.log(
+        'OBV 5m: ' +
+          indicatorsData.obv5m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv5m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv5m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 1m: ' +
+          indicatorsData.obv1m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv1m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv1m.sellSignalCount +
+          ')',
+      );
       console.log('Deal Type: ' + botState.dealType.toUpperCase());
       // console.log('Avg Ask Bid Diff: ' + indicatorsData.prevAvgAskBidDiff);
       // console.log('Bids ask diff: ' + indicatorsData.scalper.bidsAsksDiff);
@@ -1862,7 +1874,7 @@ import {
   //   _throttle((symbol, depth) => {
   //     const bids = binance.sortBids(depth.bids);
   //     const asks = binance.sortAsks(depth.asks);
-  //     const shortBids = binance.array(bids).slice(0, 10);
+  //     const shortBids = binance.array(bids).slice(0, 30);
   //     const shortAsks = binance.array(asks).slice(0, 30);
   //     const bestAsk = binance.first(asks);
   //     const bestBid = binance.first(bids);
@@ -1871,7 +1883,7 @@ import {
   //     indicatorsData.scalper.maxBidSize = maxBidSize[1];
   //     const maxAskSize = _maxBy(shortAsks, arrItem => arrItem[1]);
   //     indicatorsData.scalper.maxAskSize = maxAskSize[1];
-  //     const lastBid = shortBids[9][0];
+  //     const lastBid = shortBids[29][0];
   //     const lastAsk = shortAsks[29][0];
   //     const bidsSum = getSum(shortBids.map(arr => arr[1]));
   //     const asksSum = getSum(shortAsks.map(arr => arr[1]));
