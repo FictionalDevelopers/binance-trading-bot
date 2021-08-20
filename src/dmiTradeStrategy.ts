@@ -1208,7 +1208,7 @@ import { getDMISignal } from './components/dmi-signals';
   getObvSignal(symbol, '1d', indicatorsData.obv1d, 60, 60);
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 10, 10);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
-  getRSISignal(symbol, '15m', indicatorsData.rsi15m.rsiValue);
+  // getRSISignal(symbol, '15m', indicatorsData.rsi15m.rsiValue);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m.rsiValue);
   getRSISignal(symbol, '1m', indicatorsData.rsi1m.rsiValue);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
