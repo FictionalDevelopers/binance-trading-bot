@@ -134,7 +134,7 @@ import { getDMISignal } from './components/dmi-signals';
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: true,
-      status: 'buy',
+      status: 'pending',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -408,6 +408,14 @@ import { getDMISignal } from './components/dmi-signals';
       obvDiff: null,
     },
     obv1h: {
+      signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+      obv: null,
+      prevObv: null,
+      obvDiff: null,
+    },
+    obv30m: {
       signal: null,
       buySignalCount: 0,
       sellSignalCount: 0,
@@ -1405,7 +1413,8 @@ import { getDMISignal } from './components/dmi-signals';
   // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
-  getObvSignal(symbol, '30m', indicatorsData.obv1h, 60, 60);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
+  getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
@@ -1525,6 +1534,17 @@ import { getDMISignal } from './components/dmi-signals';
           ' ' +
           'Sell Count: ' +
           indicatorsData.obv1h.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 30m: ' +
+          indicatorsData.obv30m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv30m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv30m.sellSignalCount +
           ')',
       );
       console.log(
