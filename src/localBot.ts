@@ -42,6 +42,7 @@ import {
   calculateAvgDealPriceChange,
   calculateAvgPriceChange,
 } from './tools/avgPriceTools';
+import { getDMISignal } from './components/dmi-signals';
 
 (async function() {
   await connect();
@@ -311,6 +312,8 @@ import {
     totalMaxAvailableProfit: 0,
     isPricesStreamAliveNegativeSignalConfirmationCount: 0,
     scalper: {
+      sellVolume: null,
+      buyVolume: null,
       askBidSignal: null,
       tradesVolume: {
         buySignalCount: null,
@@ -935,9 +938,16 @@ import {
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.obv5m.buySignalCount >= 2 &&
-                // indicatorsData.obv1m.buySignalCount >= 2,
-                indicatorsData.rsi15m.rsiValue > 50,
+                // indicatorsData.obv1h.buySignalCount >= 20 &&
+                indicatorsData.obv15m.buySignalCount >= 30 &&
+                indicatorsData.obv5m.buySignalCount >= 8 &&
+                indicatorsData.obv1h.buySignalCount >= 30,
+          // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'buy' &&
+          // (indicatorsData.dmi1m.adxUpCount >= 4 ||
+          //   indicatorsData.dmi1m.adxDownCount >= 4),
+          // indicatorsData.dmi1m.adx > 20,
+          // indicatorsData.obv1m.buySignalCount >= 2,
+          // indicatorsData.rsi15m.rsiValue > 50,
           // indicatorsData.rsi5m.rsiValue > 50 &&
           // indicatorsData.rsi1m.rsiValue > 50,
           // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 1 &&
@@ -945,18 +955,23 @@ import {
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
           // indicatorsData.haCandle.ha4hCandle.signal === 'buy' &&
           // indicatorsData.obv1d.buySignalCount >= 30 &&
-          // indicatorsData.obv4h.buySignalCount >= 30 &&
-          // indicatorsData.obv1h.signal === 'buy' &&
-          // indicatorsData.obv15m.buySignalCount >= 20,
-          // indicatorsData.obv1m.buySignalCount >= 15,
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy',
           short:
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.obv5m.sellSignalCount >= 2 &&
-                // indicatorsData.obv1m.sellSignalCount >= 2,
-                indicatorsData.rsi15m.rsiValue < 50,
+                // indicatorsData.obv1h.sellSignalCount >= 20 &&
+                indicatorsData.obv15m.sellSignalCount >= 30 &&
+                indicatorsData.obv5m.sellSignalCount >= 8 &&
+                indicatorsData.obv1h.sellSignalCount >= 30,
+          // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'sell' &&
+          // indicatorsData.obv5m.sellSignalCount >= 10 &&
+          // (indicatorsData.dmi1m.adxUpCount >= 4 ||
+          //   indicatorsData.dmi1m.adxDownCount >= 4),
+          // indicatorsData.dmi1m.adx > 20,
+
+          // indicatorsData.obv1m.sellSignalCount >= 2,
+          // indicatorsData.rsi15m.rsiValue < 50,
           // indicatorsData.rsi15m.rsiValue !== null &&
           // indicatorsData.rsi5m.rsiValue < 50 &&
           // indicatorsData.rsi5m.rsiValue !== null &&
@@ -990,19 +1005,27 @@ import {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
+              // (botState.dmi1m.adxUpCount > 0
+              // ? indicatorsData.dmi1m.adxDownCount >= 4
+              // : indicatorsData.dmi1m.adxUpCount >= 4 ||
               // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 1 &&
               // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4 &&
-              indicatorsData.obv5m.sellSignalCount >= 10 &&
-              indicatorsData.obv1m.sellSignalCount >= 10,
+              // indicatorsData.obv5m.sellSignalCount >= 10),
+              // indicatorsData.dmi1m.adxDownCount >= 2,
+              // indicatorsData.obv1m.sellSignalCount >= 10,
 
-            // indicatorsData.avgPriceSignal === 'sell',
-            // indicatorsData.obv1d.sellSignalCount >= 30 &&
-            // (indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
-            //   indicatorsData.haCandle.ha4hCandle.signal === 'sell')),
-            // indicatorsData.obv1h.signal === 'sell' &&
-            // indicatorsData.obv15m.sellSignalCount >= 4,
-            // indicatorsData.obv1h.sellSignalCount >= 20 &&
-            // indicatorsData.obv5m.sellSignalCount >= 6,
+              // indicatorsData.avgPriceSignal === 'sell',
+              // indicatorsData.obv1d.sellSignalCount >= 30 &&
+              // (indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
+              //   indicatorsData.haCandle.ha4hCandle.signal === 'sell')),
+              // indicatorsData.obv1h.signal === 'sell' &&
+              indicatorsData.obv15m.sellSignalCount >= 30 &&
+              // indicatorsData.obv1h.sellSignalCount >= 20 &&
+              indicatorsData.obv5m.sellSignalCount >= 8 &&
+              indicatorsData.obv1h.sellSignalCount >= 30,
+            // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'sell' &&
+            // (indicatorsData.dmi1m.adxUpCount >= 4 ||
+            //   indicatorsData.dmi1m.adxDownCount >= 4),
             // (indicatorsData.obv15m.sellSignalCount >= 2 &&
             //   indicatorsData.obv5m.sellSignalCount >= 2) ||
             // (indicatorsData.obv1m.sellSignalCount >= 2 &&
@@ -1018,14 +1041,23 @@ import {
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 1 &&
-              // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4 &&
-              indicatorsData.obv5m.buySignalCount >= 10 &&
-              indicatorsData.obv1m.buySignalCount >= 10,
+              indicatorsData.obv5m.buySignalCount >= 8 &&
+              indicatorsData.obv1h.buySignalCount >= 30 &&
+              indicatorsData.obv15m.buySignalCount >= 30,
+            // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'buy' &&
+            // (indicatorsData.dmi1m.adxUpCount >= 4 ||
+            //   indicatorsData.dmi1m.adxDownCount >= 4),
+            // (botState.dmi1m.adxUpCount > 0
+            //   ? indicatorsData.dmi1m.adxDownCount >= 4
+            //   : indicatorsData.dmi1m.adxUpCount >= 4 ||
+            // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 1 &&
+            // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4 &&
+            // indicatorsData.obv5m.buySignalCount >= 10),
+            // indicatorsData.dmi5m.adxDownCount > 0,
+            // indicatorsData.obv1m.buySignalCount >= 10,
 
             // indicatorsData.avgPriceSignal === 'buy',
             // indicatorsData.obv4h.buySignalCount >= 20 &&
-            // indicatorsData.obv15m.buySignalCount >= 4,
             // indicatorsData.obv1d.buySignalCount >= 30 &&
             // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
             //   indicatorsData.haCandle.ha4hCandle.signal === 'buy',
@@ -1373,13 +1405,13 @@ import {
   // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
+  getObvSignal(symbol, '30m', indicatorsData.obv1h, 60, 60);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 4, 4);
 
@@ -1418,6 +1450,9 @@ import {
   const getSum = (numbers = []) =>
     numbers.reduce((sum, number) => Number(sum) + Number(number), 0);
   const fee = botState.traidingMarket === 'spot' ? 0.2 : 0.08;
+  const getVolumeByPrice = (price, from, to) => {
+    return price > from && price < to;
+  };
 
   (() => {
     setInterval(async () => {
@@ -1480,7 +1515,7 @@ import {
       //     indicatorsData.obv4h.sellSignalCount +
       //     ')',
       // );
-      //
+
       console.log(
         'OBV 1h: ' +
           indicatorsData.obv1h.signal +
@@ -1514,17 +1549,17 @@ import {
           indicatorsData.obv5m.sellSignalCount +
           ')',
       );
-      // console.log(
-      //   'OBV 1m: ' +
-      //     indicatorsData.obv1m.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv1m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv1m.sellSignalCount +
-      //     ')',
-      // );
+      console.log(
+        'OBV 1m: ' +
+          indicatorsData.obv1m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv1m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv1m.sellSignalCount +
+          ')',
+      );
       // console.log('RSI 15m: ' + indicatorsData.rsi15m.rsiValue);
       // console.log('RSI 5m: ' + indicatorsData.rsi5m.rsiValue);
       // console.log('RSI 1m: ' + indicatorsData.rsi1m.rsiValue);
@@ -1567,7 +1602,7 @@ import {
       // console.log(
       //   'OBV 4h: ' +
       //     indicatorsData.obv4h.signal +
-      //     ' ' +
+      // //     ' ' +
       //     '(Buy Count: ' +
       //     indicatorsData.obv4h.buySignalCount +
       //     ' ' +
@@ -1704,7 +1739,7 @@ import {
 
       // console.log(
       //   'ADX 5m: ' +
-      //     '(UP: ' +
+      //     ' (UP: ' +
       //     indicatorsData.dmi5m.adxUpCount +
       //     '(' +
       //     botState.dmi5m.adxUpCount +
@@ -1872,16 +1907,17 @@ import {
   `);
     }, 500);
   })();
+
   // binance.websockets.depthCache(
   //   ['LINKUSDT'],
   //   _throttle((symbol, depth) => {
   //     const bids = binance.sortBids(depth.bids);
   //     const asks = binance.sortAsks(depth.asks);
-  //     const shortBids = binance.array(bids).slice(0, 30);
-  //     const shortAsks = binance.array(asks).slice(0, 30);
+  //     const shortBids = binance.array(bids).slice(0, 100);
+  //     const shortAsks = binance.array(asks).slice(0, 100);
   //     const bestAsk = binance.first(asks);
   //     const bestBid = binance.first(bids);
-  //     const highPriceLevel = binance.array(asks).slice(0, 30)[29][0];
+  //     const highPriceLevel = binance.array(asks).slice(0, 100)[99][0];
   //     const maxBidSize = _maxBy(shortBids, arrItem => arrItem[1]);
   //     indicatorsData.scalper.maxBidSize = maxBidSize[1];
   //     const maxAskSize = _maxBy(shortAsks, arrItem => arrItem[1]);
@@ -1890,10 +1926,70 @@ import {
   //     const lastAsk = shortAsks[29][0];
   //     const bidsSum = getSum(shortBids.map(arr => arr[1]));
   //     const asksSum = getSum(shortAsks.map(arr => arr[1]));
-  //
-  //     console.log('Max BID: ' + maxBidSize);
-  //     console.log('Max ASK: ' + maxAskSize);
-  //
+  //     const filteredAsks = shortAsks.filter(item => {
+  //       const price = item[0];
+  //       return getVolumeByPrice(
+  //         price,
+  //         botState.currentPrice,
+  //         botState.currentPrice * 1.002,
+  //       );
+  //     });
+  //     const filteredAsksByBuyPrice = shortAsks.filter(item => {
+  //       const price = item[0];
+  //       return getVolumeByPrice(
+  //         price,
+  //         botState.buyPrice,
+  //         botState.buyPrice * 1.002,
+  //       );
+  //     });
+  //     const filteredBids = shortBids.filter(item => {
+  //       const price = item[0];
+  //       return getVolumeByPrice(
+  //         price,
+  //         botState.currentPrice * 0.998,
+  //         botState.currentPrice,
+  //       );
+  //     });
+  //     const filteredBidsByBuyPrice = shortBids.filter(item => {
+  //       const price = item[0];
+  //       return getVolumeByPrice(
+  //         price,
+  //         botState.buyPrice * 0.998,
+  //         botState.buyPrice,
+  //       );
+  //     });
+  //     const sellVolume = getSum(filteredAsks.map(arr => arr[1]));
+  //     indicatorsData.scalper.sellVolume = sellVolume;
+  //     const buyVolume = getSum(filteredBids.map(arr => arr[1]));
+  //     indicatorsData.scalper.buyVolume = buyVolume;
+  //     if (botState.buyPrice) {
+  //       console.log('Buy Price: ' + botState.buyPrice);
+  //       console.log('Deal Type: ' + botState.dealType);
+  //       console.log('Sell volume: ' + botState.sellVolume);
+  //       console.log('Buy volume: ' + botState.buyVolume);
+  //       console.log('****SELL****');
+  //       console.log(
+  //         'Highest price: ' +
+  //           filteredAsksByBuyPrice[filteredAsksByBuyPrice.length - 1][0],
+  //       );
+  //       console.log('Lowest price: ' + filteredAsksByBuyPrice[0][0]);
+  //       console.log(
+  //         'Volume: ' + getSum(filteredAsksByBuyPrice.map(arr => arr[1])),
+  //       );
+  //       // console.log('Max BID: ' + maxBidSize);
+  //       // console.log('Max ASK: ' + maxAskSize);
+  //       console.log('****BUY****');
+  //       console.log('Highest price: ' + filteredBidsByBuyPrice[0][0]);
+  //       console.log(
+  //         'Lowest price: ' +
+  //           filteredBidsByBuyPrice[filteredBidsByBuyPrice.length - 1][0],
+  //       );
+  //       console.log(
+  //         'Volume: ' + getSum(filteredBidsByBuyPrice.map(arr => arr[1])),
+  //       );
+  //     }
+  //     // console.log('Max BID: ' + maxBidSize);
+  //     // console.log('Max ASK: ' + maxAskSize);
   //     // const bidsSum = getSum(shortBids.map(arr => arr[1]));
   //     // const asksSum = getSum(shortAsks.map(arr => arr[1]));
   //     // console.log((bidsSum / asksSum) * 100 - 100);
@@ -1906,42 +2002,42 @@ import {
   //     // console.info('last ask: ' + shortAsks[99][0]);
   //
   //     indicatorsData.scalper.bidsAsksDiff = (bidsSum / asksSum) * 100 - 100;
-  //     console.log(
-  //       'Ask size / Bid size: (LONG) ' +
-  //         Number((asksSum / bidsSum) * 100 - 100).toString() +
-  //         '%',
-  //     );
-  //     console.log(
-  //       'Ask size / Bid size: (SHORT) ' +
-  //         Number(
-  //           (getSum(
-  //             binance
-  //               .array(asks)
-  //               .slice(0, 5)
-  //               .map(arr => arr[1]),
-  //           ) /
-  //             getSum(
-  //               binance
-  //                 .array(bids)
-  //                 .slice(0, 5)
-  //                 .map(arr => arr[1]),
-  //             )) *
-  //             100 -
-  //             100,
-  //         ).toString() +
-  //         '%',
-  //     );
-  //     console.log(
-  //       'Best Ask / Best Bid: ' +
-  //         Number((bestAsk / bestBid) * 100 - 100).toString() +
-  //         '%',
-  //     );
-  //
-  //     console.log(
-  //       'Last Ask/ Last Bid: ' +
-  //         Number((lastAsk / lastBid) * 100 - 100).toString(),
-  //     );
-  //     console.log('High price: ' + highPriceLevel);
+  //     // console.log(
+  //     //   'Ask size / Bid size: (LONG) ' +
+  //     //     Number((asksSum / bidsSum) * 100 - 100).toString() +
+  //     //     '%',
+  //     // );
+  //     // console.log(
+  //     //   'Ask size / Bid size: (SHORT) ' +
+  //     //     Number(
+  //     //       (getSum(
+  //     //         binance
+  //     //           .array(asks)
+  //     //           .slice(0, 5)
+  //     //           .map(arr => arr[1]),
+  //     //       ) /
+  //     //         getSum(
+  //     //           binance
+  //     //             .array(bids)
+  //     //             .slice(0, 5)
+  //     //             .map(arr => arr[1]),
+  //     //         )) *
+  //     //         100 -
+  //     //         100,
+  //     //     ).toString() +
+  //     //     '%',
+  //     // );
+  //     // console.log(
+  //     //   'Best Ask / Best Bid: ' +
+  //     //     Number((bestAsk / bestBid) * 100 - 100).toString() +
+  //     //     '%',
+  //     // );
+  //     //
+  //     // console.log(
+  //     //   'Last Ask/ Last Bid: ' +
+  //     //     Number((lastAsk / lastBid) * 100 - 100).toString(),
+  //     // );
+  //     // console.log('High price: ' + highPriceLevel);
   //     console.log('');
   //     //
   //     // if (

@@ -876,10 +876,10 @@ import { getDMISignal } from './components/dmi-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv1d.buySignalCount >= 100 &&
-                indicatorsData.obv15m.buySignalCount >= 100 &&
-                indicatorsData.obv1h.buySignalCount >= 100,
-          // indicatorsData.obv5m.buySignalCount >= 20 &&
+                // indicatorsData.obv1d.buySignalCount >= 100 &&
+                indicatorsData.obv15m.buySignalCount >= 30 &&
+                indicatorsData.obv1h.buySignalCount >= 30 &&
+                indicatorsData.obv5m.buySignalCount >= 8,
           // indicatorsData.obv1m.buySignalCount >= 10,
           // (indicatorsData.dmi15m.adxUpCount >= 2 ||
           //   indicatorsData.dmi15m.adxDownCount >= 2),
@@ -887,9 +887,10 @@ import { getDMISignal } from './components/dmi-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv1d.sellSignalCount >= 100 &&
-                indicatorsData.obv15m.sellSignalCount >= 100 &&
-                indicatorsData.obv1h.sellSignalCount >= 100,
+                // indicatorsData.obv1d.sellSignalCount >= 100 &&
+                indicatorsData.obv15m.sellSignalCount >= 30 &&
+                indicatorsData.obv1h.sellSignalCount >= 30 &&
+                indicatorsData.obv5m.sellSignalCount >= 8,
           // indicatorsData.obv1m.sellSignalCount >= 10,
           // (indicatorsData.dmi15m.adxUpCount >= 2 ||
           //   indicatorsData.dmi15m.adxDownCount >= 2),
@@ -907,18 +908,25 @@ import { getDMISignal } from './components/dmi-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              (indicatorsData.obv1d.sellSignalCount >= 100 ||
-                // indicatorsData.obv1m.sellSignalCount >= 10,
-                // (indicatorsData.obv15m.sellSignalCount >= 10 ||
-                (indicatorsData.obv1h.sellSignalCount >= 100 &&
-                  indicatorsData.obv15m.sellSignalCount >= 100)),
+              indicatorsData.obv15m.sellSignalCount >= 30 &&
+              // indicatorsData.obv1h.sellSignalCount >= 20 &&
+              indicatorsData.obv5m.sellSignalCount >= 8 &&
+              indicatorsData.obv1h.sellSignalCount >= 30,
+            // (indicatorsData.obv1d.sellSignalCount >= 100 ||
+            // indicatorsData.obv1m.sellSignalCount >= 10,
+            // (indicatorsData.obv15m.sellSignalCount >= 10 ||
+            // (indicatorsData.obv1h.sellSignalCount >= 100 &&
+            //   indicatorsData.obv15m.sellSignalCount >= 100)),
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              (indicatorsData.obv1d.buySignalCount >= 100 ||
-                (indicatorsData.obv1h.buySignalCount >= 100 &&
-                  // (indicatorsData.obv15m.buySignalCount >= 10 ||
-                  indicatorsData.obv15m.buySignalCount >= 40)),
+              indicatorsData.obv5m.buySignalCount >= 8 &&
+              indicatorsData.obv1h.buySignalCount >= 30 &&
+              indicatorsData.obv15m.buySignalCount >= 30,
+            // (indicatorsData.obv1d.buySignalCount >= 100 ||
+            //   (indicatorsData.obv1h.buySignalCount >= 100 &&
+            //     (indicatorsData.obv15m.buySignalCount >= 10 ||
+            // indicatorsData.obv15m.buySignalCount >= 40)),
           },
         },
       },
@@ -1205,13 +1213,13 @@ import { getDMISignal } from './components/dmi-signals';
 
   /** *******************************INDICATORS SECTION**************************************/
 
-  getObvSignal(symbol, '1d', indicatorsData.obv1d, 60, 60);
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 10, 10);
+  // getObvSignal(symbol, '1d', indicatorsData.obv1d, 60, 60);
+  getObvSignal(symbol, '30m', indicatorsData.obv1h, 10, 10);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m.rsiValue);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m.rsiValue);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m.rsiValue);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
 
   /** *************************DATA LOGGER********************************/

@@ -18,6 +18,8 @@ const resetValuesAfterSell = (botState, indicatorsData) => {
   // indicatorsData.dmi1m.adxDownCount = 0;
   // indicatorsData.dmi5m.adxUpCount = 0;
   // indicatorsData.dmi5m.adxDownCount = 0;
+  botState.sellVolume = null;
+  botState.buyVolume = null;
   botState.maxAvailableLongProfit = 0;
   botState.maxAvailableShortProfit = 0;
   botState.minAvailableLongProfit = 0;
@@ -321,6 +323,9 @@ export const marketSellAction = async (
                                       indicatorsData.obv1m.buySignalCount
                                     } SSC: ${
             indicatorsData.obv1m.sellSignalCount
+          }
+            ADX 1m: UP: ${indicatorsData.dmi1m.adxUpCount} DOWN: ${
+            indicatorsData.dmi1m.adxDownCount
           }
                                     Current profit: ${
                                       botState.dealType === 'long'
@@ -755,6 +760,8 @@ export const marketBuyAction = async (
         Number(pricesStream[pricesStream.length - 1]),
       );
       botState.updateState('lastBid', indicatorsData.scalper.lastBid);
+      botState.sellVolume = indicatorsData.scalper.sellVolume;
+      botState.buyVolume = indicatorsData.scalper.buyVolume;
       botState.dmi5m.adx = indicatorsData.dmi5m.adx;
       botState.dmi5m.adxUpCount = indicatorsData.dmi5m.adxUpCount;
       botState.dmi5m.adxDownCount = indicatorsData.dmi5m.adxDownCount;
@@ -790,7 +797,14 @@ export const marketBuyAction = async (
                                       indicatorsData.obv1m.buySignalCount
                                     } SSC: ${
           indicatorsData.obv1m.sellSignalCount
-        }                `);
+        }
+                        ADX 1m: UP: ${botState.dmi1m.adxUpCount} DOWN: ${
+          botState.dmi1m.adxDownCount
+        }
+                        
+                        
+                        
+                        `);
       }
       console.log(`BUY
                              Strategy:${strategy}
