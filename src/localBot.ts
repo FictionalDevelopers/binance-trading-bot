@@ -947,8 +947,8 @@ import { getDMISignal } from './components/dmi-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.obv1h.buySignalCount >= 20 &&
-                // indicatorsData.obv15m.buySignalCount >= 30 &&
+                indicatorsData.obv30m.buySignalCount >= 20 &&
+                indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv5m.buySignalCount >= 10 &&
                 indicatorsData.emaSignal === 'buy',
           // indicatorsData.obv1h.buySignalCount >= 30,
@@ -970,8 +970,8 @@ import { getDMISignal } from './components/dmi-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.obv1h.sellSignalCount >= 20 &&
-                // indicatorsData.obv15m.sellSignalCount >= 30 &&
+                indicatorsData.obv30m.sellSignalCount >= 20 &&
+                indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv5m.sellSignalCount >= 10 &&
                 indicatorsData.emaSignal === 'sell',
 
@@ -1018,6 +1018,8 @@ import { getDMISignal } from './components/dmi-signals';
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
               indicatorsData.obv5m.sellSignalCount >= 10 &&
+              indicatorsData.obv30m.sellSignalCount >= 20 &&
+              indicatorsData.obv15m.sellSignalCount >= 20 &&
               indicatorsData.emaSignal === 'sell',
             // (botState.dmi1m.adxUpCount > 0
             // ? indicatorsData.dmi1m.adxDownCount >= 4
@@ -1032,8 +1034,6 @@ import { getDMISignal } from './components/dmi-signals';
             // (indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
             //   indicatorsData.haCandle.ha4hCandle.signal === 'sell')),
             // indicatorsData.obv1h.signal === 'sell' &&
-            // indicatorsData.obv15m.sellSignalCount >= 30 &&
-            // indicatorsData.obv1h.sellSignalCount >= 20 &&
             // indicatorsData.obv5m.sellSignalCount >= 4 &&
 
             // indicatorsData.obv1h.sellSignalCount >= 30,
@@ -1056,10 +1056,10 @@ import { getDMISignal } from './components/dmi-signals';
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
               indicatorsData.obv5m.buySignalCount >= 10 &&
+              indicatorsData.obv15m.buySignalCount >= 20 &&
+              indicatorsData.obv30m.buySignalCount >= 20 &&
               indicatorsData.emaSignal === 'buy',
             // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2,
-            // indicatorsData.obv1h.buySignalCount >= 30 &&
-            // indicatorsData.obv15m.buySignalCount >= 30,
             // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'buy' &&
             // (indicatorsData.dmi1m.adxUpCount >= 4 ||
             //   indicatorsData.dmi1m.adxDownCount >= 4),
@@ -1421,14 +1421,14 @@ import { getDMISignal } from './components/dmi-signals';
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   // getEMASignal(symbol, '1m', indicatorsData.fast1mEMA)
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
-  // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
+  getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
 
   getEmaStream({
     symbol: symbol,
-    interval: '1m',
+    interval: '30m',
     period: 99,
   })
     .pipe(bufferCount(1, 1))
@@ -1496,7 +1496,7 @@ import { getDMISignal } from './components/dmi-signals';
   /** *************************DATA LOGGER********************************/
   const getSum = (numbers = []) =>
     numbers.reduce((sum, number) => Number(sum) + Number(number), 0);
-  const fee = botState.traidingMarket === 'spot' ? 0.2 : 0.08;
+  const fee = 0.08;
   const getVolumeByPrice = (price, from, to) => {
     return price > from && price < to;
   };

@@ -258,35 +258,35 @@ export const marketSellAction = async (
         if (botState.dealType === 'long')
           botState.updateState(
             'totalLongProfit',
-            (botState.totalLongProfit += expectedProfitPercent - 0.2),
+            (botState.totalLongProfit += expectedProfitPercent - 0.08),
           );
         else if (botState.dealType === 'short')
           botState.updateState(
             'totalShortProfit',
-            (botState.totalShortProfit += expectedProfitPercent + 0.2),
+            (botState.totalShortProfit += expectedProfitPercent + 0.08),
           );
 
         if (botState.dealType === 'long') {
           botState.updateState(
             'totalMinAvailableLongProfit',
             (botState.totalMinAvailableLongProfit +=
-              botState.minAvailableLongProfit - 0.2),
+              botState.minAvailableLongProfit - 0.08),
           );
           botState.updateState(
             'totalMaxAvailableLongProfit',
             (botState.totalMaxAvailableLongProfit +=
-              botState.maxAvailableLongProfit - 0.2),
+              botState.maxAvailableLongProfit - 0.08),
           );
         } else if (botState.dealType === 'short') {
           botState.updateState(
             'totalMaxAvailableShortProfit',
             (botState.totalMaxAvailableShortProfit +=
-              botState.maxAvailableShortProfit + 0.2),
+              botState.maxAvailableShortProfit + 0.08),
           );
           botState.updateState(
             'totalMinAvailableShortProfit',
             (botState.totalMinAvailableShortProfit +=
-              botState.minAvailableShortProfit + 0.2),
+              botState.minAvailableShortProfit + 0.08),
           );
         }
 
@@ -329,18 +329,20 @@ export const marketSellAction = async (
           }
                                     Current profit: ${
                                       botState.dealType === 'long'
-                                        ? expectedProfitPercent - 0.2
-                                        : expectedProfitPercent + 0.2
+                                        ? expectedProfitPercent - 0.08
+                                        : expectedProfitPercent + 0.08
                                     } %
                                     Max av profit: ${
                                       botState.dealType === 'long'
-                                        ? botState.maxAvailableLongProfit - 0.2
-                                        : botState.maxAvailableShortProfit + 0.2
+                                        ? botState.maxAvailableLongProfit - 0.08
+                                        : botState.maxAvailableShortProfit +
+                                          0.08
                                     } %
                                     Min av profit: ${
                                       botState.dealType === 'long'
-                                        ? botState.minAvailableLongProfit - 0.2
-                                        : botState.minAvailableShortProfit + 0.2
+                                        ? botState.minAvailableLongProfit - 0.08
+                                        : botState.minAvailableShortProfit +
+                                          0.08
                                     } %
                                     Total Long profit: ${
                                       botState.totalLongProfit
@@ -464,12 +466,12 @@ export const marketSellAction = async (
         botState.updateState(
           'totalMaxAvailableProfit',
           (botState.totalMaxAvailableProfit +=
-            botState.maxAvailableProfit - 0.2),
+            botState.maxAvailableProfit - 0.08),
         );
         botState.updateState(
           'totalMinAvailableProfit',
           (botState.totalMinAvailableProfit +=
-            botState.minAvailableProfit - 0.2),
+            botState.minAvailableProfit - 0.08),
         );
         botState.updateState(
           'totalPercentProfit',
