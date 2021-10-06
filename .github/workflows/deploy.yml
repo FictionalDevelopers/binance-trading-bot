@@ -10,13 +10,14 @@ on:
       - yarn.lock
       - .github/**
       - src/**
+      - deploy/**
 
 jobs:
   docker-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_LOGIN }} --password-stdin
       - name: Prepare env
         run: |
           cat <<EOT >> .env
