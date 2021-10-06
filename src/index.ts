@@ -10,7 +10,6 @@
 // import { marketSellAction, marketBuyAction, getOrdersList } from './api/order';
 // import _maxBy from 'lodash/maxBy';
 // import { binance } from './api/binance';
-//
 // import { getEMASignal, runEMAInterval } from './components/ema-signals';
 // import getAvarage from './utils/getAverage';
 // import { getEmaStream } from '../src/indicators/ema';
