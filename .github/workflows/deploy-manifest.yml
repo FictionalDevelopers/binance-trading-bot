@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - feat/k8s
     paths:
       - 'deploy/**'
 
