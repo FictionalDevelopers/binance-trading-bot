@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: binance-bot
-          image: dmitryhoncharuk/binance-bot
+          image: fictionaldev/binance-bot
           envFrom:
             - configMapRef:
                 name: binance-bot-env-config
