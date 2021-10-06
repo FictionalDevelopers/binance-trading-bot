@@ -552,11 +552,73 @@ import { getDMISignal } from './components/dmi-signals';
     },
     ema: {
       ema30m: {
-        emaAvSignal: null,
-        emaAv: null,
-        emaSignal: null,
-        emaUpCount: 0,
-        emaDownCount: 0,
+        fast: {
+          emaAvSignal: null,
+          emaAv: null,
+          emaSignal: null,
+          emaUpCount: 0,
+          emaDownCount: 0,
+        },
+        middle: {
+          emaAvSignal: null,
+          emaAv: null,
+          emaSignal: null,
+          emaUpCount: 0,
+          emaDownCount: 0,
+        },
+        slow: {
+          emaAvSignal: null,
+          emaAv: null,
+          emaSignal: null,
+          emaUpCount: 0,
+          emaDownCount: 0,
+        },
+      },
+      ema15m: {
+        fast: {
+          emaAvSignal: null,
+          emaAv: null,
+          emaSignal: null,
+          emaUpCount: 0,
+          emaDownCount: 0,
+        },
+        middle: {
+          emaAvSignal: null,
+          emaAv: null,
+          emaSignal: null,
+          emaUpCount: 0,
+          emaDownCount: 0,
+        },
+        slow: {
+          emaAvSignal: null,
+          emaAv: null,
+          emaSignal: null,
+          emaUpCount: 0,
+          emaDownCount: 0,
+        },
+      },
+      ema5m: {
+        fast: {
+          emaAvSignal: null,
+          emaAv: null,
+          emaSignal: null,
+          emaUpCount: 0,
+          emaDownCount: 0,
+        },
+        middle: {
+          emaAvSignal: null,
+          emaAv: null,
+          emaSignal: null,
+          emaUpCount: 0,
+          emaDownCount: 0,
+        },
+        slow: {
+          emaAvSignal: null,
+          emaAv: null,
+          emaSignal: null,
+          emaUpCount: 0,
+          emaDownCount: 0,
+        },
       },
     },
   };
@@ -894,7 +956,7 @@ import { getDMISignal } from './components/dmi-signals';
                 indicatorsData.obv30m.buySignalCount >= 20 &&
                 indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv5m.buySignalCount >= 10 &&
-                indicatorsData.ema.ema30m.emaSignal === 'buy',
+                indicatorsData.ema.ema30m.slow.emaSignal === 'buy',
           // indicatorsData.obv1d.buySignalCount >= 100 &&
           // indicatorsData.obv15m.buySignalCount >= 30 &&
           // indicatorsData.obv1h.buySignalCount >= 60 &&
@@ -910,7 +972,7 @@ import { getDMISignal } from './components/dmi-signals';
                 indicatorsData.obv30m.sellSignalCount >= 20 &&
                 indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv5m.sellSignalCount >= 10 &&
-                indicatorsData.ema.ema30m.emaSignal === 'sell',
+                indicatorsData.ema.ema30m.slow.emaSignal === 'sell',
 
           // indicatorsData.obv1d.sellSignalCount >= 100 &&
           // indicatorsData.obv15m.sellSignalCount >= 30 &&
@@ -937,7 +999,7 @@ import { getDMISignal } from './components/dmi-signals';
               indicatorsData.obv5m.sellSignalCount >= 10 &&
               indicatorsData.obv30m.sellSignalCount >= 20 &&
               indicatorsData.obv15m.sellSignalCount >= 20 &&
-              indicatorsData.ema.ema30m.emaSignal === 'sell',
+              indicatorsData.ema.ema30m.slow.emaSignal === 'sell',
             // indicatorsData.obv15m.sellSignalCount >= 30 &&
             // indicatorsData.obv1h.sellSignalCount >= 20 &&
             // indicatorsData.obv5m.sellSignalCount >= 20 &&
@@ -954,7 +1016,7 @@ import { getDMISignal } from './components/dmi-signals';
               indicatorsData.obv5m.buySignalCount >= 10 &&
               indicatorsData.obv15m.buySignalCount >= 20 &&
               indicatorsData.obv30m.buySignalCount >= 20 &&
-              indicatorsData.ema.ema30m.emaSignal === 'buy',
+              indicatorsData.ema.ema30m.slow.emaSignal === 'buy',
             // indicatorsData.obv5m.buySignalCount >= 20 &&
             // indicatorsData.obv1h.buySignalCount >= 30 &&
             // indicatorsData.obv30m.buySignalCount >= 30 &&
@@ -1253,36 +1315,40 @@ import { getDMISignal } from './components/dmi-signals';
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
 
-  getEmaStream({
-    symbol: symbol,
-    interval: '30m',
-    period: 99,
-  })
-    .pipe(bufferCount(1, 1))
-    .subscribe(values => {
-      if (!indicatorsData.ema.ema30m.emaAv) {
-        indicatorsData.ema.ema30m.emaAv = getAvarage(values);
-        return;
-      }
-      const currentEmaAv = getAvarage(values);
-      if ((currentEmaAv / indicatorsData.ema.ema30m.emaAv) * 100 - 100 > 0) {
-        indicatorsData.ema.ema30m.emaUpCount++;
-        indicatorsData.ema.ema30m.emaDownCount = 0;
-      }
-      if ((currentEmaAv / indicatorsData.ema.ema30m.emaAv) * 100 - 100 < 0) {
-        indicatorsData.ema.ema30m.emaDownCount++;
-        indicatorsData.ema.ema30m.emaUpCount = 0;
-      }
-      // console.log(
-      //   indicatorsData.emaSignal,
-      //   (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
-      // );
-      if (indicatorsData.ema.ema30m.emaUpCount >= 3)
-        indicatorsData.emaSignal = 'buy';
-      else if (indicatorsData.ema.ema30m.emaDownCount >= 3)
-        indicatorsData.emaSignal = 'sell';
-      indicatorsData.ema.ema30m.emaAv = currentEmaAv;
-    });
+  const calculateEMADiff = (symbol, interval, period, indicatorsData) => {
+    getEmaStream({
+      symbol: symbol,
+      interval: interval,
+      period: period,
+    })
+      .pipe(bufferCount(1, 1))
+      .subscribe(values => {
+        if (!indicatorsData.emaAv) {
+          indicatorsData.emaAv = getAvarage(values);
+          return;
+        }
+        const currentEmaAv = getAvarage(values);
+        if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 > 0) {
+          indicatorsData.emaUpCount++;
+          indicatorsData.emaDownCount = 0;
+        }
+        if ((currentEmaAv / indicatorsData.emaAv) * 100 - 100 < 0) {
+          indicatorsData.emaDownCount++;
+          indicatorsData.emaUpCount = 0;
+        }
+        // console.log(
+        //   indicatorsData.emaSignal,
+        //   (currentEmaAv / indicatorsData.emaAv) * 100 - 100,
+        // );
+        if (indicatorsData.emaUpCount >= 3) indicatorsData.emaSignal = 'buy';
+        else if (indicatorsData.emaDownCount >= 3)
+          indicatorsData.emaSignal = 'sell';
+        indicatorsData.emaAv = currentEmaAv;
+      });
+  };
+
+  calculateEMADiff(symbol, '30m', 99, indicatorsData.ema.ema30m.slow);
+
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 60, 60);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 10, 10);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 10, 10);
