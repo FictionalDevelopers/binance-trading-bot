@@ -1,48 +1,26 @@
-import { pluck, bufferCount } from 'rxjs/operators';
 import { format } from 'date-fns';
-import { connect } from './db/connection';
-import _omit from 'lodash/omit';
-import { RESOURCES } from './constants';
-import { DATE_FORMAT } from './constants/date';
-import { getTradeStream } from './api/trades.js';
-import { sendToRecipients } from './services/telegram';
+import _head from 'lodash/head';
+import { bufferCount, pluck } from 'rxjs/operators';
+import { getEmaStream } from './indicators/ema';
 import { getBalances, getFuturesBalances } from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import {
-  marketSellAction,
-  marketBuyAction,
-  getOrdersList,
-  checkAllOpenOrders,
   cancelAllOpenOrders,
+  checkAllOpenOrders,
+  getOrdersList,
+  marketBuyAction,
   marketFuturesBuyAction,
   marketFuturesSellAction,
+  marketSellAction,
 } from './api/order';
-
-import _maxBy from 'lodash/maxBy';
-import { binance } from './api/binance';
-
-import { getEMASignal, runEMAInterval } from './components/ema-signals';
-import getAvarage from './utils/getAverage';
-import { getEmaStream } from '../src/indicators/ema';
-import { getObvStream } from './indicators/obv';
-
-import { getRSISignal } from './components/rsi-signals';
-import { getTrixSignal, runTrixInterval } from './components/trix-signal';
-import {
-  getStochRSISignal,
-  runStochRsiInterval,
-} from './components/stochRSI-signals';
-import { getObvSignal } from './components/obv-signals';
+import { getTradeStream } from './api/trades.js';
 import { service as botStateService } from './components/botState';
-import _head from 'lodash/head';
-import _throttle from 'lodash/throttle';
-import _debounce from 'lodash/debounce';
-import { getHeikinAshiSignal } from './indicators/heikinAshi';
-import {
-  calculateAvgDealPriceChange,
-  calculateAvgPriceChange,
-} from './tools/avgPriceTools';
-import { getDMISignal } from './components/dmi-signals';
+import { getObvSignal } from './components/obv-signals';
+import { RESOURCES } from './constants';
+import { DATE_FORMAT } from './constants/date';
+import { connect } from './db/connection';
+import { sendToRecipients } from './services/telegram';
+import getAvarage from './utils/getAverage';
 
 (async function() {
   await connect();
@@ -947,10 +925,10 @@ import { getDMISignal } from './components/dmi-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv30m.buySignalCount >= 20 &&
-                indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.obv5m.buySignalCount >= 10 &&
-                indicatorsData.emaSignal === 'buy',
+              indicatorsData.obv30m.buySignalCount >= 20 &&
+              indicatorsData.obv15m.buySignalCount >= 20 &&
+              indicatorsData.obv5m.buySignalCount >= 10 &&
+              indicatorsData.emaSignal === 'buy',
           // indicatorsData.obv1h.buySignalCount >= 30,
           // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'buy' &&
           // (indicatorsData.dmi1m.adxUpCount >= 4 ||
@@ -970,10 +948,10 @@ import { getDMISignal } from './components/dmi-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv30m.sellSignalCount >= 20 &&
-                indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.obv5m.sellSignalCount >= 10 &&
-                indicatorsData.emaSignal === 'sell',
+              indicatorsData.obv30m.sellSignalCount >= 20 &&
+              indicatorsData.obv15m.sellSignalCount >= 20 &&
+              indicatorsData.obv5m.sellSignalCount >= 10 &&
+              indicatorsData.emaSignal === 'sell',
 
           // indicatorsData.obv1h.sellSignalCount >= 30,
           // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'sell' &&
@@ -1565,69 +1543,69 @@ import { getDMISignal } from './components/dmi-signals';
 
       console.log(
         'OBV 1h: ' +
-          indicatorsData.obv1h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1h.sellSignalCount +
-          ')',
+        indicatorsData.obv1h.signal +
+        ' ' +
+        '(Buy Count: ' +
+        indicatorsData.obv1h.buySignalCount +
+        ' ' +
+        'Sell Count: ' +
+        indicatorsData.obv1h.sellSignalCount +
+        ')',
       );
       console.log(
         'OBV 30m: ' +
-          indicatorsData.obv30m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv30m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv30m.sellSignalCount +
-          ')',
+        indicatorsData.obv30m.signal +
+        ' ' +
+        '(Buy Count: ' +
+        indicatorsData.obv30m.buySignalCount +
+        ' ' +
+        'Sell Count: ' +
+        indicatorsData.obv30m.sellSignalCount +
+        ')',
       );
       console.log(
         'OBV 15m: ' +
-          indicatorsData.obv15m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv15m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv15m.sellSignalCount +
-          ')',
+        indicatorsData.obv15m.signal +
+        ' ' +
+        '(Buy Count: ' +
+        indicatorsData.obv15m.buySignalCount +
+        ' ' +
+        'Sell Count: ' +
+        indicatorsData.obv15m.sellSignalCount +
+        ')',
       );
       console.log(
         'OBV 5m: ' +
-          indicatorsData.obv5m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv5m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv5m.sellSignalCount +
-          ')',
+        indicatorsData.obv5m.signal +
+        ' ' +
+        '(Buy Count: ' +
+        indicatorsData.obv5m.buySignalCount +
+        ' ' +
+        'Sell Count: ' +
+        indicatorsData.obv5m.sellSignalCount +
+        ')',
       );
       console.log(
         'OBV 1m: ' +
-          indicatorsData.obv1m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1m.sellSignalCount +
-          ')',
+        indicatorsData.obv1m.signal +
+        ' ' +
+        '(Buy Count: ' +
+        indicatorsData.obv1m.buySignalCount +
+        ' ' +
+        'Sell Count: ' +
+        indicatorsData.obv1m.sellSignalCount +
+        ')',
       );
       console.log(
         'EMA: ' +
-          indicatorsData.emaSignal +
-          ' ' +
-          '(UpCount: ' +
-          indicatorsData.emaUpCount +
-          ' ' +
-          'DownCount: ' +
-          indicatorsData.emaDownCount +
-          ')',
+        indicatorsData.emaSignal +
+        ' ' +
+        '(UpCount: ' +
+        indicatorsData.emaUpCount +
+        ' ' +
+        'DownCount: ' +
+        indicatorsData.emaDownCount +
+        ')',
       );
       // console.log('RSI 15m: ' + indicatorsData.rsi15m.rsiValue);
       // console.log('RSI 5m: ' + indicatorsData.rsi5m.rsiValue);
@@ -1872,90 +1850,90 @@ import { getDMISignal } from './components/dmi-signals';
         console.log(
           botState.dealType === 'long'
             ? 'MAX av profit: ' +
-                Number(botState.maxAvailableLongProfit - fee) +
-                ' % : ' +
-                (botState.traidingMarket === 'futures' && botState.order
-                  ? (Number(botState.maxAvailableLongProfit - fee) *
-                      Math.abs(Number(botState.order.initialMargin))) /
-                      100 +
-                    'USDT'
-                  : ''
-                ).toString()
+            Number(botState.maxAvailableLongProfit - fee) +
+            ' % : ' +
+            (botState.traidingMarket === 'futures' && botState.order
+                ? (Number(botState.maxAvailableLongProfit - fee) *
+                  Math.abs(Number(botState.order.initialMargin))) /
+                100 +
+                'USDT'
+                : ''
+            ).toString()
             : 'MAX av profit: ' +
-                Number(botState.maxAvailableShortProfit + fee) +
-                ' % : ' +
-                (botState.traidingMarket === 'futures' && botState.order
-                  ? (Number(botState.maxAvailableShortProfit + fee) *
-                      Math.abs(Number(botState.order.initialMargin))) /
-                      100 +
-                    'USDT'
-                  : ''
-                ).toString(),
+            Number(botState.maxAvailableShortProfit + fee) +
+            ' % : ' +
+            (botState.traidingMarket === 'futures' && botState.order
+                ? (Number(botState.maxAvailableShortProfit + fee) *
+                  Math.abs(Number(botState.order.initialMargin))) /
+                100 +
+                'USDT'
+                : ''
+            ).toString(),
         );
         console.log(
           botState.dealType === 'long'
             ? 'MIN av profit: ' +
-                Number(botState.minAvailableLongProfit - fee) +
-                ' % : ' +
-                (botState.traidingMarket === 'futures' && botState.order
-                  ? (Number(botState.minAvailableLongProfit - fee) *
-                      Math.abs(Number(botState.order.initialMargin))) /
-                      100 +
-                    'USDT'
-                  : ''
-                ).toString()
+            Number(botState.minAvailableLongProfit - fee) +
+            ' % : ' +
+            (botState.traidingMarket === 'futures' && botState.order
+                ? (Number(botState.minAvailableLongProfit - fee) *
+                  Math.abs(Number(botState.order.initialMargin))) /
+                100 +
+                'USDT'
+                : ''
+            ).toString()
             : 'MIN av profit: ' +
-                Number(botState.minAvailableShortProfit + fee) +
-                ' % : ' +
-                (botState.traidingMarket === 'futures' && botState.order
-                  ? (Number(botState.minAvailableShortProfit + fee) *
-                      Math.abs(Number(botState.order.initialMargin))) /
-                      100 +
-                    'USDT'
-                  : ''
-                ).toString(),
+            Number(botState.minAvailableShortProfit + fee) +
+            ' % : ' +
+            (botState.traidingMarket === 'futures' && botState.order
+                ? (Number(botState.minAvailableShortProfit + fee) *
+                  Math.abs(Number(botState.order.initialMargin))) /
+                100 +
+                'USDT'
+                : ''
+            ).toString(),
         );
         console.log(
           'Profit diff (Max/Current): ' +
-            Number(botState.maxAvailableProfit) /
-              Number(botState.currentProfit) +
-            ' %',
+          Number(botState.maxAvailableProfit) /
+          Number(botState.currentProfit) +
+          ' %',
         );
       }
       botState.status === 'sell' && !botState.strategies.scalper.stopLoss
         ? console.log(
-            'Buy Price: ' +
-              botState.buyPrice +
-              ' (' +
-              botState.currentPrice +
-              ')' +
-              '\n' +
-              'Current profit: ' +
-              (botState.status === 'sell'
-                ? botState.dealType === 'long'
-                  ? Number(botState.currentProfit - fee) +
-                    ' % : ' +
-                    (botState.traidingMarket === 'futures' && botState.order
-                      ? (Number(botState.currentProfit - fee) *
-                          Math.abs(Number(botState.order.initialMargin))) /
-                          100 +
-                        ' USDT'
-                      : ''
-                    ).toString()
-                  : Number(botState.currentProfit + fee) +
-                    ' % : ' +
-                    (botState.traidingMarket === 'futures'
-                      ? (Number(botState.currentProfit + fee) *
-                          Math.abs(Number(botState.order.initialMargin))) /
-                          100 +
-                        ' USDT'
-                      : ''
-                    ).toString()
-                : '-'),
-          )
+          'Buy Price: ' +
+          botState.buyPrice +
+          ' (' +
+          botState.currentPrice +
+          ')' +
+          '\n' +
+          'Current profit: ' +
+          (botState.status === 'sell'
+            ? botState.dealType === 'long'
+              ? Number(botState.currentProfit - fee) +
+              ' % : ' +
+              (botState.traidingMarket === 'futures' && botState.order
+                  ? (Number(botState.currentProfit - fee) *
+                    Math.abs(Number(botState.order.initialMargin))) /
+                  100 +
+                  ' USDT'
+                  : ''
+              ).toString()
+              : Number(botState.currentProfit + fee) +
+              ' % : ' +
+              (botState.traidingMarket === 'futures'
+                  ? (Number(botState.currentProfit + fee) *
+                    Math.abs(Number(botState.order.initialMargin))) /
+                  100 +
+                  ' USDT'
+                  : ''
+              ).toString()
+            : '-'),
+        )
         : botState.strategies.scalper.stopLoss
-        ? console.log('STATUS: SELL (TAKE PROFIT)')
-        : console.log('STATUS: BUY');
+          ? console.log('STATUS: SELL (TAKE PROFIT)')
+          : console.log('STATUS: BUY');
       // if (botState.currentPrice)
       //   console.log(
       //     'Asset: ' +

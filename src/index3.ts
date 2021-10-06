@@ -1,36 +1,16 @@
-import { pluck, bufferCount } from 'rxjs/operators';
 import { format } from 'date-fns';
-import { connect } from './db/connection';
-import { RESOURCES } from './constants';
-import { DATE_FORMAT } from './constants/date';
-import { getTradeStream } from './api/trades.js';
-import { sendToRecipients } from './services/telegram';
+import { bufferCount, pluck } from 'rxjs/operators';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
-import { marketSellAction, marketBuyAction, getOrdersList } from './api/order';
-import { getEMASignal, runEMAInterval } from './components/ema-signals';
-import getAvarage from './utils/getAverage';
-import { getEmaStream } from '../src/indicators/ema';
-import { getObvStream } from './indicators/obv';
-
-import { getRSISignal } from './components/rsi-signals';
-import { getTrixSignal, runTrixInterval } from './components/trix-signal';
-import {
-  getStochRSISignal,
-  runStochRsiInterval,
-} from './components/stochRSI-signals';
-import { getObvSignal, runObvInterval } from './components/obv-signals';
-import { service as botStateService } from './components/botState';
-import _head from 'lodash/head';
-import { getForceIndexSignal, runEFIInterval } from './components/forceIndex';
-import { getForceIndexStream } from './indicators/forceIndex';
-import { getStochRsiStream } from './indicators/stochRSI';
-import { getTrixStream } from './indicators/trix';
-import { getRocSignal } from './components/roc-signals';
-import { getRocStream } from './indicators/roc';
-import { getRsiStream } from './indicators/rsi';
+import { marketBuyAction, marketSellAction } from './api/order';
+import { getTradeStream } from './api/trades.js';
 import { getDMISignal } from './components/dmi-signals';
-import { indicatorsData } from './index2';
+import { getEMASignal } from './components/ema-signals';
+import { getRocSignal } from './components/roc-signals';
+import { RESOURCES } from './constants';
+import { DATE_FORMAT } from './constants/date';
+import { connect } from './db/connection';
+import { sendToRecipients } from './services/telegram';
 
 (async function() {
   await connect();
@@ -350,7 +330,7 @@ import { indicatorsData } from './index2';
             botState.buyReason === 'upTrend' &&
             Number(
               (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-                100,
+              100,
             ) >= 0.05,
         },
       },
@@ -389,7 +369,7 @@ import { indicatorsData } from './index2';
             botState.buyReason === 'downTrend' &&
             Number(
               (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
-                100,
+              100,
             ) >= 0.1,
           // indicatorsData.rsi1m.rsiValue !== null &&
           // indicatorsData.rsi1m.rsiValue < 39 &&
@@ -416,7 +396,7 @@ import { indicatorsData } from './index2';
             botState.buyReason === 'upFlat' &&
             Number(
               (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-                100,
+              100,
             ) >= 0.05,
           // (Number(
           //   (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
@@ -450,21 +430,21 @@ import { indicatorsData } from './index2';
           botState.status === 'buy' &&
           Number(
             (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
-              100 >=
-              0.05 && indicatorsData.middle1mEMA > indicatorsData.slow1mEMA,
+            100 >=
+            0.05 && indicatorsData.middle1mEMA > indicatorsData.slow1mEMA,
           ) &&
           // indicatorsData.roc.roc1m.value > 0.05 &&
           // indicatorsData.stochRsi.stoch1m.signal === 'buy',
 
           ((indicatorsData.dmi1h.adxUpCount > 0 &&
-            Number(
-              (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
+              Number(
+                (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
                 100,
-            ) >= 0.05) ||
+              ) >= 0.05) ||
             (indicatorsData.dmi1h.adxDownCount > 0 &&
               Number(
                 (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) * 100 -
-                  100,
+                100,
               ) >= 0.05)),
         // ((indicatorsData.dmi5m.signal === 'BUY' &&
         //   Number(
@@ -536,15 +516,15 @@ import { indicatorsData } from './index2';
             botState.status === 'sell' &&
             // indicatorsData.stochRsi.stoch1m.signal === 'sell',
             ((indicatorsData.dmi1h.adxDownCount > 0 &&
-              Number(
-                (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
+                Number(
+                  (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
                   100,
-              ) >= 0.05) ||
+                ) >= 0.05) ||
               (indicatorsData.dmi1h.adxUpCount > 0 &&
                 Number(
                   (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) *
-                    100 -
-                    100,
+                  100 -
+                  100,
                 ) >= 0.05)),
           //   indicatorsData.roc.roc1m.value < -0.1),
           // indicatorsData.roc.roc1m < -0.1

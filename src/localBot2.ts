@@ -1,54 +1,23 @@
-import { pluck, bufferCount } from 'rxjs/operators';
 import { format } from 'date-fns';
-import { connect } from './db/connection';
-import _omit from 'lodash/omit';
-import { RESOURCES } from './constants';
-import { DATE_FORMAT } from './constants/date';
-import { getTradeStream } from './api/trades.js';
-import { sendToRecipients } from './services/telegram';
+import _head from 'lodash/head';
+import { bufferCount, pluck } from 'rxjs/operators';
 import getBalances from './api/balance';
 import { getExchangeInfo } from './api/exchangeInfo';
 import {
-  marketSellAction,
-  marketBuyAction,
-  getOrdersList,
-  checkAllOpenOrders,
   cancelAllOpenOrders,
+  checkAllOpenOrders,
+  getOrdersList,
+  marketBuyAction,
+  marketSellAction,
 } from './api/order';
-
-import _maxBy from 'lodash/maxBy';
-import { binance } from './api/binance';
-
-import { getEMASignal, runEMAInterval } from './components/ema-signals';
-import getAvarage from './utils/getAverage';
-import { getEmaStream } from '../src/indicators/ema';
-import { getObvStream } from './indicators/obv';
-
-import { getRSISignal, getRsiSignal } from './components/rsi-signals';
-import { getTrixSignal, runTrixInterval } from './components/trix-signal';
-import {
-  getStochRSISignal,
-  runStochRsiInterval,
-} from './components/stochRSI-signals';
-import { getObvSignal } from './components/obv-signals';
+import { getTradeStream } from './api/trades.js';
 import { service as botStateService } from './components/botState';
-import _head from 'lodash/head';
 
-import { getForceIndexSignal, runEFIInterval } from './components/forceIndex';
-import { getForceIndexStream } from './indicators/forceIndex';
-import { getStochRsiStream } from './indicators/stochRSI';
-import { getTrixStream } from './indicators/trix';
-import { getRocSignal } from './components/roc-signals';
-import { getRocStream } from './indicators/roc';
-import { getDMISignal } from './components/dmi-signals';
-import _throttle from 'lodash/throttle';
-import _debounce from 'lodash/debounce';
-import { getHeikinAshiSignal } from './indicators/heikinAshi';
-import {
-  calculateAvgDealPriceChange,
-  calculateAvgPriceChange,
-} from './tools/avgPriceTools';
-import determineDealType from './tools/determineDealType';
+import { getRSISignal } from './components/rsi-signals';
+import { RESOURCES } from './constants';
+import { DATE_FORMAT } from './constants/date';
+import { connect } from './db/connection';
+import { sendToRecipients } from './services/telegram';
 // import { indicatorsData } from './index2';
 
 (async function() {
@@ -891,63 +860,63 @@ import determineDealType from './tools/determineDealType';
       console.log('     *****AVG DEAL PRICE*****');
       console.log(
         'Avg Deal Price: ' +
-          botState.avgDealPrice +
-          '( ' +
-          indicatorsData.avgDealPriceDiff +
-          ' %' +
-          ' )',
+        botState.avgDealPrice +
+        '( ' +
+        indicatorsData.avgDealPriceDiff +
+        ' %' +
+        ' )',
       );
       console.log(
         'Avg Deal Price Diff: ' +
-          indicatorsData.avgDealPriceSignal +
-          '(UP: ' +
-          indicatorsData.avgDealPriceUpSignalCount +
-          ' DOWN: ' +
-          indicatorsData.avgDealPriceDownSignalCount +
-          ')',
+        indicatorsData.avgDealPriceSignal +
+        '(UP: ' +
+        indicatorsData.avgDealPriceUpSignalCount +
+        ' DOWN: ' +
+        indicatorsData.avgDealPriceDownSignalCount +
+        ')',
       );
 
       console.log(
         botState.dealType === 'long'
           ? 'MAX av profit: ' +
-              Number(botState.maxAvailableLongProfit - 0.2) +
-              ' %'
+          Number(botState.maxAvailableLongProfit - 0.2) +
+          ' %'
           : 'MAX av profit: ' +
-              Number(botState.maxAvailableShortProfit + 0.2) +
-              ' %',
+          Number(botState.maxAvailableShortProfit + 0.2) +
+          ' %',
       );
       console.log(
         botState.dealType === 'long'
           ? 'MIN av profit: ' +
-              Number(botState.minAvailableLongProfit - 0.2) +
-              ' %'
+          Number(botState.minAvailableLongProfit - 0.2) +
+          ' %'
           : 'MIN av profit: ' +
-              Number(botState.minAvailableShortProfit + 0.2) +
-              ' %',
+          Number(botState.minAvailableShortProfit + 0.2) +
+          ' %',
       );
       console.log(
         'Profit diff (Max/Current): ' +
-          Number(botState.maxAvailableProfit) / Number(botState.currentProfit) +
-          ' %',
+        Number(botState.maxAvailableProfit) / Number(botState.currentProfit) +
+        ' %',
       );
       botState.status === 'sell' && !botState.strategies.scalper.stopLoss
         ? console.log(
-            'Buy Price: ' +
-              botState.buyPrice +
-              ' (' +
-              botState.currentPrice +
-              ')' +
-              '\n' +
-              'Current profit: ' +
-              (botState.status === 'sell'
-                ? botState.dealType === 'long'
-                  ? Number(botState.currentProfit - 0.2) + ' %'
-                  : Number(botState.currentProfit + 0.2) + ' %'
-                : '-'),
-          )
+          'Buy Price: ' +
+          botState.buyPrice +
+          ' (' +
+          botState.currentPrice +
+          ')' +
+          '\n' +
+          'Current profit: ' +
+          (botState.status === 'sell'
+            ? botState.dealType === 'long'
+              ? Number(botState.currentProfit - 0.2) + ' %'
+              : Number(botState.currentProfit + 0.2) + ' %'
+            : '-'),
+        )
         : botState.strategies.scalper.stopLoss
-        ? console.log('STATUS: SELL (TAKE PROFIT)')
-        : console.log('STATUS: BUY');
+          ? console.log('STATUS: SELL (TAKE PROFIT)')
+          : console.log('STATUS: BUY');
       console.log('\n');
       botState.updateState('isPricesStreamAlive', false);
       indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount++;

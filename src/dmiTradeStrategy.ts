@@ -23,7 +23,7 @@ import { binance } from './api/binance';
 
 import { getEMASignal, runEMAInterval } from './components/ema-signals';
 import getAvarage from './utils/getAverage';
-import { getEmaStream } from '../src/indicators/ema';
+import { getEmaStream } from './indicators/ema';
 import { getObvStream } from './indicators/obv';
 
 import { getRSISignal } from './components/rsi-signals';
