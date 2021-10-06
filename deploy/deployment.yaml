@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: binance-bot-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: binance-bot
+  template:
+    metadata:
+      labels:
+        app: binance-bot
+    spec:
+      containers:
+        - name: binance-bot
+          image: fictionaldev/binance-bot
+          envFrom:
+            - configMapRef:
+                name: binance-bot-env-config
