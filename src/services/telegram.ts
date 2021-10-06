@@ -30,10 +30,9 @@ export const sendToRecipients = async (
   }));
 
   return Promise.all(
-    messages.map(message =>
-      axios
-        .post(`${env.TELEGRAM_API_URL}/sendMessage`, message)
-        .catch(() => telegramService.unsubscribe(message.chat_id)),
+    messages.map(
+      message => axios.post(`${env.TELEGRAM_API_URL}/sendMessage`, message),
+      // .catch(() => telegramService.unsubscribe(message.chat_id)),
     ),
   );
 };

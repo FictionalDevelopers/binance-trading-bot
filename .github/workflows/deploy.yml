@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - feature/strategy-1
     paths:
       - package.json
       - yarn.lock
