@@ -5,10 +5,8 @@ on:
     branches:
       - master
     paths:
-      - package.json
-      - yarn.lock
-      - .github/**
-      - src/**
+      - 'deploy/**'
+
 
 jobs:
   docker-build:
