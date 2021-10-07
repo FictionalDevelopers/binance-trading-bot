@@ -641,6 +641,8 @@ import { getDMISignal } from './components/dmi-signals';
           emaSignal: null,
           emaUpCount: 0,
           emaDownCount: 0,
+          ema: null,
+          prevEMA: null,
         },
       },
     },
@@ -1341,6 +1343,13 @@ import { getDMISignal } from './components/dmi-signals';
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 99,
+  }).subscribe(slowEMA => {
+    indicatorsData.ema.ema1m.slow.ema = slowEMA;
+  });
 
   const calculateEMADiff = (symbol, interval, period, indicatorsData) => {
     getEmaStream({
@@ -1374,7 +1383,35 @@ import { getDMISignal } from './components/dmi-signals';
       });
   };
 
-  calculateEMADiff(symbol, '1m', 99, indicatorsData.ema.ema1m.slow);
+  // calculateEMADiff(symbol, '1m', 99, indicatorsData.ema.ema1m.slow);
+  setInterval(() => {
+    if (
+      !indicatorsData.ema.ema1m.slow.prevEMA &&
+      indicatorsData.ema.ema1m.slow.ema
+    ) {
+      indicatorsData.ema.ema1m.slow.prevEMA = indicatorsData.ema.ema1m.slow.ema;
+      return;
+    }
+    if (!indicatorsData.ema.ema1m.slow.ema) return;
+
+    const currentEma = indicatorsData.ema.ema1m.slow.ema;
+
+    if (currentEma > indicatorsData.ema.ema1m.slow.prevEMA) {
+      indicatorsData.ema.ema1m.slow.emaUpCount++;
+      indicatorsData.ema.ema1m.slow.emaDownCount = 0;
+    }
+    if (currentEma < indicatorsData.ema.ema1m.slow.prevEMA) {
+      indicatorsData.ema.ema1m.slow.emaDownCount++;
+      indicatorsData.ema.ema1m.slow.emaUpCount = 0;
+    }
+
+    if (indicatorsData.ema.ema1m.slow.emaUpCount >= 1)
+      indicatorsData.ema.ema1m.slow.emaSignal = 'buy';
+    else if (indicatorsData.ema.ema1m.slow.emaDownCount >= 1)
+      indicatorsData.ema.ema1m.slow.emaSignal = 'sell';
+
+    indicatorsData.ema.ema1m.slow.prevEMA = currentEma;
+  }, 60000);
 
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 60, 60);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 10, 10);
