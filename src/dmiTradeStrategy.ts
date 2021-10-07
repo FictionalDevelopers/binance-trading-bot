@@ -1411,7 +1411,7 @@ import { getDMISignal } from './components/dmi-signals';
       indicatorsData.ema.ema1m.slow.emaSignal = 'sell';
 
     indicatorsData.ema.ema1m.slow.prevEMA = currentEma;
-  }, 60000);
+  }, 2000);
 
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 60, 60);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 10, 10);
