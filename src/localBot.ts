@@ -112,7 +112,7 @@ import getAvarage from './utils/getAverage';
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: true,
-      status: 'buy',
+      status: 'pending',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -1470,9 +1470,9 @@ import getAvarage from './utils/getAverage';
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   // getEMASignal(symbol, '1m', indicatorsData.fast1mEMA)
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
-  getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
+  // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
 
   const calculateEMADiff = (symbol, interval, period, indicatorsData) => {
@@ -1507,7 +1507,7 @@ import getAvarage from './utils/getAverage';
       });
   };
 
-  calculateEMADiff(symbol, '30m', 99, indicatorsData.ema.ema30m.slow);
+  calculateEMADiff(symbol, '1d', 99, indicatorsData.ema.ema30m.slow);
 
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
@@ -1674,13 +1674,13 @@ import getAvarage from './utils/getAverage';
       );
       console.log(
         'EMA: ' +
-          indicatorsData.emaSignal +
+          indicatorsData.ema.ema30m.slow.emaSignal +
           ' ' +
           '(UpCount: ' +
-          indicatorsData.emaUpCount +
+          indicatorsData.ema.ema30m.slow.emaUpCount +
           ' ' +
           'DownCount: ' +
-          indicatorsData.emaDownCount +
+          indicatorsData.ema.ema30m.slow.emaDownCount +
           ')',
       );
       // console.log('RSI 15m: ' + indicatorsData.rsi15m.rsiValue);

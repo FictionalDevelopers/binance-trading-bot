@@ -15,9 +15,7 @@
     "lint": "eslint --fix src/*"
   },
   "husky": {
-    "hooks": {
-      "pre-commit": "if git-branch-is master; then echo 'Current branch is protected from commit. You can not commit directly to master'; exit 1; else lint-staged && lint-diff HEAD; fi"
-    }
+    "hooks": {}
   },
   "lint-staged": {
     "*.{js}": [
