@@ -1472,8 +1472,8 @@ import getAvarage from './utils/getAverage';
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 10, 10);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
 
   const calculateEMADiff = (symbol, interval, period, indicatorsData) => {
     getEmaStream({
