@@ -1424,6 +1424,33 @@ import { getDMISignal } from './components/dmi-signals';
       indicatorsData.ema.ema1m.slow.emaSignal = 'sell';
 
     indicatorsData.ema.ema1m.slow.prevEMA = currentEma;
+
+    if (
+      !indicatorsData.ema.ema1m.fast.prevEMA &&
+      indicatorsData.ema.ema1m.fast.ema
+    ) {
+      indicatorsData.ema.ema1m.fast.prevEMA = indicatorsData.ema.ema1m.fast.ema;
+      return;
+    }
+    if (!indicatorsData.ema.ema1m.fast.ema) return;
+
+    const currentEmaFast = indicatorsData.ema.ema1m.fast.ema;
+
+    if (currentEmaFast > indicatorsData.ema.ema1m.fast.prevEMA) {
+      indicatorsData.ema.ema1m.fast.emaUpCount++;
+      indicatorsData.ema.ema1m.fast.emaDownCount = 0;
+    }
+    if (currentEmaFast < indicatorsData.ema.ema1m.fast.prevEMA) {
+      indicatorsData.ema.ema1m.fast.emaDownCount++;
+      indicatorsData.ema.ema1m.fast.emaUpCount = 0;
+    }
+
+    if (indicatorsData.ema.ema1m.fast.emaUpCount >= 1)
+      indicatorsData.ema.ema1m.fast.emaSignal = 'buy';
+    else if (indicatorsData.ema.ema1m.fast.emaDownCount >= 1)
+      indicatorsData.ema.ema1m.fast.emaSignal = 'sell';
+
+    indicatorsData.ema.ema1m.fast.prevEMA = currentEmaFast;
   }, 60000);
 
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 60, 60);
