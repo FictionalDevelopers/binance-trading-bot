@@ -1424,7 +1424,7 @@ import { getDMISignal } from './components/dmi-signals';
   getEmaStream({
     symbol: symbol,
     interval: '1m',
-    period: 7,
+    period: 99,
   }).subscribe(fastEMA => {
     indicatorsData.ema.ema1m.fast.ema = fastEMA;
   });
