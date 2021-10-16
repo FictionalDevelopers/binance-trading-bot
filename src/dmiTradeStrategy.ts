@@ -1002,7 +1002,7 @@ import { getDMISignal } from './components/dmi-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv1w.buySignalCount >= 20,
+                indicatorsData.obv1w.buySignalCount >= 100,
           // indicatorsData.ema.ema1m.fast.emaUpCount >= 2 &&
           // indicatorsData.obvAv5m.buySignalCount >= 2 &&
           // indicatorsData.obv1m.buySignalCount >= 4 &&
@@ -1026,7 +1026,7 @@ import { getDMISignal } from './components/dmi-signals';
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.ema.ema1m.fast.emaDownCount >= 2 &&
-                indicatorsData.obv1w.sellSignalCount >= 20,
+                indicatorsData.obv1w.sellSignalCount >= 100,
           // indicatorsData.obvAv5m.sellSignalCount >= 2 &&
           // indicatorsData.obv1m.sellSignalCount >= 4 &&
           // indicatorsData.obvAv1m.sellSignalCount >= 2,
@@ -1069,7 +1069,7 @@ import { getDMISignal } from './components/dmi-signals';
               // indicatorsData.obv5m.sellSignalCount >= 20 &&
               // indicatorsData.obv1m.sellSignalCount >= 6 &&
               // indicatorsData.obv30m.sellSignalCount >= 60 &&
-              indicatorsData.obv1w.sellSignalCount >= 20,
+              indicatorsData.obv1w.sellSignalCount >= 100,
             // indicatorsData.ema.ema1m.slow.emaSignal === 'sell',
             // indicatorsData.obv15m.sellSignalCount >= 30 &&
             // indicatorsData.obv1h.sellSignalCount >= 20 &&
@@ -1093,7 +1093,7 @@ import { getDMISignal } from './components/dmi-signals';
 
               // indicatorsData.obv5m.buySignalCount >= 20 &&
               // indicatorsData.obv1m.buySignalCount >= 6 &&
-              indicatorsData.obv1w.buySignalCount >= 20,
+              indicatorsData.obv1w.buySignalCount >= 100,
             // indicatorsData.obv30m.buySignalCount >= 60,
             // indicatorsData.ema.ema1m.slow.emaSignal === 'buy',
             // indicatorsData.obv5m.buySignalCount >= 20 &&
