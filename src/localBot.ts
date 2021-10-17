@@ -116,7 +116,7 @@ import { getMACDStream } from './indicators/macd';
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: true,
-      status: 'pending',
+      status: 'buy',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -313,6 +313,8 @@ import { getMACDStream } from './indicators/macd';
           emaSignal: null,
           emaUpCount: 0,
           emaDownCount: 0,
+          ema: null,
+          prevEMA: null,
         },
         slow: {
           emaAvSignal: null,
@@ -1083,10 +1085,12 @@ import { getMACDStream } from './indicators/macd';
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.obv30m.buySignalCount >= 20 &&
-                indicatorsData.obv15m.buySignalCount >= 10 &&
-                indicatorsData.obv5m.buySignalCount >= 10 &&
-                // indicatorsData.obvAv5m.buySignalCount >= 2 &&
-                indicatorsData.obv1m.buySignalCount >= 10,
+                indicatorsData.obv15m.buySignalCount >= 6 &&
+                indicatorsData.ema.ema1m.fast.emaUpCount >= 2,
+
+          // indicatorsData.obv5m.buySignalCount >= 10 &&
+          // indicatorsData.obvAv5m.buySignalCount >= 2 &&
+          // indicatorsData.obv1m.buySignalCount >= 10,
           // indicatorsData.obvAv1m.buySignalCount >= 2,
           // indicatorsData.obv1m.buySignalCount >= 6 &&
           // indicatorsData.ema.ema1m.slow.emaSignal === 'buy',
@@ -1111,10 +1115,11 @@ import { getMACDStream } from './indicators/macd';
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.obv30m.sellSignalCount >= 20 &&
-                indicatorsData.obv15m.sellSignalCount >= 10 &&
-                indicatorsData.obv5m.sellSignalCount >= 10 &&
-                // indicatorsData.obvAv5m.sellSignalCount >= 2 &&
-                indicatorsData.obv1m.sellSignalCount >= 10,
+                indicatorsData.obv15m.sellSignalCount >= 6 &&
+                indicatorsData.ema.ema1m.fast.emaDownCount >= 2,
+          // indicatorsData.obv5m.sellSignalCount >= 10 &&
+          // indicatorsData.obvAv5m.sellSignalCount >= 2 &&
+          // indicatorsData.obv1m.sellSignalCount >= 10,
           // indicatorsData.obvAv1m.sellSignalCount >= 2,
 
           // indicatorsData.obv1m.sellSignalCount >= 6 &&
@@ -1169,9 +1174,10 @@ import { getMACDStream } from './indicators/macd';
               //     indicatorsData.obvAv1m.sellSignalCount >= 1 &&
               //     indicatorsData.obv1m.sellSignalCount >= 4)),
 
-              indicatorsData.obv15m.sellSignalCount >= 10 &&
-              indicatorsData.obv5m.sellSignalCount >= 10 &&
-              indicatorsData.obv1m.sellSignalCount >= 10,
+              indicatorsData.obv15m.sellSignalCount >= 6 &&
+              indicatorsData.ema.ema1m.fast.emaDownCount >= 2,
+            // indicatorsData.obv5m.sellSignalCount >= 10 &&
+            // indicatorsData.obv1m.sellSignalCount >= 10,
             // indicatorsData.ema.ema1m.slow.emaSignal === 'sell',
             // (botState.dmi1m.adxUpCount > 0
             // ? indicatorsData.dmi1m.adxDownCount >= 4
@@ -1213,9 +1219,10 @@ import { getMACDStream } from './indicators/macd';
               //     indicatorsData.obvAv1m.buySignalCount >= 1 &&
               //     indicatorsData.obv1m.buySignalCount >= 4)),
 
-              indicatorsData.obv15m.buySignalCount >= 10 &&
-              indicatorsData.obv5m.buySignalCount >= 10 &&
-              indicatorsData.obv1m.buySignalCount >= 10,
+              indicatorsData.obv15m.buySignalCount >= 6 &&
+              indicatorsData.ema.ema1m.fast.emaUpCount >= 2,
+            // indicatorsData.obv5m.buySignalCount >= 10 &&
+            // indicatorsData.obv1m.buySignalCount >= 10,
             // indicatorsData.ema.ema1m.slow.emaSignal === 'buy',
             // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2,
             // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'buy' &&
@@ -1572,7 +1579,6 @@ import { getMACDStream } from './indicators/macd';
 
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
-
   // getHeikinAshiSignal(symbol, '4h', 6, 6, indicatorsData.haCandle.ha4hCandle);
   // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
@@ -1580,14 +1586,10 @@ import { getMACDStream } from './indicators/macd';
   // getEMASignal(symbol, '1m', indicatorsData.fast1mEMA)
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
-  getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
-  getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  // getForceIndexSignal(symbol, '1d', 13, indicatorsData.efi1d);
-  // getForceIndexSignal(symbol, '30m', 13, indicatorsData.efi30m);
-  // getForceIndexSignal(symbol, '15m', 13, indicatorsData.efi15m);
-  // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
+  // getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
+  // getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
+  getObvSignal(symbol, '5m', indicatorsData.obv15m, 6, 6);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
 
   const calculateAvgObv = (symbol, timeframe, dst) => {
     getObvStream({
@@ -1656,108 +1658,111 @@ import { getMACDStream } from './indicators/macd';
   };
   // calculateEMADiff(symbol, '1m', 99, indicatorsData.ema.ema1m.slow);
 
-  // getMACDStream({
-  //   symbol: symbol,
-  //   interval: '1m',
-  // })
-  //   .subscribe(macd => {
-  //     indicatorsData.macd.macd5m.histogram = macd.histogram;
-  //   });
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 7,
+  }).subscribe(fastEMA => {
+    indicatorsData.ema.ema1m.fast.ema = fastEMA;
+  });
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 25,
+  }).subscribe(middleEMA => {
+    indicatorsData.ema.ema1m.middle.ema = middleEMA;
+  });
+  getEmaStream({
+    symbol: symbol,
+    interval: '1m',
+    period: 99,
+  }).subscribe(slowEMA => {
+    indicatorsData.ema.ema1m.slow.ema = slowEMA;
+  });
 
-  // setInterval(() => {
-  //   if (!indicatorsData.macd.macd5m.prevHistogram) {
-  //     indicatorsData.macd.macd5m.prevHistogram =
-  //       indicatorsData.macd.macd5m.histogram;
-  //     return;
-  //   }
-  //   if (
-  //     indicatorsData.macd.macd5m.prevHistogram >
-  //     indicatorsData.macd.macd5m.histogram
-  //   ) {
-  //     indicatorsData.macd.macd5m.sellSignalCount++;
-  //     indicatorsData.macd.macd5m.buySignalCount = 0;
-  //   } else if (
-  //     indicatorsData.macd.macd5m.prevHistogram <
-  //     indicatorsData.macd.macd5m.histogram
-  //   ) {
-  //     indicatorsData.macd.macd5m.buySignalCount++;
-  //     indicatorsData.macd.macd5m.sellSignalCount = 0;
-  //   }
-  //   indicatorsData.macd.macd5m.prevHistogram =
-  //     indicatorsData.macd.macd5m.histogram;
-  // }, 60000);
+  setInterval(() => {
+    if (
+      !indicatorsData.ema.ema1m.slow.prevEMA &&
+      indicatorsData.ema.ema1m.slow.ema
+    ) {
+      indicatorsData.ema.ema1m.slow.prevEMA = indicatorsData.ema.ema1m.slow.ema;
+      return;
+    }
+    if (!indicatorsData.ema.ema1m.slow.ema) return;
 
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1m',
-  //   period: 7,
-  // }).subscribe(fastEMA => {
-  //   indicatorsData.ema.ema1m.fast.ema = fastEMA;
-  // });
-  // getEmaStream({
-  //   symbol: symbol,
-  //   interval: '1m',
-  //   period: 99,
-  // }).subscribe(slowEMA => {
-  //   indicatorsData.ema.ema1m.slow.ema = slowEMA;
-  // });
-  // getMACDSignal(symbol, '5m', indicatorsData.macd.macd5m);
+    const currentEma = indicatorsData.ema.ema1m.slow.ema;
 
-  // setInterval(() => {
-  //   if (
-  //     !indicatorsData.ema.ema1m.slow.prevEMA &&
-  //     indicatorsData.ema.ema1m.slow.ema
-  //   ) {
-  //     indicatorsData.ema.ema1m.slow.prevEMA = indicatorsData.ema.ema1m.slow.ema;
-  //     return;
-  //   }
-  //   if (!indicatorsData.ema.ema1m.slow.ema) return;
-  //
-  //   const currentEma = indicatorsData.ema.ema1m.slow.ema;
-  //
-  //   if (currentEma > indicatorsData.ema.ema1m.slow.prevEMA) {
-  //     indicatorsData.ema.ema1m.slow.emaUpCount++;
-  //     indicatorsData.ema.ema1m.slow.emaDownCount = 0;
-  //   }
-  //   if (currentEma < indicatorsData.ema.ema1m.slow.prevEMA) {
-  //     indicatorsData.ema.ema1m.slow.emaDownCount++;
-  //     indicatorsData.ema.ema1m.slow.emaUpCount = 0;
-  //   }
-  //
-  //   if (indicatorsData.ema.ema1m.slow.emaUpCount >= 1)
-  //     indicatorsData.ema.ema1m.slow.emaSignal = 'buy';
-  //   else if (indicatorsData.ema.ema1m.slow.emaDownCount >= 1)
-  //     indicatorsData.ema.ema1m.slow.emaSignal = 'sell';
-  //
-  //   indicatorsData.ema.ema1m.slow.prevEMA = currentEma;
-  //
-  //   if (
-  //     !indicatorsData.ema.ema1m.fast.prevEMA &&
-  //     indicatorsData.ema.ema1m.fast.ema
-  //   ) {
-  //     indicatorsData.ema.ema1m.fast.prevEMA = indicatorsData.ema.ema1m.fast.ema;
-  //     return;
-  //   }
-  //   if (!indicatorsData.ema.ema1m.fast.ema) return;
-  //
-  //   const currentEmaFast = indicatorsData.ema.ema1m.fast.ema;
-  //
-  //   if (currentEmaFast > indicatorsData.ema.ema1m.fast.prevEMA) {
-  //     indicatorsData.ema.ema1m.fast.emaUpCount++;
-  //     indicatorsData.ema.ema1m.fast.emaDownCount = 0;
-  //   }
-  //   if (currentEmaFast < indicatorsData.ema.ema1m.fast.prevEMA) {
-  //     indicatorsData.ema.ema1m.fast.emaDownCount++;
-  //     indicatorsData.ema.ema1m.fast.emaUpCount = 0;
-  //   }
-  //
-  //   // if (indicatorsData.ema.ema1m.fast.emaUpCount >= 1)
-  //   //   indicatorsData.ema.ema1m.fast.emaSignal = 'buy';
-  //   // else if (indicatorsData.ema.ema1m.fast.emaDownCount >= 1)
-  //   //   indicatorsData.ema.ema1m.fast.emaSignal = 'sell';
-  //
-  //   indicatorsData.ema.ema1m.fast.prevEMA = currentEmaFast;
-  // }, 20000);
+    if (currentEma > indicatorsData.ema.ema1m.slow.prevEMA) {
+      indicatorsData.ema.ema1m.slow.emaUpCount++;
+      indicatorsData.ema.ema1m.slow.emaDownCount = 0;
+    }
+    if (currentEma < indicatorsData.ema.ema1m.slow.prevEMA) {
+      indicatorsData.ema.ema1m.slow.emaDownCount++;
+      indicatorsData.ema.ema1m.slow.emaUpCount = 0;
+    }
+
+    if (indicatorsData.ema.ema1m.slow.emaUpCount >= 1)
+      indicatorsData.ema.ema1m.slow.emaSignal = 'buy';
+    else if (indicatorsData.ema.ema1m.slow.emaDownCount >= 1)
+      indicatorsData.ema.ema1m.slow.emaSignal = 'sell';
+
+    indicatorsData.ema.ema1m.slow.prevEMA = currentEma;
+
+    if (
+      !indicatorsData.ema.ema1m.fast.prevEMA &&
+      indicatorsData.ema.ema1m.fast.ema
+    ) {
+      indicatorsData.ema.ema1m.fast.prevEMA = indicatorsData.ema.ema1m.fast.ema;
+      return;
+    }
+    if (!indicatorsData.ema.ema1m.fast.ema) return;
+
+    const currentEmaFast = indicatorsData.ema.ema1m.fast.ema;
+
+    if (currentEmaFast > indicatorsData.ema.ema1m.fast.prevEMA) {
+      indicatorsData.ema.ema1m.fast.emaUpCount++;
+      indicatorsData.ema.ema1m.fast.emaDownCount = 0;
+    }
+    if (currentEmaFast < indicatorsData.ema.ema1m.fast.prevEMA) {
+      indicatorsData.ema.ema1m.fast.emaDownCount++;
+      indicatorsData.ema.ema1m.fast.emaUpCount = 0;
+    }
+
+    // if (indicatorsData.ema.ema1m.fast.emaUpCount >= 1)
+    //   indicatorsData.ema.ema1m.fast.emaSignal = 'buy';
+    // else if (indicatorsData.ema.ema1m.fast.emaDownCount >= 1)
+    //   indicatorsData.ema.ema1m.fast.emaSignal = 'sell';
+
+    indicatorsData.ema.ema1m.fast.prevEMA = currentEmaFast;
+
+    if (
+      !indicatorsData.ema.ema1m.middle.prevEMA &&
+      indicatorsData.ema.ema1m.middle.ema
+    ) {
+      indicatorsData.ema.ema1m.middle.prevEMA =
+        indicatorsData.ema.ema1m.middle.ema;
+      return;
+    }
+    if (!indicatorsData.ema.ema1m.middle.ema) return;
+
+    const currentEmaMiddle = indicatorsData.ema.ema1m.middle.ema;
+
+    if (currentEmaMiddle > indicatorsData.ema.ema1m.middle.prevEMA) {
+      indicatorsData.ema.ema1m.middle.emaUpCount++;
+      indicatorsData.ema.ema1m.middle.emaDownCount = 0;
+    }
+    if (currentEmaMiddle < indicatorsData.ema.ema1m.middle.prevEMA) {
+      indicatorsData.ema.ema1m.middle.emaDownCount++;
+      indicatorsData.ema.ema1m.middle.emaUpCount = 0;
+    }
+
+    // if (indicatorsData.ema.ema1m.fast.emaUpCount >= 1)
+    //   indicatorsData.ema.ema1m.fast.emaSignal = 'buy';
+    // else if (indicatorsData.ema.ema1m.fast.emaDownCount >= 1)
+    //   indicatorsData.ema.ema1m.fast.emaSignal = 'sell';
+
+    indicatorsData.ema.ema1m.middle.prevEMA = currentEmaMiddle;
+  }, 60000);
 
   // calculateEMADiff(symbol, '1d', 99, indicatorsData.ema.ema30m.slow);
 
@@ -1988,17 +1993,6 @@ import { getMACDStream } from './indicators/macd';
       //           ')',
       //       );
       // ;
-      //       console.log(
-      //         'EMA 99: ' +
-      //           indicatorsData.ema.ema1m.slow.emaSignal +
-      //           ' ' +
-      //           '(UpCount: ' +
-      //           indicatorsData.ema.ema1m.slow.emaUpCount +
-      //           ' ' +
-      //           'DownCount: ' +
-      //           indicatorsData.ema.ema1m.slow.emaDownCount +
-      //           ')',
-      //       );
       console.log(
         'EMA 99: ' +
           indicatorsData.ema.ema1m.slow.emaSignal +
@@ -2008,6 +2002,17 @@ import { getMACDStream } from './indicators/macd';
           ' ' +
           'DownCount: ' +
           indicatorsData.ema.ema1m.slow.emaDownCount +
+          ')',
+      );
+      console.log(
+        'EMA 25: ' +
+          indicatorsData.ema.ema1m.middle.emaSignal +
+          ' ' +
+          '(UpCount: ' +
+          indicatorsData.ema.ema1m.middle.emaUpCount +
+          ' ' +
+          'DownCount: ' +
+          indicatorsData.ema.ema1m.middle.emaDownCount +
           ')',
       );
       console.log(
