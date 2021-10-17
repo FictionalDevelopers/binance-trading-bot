@@ -1010,9 +1010,9 @@ import { getDMISignal } from './components/dmi-signals';
                 // indicatorsData.obv30m.buySignalCount >= 60 &&
                 // indicatorsData.obv15m.buySignalCount >= 20,
                 indicatorsData.obv5m.buySignalCount >= 20 &&
-                indicatorsData.ema.ema1m.fast.emaUpCount >= 1 &&
-                indicatorsData.ema.ema1m.middle.emaUpCount >= 1 &&
-                indicatorsData.ema.ema1m.slow.emaUpCount >= 1,
+                indicatorsData.ema.ema1m.fast.emaUpCount >= 2 &&
+                indicatorsData.ema.ema1m.middle.emaUpCount >= 2,
+          // indicatorsData.ema.ema1m.slow.emaUpCount >= 1,
           // indicatorsData.obv1d.buySignalCount >= 100 &&
           // indicatorsData.obv15m.buySignalCount >= 30 &&
           // indicatorsData.obv1h.buySignalCount >= 60 &&
@@ -1026,9 +1026,9 @@ import { getDMISignal } from './components/dmi-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.obv5m.sellSignalCount >= 20 &&
-                indicatorsData.ema.ema1m.fast.emaDownCount >= 1 &&
-                indicatorsData.ema.ema1m.middle.emaDownCount >= 1 &&
-                indicatorsData.ema.ema1m.slow.emaDownCount >= 1,
+                indicatorsData.ema.ema1m.fast.emaDownCount >= 2 &&
+                indicatorsData.ema.ema1m.middle.emaDownCount >= 2,
+          // indicatorsData.ema.ema1m.slow.emaDownCount >= 1,
           // indicatorsData.ema.ema1m.fast.emaDownCount >= 2 &&
           // indicatorsData.obv1w.sellSignalCount >= 100,
           // indicatorsData.obvAv5m.sellSignalCount >= 2 &&
@@ -1064,9 +1064,9 @@ import { getDMISignal } from './components/dmi-signals';
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
               indicatorsData.obv5m.sellSignalCount >= 20 &&
-              indicatorsData.ema.ema1m.fast.emaDownCount >= 1 &&
-              indicatorsData.ema.ema1m.middle.emaDownCount >= 1 &&
-              indicatorsData.ema.ema1m.slow.emaDownCount >= 1,
+              indicatorsData.ema.ema1m.fast.emaDownCount >= 2 &&
+              indicatorsData.ema.ema1m.middle.emaDownCount >= 2,
+            // indicatorsData.ema.ema1m.slow.emaDownCount >= 1,
             // indicatorsData.ema.ema1m.fast.emaDownCount >= 2 &&
             // ((indicatorsData.obv5m.sellSignalCount >= 4 &&
             //   indicatorsData.obvAv5m.sellSignalCount >= 1) ||
@@ -1093,9 +1093,9 @@ import { getDMISignal } from './components/dmi-signals';
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
               indicatorsData.obv5m.buySignalCount >= 20 &&
-              indicatorsData.ema.ema1m.fast.emaUpCount >= 1 &&
-              indicatorsData.ema.ema1m.middle.emaUpCount >= 1 &&
-              indicatorsData.ema.ema1m.slow.emaUpCount >= 1,
+              indicatorsData.ema.ema1m.fast.emaUpCount >= 2 &&
+              indicatorsData.ema.ema1m.middle.emaUpCount >= 2,
+            // indicatorsData.ema.ema1m.slow.emaUpCount >= 1,
             // indicatorsData.ema.ema1m.fast.emaUpCount >= 2 &&
             // ((indicatorsData.obv5m.buySignalCount >= 4 &&
             //   indicatorsData.obvAv5m.buySignalCount >= 1) ||
