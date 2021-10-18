@@ -1010,8 +1010,8 @@ import { getDMISignal } from './components/dmi-signals';
                 // indicatorsData.obv30m.buySignalCount >= 60 &&
                 // indicatorsData.obv15m.buySignalCount >= 20,
                 indicatorsData.obv5m.buySignalCount >= 20 &&
-                indicatorsData.ema.ema1m.fast.emaUpCount >= 2 &&
-                indicatorsData.ema.ema1m.middle.emaUpCount >= 2,
+                indicatorsData.ema.ema1m.fast.emaUpCount >= 1 &&
+                indicatorsData.ema.ema1m.middle.emaUpCount >= 1,
           // indicatorsData.ema.ema1m.slow.emaUpCount >= 1,
           // indicatorsData.obv1d.buySignalCount >= 100 &&
           // indicatorsData.obv15m.buySignalCount >= 30 &&
@@ -1026,8 +1026,8 @@ import { getDMISignal } from './components/dmi-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.obv5m.sellSignalCount >= 20 &&
-                indicatorsData.ema.ema1m.fast.emaDownCount >= 2 &&
-                indicatorsData.ema.ema1m.middle.emaDownCount >= 2,
+                indicatorsData.ema.ema1m.fast.emaDownCount >= 1 &&
+                indicatorsData.ema.ema1m.middle.emaDownCount >= 1,
           // indicatorsData.ema.ema1m.slow.emaDownCount >= 1,
           // indicatorsData.ema.ema1m.fast.emaDownCount >= 2 &&
           // indicatorsData.obv1w.sellSignalCount >= 100,
@@ -1064,8 +1064,8 @@ import { getDMISignal } from './components/dmi-signals';
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
               indicatorsData.obv5m.sellSignalCount >= 20 &&
-              indicatorsData.ema.ema1m.fast.emaDownCount >= 2 &&
-              indicatorsData.ema.ema1m.middle.emaDownCount >= 2,
+              indicatorsData.ema.ema1m.fast.emaDownCount >= 1 &&
+              indicatorsData.ema.ema1m.middle.emaDownCount >= 1,
             // indicatorsData.ema.ema1m.slow.emaDownCount >= 1,
             // indicatorsData.ema.ema1m.fast.emaDownCount >= 2 &&
             // ((indicatorsData.obv5m.sellSignalCount >= 4 &&
@@ -1093,8 +1093,8 @@ import { getDMISignal } from './components/dmi-signals';
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
               indicatorsData.obv5m.buySignalCount >= 20 &&
-              indicatorsData.ema.ema1m.fast.emaUpCount >= 2 &&
-              indicatorsData.ema.ema1m.middle.emaUpCount >= 2,
+              indicatorsData.ema.ema1m.fast.emaUpCount >= 1 &&
+              indicatorsData.ema.ema1m.middle.emaUpCount >= 1,
             // indicatorsData.ema.ema1m.slow.emaUpCount >= 1,
             // indicatorsData.ema.ema1m.fast.emaUpCount >= 2 &&
             // ((indicatorsData.obv5m.buySignalCount >= 4 &&
@@ -1416,41 +1416,41 @@ import { getDMISignal } from './components/dmi-signals';
   }).subscribe(middleEMA => {
     indicatorsData.ema.ema1m.middle.ema = middleEMA;
   });
-  getEmaStream({
-    symbol: symbol,
-    interval: '1m',
-    period: 99,
-  }).subscribe(slowEMA => {
-    indicatorsData.ema.ema1m.slow.ema = slowEMA;
-  });
+  // getEmaStream({
+  //   symbol: symbol,
+  //   interval: '1m',
+  //   period: 99,
+  // }).subscribe(slowEMA => {
+  //   indicatorsData.ema.ema1m.slow.ema = slowEMA;
+  // });
 
   setInterval(() => {
-    if (
-      !indicatorsData.ema.ema1m.slow.prevEMA &&
-      indicatorsData.ema.ema1m.slow.ema
-    ) {
-      indicatorsData.ema.ema1m.slow.prevEMA = indicatorsData.ema.ema1m.slow.ema;
-      return;
-    }
-    if (!indicatorsData.ema.ema1m.slow.ema) return;
-
-    const currentEma = indicatorsData.ema.ema1m.slow.ema;
-
-    if (currentEma > indicatorsData.ema.ema1m.slow.prevEMA) {
-      indicatorsData.ema.ema1m.slow.emaUpCount++;
-      indicatorsData.ema.ema1m.slow.emaDownCount = 0;
-    }
-    if (currentEma < indicatorsData.ema.ema1m.slow.prevEMA) {
-      indicatorsData.ema.ema1m.slow.emaDownCount++;
-      indicatorsData.ema.ema1m.slow.emaUpCount = 0;
-    }
-
-    if (indicatorsData.ema.ema1m.slow.emaUpCount >= 1)
-      indicatorsData.ema.ema1m.slow.emaSignal = 'buy';
-    else if (indicatorsData.ema.ema1m.slow.emaDownCount >= 1)
-      indicatorsData.ema.ema1m.slow.emaSignal = 'sell';
-
-    indicatorsData.ema.ema1m.slow.prevEMA = currentEma;
+    // if (
+    //   !indicatorsData.ema.ema1m.slow.prevEMA &&
+    //   indicatorsData.ema.ema1m.slow.ema
+    // ) {
+    //   indicatorsData.ema.ema1m.slow.prevEMA = indicatorsData.ema.ema1m.slow.ema;
+    //   return;
+    // }
+    // if (!indicatorsData.ema.ema1m.slow.ema) return;
+    //
+    // const currentEma = indicatorsData.ema.ema1m.slow.ema;
+    //
+    // if (currentEma > indicatorsData.ema.ema1m.slow.prevEMA) {
+    //   indicatorsData.ema.ema1m.slow.emaUpCount++;
+    //   indicatorsData.ema.ema1m.slow.emaDownCount = 0;
+    // }
+    // if (currentEma < indicatorsData.ema.ema1m.slow.prevEMA) {
+    //   indicatorsData.ema.ema1m.slow.emaDownCount++;
+    //   indicatorsData.ema.ema1m.slow.emaUpCount = 0;
+    // }
+    //
+    // if (indicatorsData.ema.ema1m.slow.emaUpCount >= 1)
+    //   indicatorsData.ema.ema1m.slow.emaSignal = 'buy';
+    // else if (indicatorsData.ema.ema1m.slow.emaDownCount >= 1)
+    //   indicatorsData.ema.ema1m.slow.emaSignal = 'sell';
+    //
+    // indicatorsData.ema.ema1m.slow.prevEMA = currentEma;
 
     if (
       !indicatorsData.ema.ema1m.fast.prevEMA &&
