@@ -304,6 +304,11 @@ export const marketSellAction = async (
                                     }
                                     Date: ${format(new Date(), DATE_FORMAT)}
                                     Indicators data:
+                                    OBV 30m: BSC: ${
+                                      indicatorsData.obv30m.buySignalCount
+                                    } SSC: ${
+            indicatorsData.obv30m.sellSignalCount
+          }
                                     OBV 15m: BSC: ${
                                       indicatorsData.obv15m.buySignalCount
                                     } SSC: ${
@@ -314,11 +319,7 @@ export const marketSellAction = async (
                                     } SSC: ${
             indicatorsData.obv5m.sellSignalCount
           }
-                                    OBV 1m: BSC: ${
-                                      indicatorsData.obv1m.buySignalCount
-                                    } SSC: ${
-            indicatorsData.obv1m.sellSignalCount
-          }
+                                    
                                     Current profit: ${
                                       botState.dealType === 'long'
                                         ? expectedProfitPercent - 0.08
@@ -776,6 +777,12 @@ export const marketBuyAction = async (
                                Price: ${botState.buyPrice}
                                Date: ${format(new Date(), DATE_FORMAT)}
                                Indicators data: 
+                                    OBV 30m: BSC: ${
+                                      indicatorsData.obv30m.buySignalCount
+                                    } SSC: ${
+          indicatorsData.obv30m.sellSignalCount
+        }
+
                                     OBV 15m: BSC: ${
                                       indicatorsData.obv15m.buySignalCount
                                     } SSC: ${
@@ -787,12 +794,7 @@ export const marketBuyAction = async (
                                     } SSC: ${
           indicatorsData.obv5m.sellSignalCount
         }
-                                    OBV 1m: BSC: ${
-                                      indicatorsData.obv1m.buySignalCount
-                                    } SSC: ${
-          indicatorsData.obv1m.sellSignalCount
-        }
-                        
+                                                            
                         
                         `);
       }
