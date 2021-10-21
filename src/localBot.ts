@@ -1085,8 +1085,10 @@ import { getMACDStream } from './indicators/macd';
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.obv30m.buySignalCount >= 20 &&
-                indicatorsData.obv5m.buySignalCount >= 30 &&
-                indicatorsData.macd.macd5m.buySignalCount >= 3,
+                indicatorsData.obv15m.buySignalCount >= 20 &&
+                indicatorsData.obv5m.buySignalCount >= 20 &&
+                indicatorsData.obv1m.buySignalCount >= 4 &&
+                indicatorsData.macd.macd5m.buySignalCount >= 2,
           // indicatorsData.ema.ema1m.fast.emaUpCount >= 1 &&
           // indicatorsData.ema.ema1m.middle.emaUpCount >= 1,
 
@@ -1117,8 +1119,10 @@ import { getMACDStream } from './indicators/macd';
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.obv30m.sellSignalCount >= 20 &&
-                indicatorsData.obv5m.sellSignalCount >= 30 &&
-                indicatorsData.macd.macd5m.sellSignalCount >= 3,
+                indicatorsData.obv15m.sellSignalCount >= 20 &&
+                indicatorsData.obv5m.sellSignalCount >= 20 &&
+                indicatorsData.obv1m.sellSignalCount >= 4 &&
+                indicatorsData.macd.macd5m.sellSignalCount >= 2,
 
           // indicatorsData.ema.ema1m.fast.emaDownCount >= 1 &&
           // indicatorsData.ema.ema1m.middle.emaDownCount >= 1,
@@ -1179,8 +1183,9 @@ import { getMACDStream } from './indicators/macd';
               //     indicatorsData.obvAv1m.sellSignalCount >= 1 &&
               //     indicatorsData.obv1m.sellSignalCount >= 4)),
 
-              indicatorsData.obv5m.sellSignalCount >= 30 &&
-              indicatorsData.macd.macd5m.sellSignalCount >= 3,
+              indicatorsData.obv5m.sellSignalCount >= 20 &&
+              indicatorsData.obv1m.sellSignalCount >= 4 &&
+              indicatorsData.macd.macd5m.sellSignalCount >= 1,
 
             // indicatorsData.ema.ema1m.fast.emaDownCount >= 1,
             // indicatorsData.obv5m.sellSignalCount >= 10 &&
@@ -1226,8 +1231,9 @@ import { getMACDStream } from './indicators/macd';
               //     indicatorsData.obvAv1m.buySignalCount >= 1 &&
               //     indicatorsData.obv1m.buySignalCount >= 4)),
 
-              indicatorsData.obv5m.buySignalCount >= 30 &&
-              indicatorsData.macd.macd5m.buySignalCount >= 3,
+              indicatorsData.obv5m.buySignalCount >= 20 &&
+              indicatorsData.obv1m.buySignalCount >= 4 &&
+              indicatorsData.macd.macd5m.buySignalCount >= 1,
 
             // indicatorsData.ema.ema1m.fast.emaUpCount >= 1,
             // indicatorsData.obv5m.buySignalCount >= 10 &&
@@ -1597,9 +1603,9 @@ import { getMACDStream } from './indicators/macd';
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
 
   const calculateAvgObv = (symbol, timeframe, dst) => {
     getObvStream({
@@ -1696,7 +1702,7 @@ import { getMACDStream } from './indicators/macd';
     }
     indicatorsData.macd.macd5m.prevHistogram =
       indicatorsData.macd.macd5m.histogram;
-  }, 5000);
+  }, 1000);
 
   // getEmaStream({
   //   symbol: symbol,
@@ -1976,39 +1982,39 @@ import { getMACDStream } from './indicators/macd';
       //     indicatorsData.obvAv5m.sellSignalCount +
       //     ')',
       // );
-      console.log(
-        'OBV 30m: ' +
-          indicatorsData.obv30m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv30m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv30m.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 1w: ' +
-          indicatorsData.obv1w.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1w.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1w.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 1D: ' +
-          indicatorsData.obv1d.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1d.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1d.sellSignalCount +
-          ')',
-      );
+      // console.log(
+      //   'OBV 30m: ' +
+      //     indicatorsData.obv30m.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv30m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv30m.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 1w: ' +
+      //     indicatorsData.obv1w.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1w.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1w.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 1D: ' +
+      //     indicatorsData.obv1d.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1d.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1d.sellSignalCount +
+      //     ')',
+      // );
 
       console.log(
         'OBV 15m: ' +
