@@ -1542,7 +1542,7 @@ import { getMACDStream } from './indicators/macd';
 
   getMACDStream({
     symbol: symbol,
-    interval: '1m',
+    interval: '5m',
   }).subscribe(macd => {
     indicatorsData.macd.macd5m.histogram = macd.histogram;
   });
@@ -1568,7 +1568,7 @@ import { getMACDStream } from './indicators/macd';
     }
     indicatorsData.macd.macd5m.prevHistogram =
       indicatorsData.macd.macd5m.histogram;
-  }, 1000);
+  }, 60000);
 
   // const calculateAvgObv = (symbol, timeframe, dst) => {
   //   getObvStream({
