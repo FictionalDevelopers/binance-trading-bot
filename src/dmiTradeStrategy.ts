@@ -1013,12 +1013,12 @@ import { getMACDStream } from './indicators/macd';
               : botState.status === 'buy' &&
                 // indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
                 // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-          indicatorsData.obv15m.buySignalCount >= 30 &&
-          indicatorsData.obv5m.buySignalCount >= 20 &&
-          // indicatorsData.obv1m.buySignalCount >= 4 &&
-          indicatorsData.macd.macd5m.buySignalCount >= 2 &&
-          // indicatorsData.obv1w.buySignalCount >= 100,
-          indicatorsData.ema.ema1m.slow.emaUpCount >= 2 &&
+                indicatorsData.obv15m.buySignalCount >= 30 &&
+                indicatorsData.obv5m.buySignalCount >= 20 &&
+                // indicatorsData.obv1m.buySignalCount >= 4 &&
+                indicatorsData.macd.macd5m.buySignalCount >= 2 &&
+                // indicatorsData.obv1w.buySignalCount >= 100,
+                indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
           // indicatorsData.obvAv5m.buySignalCount >= 2 &&
           // indicatorsData.obv1m.buySignalCount >= 4 &&
           // indicatorsData.obvAv1m.buySignalCount >= 2,
@@ -1042,11 +1042,11 @@ import { getMACDStream } from './indicators/macd';
               : botState.status === 'buy' &&
                 // indicatorsData.stochRsi.stoch15m.signal === 'sell' &&
                 // indicatorsData.stochRsi.stoch5m.signal === 'sell',
-          indicatorsData.obv15m.sellSignalCount >= 30 &&
-          indicatorsData.obv5m.sellSignalCount >= 20 &&
-          // indicatorsData.obv1m.sellSignalCount >= 4 &&
-          indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
-          indicatorsData.ema.ema1m.slow.emaDownCount >= 2,
+                indicatorsData.obv15m.sellSignalCount >= 30 &&
+                indicatorsData.obv5m.sellSignalCount >= 20 &&
+                // indicatorsData.obv1m.sellSignalCount >= 4 &&
+                indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
+                indicatorsData.ema.ema1m.slow.emaDownCount >= 2,
 
           // indicatorsData.obv30m.sellSignalCount >= 60 &&
           // indicatorsData.obv15m.sellSignalCount >= 30 &&
@@ -1089,14 +1089,14 @@ import { getMACDStream } from './indicators/macd';
               botState.dealType === 'long' &&
               // indicatorsData.stochRsi.stoch15m.signal === 'sell' &&
               // indicatorsData.stochRsi.stoch5m.signal === 'sell',
-            indicatorsData.obv15m.sellSignalCount >= 30 &&
-            indicatorsData.obv5m.sellSignalCount >= 20 &&
-            // indicatorsData.obv1m.sellSignalCount >= 4 &&
-            indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
-            // indicatorsData.obv5m.sellSignalCount >= 20 &&
-            // indicatorsData.ema.ema1m.fast.emaDownCount >= 1 &&
-            // indicatorsData.ema.ema1m.middle.emaDownCount >= 1,
-            indicatorsData.ema.ema1m.slow.emaDownCount >= 2,
+              indicatorsData.obv15m.sellSignalCount >= 30 &&
+              indicatorsData.obv5m.sellSignalCount >= 20 &&
+              // indicatorsData.obv1m.sellSignalCount >= 4 &&
+              indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
+              // indicatorsData.obv5m.sellSignalCount >= 20 &&
+              // indicatorsData.ema.ema1m.fast.emaDownCount >= 1 &&
+              // indicatorsData.ema.ema1m.middle.emaDownCount >= 1,
+              indicatorsData.ema.ema1m.slow.emaDownCount >= 2,
             // indicatorsData.ema.ema1m.fast.emaDownCount >= 2 &&
             // ((indicatorsData.obv5m.sellSignalCount >= 4 &&
             //   indicatorsData.obvAv5m.sellSignalCount >= 1) ||
@@ -1124,15 +1124,14 @@ import { getMACDStream } from './indicators/macd';
               botState.dealType === 'short' &&
               // indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
               // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-            indicatorsData.obv15m.buySignalCount >= 30 &&
-            indicatorsData.obv5m.buySignalCount >= 20 &&
-            // indicatorsData.obv1m.buySignalCount >= 4 &&
-            indicatorsData.macd.macd5m.buySignalCount >= 2 &&
-
-            // indicatorsData.obv5m.buySignalCount >= 20 &&
-            // indicatorsData.ema.ema1m.fast.emaUpCount >= 1 &&
-            // indicatorsData.ema.ema1m.middle.emaUpCount >= 1,
-            indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
+              indicatorsData.obv15m.buySignalCount >= 30 &&
+              indicatorsData.obv5m.buySignalCount >= 20 &&
+              // indicatorsData.obv1m.buySignalCount >= 4 &&
+              indicatorsData.macd.macd5m.buySignalCount >= 2 &&
+              // indicatorsData.obv5m.buySignalCount >= 20 &&
+              // indicatorsData.ema.ema1m.fast.emaUpCount >= 1 &&
+              // indicatorsData.ema.ema1m.middle.emaUpCount >= 1,
+              indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
             // indicatorsData.ema.ema1m.fast.emaUpCount >= 2 &&
             // ((indicatorsData.obv5m.buySignalCount >= 4 &&
             //   indicatorsData.obvAv5m.buySignalCount >= 1) ||
