@@ -1019,9 +1019,8 @@ import { getMACDStream } from './indicators/macd';
               : botState.status === 'buy' &&
                 // indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
                 // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-                indicatorsData.obv5m.buySignalCount >= 20 &&
-                (indicatorsData.dmi5m.buySignalCount >= 3 ||
-                  indicatorsData.dmi5m.sellSignalCount >= 3),
+                indicatorsData.obv15m.buySignalCount >= 20 &&
+                indicatorsData.dmi15m.buySignalCount >= 3,
 
           // indicatorsData.obv5m.buySignalCount >= 20 &&
           // indicatorsData.obv1m.buySignalCount >= 4 &&
@@ -1051,9 +1050,8 @@ import { getMACDStream } from './indicators/macd';
               : botState.status === 'buy' &&
                 // indicatorsData.stochRsi.stoch15m.signal === 'sell' &&
                 // indicatorsData.stochRsi.stoch5m.signal === 'sell',
-                indicatorsData.obv5m.sellSignalCount >= 20 &&
-                (indicatorsData.dmi5m.buySignalCount >= 3 ||
-                  indicatorsData.dmi5m.sellSignalCount >= 3),
+                indicatorsData.obv15m.sellSignalCount >= 20 &&
+                indicatorsData.dmi15m.buySignalCount >= 3,
 
           // indicatorsData.obv5m.sellSignalCount >= 20 &&
           // indicatorsData.obv1m.sellSignalCount >= 4 &&
@@ -1101,7 +1099,9 @@ import { getMACDStream } from './indicators/macd';
               botState.dealType === 'long' &&
               // indicatorsData.stochRsi.stoch15m.signal === 'sell' &&
               // indicatorsData.stochRsi.stoch5m.signal === 'sell',
-              indicatorsData.obv5m.sellSignalCount >= 20,
+              indicatorsData.obv15m.sellSignalCount >= 20 &&
+              indicatorsData.dmi15m.buySignalCount >= 3,
+
             // indicatorsData.obv5m.sellSignalCount >= 20 &&
             // indicatorsData.obv1m.sellSignalCount >= 4 &&
             // indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
@@ -1136,7 +1136,9 @@ import { getMACDStream } from './indicators/macd';
               botState.dealType === 'short' &&
               // indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
               // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-              indicatorsData.obv5m.buySignalCount >= 20,
+              indicatorsData.obv15m.buySignalCount >= 20 &&
+              indicatorsData.dmi15m.buySignalCount >= 3,
+
             // indicatorsData.obv5m.buySignalCount >= 20 &&
             // indicatorsData.obv1m.buySignalCount >= 4 &&
             // indicatorsData.macd.macd5m.buySignalCount >= 2 &&
@@ -1574,11 +1576,11 @@ import { getMACDStream } from './indicators/macd';
       src.prevAdx = currentAdx;
     },
     1000,
-    indicatorsData.dmi5m,
+    indicatorsData.dmi15m,
   );
 
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
-  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
+  getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
 
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
   // getStochRSISignal(
