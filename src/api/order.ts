@@ -321,6 +321,24 @@ export const marketSellAction = async (
           }                         OBV 1m: BSC: ${
             indicatorsData.obv1m.buySignalCount
           } SSC: ${indicatorsData.obv1m.sellSignalCount}
+           ADX 5m: ${'(UP: ' +
+             indicatorsData.dmi5m.buySignalCount +
+             ' ' +
+             'DOWN: ' +
+             indicatorsData.dmi5m.sellSignalCount +
+             ' ' +
+             'Current: ' +
+             indicatorsData.dmi5m.adx}
+      
+      ADX 15m: ${'(UP: ' +
+        indicatorsData.dmi15m.buySignalCount +
+        ' ' +
+        'DOWN: ' +
+        indicatorsData.dmi15m.sellSignalCount +
+        ' ' +
+        'Current: ' +
+        indicatorsData.dmi15m.adx}
+      
                                     
                                     Current profit: ${
                                       botState.dealType === 'long'
@@ -799,6 +817,25 @@ export const marketBuyAction = async (
          OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
           indicatorsData.obv1m.sellSignalCount
         }
+        
+        ADX 5m: ${'(UP: ' +
+          indicatorsData.dmi5m.buySignalCount +
+          ' ' +
+          'DOWN: ' +
+          indicatorsData.dmi5m.sellSignalCount +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi5m.adx}
+      
+      ADX 15m: ${'(UP: ' +
+        indicatorsData.dmi15m.buySignalCount +
+        ' ' +
+        'DOWN: ' +
+        indicatorsData.dmi15m.sellSignalCount +
+        ' ' +
+        'Current: ' +
+        indicatorsData.dmi15m.adx}
+      
                                                             
                         
                         `);
