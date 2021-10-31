@@ -1020,7 +1020,8 @@ import { getMACDStream } from './indicators/macd';
                 // indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
                 // indicatorsData.stochRsi.stoch5m.signal === 'buy',
                 indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.dmi15m.buySignalCount >= 3,
+                (indicatorsData.dmi15m.buySignalCount >= 3 ||
+                  indicatorsData.dmi15m.sellSignalCount >= 3),
 
           // indicatorsData.obv5m.buySignalCount >= 20 &&
           // indicatorsData.obv1m.buySignalCount >= 4 &&
@@ -1051,7 +1052,8 @@ import { getMACDStream } from './indicators/macd';
                 // indicatorsData.stochRsi.stoch15m.signal === 'sell' &&
                 // indicatorsData.stochRsi.stoch5m.signal === 'sell',
                 indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.dmi15m.buySignalCount >= 3,
+                (indicatorsData.dmi15m.buySignalCount >= 3 ||
+                  indicatorsData.dmi15m.sellSignalCount >= 3),
 
           // indicatorsData.obv5m.sellSignalCount >= 20 &&
           // indicatorsData.obv1m.sellSignalCount >= 4 &&
@@ -1101,7 +1103,7 @@ import { getMACDStream } from './indicators/macd';
               // indicatorsData.stochRsi.stoch5m.signal === 'sell',
               indicatorsData.obv15m.sellSignalCount >= 20 &&
               (indicatorsData.dmi15m.buySignalCount >= 3 ||
-                indicatorsData.dmi15m.sellSignalCount >= 3),
+                indicatorsData.dmi15m.sellSignalCount >= 1),
             // indicatorsData.obv5m.sellSignalCount >= 20 &&
             // indicatorsData.obv1m.sellSignalCount >= 4 &&
             // indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
@@ -1138,7 +1140,7 @@ import { getMACDStream } from './indicators/macd';
               // indicatorsData.stochRsi.stoch5m.signal === 'buy',
               indicatorsData.obv15m.buySignalCount >= 20 &&
               (indicatorsData.dmi15m.buySignalCount >= 3 ||
-                indicatorsData.dmi15m.sellSignalCount >= 3),
+                indicatorsData.dmi15m.sellSignalCount >= 1),
             // indicatorsData.obv5m.buySignalCount >= 20 &&
             // indicatorsData.obv1m.buySignalCount >= 4 &&
             // indicatorsData.macd.macd5m.buySignalCount >= 2 &&
