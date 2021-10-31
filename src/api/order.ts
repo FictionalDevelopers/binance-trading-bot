@@ -318,7 +318,9 @@ export const marketSellAction = async (
                                       indicatorsData.obv5m.buySignalCount
                                     } SSC: ${
             indicatorsData.obv5m.sellSignalCount
-          }
+          }                         OBV 1m: BSC: ${
+            indicatorsData.obv1m.buySignalCount
+          } SSC: ${indicatorsData.obv1m.sellSignalCount}
                                     
                                     Current profit: ${
                                       botState.dealType === 'long'
@@ -793,6 +795,9 @@ export const marketBuyAction = async (
                                       indicatorsData.obv5m.buySignalCount
                                     } SSC: ${
           indicatorsData.obv5m.sellSignalCount
+        }
+         OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
+          indicatorsData.obv1m.sellSignalCount
         }
                                                             
                         
