@@ -22,11 +22,13 @@ import { connect } from './db/connection';
 import { sendToRecipients } from './services/telegram';
 import getAvarage from './utils/getAverage';
 import { getDMISignal } from './components/dmi-signals';
+import { getCCIStream } from './indicators/cci';
 import { getObvStream } from './indicators/obv';
 import { getForceIndexSignal } from './components/forceIndex';
 import { getMACDSignal } from './components/macd-signals';
 import { getMACDStream } from './indicators/macd';
 import { calculateAvgPriceChange } from './tools/avgPriceTools';
+import { getCCISignal } from './components/cci-signals';
 
 (async function() {
   await connect();
@@ -209,6 +211,17 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
   // };
 
   const indicatorsData = {
+    cci: {
+      cci15m: {
+        prev: null,
+        av: null,
+        cci: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        upSignalCount: 0,
+        downSignalCount: 0,
+      },
+    },
     macd: {
       macd5m: {
         histogram: null,
@@ -653,6 +666,8 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
       sellSignalCount: 0,
     },
     dmi15m: {
+      adx: null,
+      prevAdx: null,
       adxUpCount: 0,
       adxDownCount: 0,
       adxDiff: null,
@@ -670,6 +685,8 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
       sellSignalCount: 0,
     },
     dmi1h: {
+      adx: null,
+      prevAdx: null,
       adxUpCount: 0,
       adxDownCount: 0,
       adxDiff: null,
@@ -1091,11 +1108,14 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
                 // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 1 &&
                 // indicatorsData.macd.macd5m.buySignalCount >= 2 &&
                 // indicatorsData.obv1h.buySignalCount >= 30 &&
-                // indicatorsData.obv15m.buySignalCount,
+                // indicatorsData.obv15m.buySignalCount >= 20 &&
                 // indicatorsData.ema.ema1m.slow.emaUpCount >= 3 &&
                 // indicatorsData.obv5m.buySignalCount >= 10 &&
-                indicatorsData.obv5m.buySignalCount >= 20 &&
-                indicatorsData.dmi1m.buySignalCount >= 3,
+                indicatorsData.obv15m.buySignalCount >= 20 &&
+                indicatorsData.cci.cci15m.buySignalCount >= 3,
+          // indicatorsData.dmi15m.buySignalCount >= 3 &&
+          // (indicatorsData.dmi1m.buySignalCount >= 2 ||
+          //   indicatorsData.dmi1m.sellSignalCount >= 2),
           // indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
           // indicatorsData.obv1m.buySignalCount >= 4 &&
           // indicatorsData.macd.macd5m.buySignalCount >= 2,
@@ -1133,8 +1153,13 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 // indicatorsData.ema.ema1m.slow.emaDownCount >= 3 &&
                 // indicatorsData.obv5m.sellSignalCount >= 10 &&
-                indicatorsData.obv5m.sellSignalCount >= 20 &&
-                indicatorsData.dmi1m.buySignalCount >= 3,
+                indicatorsData.obv15m.sellSignalCount >= 20 &&
+                indicatorsData.cci.cci15m.sellSignalCount >= 3,
+
+          // indicatorsData.obv1m.sellSignalCount >= 20 &&
+          // (indicatorsData.dmi1m.buySignalCount >= 2 ||
+          //   indicatorsData.dmi1m.sellSignalCount >= 2),
+          // indicatorsData.dmi1h.buySignalCount >= 3,
           // indicatorsData.ema.ema1m.slow.emaDownCount >= 3,
 
           // indicatorsData.obv1m.sellSignalCount >= 4 &&
@@ -1193,11 +1218,13 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              // indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
-              // indicatorsData.ema.ema1m.slow.emaDownCount >= 3 &&
-              // indicatorsData.obv5m.sellSignalCount >= 10 &&
-              indicatorsData.obv5m.sellSignalCount >= 20 &&
-              indicatorsData.dmi1m.buySignalCount >= 3,
+              indicatorsData.cci.cci15m.downSignalCount >= 3,
+            // indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
+            // indicatorsData.ema.ema1m.slow.emaDownCount >= 3 &&
+            // indicatorsData.obv5m.sellSignalCount >= 10 &&
+            // indicatorsData.obv5m.sellSignalCount >= 20 &&
+            // (indicatorsData.dmi1m.buySignalCount >= 2 ||
+            //   indicatorsData.dmi1m.sellSignalCount >= 2),
             // indicatorsData.ema.ema1m.slow.emaDownCount >= 3,
 
             // ((indicatorsData.obv5m.sellSignalCount >= 4 &&
@@ -1248,11 +1275,14 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              // indicatorsData.ema.ema1m.slow.emaUpCount >= 3 &&
-              // indicatorsData.macd.macd5m.buySignalCount >= 2 &&
-              // indicatorsData.obv5m.buySignalCount >= 10 &&
-              indicatorsData.obv5m.buySignalCount >= 20 &&
-              indicatorsData.dmi1m.buySignalCount >= 3,
+              indicatorsData.cci.cci15m.upSignalCount >= 3,
+
+            // indicatorsData.ema.ema1m.slow.emaUpCount >= 3 &&
+            // indicatorsData.macd.macd5m.buySignalCount >= 2 &&
+            // indicatorsData.obv5m.buySignalCount >= 10 &&
+            // indicatorsData.obv5m.buySignalCount >= 20 &&
+            // (indicatorsData.dmi1m.buySignalCount >= 2 ||
+            //   indicatorsData.dmi1m.sellSignalCount >= 2),
 
             // indicatorsData.ema.ema1m.slow.emaUpCount >= 3,
 
@@ -1635,8 +1665,12 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
   // getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
-  getObvSignal(symbol, '15m', indicatorsData.obv5m, 6, 6);
-  getDMISignal(symbol, '15m', indicatorsData.dmi1m, 1, 0, 0);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
+  // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
+  getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
+  // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
 
   // const calculateAvgObv = (symbol, timeframe, dst) => {
@@ -1705,25 +1739,63 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
       });
   };
   // calculateEMADiff(symbol, '1m', 99, indicatorsData.ema.ema1m.slow);
-  setInterval(
-    src => {
-      if (!src.prevAdx) {
-        src.prevAdx = src.adx;
-        return;
-      }
-      const currentAdx = src.adx;
-      if (currentAdx > src.prevAdx) {
-        src.buySignalCount++;
-        src.sellSignalCount = 0;
-      } else if (currentAdx < src.prevAdx) {
-        src.sellSignalCount++;
-        src.buySignalCount = 0;
-      }
-      src.prevAdx = currentAdx;
-    },
-    1000,
-    indicatorsData.dmi1m,
-  );
+  // setInterval(
+  //   src => {
+  //     if (!src.prevAdx) {
+  //       src.prevAdx = src.adx;
+  //       return;
+  //     }
+  //     const currentAdx = src.adx;
+  //     if (currentAdx > src.prevAdx) {
+  //       src.buySignalCount++;
+  //       src.sellSignalCount = 0;
+  //     } else if (currentAdx < src.prevAdx) {
+  //       src.sellSignalCount++;
+  //       src.buySignalCount = 0;
+  //     }
+  //     src.prevAdx = currentAdx;
+  //   },
+  //   5000,
+  //   indicatorsData.dmi1m,
+  // );
+  // setInterval(
+  //   src => {
+  //     if (!src.prevAdx) {
+  //       src.prevAdx = src.adx;
+  //       return;
+  //     }
+  //     const currentAdx = src.adx;
+  //     if (currentAdx > src.prevAdx) {
+  //       src.buySignalCount++;
+  //       src.sellSignalCount = 0;
+  //     } else if (currentAdx < src.prevAdx) {
+  //       src.sellSignalCount++;
+  //       src.buySignalCount = 0;
+  //     }
+  //     src.prevAdx = currentAdx;
+  //   },
+  //   60000,
+  //   indicatorsData.dmi1h,
+  // );
+  // setInterval(
+  //   src => {
+  //     if (!src.prevAdx) {
+  //       src.prevAdx = src.adx;
+  //       return;
+  //     }
+  //     const currentAdx = src.adx;
+  //     if (currentAdx > src.prevAdx) {
+  //       src.buySignalCount++;
+  //       src.sellSignalCount = 0;
+  //     } else if (currentAdx < src.prevAdx) {
+  //       src.sellSignalCount++;
+  //       src.buySignalCount = 0;
+  //     }
+  //     src.prevAdx = currentAdx;
+  //   },
+  //   1000,
+  //   indicatorsData.dmi1h,
+  // );
 
   // getMACDStream({
   //   symbol: symbol,
@@ -2114,6 +2186,24 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
       //     indicatorsData.obv1d.sellSignalCount +
       //     ')',
       // );
+
+      console.log(
+        'CCI 15m: ' +
+          indicatorsData.cci.cci15m.cci +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.cci.cci15m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.cci.cci15m.sellSignalCount +
+          ')' +
+          '(Up Count: ' +
+          indicatorsData.cci.cci15m.upSignalCount +
+          ' ' +
+          'Down Count: ' +
+          indicatorsData.cci.cci15m.downSignalCount +
+          ')',
+      );
       console.log(
         'OBV 1h: ' +
           indicatorsData.obv1h.signal +
@@ -2170,15 +2260,15 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
           indicatorsData.obv1m.sellSignalCount +
           ')',
       );
-      console.log(
-        'MACD 5m: ' +
-          '(Buy Count: ' +
-          indicatorsData.macd.macd5m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.macd.macd5m.sellSignalCount +
-          ')',
-      );
+      // console.log(
+      //   'MACD 5m: ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.macd.macd5m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.macd.macd5m.sellSignalCount +
+      //     ')',
+      // );
 
       // console.log(
       //   'OBV Av 1m: ' +
@@ -2213,39 +2303,39 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
       //           ')',
       //       );
       // ;
-      console.log(
-        'EMA 99: ' +
-          indicatorsData.ema.ema1m.slow.emaSignal +
-          ' ' +
-          '(UpCount: ' +
-          indicatorsData.ema.ema1m.slow.emaUpCount +
-          ' ' +
-          'DownCount: ' +
-          indicatorsData.ema.ema1m.slow.emaDownCount +
-          ')',
-      );
-      console.log(
-        'EMA 25: ' +
-          indicatorsData.ema.ema1m.middle.emaSignal +
-          ' ' +
-          '(UpCount: ' +
-          indicatorsData.ema.ema1m.middle.emaUpCount +
-          ' ' +
-          'DownCount: ' +
-          indicatorsData.ema.ema1m.middle.emaDownCount +
-          ')',
-      );
-      console.log(
-        'EMA 7: ' +
-          indicatorsData.ema.ema1m.fast.emaSignal +
-          ' ' +
-          '(UpCount: ' +
-          indicatorsData.ema.ema1m.fast.emaUpCount +
-          ' ' +
-          'DownCount: ' +
-          indicatorsData.ema.ema1m.fast.emaDownCount +
-          ')',
-      );
+      // console.log(
+      //   'EMA 99: ' +
+      //     indicatorsData.ema.ema1m.slow.emaSignal +
+      //     ' ' +
+      //     '(UpCount: ' +
+      //     indicatorsData.ema.ema1m.slow.emaUpCount +
+      //     ' ' +
+      //     'DownCount: ' +
+      //     indicatorsData.ema.ema1m.slow.emaDownCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'EMA 25: ' +
+      //     indicatorsData.ema.ema1m.middle.emaSignal +
+      //     ' ' +
+      //     '(UpCount: ' +
+      //     indicatorsData.ema.ema1m.middle.emaUpCount +
+      //     ' ' +
+      //     'DownCount: ' +
+      //     indicatorsData.ema.ema1m.middle.emaDownCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'EMA 7: ' +
+      //     indicatorsData.ema.ema1m.fast.emaSignal +
+      //     ' ' +
+      //     '(UpCount: ' +
+      //     indicatorsData.ema.ema1m.fast.emaUpCount +
+      //     ' ' +
+      //     'DownCount: ' +
+      //     indicatorsData.ema.ema1m.fast.emaDownCount +
+      //     ')',
+      // );
 
       // console.log('RSI 15m: ' + indicatorsData.rsi15m.rsiValue);
       // console.log('RSI 5m: ' + indicatorsData.rsi5m.rsiValue);
@@ -2452,6 +2542,16 @@ import { calculateAvgPriceChange } from './tools/avgPriceTools';
           ' ' +
           'Current: ' +
           indicatorsData.dmi1m.adx,
+      );
+      console.log(
+        'ADX 1h: ' +
+          '(UP: ' +
+          indicatorsData.dmi1h.buySignalCount +
+          'DOWN: ' +
+          indicatorsData.dmi1h.sellSignalCount +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi1h.adx,
       );
 
       if (botState.status === 'sell') {
