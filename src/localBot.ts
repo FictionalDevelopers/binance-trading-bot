@@ -221,6 +221,15 @@ import { getCCISignal } from './components/cci-signals';
         upSignalCount: 0,
         downSignalCount: 0,
       },
+      cci1m: {
+        prev: null,
+        av: null,
+        cci: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        upSignalCount: 0,
+        downSignalCount: 0,
+      },
     },
     macd: {
       macd5m: {
@@ -1110,12 +1119,12 @@ import { getCCISignal } from './components/cci-signals';
                 // indicatorsData.obv1h.buySignalCount >= 30 &&
                 // indicatorsData.obv15m.buySignalCount >= 20 &&
                 // indicatorsData.ema.ema1m.slow.emaUpCount >= 3 &&
-                // indicatorsData.obv5m.buySignalCount >= 10 &&
-                indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.cci.cci15m.buySignalCount >= 3,
+                indicatorsData.obv5m.buySignalCount >= 20 &&
+                // indicatorsData.obv15m.buySignalCount >= 20 &&
+                indicatorsData.cci.cci1m.buySignalCount >= 3,
           // indicatorsData.dmi15m.buySignalCount >= 3 &&
-          // (indicatorsData.dmi1m.buySignalCount >= 2 ||
-          //   indicatorsData.dmi1m.sellSignalCount >= 2),
+          // (indicatorsData.dmi1m.adxUpCount >= 3 ||
+          //   indicatorsData.dmi1m.adxDownCount >= 3),
           // indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
           // indicatorsData.obv1m.buySignalCount >= 4 &&
           // indicatorsData.macd.macd5m.buySignalCount >= 2,
@@ -1152,13 +1161,13 @@ import { getCCISignal } from './components/cci-signals';
                 // indicatorsData.obv1h.sellSignalCount >= 30 &&
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 // indicatorsData.ema.ema1m.slow.emaDownCount >= 3 &&
-                // indicatorsData.obv5m.sellSignalCount >= 10 &&
-                indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.cci.cci15m.sellSignalCount >= 3,
+                indicatorsData.obv5m.sellSignalCount >= 20 &&
+                // indicatorsData.obv15m.sellSignalCount >= 20 &&
+                indicatorsData.cci.cci1m.sellSignalCount >= 3,
 
           // indicatorsData.obv1m.sellSignalCount >= 20 &&
-          // (indicatorsData.dmi1m.buySignalCount >= 2 ||
-          //   indicatorsData.dmi1m.sellSignalCount >= 2),
+          // (indicatorsData.dmi1m.adxUpCount >= 3 ||
+          //   indicatorsData.dmi1m.adxDownCount >= 3),
           // indicatorsData.dmi1h.buySignalCount >= 3,
           // indicatorsData.ema.ema1m.slow.emaDownCount >= 3,
 
@@ -1218,13 +1227,15 @@ import { getCCISignal } from './components/cci-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.cci.cci15m.downSignalCount >= 3,
-            // indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
-            // indicatorsData.ema.ema1m.slow.emaDownCount >= 3 &&
-            // indicatorsData.obv5m.sellSignalCount >= 10 &&
-            // indicatorsData.obv5m.sellSignalCount >= 20 &&
-            // (indicatorsData.dmi1m.buySignalCount >= 2 ||
-            //   indicatorsData.dmi1m.sellSignalCount >= 2),
+              // indicatorsData.cci.cci15m.downSignalCount >= 3,
+              // indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
+              // indicatorsData.ema.ema1m.slow.emaDownCount >= 3 &&
+              indicatorsData.obv5m.sellSignalCount >= 20 &&
+              indicatorsData.cci.cci1m.downSignalCount >= 3,
+
+            // indicatorsData.obv15m.sellSignalCount >= 20,
+            // (indicatorsData.dmi1m.adxUpCount >= 5 ||
+            //   indicatorsData.dmi1m.adxDownCount >= 5),
             // indicatorsData.ema.ema1m.slow.emaDownCount >= 3,
 
             // ((indicatorsData.obv5m.sellSignalCount >= 4 &&
@@ -1275,35 +1286,37 @@ import { getCCISignal } from './components/cci-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.cci.cci15m.upSignalCount >= 3,
+              // indicatorsData.cci.cci15m.upSignalCount >= 3,
 
-            // indicatorsData.ema.ema1m.slow.emaUpCount >= 3 &&
-            // indicatorsData.macd.macd5m.buySignalCount >= 2 &&
-            // indicatorsData.obv5m.buySignalCount >= 10 &&
-            // indicatorsData.obv5m.buySignalCount >= 20 &&
-            // (indicatorsData.dmi1m.buySignalCount >= 2 ||
-            //   indicatorsData.dmi1m.sellSignalCount >= 2),
+              // indicatorsData.ema.ema1m.slow.emaUpCount >= 3 &&
+              // indicatorsData.macd.macd5m.buySignalCount >= 2 &&
+              // indicatorsData.obv5m.buySignalCount >= 10 &&
+              // indicatorsData.obv5m.buySignalCount >= 20 &&
+              // (indicatorsData.dmi1m.buySignalCount >= 2 ||
+              //   indicatorsData.dmi1m.sellSignalCount >= 2),
 
-            // indicatorsData.ema.ema1m.slow.emaUpCount >= 3,
+              // indicatorsData.ema.ema1m.slow.emaUpCount >= 3,
 
-            // ((indicatorsData.obv5m.buySignalCount >= 4 &&
-            //   indicatorsData.obvAv5m.buySignalCount >= 1) ||
-            //   (indicatorsData.obv5m.buySignalCount >= 1 &&
-            //     indicatorsData.obvAv1m.buySignalCount >= 1 &&
-            //     indicatorsData.obv1m.buySignalCount >= 4)),
-            // indicatorsData.ema.ema1m.middle.emaUpCount >= 2 &&
-            // indicatorsData.obv5m.buySignalCount >= 20 &&
-            // indicatorsData.obv1m.buySignalCount >= 4 &&
-            // indicatorsData.macd.macd5m.buySignalCount >= 2,
+              // ((indicatorsData.obv5m.buySignalCount >= 4 &&
+              //   indicatorsData.obvAv5m.buySignalCount >= 1) ||
+              //   (indicatorsData.obv5m.buySignalCount >= 1 &&
+              //     indicatorsData.obvAv1m.buySignalCount >= 1 &&
+              //     indicatorsData.obv1m.buySignalCount >= 4)),
+              // indicatorsData.ema.ema1m.middle.emaUpCount >= 2 &&
+              // indicatorsData.obv5m.buySignalCount >= 20 &&
+              // indicatorsData.obv1m.buySignalCount >= 4 &&
+              // indicatorsData.macd.macd5m.buySignalCount >= 2,
 
-            // indicatorsData.ema.ema1m.fast.emaUpCount >= 1,
-            // indicatorsData.obv5m.buySignalCount >= 10 &&
-            // indicatorsData.obv1m.buySignalCount >= 10,
+              // indicatorsData.ema.ema1m.fast.emaUpCount >= 1,
+              indicatorsData.obv5m.buySignalCount >= 20 &&
+              indicatorsData.cci.cci1m.upSignalCount >= 3,
+
+            // indicatorsData.obv15m.buySignalCount >= 20,
             // indicatorsData.ema.ema1m.slow.emaSignal === 'buy',
             // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2,
             // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'buy' &&
-            // (indicatorsData.dmi1m.adxUpCount >= 4 ||
-            //   indicatorsData.dmi1m.adxDownCount >= 4),
+            // (indicatorsData.dmi1m.adxUpCount >= 5 ||
+            //   indicatorsData.dmi1m.adxDownCount >= 5),
             // (botState.dmi1m.adxUpCount > 0
             //   ? indicatorsData.dmi1m.adxDownCount >= 4
             //   : indicatorsData.dmi1m.adxUpCount >= 4 ||
@@ -1664,12 +1677,15 @@ import { getCCISignal } from './components/cci-signals';
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
+  getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
+
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
-  getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
+  // getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
 
@@ -2205,6 +2221,17 @@ import { getCCISignal } from './components/cci-signals';
           ')',
       );
       console.log(
+        'OBV 4h: ' +
+          indicatorsData.obv4h.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv4h.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv4h.sellSignalCount +
+          ')',
+      );
+      console.log(
         'OBV 1h: ' +
           indicatorsData.obv1h.signal +
           ' ' +
@@ -2388,17 +2415,6 @@ import { getCCISignal } from './components/cci-signals';
       //     ')',
       // );
       // console.log(
-      //   'OBV 1h: ' +
-      //     indicatorsData.obv1h.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv1h.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv1h.sellSignalCount +
-      //     ')',
-      // );
-      // console.log(
       //   'OBV 15m: ' +
       //     indicatorsData.obv15m.signal +
       //     ' ' +
@@ -2536,9 +2552,9 @@ import { getCCISignal } from './components/cci-signals';
       console.log(
         'ADX 1m: ' +
           '(UP: ' +
-          indicatorsData.dmi1m.buySignalCount +
+          indicatorsData.dmi1m.adxUpCount +
           'DOWN: ' +
-          indicatorsData.dmi1m.sellSignalCount +
+          indicatorsData.dmi1m.adxDownCount +
           ' ' +
           'Current: ' +
           indicatorsData.dmi1m.adx,

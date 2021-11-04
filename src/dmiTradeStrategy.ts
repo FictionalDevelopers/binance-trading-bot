@@ -167,9 +167,17 @@ import { getCCISignal } from './components/cci-signals';
   //   },
   // };
 
-  const indicatorsData = {
+  const indicatorsData = {s
     cci: {
       cci15m: {
+        prev: null,
+        av: null,
+        cci: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        upSignalCount: 0,
+        downSignalCount: 0,
+      },      cci1m: {
         prev: null,
         av: null,
         cci: null,
@@ -1031,10 +1039,11 @@ import { getCCISignal } from './components/cci-signals';
               : botState.status === 'buy' &&
                 // indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
                 // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-                // indicatorsData.obv15m.buySignalCount >= 20 &&
-                (indicatorsData.dmi1h.adxDownCount >= 2 ||
-                  indicatorsData.dmi1h.adxUpCount >= 2) &&
-                indicatorsData.cci.cci15m.buySignalCount >= 3,
+                indicatorsData.obv5m.buySignalCount >= 20 &&
+                indicatorsData.obv15m.buySignalCount >= 30 &&
+                // (indicatorsData.dmi1h.adxDownCount >= 2 ||
+                //   indicatorsData.dmi1h.adxUpCount >= 2) &&
+                indicatorsData.cci.cci1m.buySignalCount >= 3,
 
           // indicatorsData.dmi15m.buySignalCount >= 3,
 
@@ -1066,10 +1075,11 @@ import { getCCISignal } from './components/cci-signals';
               : botState.status === 'buy' &&
                 // indicatorsData.stochRsi.stoch15m.signal === 'sell' &&
                 // indicatorsData.stochRsi.stoch5m.signal === 'sell',
-                // indicatorsData.obv15m.sellSignalCount >= 20 &&
-                (indicatorsData.dmi1h.adxDownCount >= 2 ||
-                  indicatorsData.dmi1h.adxUpCount >= 2) &&
-                indicatorsData.cci.cci15m.sellSignalCount >= 3,
+                indicatorsData.obv15m.sellSignalCount >= 30 &&
+                indicatorsData.obv5m.sellSignalCount >= 20 &&
+                // (indicatorsData.dmi1h.adxDownCount >= 2 ||
+                //   indicatorsData.dmi1h.adxUpCount >= 2) &&
+                indicatorsData.cci.cci1m.sellSignalCount >= 3,
 
           // indicatorsData.dmi15m.buySignalCount >= 3,
 
@@ -1117,11 +1127,11 @@ import { getCCISignal } from './components/cci-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.cci.cci15m.downSignalCount >= 3,
+              indicatorsData.cci.cci1m.downSignalCount >= 3 &&
 
             // indicatorsData.stochRsi.stoch15m.signal === 'sell' &&
             // indicatorsData.stochRsi.stoch5m.signal === 'sell',
-            // indicatorsData.obv15m.sellSignalCount >= 20 &&
+            indicatorsData.obv5m.sellSignalCount >= 20,
             // indicatorsData.dmi15m.buySignalCount >= 3,
 
             // indicatorsData.obv5m.sellSignalCount >= 20 &&
@@ -1156,11 +1166,11 @@ import { getCCISignal } from './components/cci-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.cci.cci15m.upSignalCount >= 3,
+              indicatorsData.cci.cci1m.upSignalCount >= 3 &&
 
             // indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
             // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-            // indicatorsData.obv15m.buySignalCount >= 20 &&
+            indicatorsData.obv5m.buySignalCount >= 20,
             // indicatorsData.dmi15m.buySignalCount >= 3,
 
             // indicatorsData.obv5m.buySignalCount >= 20 &&
@@ -1531,7 +1541,7 @@ import { getCCISignal } from './components/cci-signals';
   //   //   indicatorsData.ema.ema1m.fast.ema
   //   // ) {
   //   //   indicatorsData.ema.ema1m.fast.prevEMA = indicatorsData.ema.ema1m.fast.ema;
-  //   //   return;
+  //   //   return;se
   //   // }
   //   // if (!indicatorsData.ema.ema1m.fast.ema) return;
   //   //
@@ -1603,9 +1613,10 @@ import { getCCISignal } from './components/cci-signals';
   //   indicatorsData.dmi15m,
   // );
 
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
-  getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
-  getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
+  getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
+  // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
 
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
   // getStochRSISignal(

@@ -24,7 +24,8 @@
     ]
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "@debut/indicators": "^1.1.3-beta.0",
+    "axios": "^0.24.0",
     "ccxt": "^1.52.62",
     "date-fns": "^2.14.0",
     "dotenv-extended": "^2.8.0",
