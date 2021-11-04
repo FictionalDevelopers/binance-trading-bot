@@ -167,7 +167,7 @@ import { getCCISignal } from './components/cci-signals';
   //   },
   // };
 
-  const indicatorsData = {s
+  const indicatorsData = {
     cci: {
       cci15m: {
         prev: null,
@@ -177,7 +177,8 @@ import { getCCISignal } from './components/cci-signals';
         sellSignalCount: 0,
         upSignalCount: 0,
         downSignalCount: 0,
-      },      cci1m: {
+      },
+      cci1m: {
         prev: null,
         av: null,
         cci: null,
@@ -1128,10 +1129,9 @@ import { getCCISignal } from './components/cci-signals';
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
               indicatorsData.cci.cci1m.downSignalCount >= 3 &&
-
-            // indicatorsData.stochRsi.stoch15m.signal === 'sell' &&
-            // indicatorsData.stochRsi.stoch5m.signal === 'sell',
-            indicatorsData.obv5m.sellSignalCount >= 20,
+              // indicatorsData.stochRsi.stoch15m.signal === 'sell' &&
+              // indicatorsData.stochRsi.stoch5m.signal === 'sell',
+              indicatorsData.obv5m.sellSignalCount >= 20,
             // indicatorsData.dmi15m.buySignalCount >= 3,
 
             // indicatorsData.obv5m.sellSignalCount >= 20 &&
@@ -1167,10 +1167,9 @@ import { getCCISignal } from './components/cci-signals';
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
               indicatorsData.cci.cci1m.upSignalCount >= 3 &&
-
-            // indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
-            // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-            indicatorsData.obv5m.buySignalCount >= 20,
+              // indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
+              // indicatorsData.stochRsi.stoch5m.signal === 'buy',
+              indicatorsData.obv5m.buySignalCount >= 20,
             // indicatorsData.dmi15m.buySignalCount >= 3,
 
             // indicatorsData.obv5m.buySignalCount >= 20 &&
