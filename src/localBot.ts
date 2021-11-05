@@ -1116,15 +1116,15 @@ import { getCCISignal } from './components/cci-signals';
               : botState.status === 'buy' &&
                 // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 1 &&
                 // indicatorsData.macd.macd5m.buySignalCount >= 2 &&
-                // indicatorsData.obv1h.buySignalCount >= 30 &&
-                // indicatorsData.obv15m.buySignalCount >= 20 &&
+                indicatorsData.obv1h.buySignalCount >= 30 &&
+                indicatorsData.obv15m.buySignalCount >= 20 &&
                 // indicatorsData.ema.ema1m.slow.emaUpCount >= 3 &&
                 indicatorsData.obv5m.buySignalCount >= 20 &&
                 // indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.cci.cci1m.buySignalCount >= 3,
-          // indicatorsData.dmi15m.buySignalCount >= 3 &&
-          // (indicatorsData.dmi1m.adxUpCount >= 3 ||
-          //   indicatorsData.dmi1m.adxDownCount >= 3),
+                // indicatorsData.cci.cci1m.buySignalCount >= 3,
+                // indicatorsData.dmi15m.buySignalCount >= 3 &&
+                (indicatorsData.dmi1m.adxUpCount >= 3 ||
+                  indicatorsData.dmi1m.adxDownCount >= 3),
           // indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
           // indicatorsData.obv1m.buySignalCount >= 4 &&
           // indicatorsData.macd.macd5m.buySignalCount >= 2,
@@ -1158,16 +1158,16 @@ import { getCCISignal } from './components/cci-signals';
                 // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
                 //   1 &&
                 // indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
-                // indicatorsData.obv1h.sellSignalCount >= 30 &&
-                // indicatorsData.obv15m.sellSignalCount >= 20 &&
+                indicatorsData.obv1h.sellSignalCount >= 30 &&
+                indicatorsData.obv15m.sellSignalCount >= 20 &&
                 // indicatorsData.ema.ema1m.slow.emaDownCount >= 3 &&
                 indicatorsData.obv5m.sellSignalCount >= 20 &&
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.cci.cci1m.sellSignalCount >= 3,
+                // indicatorsData.cci.cci1m.sellSignalCount >= 3,
 
-          // indicatorsData.obv1m.sellSignalCount >= 20 &&
-          // (indicatorsData.dmi1m.adxUpCount >= 3 ||
-          //   indicatorsData.dmi1m.adxDownCount >= 3),
+                // indicatorsData.obv1m.sellSignalCount >= 20 &&
+                (indicatorsData.dmi1m.adxUpCount >= 3 ||
+                  indicatorsData.dmi1m.adxDownCount >= 3),
           // indicatorsData.dmi1h.buySignalCount >= 3,
           // indicatorsData.ema.ema1m.slow.emaDownCount >= 3,
 
@@ -1231,11 +1231,11 @@ import { getCCISignal } from './components/cci-signals';
               // indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
               // indicatorsData.ema.ema1m.slow.emaDownCount >= 3 &&
               indicatorsData.obv5m.sellSignalCount >= 20 &&
-              indicatorsData.cci.cci1m.downSignalCount >= 3,
+              // indicatorsData.cci.cci1m.downSignalCount >= 3,
 
-            // indicatorsData.obv15m.sellSignalCount >= 20,
-            // (indicatorsData.dmi1m.adxUpCount >= 5 ||
-            //   indicatorsData.dmi1m.adxDownCount >= 5),
+              // indicatorsData.obv15m.sellSignalCount >= 20,
+              (indicatorsData.dmi1m.adxUpCount >= 3 ||
+                indicatorsData.dmi1m.adxDownCount >= 3),
             // indicatorsData.ema.ema1m.slow.emaDownCount >= 3,
 
             // ((indicatorsData.obv5m.sellSignalCount >= 4 &&
@@ -1309,14 +1309,14 @@ import { getCCISignal } from './components/cci-signals';
 
               // indicatorsData.ema.ema1m.fast.emaUpCount >= 1,
               indicatorsData.obv5m.buySignalCount >= 20 &&
-              indicatorsData.cci.cci1m.upSignalCount >= 3,
+              // indicatorsData.cci.cci1m.upSignalCount >= 3,
 
-            // indicatorsData.obv15m.buySignalCount >= 20,
-            // indicatorsData.ema.ema1m.slow.emaSignal === 'buy',
-            // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2,
-            // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'buy' &&
-            // (indicatorsData.dmi1m.adxUpCount >= 5 ||
-            //   indicatorsData.dmi1m.adxDownCount >= 5),
+              // indicatorsData.obv15m.buySignalCount >= 20,
+              // indicatorsData.ema.ema1m.slow.emaSignal === 'buy',
+              // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2,
+              // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'buy' &&
+              (indicatorsData.dmi1m.adxUpCount >= 3 ||
+                indicatorsData.dmi1m.adxDownCount >= 3),
             // (botState.dmi1m.adxUpCount > 0
             //   ? indicatorsData.dmi1m.adxDownCount >= 4
             //   : indicatorsData.dmi1m.adxUpCount >= 4 ||
@@ -1673,17 +1673,17 @@ import { getCCISignal } from './components/cci-signals';
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   // getEMASignal(symbol, '1m', indicatorsData.fast1mEMA)
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
+  // getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
 
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
-  // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
+  getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
   // getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
