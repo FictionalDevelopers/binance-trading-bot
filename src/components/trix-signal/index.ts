@@ -8,16 +8,16 @@ export const runTrixInterval = trixData => {
     }
 
     if (trixData.prev > trixData.value) {
-      trixData.SellSignalCount++;
-      trixData.BuySignalCount = 0;
-      trixData.signal = 'sell';
-      console.log('sell');
+      trixData.sellSignalCount++;
+      trixData.buySignalCount = 0;
+      // trixData.signal = 'sell';
+      // console.log('sell');
     }
     if (trixData.prev < trixData.value) {
-      trixData.BuySignalCount++;
-      trixData.SellSignalCount = 0;
-      trixData.signal = 'buy';
-      console.log('buy');
+      trixData.buySignalCount++;
+      trixData.sellSignalCount = 0;
+      // trixData.signal = 'buy';
+      // console.log('buy');
     }
 
     // if (efi.efiBuySignalCount >= 2) {
@@ -32,11 +32,11 @@ export const runTrixInterval = trixData => {
     // console.log('Buy signal: ' + efi.efiBuySignalCount);
     // console.log('Sell signal: ' + efi.efiSellSignalCount + '\n');
     // console.log('Curr/Prev: ', (efi.efi / efi.prevEfi) * 100 - 100 + '%');
-    console.log('Current: ' + trixData.value);
-    console.log('Prev: ' + trixData.prev + '\n');
+    // console.log('Current: ' + trixData.value);
+    // console.log('Prev: ' + trixData.prev + '\n');
 
     trixData.prev = trixData.value;
-  }, 60000);
+  }, 1000);
 };
 
 export const getTrixSignal = (symbol, timeFrame, trixData) => {
