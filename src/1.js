@@ -170,6 +170,8 @@ const crsi = new cRSI(3, 2, 100);
 ticks.forEach((tick, index) => {
   if (tick === 567.2823) {
     console.log('------');
+    console.log('------');
+    console.log('------');
   }
   console.log(index, ':', tick, crsi.momentValue(tick), crsi.nextValue(tick));
 });
