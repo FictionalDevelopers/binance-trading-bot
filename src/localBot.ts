@@ -1115,9 +1115,9 @@ import { getTrixSignal } from './components/trix-signal';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv1h.buySignalCount >= 30,
-          // indicatorsData.obv15m.buySignalCount >= 20 &&
-          // indicatorsData.obv5m.buySignalCount >= 10,
+                // indicatorsData.obv1h.buySignalCount >= 30,
+                // indicatorsData.obv15m.buySignalCount >= 20 &&
+                indicatorsData.obv5m.buySignalCount >= 20,
           // indicatorsData.ema.ema1m.slow.emaUpCount >= 2 &&
           // (indicatorsData.dmi1m.adxDownCount >= 3 ||
           //   indicatorsData.dmi1m.adxUpCount >= 3),
@@ -1159,9 +1159,9 @@ import { getTrixSignal } from './components/trix-signal';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv1h.sellSignalCount >= 30,
-          // indicatorsData.obv15m.sellSignalCount >= 20 &&
-          // indicatorsData.obv5m.sellSignalCount >= 10,
+                // indicatorsData.obv1h.sellSignalCount >= 30,
+                // indicatorsData.obv15m.sellSignalCount >= 20 &&
+                indicatorsData.obv5m.sellSignalCount >= 20,
           // indicatorsData.obv5m.sellSignalCount >= 20 &&
           // (indicatorsData.dmi1m.adxDownCount >= 3 ||
           //   indicatorsData.dmi1m.adxUpCount >= 3) &&
@@ -1237,9 +1237,9 @@ import { getTrixSignal } from './components/trix-signal';
               botState.dealType === 'long' &&
               // (indicatorsData.dmi1m.adxDownCount >= 3 ||
               //   indicatorsData.dmi1m.adxUpCount >= 3) &&
-              indicatorsData.obv1h.sellSignalCount >= 30,
-            // indicatorsData.obv15m.sellSignalCount >= 20 &&
-            // indicatorsData.obv5m.sellSignalCount >= 10,
+              // indicatorsData.obv1h.sellSignalCount >= 30,
+              // indicatorsData.obv15m.sellSignalCount >= 20 &&
+              indicatorsData.obv5m.sellSignalCount >= 20,
             // indicatorsData.ema.ema1m.slow.emaDownCount >= 2 &&
             // indicatorsData.obv15m.sellSignalCount >= 20,
             // indicatorsData.obv1m.sellSignalCount >= 6 &&
@@ -1303,8 +1303,8 @@ import { getTrixSignal } from './components/trix-signal';
               botState.dealType === 'short' &&
               // indicatorsData.obv30m.buySignalCount >= 20 &&
               // indicatorsData.obv15m.buySignalCount >= 20 &&
-              indicatorsData.obv1h.buySignalCount >= 30,
-            // indicatorsData.obv5m.buySignalCount >= 20 &&
+              // indicatorsData.obv1h.buySignalCount >= 30,
+              indicatorsData.obv5m.buySignalCount >= 20,
             // indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
             // (indicatorsData.dmi1m.adxDownCount >= 3 ||
             //   indicatorsData.dmi1m.adxUpCount >= 3),
@@ -1698,9 +1698,9 @@ import { getTrixSignal } from './components/trix-signal';
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
