@@ -4,7 +4,7 @@ import { last } from 'lodash';
 import _map from 'lodash/map';
 import { map, pluck, switchMap, bufferCount } from 'rxjs/operators';
 import { getCandleStreamForInterval, getCandlesList } from '../api/candles';
-import { cRSI as CRSI } from '@debut/indicators/index';
+import { cRSI as CRSI } from '@debut/indicators';
 
 type CRSIStreamConfig = {
   symbol: string;
@@ -17,10 +17,11 @@ export const getCRSIStream = (config: CRSIStreamConfig) =>
   getCandleStreamForInterval(config.symbol, config.interval)
     .pipe(bufferCount(1, 1))
     .subscribe(candle => {
-      console.log(candle);
+      // console.log(candle);
       console.log(crsi.nextValue(Number(candle[0].closePrice)));
       console.log(crsi.momentValue(Number(candle[0].closePrice)));
     });
+
 //     .pipe(
 //   switchMap(_ => from(getCandlesList(config))),
 //   // eslint-disable-next-line new-cap

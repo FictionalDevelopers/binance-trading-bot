@@ -223,6 +223,15 @@ import { getTrixSignal } from './components/trix-signal';
         upSignalCount: 0,
         downSignalCount: 0,
       },
+      cci5m: {
+        prev: null,
+        av: null,
+        cci: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        upSignalCount: 0,
+        downSignalCount: 0,
+      },
       cci1m: {
         prev: null,
         av: null,
@@ -1651,7 +1660,7 @@ import { getTrixSignal } from './components/trix-signal';
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(scalper);
 
-  getCRSIStream({ symbol, interval: '1m' });
+  // getCRSIStream({ symbol, interval: '1m' });
 
   // calculateAvgPriceChange(
   //   symbol,
@@ -1710,7 +1719,8 @@ import { getTrixSignal } from './components/trix-signal';
   // getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
-  // getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
+  getCCISignal(symbol, '5m', indicatorsData.cci.cci5m);
+  getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
 
@@ -2284,6 +2294,7 @@ import { getTrixSignal } from './components/trix-signal';
           indicatorsData.obv5m.sellSignalCount +
           ')',
       );
+      console.log('CCI 5m: ' + indicatorsData.cci.cci5m.cci);
       // console.log(
       //   'OBV DIFF: ' +
       //     indicatorsData.obv1h.obvDiff +
@@ -2305,6 +2316,8 @@ import { getTrixSignal } from './components/trix-signal';
           indicatorsData.obv1m.sellSignalCount +
           ')',
       );
+      console.log('CCI 1m: ' + indicatorsData.cci.cci1m.cci);
+
       // console.log(
       //   'MACD 5m: ' +
       //     '(Buy Count: ' +

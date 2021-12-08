@@ -1,7 +1,7 @@
 import { getCCIStream } from '../../indicators/cci';
 
 export const getCCISignal = (symbol, timeframe, indicatorsData) => {
-  getCCIStream({ symbol, interval: timeframe, period: 20 }).subscribe(cci => {
+  getCCIStream({ symbol, interval: timeframe, period: 2 }).subscribe(cci => {
     if (!cci) return;
     if (cci > 100) {
       indicatorsData.buySignalCount++;
