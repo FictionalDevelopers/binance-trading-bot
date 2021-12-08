@@ -860,63 +860,63 @@ import { sendToRecipients } from './services/telegram';
       console.log('     *****AVG DEAL PRICE*****');
       console.log(
         'Avg Deal Price: ' +
-        botState.avgDealPrice +
-        '( ' +
-        indicatorsData.avgDealPriceDiff +
-        ' %' +
-        ' )',
+          botState.avgDealPrice +
+          '( ' +
+          indicatorsData.avgDealPriceDiff +
+          ' %' +
+          ' )',
       );
       console.log(
         'Avg Deal Price Diff: ' +
-        indicatorsData.avgDealPriceSignal +
-        '(UP: ' +
-        indicatorsData.avgDealPriceUpSignalCount +
-        ' DOWN: ' +
-        indicatorsData.avgDealPriceDownSignalCount +
-        ')',
+          indicatorsData.avgDealPriceSignal +
+          '(UP: ' +
+          indicatorsData.avgDealPriceUpSignalCount +
+          ' DOWN: ' +
+          indicatorsData.avgDealPriceDownSignalCount +
+          ')',
       );
 
       console.log(
         botState.dealType === 'long'
           ? 'MAX av profit: ' +
-          Number(botState.maxAvailableLongProfit - 0.2) +
-          ' %'
+              Number(botState.maxAvailableLongProfit - 0.2) +
+              ' %'
           : 'MAX av profit: ' +
-          Number(botState.maxAvailableShortProfit + 0.2) +
-          ' %',
+              Number(botState.maxAvailableShortProfit + 0.2) +
+              ' %',
       );
       console.log(
         botState.dealType === 'long'
           ? 'MIN av profit: ' +
-          Number(botState.minAvailableLongProfit - 0.2) +
-          ' %'
+              Number(botState.minAvailableLongProfit - 0.2) +
+              ' %'
           : 'MIN av profit: ' +
-          Number(botState.minAvailableShortProfit + 0.2) +
-          ' %',
+              Number(botState.minAvailableShortProfit + 0.2) +
+              ' %',
       );
       console.log(
         'Profit diff (Max/Current): ' +
-        Number(botState.maxAvailableProfit) / Number(botState.currentProfit) +
-        ' %',
+          Number(botState.maxAvailableProfit) / Number(botState.currentProfit) +
+          ' %',
       );
       botState.status === 'sell' && !botState.strategies.scalper.stopLoss
         ? console.log(
-          'Buy Price: ' +
-          botState.buyPrice +
-          ' (' +
-          botState.currentPrice +
-          ')' +
-          '\n' +
-          'Current profit: ' +
-          (botState.status === 'sell'
-            ? botState.dealType === 'long'
-              ? Number(botState.currentProfit - 0.2) + ' %'
-              : Number(botState.currentProfit + 0.2) + ' %'
-            : '-'),
-        )
+            'Buy Price: ' +
+              botState.buyPrice +
+              ' (' +
+              botState.currentPrice +
+              ')' +
+              '\n' +
+              'Current profit: ' +
+              (botState.status === 'sell'
+                ? botState.dealType === 'long'
+                  ? Number(botState.currentProfit - 0.2) + ' %'
+                  : Number(botState.currentProfit + 0.2) + ' %'
+                : '-'),
+          )
         : botState.strategies.scalper.stopLoss
-          ? console.log('STATUS: SELL (TAKE PROFIT)')
-          : console.log('STATUS: BUY');
+        ? console.log('STATUS: SELL (TAKE PROFIT)')
+        : console.log('STATUS: BUY');
       console.log('\n');
       botState.updateState('isPricesStreamAlive', false);
       indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount++;

@@ -21,6 +21,7 @@ import { DATE_FORMAT } from './constants/date';
 import { connect } from './db/connection';
 import { sendToRecipients } from './services/telegram';
 import getAvarage from './utils/getAverage';
+import { getCRSIStream } from './indicators/crsi';
 import { getDMISignal } from './components/dmi-signals';
 import { getCCIStream } from './indicators/cci';
 import { getObvStream } from './indicators/obv';
@@ -1116,7 +1117,7 @@ import { getTrixSignal } from './components/trix-signal';
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.obv1h.buySignalCount >= 30,
-                // indicatorsData.obv15m.buySignalCount >= 20 &&
+                indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv5m.buySignalCount >= 20,
           // indicatorsData.ema.ema1m.slow.emaUpCount >= 2 &&
           // (indicatorsData.dmi1m.adxDownCount >= 3 ||
@@ -1160,7 +1161,7 @@ import { getTrixSignal } from './components/trix-signal';
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.obv1h.sellSignalCount >= 30,
-                // indicatorsData.obv15m.sellSignalCount >= 20 &&
+                indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv5m.sellSignalCount >= 20,
           // indicatorsData.obv5m.sellSignalCount >= 20 &&
           // (indicatorsData.dmi1m.adxDownCount >= 3 ||
@@ -1238,7 +1239,7 @@ import { getTrixSignal } from './components/trix-signal';
               // (indicatorsData.dmi1m.adxDownCount >= 3 ||
               //   indicatorsData.dmi1m.adxUpCount >= 3) &&
               // indicatorsData.obv1h.sellSignalCount >= 30,
-              // indicatorsData.obv15m.sellSignalCount >= 20 &&
+              indicatorsData.obv15m.sellSignalCount >= 20 &&
               indicatorsData.obv5m.sellSignalCount >= 20,
             // indicatorsData.ema.ema1m.slow.emaDownCount >= 2 &&
             // indicatorsData.obv15m.sellSignalCount >= 20,
@@ -1302,7 +1303,7 @@ import { getTrixSignal } from './components/trix-signal';
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
               // indicatorsData.obv30m.buySignalCount >= 20 &&
-              // indicatorsData.obv15m.buySignalCount >= 20 &&
+              indicatorsData.obv15m.buySignalCount >= 20 &&
               // indicatorsData.obv1h.buySignalCount >= 30,
               indicatorsData.obv5m.buySignalCount >= 20,
             // indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
@@ -1650,6 +1651,8 @@ import { getTrixSignal } from './components/trix-signal';
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(scalper);
 
+  getCRSIStream({ symbol, interval: '1m' });
+
   // calculateAvgPriceChange(
   //   symbol,
   //   RESOURCES.TRADE,
@@ -1699,7 +1702,7 @@ import { getTrixSignal } from './components/trix-signal';
   // getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
@@ -2226,23 +2229,6 @@ import { getTrixSignal } from './components/trix-signal';
       // );
 
       console.log(
-        'CCI 15m: ' +
-          indicatorsData.cci.cci15m.cci +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.cci.cci15m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.cci.cci15m.sellSignalCount +
-          ')' +
-          '(Up Count: ' +
-          indicatorsData.cci.cci15m.upSignalCount +
-          ' ' +
-          'Down Count: ' +
-          indicatorsData.cci.cci15m.downSignalCount +
-          ')',
-      );
-      console.log(
         'OBV 4h: ' +
           indicatorsData.obv4h.signal +
           ' ' +
@@ -2276,16 +2262,16 @@ import { getTrixSignal } from './components/trix-signal';
           indicatorsData.obv15m.sellSignalCount +
           ')',
       );
-      console.log(
-        'ADX 1m: ' +
-          '(UP: ' +
-          indicatorsData.dmi1m.adxUpCount +
-          'DOWN: ' +
-          indicatorsData.dmi1m.adxDownCount +
-          ' ' +
-          'Current: ' +
-          indicatorsData.dmi1m.adx,
-      );
+      // console.log(
+      //   'ADX 1m: ' +
+      //     '(UP: ' +
+      //     indicatorsData.dmi1m.adxUpCount +
+      //     'DOWN: ' +
+      //     indicatorsData.dmi1m.adxDownCount +
+      //     ' ' +
+      //     'Current: ' +
+      //     indicatorsData.dmi1m.adx,
+      // );
 
       console.log(
         'OBV 5m: ' +
@@ -2362,17 +2348,17 @@ import { getTrixSignal } from './components/trix-signal';
       //           ')',
       //       );
       // ;
-      console.log(
-        'EMA 99: ' +
-          indicatorsData.ema.ema1m.slow.emaSignal +
-          ' ' +
-          '(UpCount: ' +
-          indicatorsData.ema.ema1m.slow.emaUpCount +
-          ' ' +
-          'DownCount: ' +
-          indicatorsData.ema.ema1m.slow.emaDownCount +
-          ')',
-      );
+      // console.log(
+      //   'EMA 99: ' +
+      //     indicatorsData.ema.ema1m.slow.emaSignal +
+      //     ' ' +
+      //     '(UpCount: ' +
+      //     indicatorsData.ema.ema1m.slow.emaUpCount +
+      //     ' ' +
+      //     'DownCount: ' +
+      //     indicatorsData.ema.ema1m.slow.emaDownCount +
+      //     ')',
+      // );
       // console.log(
       //   'EMA 25: ' +
       //     indicatorsData.ema.ema1m.middle.emaSignal +
@@ -2581,16 +2567,16 @@ import { getTrixSignal } from './components/trix-signal';
       //     'Current: ' +
       //     indicatorsData.dmi5m.adx,
       // );
-      console.log(
-        'ADX 1h: ' +
-          '(UP: ' +
-          indicatorsData.dmi1h.buySignalCount +
-          'DOWN: ' +
-          indicatorsData.dmi1h.sellSignalCount +
-          ' ' +
-          'Current: ' +
-          indicatorsData.dmi1h.adx,
-      );
+      // console.log(
+      //   'ADX 1h: ' +
+      //     '(UP: ' +
+      //     indicatorsData.dmi1h.buySignalCount +
+      //     'DOWN: ' +
+      //     indicatorsData.dmi1h.sellSignalCount +
+      //     ' ' +
+      //     'Current: ' +
+      //     indicatorsData.dmi1h.adx,
+      // );
 
       if (botState.status === 'sell') {
         // console.log(

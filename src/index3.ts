@@ -330,7 +330,7 @@ import { sendToRecipients } from './services/telegram';
             botState.buyReason === 'upTrend' &&
             Number(
               (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-              100,
+                100,
             ) >= 0.05,
         },
       },
@@ -369,7 +369,7 @@ import { sendToRecipients } from './services/telegram';
             botState.buyReason === 'downTrend' &&
             Number(
               (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
-              100,
+                100,
             ) >= 0.1,
           // indicatorsData.rsi1m.rsiValue !== null &&
           // indicatorsData.rsi1m.rsiValue < 39 &&
@@ -396,7 +396,7 @@ import { sendToRecipients } from './services/telegram';
             botState.buyReason === 'upFlat' &&
             Number(
               (indicatorsData.middle5mEMA / indicatorsData.fast5mEMA) * 100 -
-              100,
+                100,
             ) >= 0.05,
           // (Number(
           //   (indicatorsData.middle1mEMA / indicatorsData.fast1mEMA) * 100 -
@@ -430,21 +430,21 @@ import { sendToRecipients } from './services/telegram';
           botState.status === 'buy' &&
           Number(
             (indicatorsData.fast1mEMA / indicatorsData.middle1mEMA) * 100 -
-            100 >=
-            0.05 && indicatorsData.middle1mEMA > indicatorsData.slow1mEMA,
+              100 >=
+              0.05 && indicatorsData.middle1mEMA > indicatorsData.slow1mEMA,
           ) &&
           // indicatorsData.roc.roc1m.value > 0.05 &&
           // indicatorsData.stochRsi.stoch1m.signal === 'buy',
 
           ((indicatorsData.dmi1h.adxUpCount > 0 &&
-              Number(
-                (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
+            Number(
+              (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
                 100,
-              ) >= 0.05) ||
+            ) >= 0.05) ||
             (indicatorsData.dmi1h.adxDownCount > 0 &&
               Number(
                 (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) * 100 -
-                100,
+                  100,
               ) >= 0.05)),
         // ((indicatorsData.dmi5m.signal === 'BUY' &&
         //   Number(
@@ -516,15 +516,15 @@ import { sendToRecipients } from './services/telegram';
             botState.status === 'sell' &&
             // indicatorsData.stochRsi.stoch1m.signal === 'sell',
             ((indicatorsData.dmi1h.adxDownCount > 0 &&
-                Number(
-                  (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
+              Number(
+                (indicatorsData.fast1hEMA / indicatorsData.middle1hEMA) * 100 -
                   100,
-                ) >= 0.05) ||
+              ) >= 0.05) ||
               (indicatorsData.dmi1h.adxUpCount > 0 &&
                 Number(
                   (indicatorsData.middle1hEMA / indicatorsData.fast1hEMA) *
-                  100 -
-                  100,
+                    100 -
+                    100,
                 ) >= 0.05)),
           //   indicatorsData.roc.roc1m.value < -0.1),
           // indicatorsData.roc.roc1m < -0.1
