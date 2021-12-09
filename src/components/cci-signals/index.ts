@@ -24,6 +24,6 @@ export const getCCISignal = (symbol, timeframe, indicatorsData) => {
       indicatorsData.sellSignalCount = 0;
       indicatorsData.buySignalCount = 0;
     }
-    indicatorsData.cci = Number(cci).toFixed(2);
+    indicatorsData.cci = Number(cci).toFixed();
   });
 };

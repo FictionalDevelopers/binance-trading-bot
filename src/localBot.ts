@@ -1128,7 +1128,7 @@ import { getTrixSignal } from './components/trix-signal';
                 // indicatorsData.obv1h.buySignalCount >= 30,
                 // indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv5m.buySignalCount >= 20 &&
-                indicatorsData.cci.cci5m.cci === 100.0 &&
+                // indicatorsData.cci.cci5m.cci === 100.0 &&
                 indicatorsData.cci.cci1m.cci === 100.0,
           // indicatorsData.ema.ema1m.slow.emaUpCount >= 2 &&
           // (indicatorsData.dmi1m.adxDownCount >= 3 ||
@@ -1174,7 +1174,7 @@ import { getTrixSignal } from './components/trix-signal';
                 // indicatorsData.obv1h.sellSignalCount >= 30,
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv5m.sellSignalCount >= 20 &&
-                indicatorsData.cci.cci5m.cci === -100.0 &&
+                // indicatorsData.cci.cci5m.cci === -100.0 &&
                 indicatorsData.cci.cci1m.cci === -100.0,
           // indicatorsData.obv5m.sellSignalCount >= 20 &&
           // (indicatorsData.dmi1m.adxDownCount >= 3 ||
@@ -1254,7 +1254,7 @@ import { getTrixSignal } from './components/trix-signal';
               // indicatorsData.obv1h.sellSignalCount >= 30,
               // indicatorsData.obv15m.sellSignalCount >= 20 &&
               indicatorsData.obv5m.sellSignalCount >= 20 &&
-              indicatorsData.cci.cci5m.cci === -100.0 &&
+              // indicatorsData.cci.cci5m.cci === -100.0 &&
               indicatorsData.cci.cci1m.cci === -100.0,
             // indicatorsData.ema.ema1m.slow.emaDownCount >= 2 &&
             // indicatorsData.obv15m.sellSignalCount >= 20,
@@ -1321,7 +1321,7 @@ import { getTrixSignal } from './components/trix-signal';
               // indicatorsData.obv15m.buySignalCount >= 20 &&
               // indicatorsData.obv1h.buySignalCount >= 30,
               indicatorsData.obv5m.buySignalCount >= 20 &&
-              indicatorsData.cci.cci5m.cci === 100.0 &&
+              // indicatorsData.cci.cci5m.cci === 100.0 &&
               indicatorsData.cci.cci1m.cci === 100.0,
             // indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
             // (indicatorsData.dmi1m.adxDownCount >= 3 ||
