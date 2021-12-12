@@ -1047,6 +1047,7 @@ import { getCCISignal } from './components/cci-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
+                indicatorsData.haCandle.ha5mCandle.buySignalCount >= 3 &&
                 // indicatorsData.obv1h.buySignalCount >= 30,
                 // indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv5m.buySignalCount >= 20 &&
@@ -1094,6 +1095,7 @@ import { getCCISignal } from './components/cci-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
+                indicatorsData.haCandle.ha5mCandle.sellSignalCount >= 3 &&
                 // indicatorsData.obv1h.sellSignalCount >= 30,
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv5m.sellSignalCount >= 20 &&
@@ -1729,6 +1731,8 @@ import { getCCISignal } from './components/cci-signals';
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
   getCCISignal(symbol, '5m', indicatorsData.cci.cci5m);
   getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
+  getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
+
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
 
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);

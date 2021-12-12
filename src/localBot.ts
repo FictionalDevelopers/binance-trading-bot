@@ -31,6 +31,7 @@ import { getMACDStream } from './indicators/macd';
 import { calculateAvgPriceChange } from './tools/avgPriceTools';
 import { getCCISignal } from './components/cci-signals';
 import { getTrixSignal } from './components/trix-signal';
+import { getHeikinAshiSignal } from './indicators/heikinAshi';
 
 (async function() {
   await connect();
@@ -1127,8 +1128,9 @@ import { getTrixSignal } from './components/trix-signal';
               : botState.status === 'buy' &&
                 // indicatorsData.obv1h.buySignalCount >= 30,
                 // indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.obv5m.buySignalCount >= 20 &&
-                indicatorsData.obv1m.buySignalCount >= 6 &&
+                indicatorsData.obv15m.buySignalCount >= 20 &&
+                indicatorsData.haCandle.ha5mCandle.buySignalCount >= 3 &&
+                // indicatorsData.obv1m.buySignalCount >= 6 &&
                 indicatorsData.cci.cci5m.cci > 0 &&
                 indicatorsData.cci.cci1m.cci > 0,
           // indicatorsData.ema.ema1m.slow.emaUpCount >= 2 &&
@@ -1174,8 +1176,9 @@ import { getTrixSignal } from './components/trix-signal';
               : botState.status === 'buy' &&
                 // indicatorsData.obv1h.sellSignalCount >= 30,
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.obv5m.sellSignalCount >= 20 &&
-                indicatorsData.obv1m.sellSignalCount >= 6 &&
+                indicatorsData.obv15m.sellSignalCount >= 20 &&
+                indicatorsData.haCandle.ha5mCandle.sellSignalCount >= 3 &&
+                // indicatorsData.obv1m.sellSignalCount >= 6 &&
                 indicatorsData.cci.cci5m.cci < 0 &&
                 indicatorsData.cci.cci1m.cci < 0,
           // indicatorsData.obv5m.sellSignalCount >= 20 &&
@@ -1255,8 +1258,8 @@ import { getTrixSignal } from './components/trix-signal';
               //   indicatorsData.dmi1m.adxUpCount >= 3) &&
               // indicatorsData.obv1h.sellSignalCount >= 30,
               // indicatorsData.obv15m.sellSignalCount >= 20 &&
-              indicatorsData.obv5m.sellSignalCount >= 6 &&
-              indicatorsData.obv1m.sellSignalCount >= 6 &&
+              indicatorsData.obv15m.sellSignalCount >= 20 &&
+              // indicatorsData.obv1m.sellSignalCount >= 6 &&
               indicatorsData.cci.cci5m.cci < 0 &&
               indicatorsData.cci.cci1m.cci < 0,
             // indicatorsData.ema.ema1m.slow.emaDownCount >= 2 &&
@@ -1323,8 +1326,8 @@ import { getTrixSignal } from './components/trix-signal';
               // indicatorsData.obv30m.buySignalCount >= 20 &&
               // indicatorsData.obv15m.buySignalCount >= 20 &&
               // indicatorsData.obv1h.buySignalCount >= 30,
-              indicatorsData.obv5m.buySignalCount >= 6 &&
-              indicatorsData.obv1m.buySignalCount >= 6 &&
+              indicatorsData.obv15m.buySignalCount >= 20 &&
+              // indicatorsData.obv1m.buySignalCount >= 6 &&
               indicatorsData.cci.cci5m.cci > 0 &&
               indicatorsData.cci.cci1m.cci > 0,
             // indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
@@ -1723,9 +1726,10 @@ import { getTrixSignal } from './components/trix-signal';
   // getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
+  getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   getCCISignal(symbol, '5m', indicatorsData.cci.cci5m);
   getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
