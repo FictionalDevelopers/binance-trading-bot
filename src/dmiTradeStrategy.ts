@@ -1047,200 +1047,269 @@ import { getCCISignal } from './components/cci-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv1h.buySignalCount >= 30 &&
-                indicatorsData.obv15m.buySignalCount >= 20 &&
+                // indicatorsData.obv1h.buySignalCount >= 30,
+                // indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv5m.buySignalCount >= 20 &&
+                indicatorsData.obv1m.buySignalCount >= 6 &&
                 indicatorsData.cci.cci5m.cci > 0 &&
                 indicatorsData.cci.cci1m.cci > 0,
-          // indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
-          // (indicatorsData.dmi1h.adxUpCount >= 2 ||
-          //   indicatorsData.dmi1h.adxDownCount >= 2),
-          // indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
-          // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-          // indicatorsData.obv5m.buySignalCount >= 20 &&
-          // indicatorsData.obv15m.buySignalCount >= 30 &&
-          // (indicatorsData.dmi1h.adxDownCount >= 2 ||
-          //   indicatorsData.dmi1h.adxUpCount >= 2) &&
-          // indicatorsData.cci.cci1m.buySignalCount >= 3,
-
-          // indicatorsData.dmi15m.buySignalCount >= 3,
-
-          // indicatorsData.obv5m.buySignalCount >= 20 &&
-          // indicatorsData.obv1m.buySignalCount >= 4 &&
+          // indicatorsData.ema.ema1m.slow.emaUpCount >= 2 &&
+          // (indicatorsData.dmi1m.adxDownCount >= 3 ||
+          //   indicatorsData.dmi1m.adxUpCount >= 3),
+          // indicatorsData.ema.ema1m.slow.emaUpCount >= 2 &&
+          // indicatorsData.obv1m.buySignalCount >= 6 &&
+          // indicatorsData.dmi1m.adxDownCount >= 3),
+          // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 1 &&
           // indicatorsData.macd.macd5m.buySignalCount >= 2 &&
-          // indicatorsData.obv1w.buySignalCount >= 100,
-          // indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
-          // indicatorsData.obvAv5m.buySignalCount >= 2 &&
+          // indicatorsData.obv1h.buySignalCount >= 30 &&
+          // indicatorsData.obv15m.buySignalCount >= 20 &&
+          // indicatorsData.cci.cci1m.buySignalCount >= 3,
+          // indicatorsData.dmi15m.buySignalCount >= 3 &&
           // indicatorsData.obv1m.buySignalCount >= 4 &&
-          // indicatorsData.obvAv1m.buySignalCount >= 2,
-          // indicatorsData.obv30m.buySignalCount >= 60 &&
-          // indicatorsData.obv15m.buySignalCount >= 30 &&
-          // indicatorsData.obv5m.buySignalCount >= 20 &&
-          // indicatorsData.ema.ema1m.fast.emaUpCount >= 1 &&
+          // indicatorsData.macd.macd5m.buySignalCount >= 2,
           // indicatorsData.ema.ema1m.middle.emaUpCount >= 1,
-          // indicatorsData.ema.ema1m.slow.emaUpCount >= 1,
-          // indicatorsData.obv1d.buySignalCount >= 100 &&
-          // indicatorsData.obv15m.buySignalCount >= 30 &&
-          // indicatorsData.obv1h.buySignalCount >= 60 &&
-          // indicatorsData.obv30m.buySignalCount >= 60 &&
-          // indicatorsData.obv5m.buySignalCount >= 20,
+          // indicatorsData.obv5m.buySignalCount >= 10 &&
+          // indicatorsData.obvAv5m.buySignalCount >= 2 &&
           // indicatorsData.obv1m.buySignalCount >= 10,
-          // (indicatorsData.dmi15m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi15m.adxDownCount >= 2),
+          // indicatorsData.obvAv1m.buySignalCount >= 2,
+          // indicatorsData.obv1m.buySignalCount >= 6 &&
+          // indicatorsData.ema.ema1m.slow.emaSignal === 'buy',
+          // indicatorsData.ema.ema1m.fast.emaSignal === 'buy',
+          // indicatorsData.obv1h.buySignalCount >= 30,
+          // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'buy' &&
+          // (indicatorsData.dmi1m.adxUpCount >= 4 ||
+          //   indicatorsData.dmi1m.adxDownCount >= 4),
+          // indicatorsData.dmi1m.adx > 20,
+          // indicatorsData.obv1m.buySignalCount >= 2,
+          // indicatorsData.rsi15m.rsiValue > 50,
+          // indicatorsData.rsi5m.rsiValue > 50 &&
+          // indicatorsData.rsi1m.rsiValue > 50,
+          // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2,
+          // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4,
+          // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
+          // indicatorsData.haCandle.ha4hCandle.signal === 'buy' &&
+          // indicatorsData.obv1d.buySignalCount >= 30 &&
+          // indicatorsData.haCandle.ha1hCandle.signal === 'buy',
           short:
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv1h.sellSignalCount >= 30 &&
-                indicatorsData.obv15m.sellSignalCount >= 20 &&
+                // indicatorsData.obv1h.sellSignalCount >= 30,
+                // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv5m.sellSignalCount >= 20 &&
+                indicatorsData.obv1m.sellSignalCount >= 6 &&
                 indicatorsData.cci.cci5m.cci < 0 &&
                 indicatorsData.cci.cci1m.cci < 0,
-
-          // indicatorsData.ema.ema1m.slow.emaDownCount >= 2,
-          // (indicatorsData.dmi1h.adxUpCount >= 2 ||
-          //   indicatorsData.dmi1h.adxDownCount >= 2),
-          // indicatorsData.stochRsi.stoch15m.signal === 'sell' &&
-          // indicatorsData.stochRsi.stoch5m.signal === 'sell',
-          // indicatorsData.obv15m.sellSignalCount >= 30 &&
           // indicatorsData.obv5m.sellSignalCount >= 20 &&
-          // (indicatorsData.dmi1h.adxDownCount >= 2 ||
-          //   indicatorsData.dmi1h.adxUpCount >= 2) &&
+          // (indicatorsData.dmi1m.adxDownCount >= 3 ||
+          //   indicatorsData.dmi1m.adxUpCount >= 3) &&
+          // indicatorsData.ema.ema1m.slow.emaDownCount >= 2,
+          // indicatorsData.obv1m.sellSignalCount >= 6 &&
+          // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
+          //   1 &&
+          // indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
+          // indicatorsData.obv1h.sellSignalCount >= 30 &&
+          // indicatorsData.ema.ema1m.slow.emaDownCount >= 3 &&
+          // indicatorsData.obv15m.sellSignalCount >= 20 &&
           // indicatorsData.cci.cci1m.sellSignalCount >= 3,
 
-          // indicatorsData.dmi15m.buySignalCount >= 3,
+          // indicatorsData.obv1m.sellSignalCount >= 20 &&
+          // indicatorsData.dmi1h.buySignalCount >= 3,
+          // indicatorsData.ema.ema1m.slow.emaDownCount >= 3,
 
-          // indicatorsData.obv5m.sellSignalCount >= 20 &&
           // indicatorsData.obv1m.sellSignalCount >= 4 &&
-          // indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
-          // indicatorsData.ema.ema1m.slow.emaDownCount >= 2,
+          // indicatorsData.macd.macd5m.sellSignalCount >= 2,
 
-          // indicatorsData.obv30m.sellSignalCount >= 60 &&
-          // indicatorsData.obv15m.sellSignalCount >= 30 &&
-          // indicatorsData.obv5m.sellSignalCount >= 20 &&
           // indicatorsData.ema.ema1m.fast.emaDownCount >= 1 &&
           // indicatorsData.ema.ema1m.middle.emaDownCount >= 1,
-          // indicatorsData.ema.ema1m.fast.emaDownCount >= 2 &&
-          // indicatorsData.obv1w.sellSignalCount >= 100,
+          // indicatorsData.obv5m.sellSignalCount >= 10 &&
           // indicatorsData.obvAv5m.sellSignalCount >= 2 &&
-          // indicatorsData.obv1m.sellSignalCount >= 4 &&
-          // indicatorsData.obvAv1m.sellSignalCount >= 2,
-          // indicatorsData.obv30m.sellSignalCount >= 60 &&
-          // indicatorsData.obv15m.sellSignalCount >= 20,
-          // indicatorsData.obv5m.sellSignalCount >= 20 &&
-          // indicatorsData.obv1m.sellSignalCount >= 6 &&
-          // indicatorsData.ema.ema1m.fast.emaSignal === 'sell' &&
-          // indicatorsData.ema.ema1m.slow.emaSignal === 'sell',
-
-          // indicatorsData.obv1d.sellSignalCount >= 100 &&
-          // indicatorsData.obv15m.sellSignalCount >= 30 &&
-          // indicatorsData.obv1h.sellSignalCount >= 60 &&
-          // indicatorsData.obv30m.sellSignalCount >= 60 &&
-          // indicatorsData.obv5m.sellSignalCount >= 20,
           // indicatorsData.obv1m.sellSignalCount >= 10,
-          // (indicatorsData.dmi15m.adxUpCount >= 2 ||
-          //   indicatorsData.dmi15m.adxDownCount >= 2),
+          // indicatorsData.obvAv1m.sellSignalCount >= 2,
+
+          // indicatorsData.obv1m.sellSignalCount >= 6 &&
+          // indicatorsData.ema.ema1m.slow.emaSignal === 'sell',
+          // indicatorsData.ema.ema1m.fast.emaSignal === 'sell',
+
+          // indicatorsData.obv1h.sellSignalCount >= 30,
+          // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'sell' &&
+          // indicatorsData.obv5m.sellSignalCount >= 10 &&
+          // (indicatorsData.dmi1m.adxUpCount >= 4 ||
+          //   indicatorsData.dmi1m.adxDownCount >= 4),
+          // indicatorsData.dmi1m.adx > 20,
+
+          // indicatorsData.obv1m.sellSignalCount >= 2,
+          // indicatorsData.rsi15m.rsiValue < 50,
+          // indicatorsData.rsi15m.rsiValue !== null &&
+          // indicatorsData.rsi5m.rsiValue < 50 &&
+          // indicatorsData.rsi5m.rsiValue !== null &&
+          // indicatorsData.rsi1m.rsiValue < 50 &&
+          // indicatorsData.rsi1m.rsiValue !== null,
+          // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2,
+          // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4,
+
+          // indicatorsData.avgPriceSignal === 'sell',
+          // indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
+          // indicatorsData.haCandle.ha4hCandle.signal === 'sell' &&
+          // indicatorsData.obv1d.sellSignalCount >= 30 &&
+          // indicatorsData.obv4h.sellSignalCount >= 30 &&
+          // indicatorsData.obv1h.signal === 'sell' &&
+          // indicatorsData.obv15m.sellSignalCount >= 20,
+          // indicatorsData.obv1m.sellSignalCount >= 15,
+
+          // indicatorsData.obv5m.sellSignalCount >= 4,
+          // indicatorsData.obv1m.sellSignalCount >= 20,
+          // indicatorsData.haCandle.ha1hCandle.signal === 'sell',
         },
         sell: {
           takeProfit: null,
           // (botState.status === 'sell' &&
           //   botState.dealType === 'long' &&
-          //   indicatorsData.obv15m.sellSignalCount >= 30) ||
+          //   expectedProfitPercent <= -0.5) ||
           // (botState.status === 'sell' &&
           //   botState.dealType === 'short' &&
-          //   indicatorsData.obv15m.buySignalCount >= 30),
-
+          //   expectedProfitPercent >= 0.5),
           stopLoss: {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              // indicatorsData.obv1h.sellSignalCount >= 30 &&
-              indicatorsData.obv15m.sellSignalCount >= 20 &&
-              indicatorsData.obv5m.sellSignalCount >= 20 &&
+              // (indicatorsData.dmi1m.adxDownCount >= 3 ||
+              //   indicatorsData.dmi1m.adxUpCount >= 3) &&
+              // indicatorsData.obv1h.sellSignalCount >= 30,
+              // indicatorsData.obv15m.sellSignalCount >= 20 &&
+              indicatorsData.obv5m.sellSignalCount >= 6 &&
+              indicatorsData.obv1m.sellSignalCount >= 6 &&
               indicatorsData.cci.cci5m.cci < 0 &&
               indicatorsData.cci.cci1m.cci < 0,
-            // indicatorsData.ema.ema1m.slow.emaDownCount >= 2,
-            // (indicatorsData.dmi1h.adxUpCount >= 2 ||
-            //   indicatorsData.dmi1h.adxDownCount >= 2),
-            // indicatorsData.cci.cci1m.downSignalCount >= 3 &&
-            // indicatorsData.stochRsi.stoch15m.signal === 'sell' &&
-            // indicatorsData.stochRsi.stoch5m.signal === 'sell',
-            // indicatorsData.obv5m.sellSignalCount >= 20,
-            // indicatorsData.dmi15m.buySignalCount >= 3,
-
-            // indicatorsData.obv5m.sellSignalCount >= 20 &&
-            // indicatorsData.obv1m.sellSignalCount >= 4 &&
+            // indicatorsData.ema.ema1m.slow.emaDownCount >= 2 &&
+            // indicatorsData.obv15m.sellSignalCount >= 20,
+            // indicatorsData.obv1m.sellSignalCount >= 6 &&
+            // (indicatorsData.dmi1m.adxUpCount >= 3 ||
+            // indicatorsData.dmi1m.adxDownCount >= 3,
+            // indicatorsData.cci.cci15m.downSignalCount >= 3,
             // indicatorsData.macd.macd5m.sellSignalCount >= 2 &&
-            // indicatorsData.obv5m.sellSignalCount >= 20 &&
-            // indicatorsData.ema.ema1m.fast.emaDownCount >= 1 &&
-            // indicatorsData.ema.ema1m.middle.emaDownCount >= 1,
-            // indicatorsData.ema.ema1m.slow.emaDownCount >= 2,
-            // indicatorsData.ema.ema1m.fast.emaDownCount >= 2 &&
+            // indicatorsData.ema.ema1m.slow.emaDownCount >= 3 &&
+            // indicatorsData.cci.cci1m.downSignalCount >= 3,
+
+            // indicatorsData.obv15m.sellSignalCount >= 20,
+            // indicatorsData.ema.ema1m.slow.emaDownCount >= 3,
+
             // ((indicatorsData.obv5m.sellSignalCount >= 4 &&
             //   indicatorsData.obvAv5m.sellSignalCount >= 1) ||
             //   (indicatorsData.obv5m.sellSignalCount >= 1 &&
             //     indicatorsData.obvAv1m.sellSignalCount >= 1 &&
             //     indicatorsData.obv1m.sellSignalCount >= 4)),
+            // indicatorsData.ema.ema1m.middle.emaDownCount >= 2 &&
+            // indicatorsData.obv5m.sellSignalCount >= 20 &&
+            // indicatorsData.obv1m.sellSignalCount >= 4 &&
+            // indicatorsData.macd.macd5m.sellSignalCount >= 2,
 
-            // indicatorsData.obv5m.sellSignalCount >= 20 &&
-            // indicatorsData.obv1m.sellSignalCount >= 6 &&
-            // indicatorsData.obv30m.sellSignalCount >= 60 &&
-            // indicatorsData.obv1w.sellSignalCount >= 100,
-            // indicatorsData.ema.ema1m.slow.emaSignal === 'sell',
-            // indicatorsData.obv15m.sellSignalCount >= 30 &&
-            // indicatorsData.obv1h.sellSignalCount >= 20 &&
-            // indicatorsData.obv5m.sellSignalCount >= 20 &&
-            // indicatorsData.obv1h.sellSignalCount >= 30 &&
-            // indicatorsData.obv30m.sellSignalCount >= 30,
-            // (indicatorsData.obv1d.sellSignalCount >= 100 ||
+            // indicatorsData.ema.ema1m.fast.emaDownCount >= 1,
+            // indicatorsData.obv5m.sellSignalCount >= 10 &&
             // indicatorsData.obv1m.sellSignalCount >= 10,
-            // (indicatorsData.obv15m.sellSignalCount >= 10 ||
-            // (indicatorsData.obv1h.sellSignalCount >= 100 &&
-            //   indicatorsData.obv15m.sellSignalCount >= 100)),
+            // indicatorsData.ema.ema1m.slow.emaSignal === 'sell',
+            // (botState.dmi1m.adxUpCount > 0
+            // ? indicatorsData.dmi1m.adxDownCount >= 4
+            // : indicatorsData.dmi1m.adxUpCount >= 4 ||
+            // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2 &&
+            // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4 &&
+            // indicatorsData.dmi1m.adxDownCount >= 2,
+            // indicatorsData.obv1m.sellSignalCount >= 10,
+
+            // indicatorsData.avgPriceSignal === 'sell',
+            // indicatorsData.obv1d.sellSignalCount >= 30 &&
+            // (indicatorsData.haCandle.ha1hCandle.signal === 'sell' &&
+            //   indicatorsData.haCandle.ha4hCandle.signal === 'sell')),
+            // indicatorsData.obv1h.signal === 'sell' &&
+            // indicatorsData.obv5m.sellSignalCount >= 4 &&
+
+            // indicatorsData.obv1h.sellSignalCount >= 30,
+            // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'sell' &&
+            // (indicatorsData.dmi1m.adxUpCount >= 4 ||
+            //   indicatorsData.dmi1m.adxDownCount >= 4),
+            // (indicatorsData.obv15m.sellSignalCount >= 2 &&
+            //   indicatorsData.obv5m.sellSignalCount >= 2) ||
+            // (indicatorsData.obv1m.sellSignalCount >= 2 &&
+            //   indicatorsData.obv15m.sellSignalCount >= 2) ||
+            // (indicatorsData.obv5m.sellSignalCount >= 2 &&
+            //   indicatorsData.obv1m.sellSignalCount >= 2)),
+            // botState.status === 'sell' &&
+            // botState.dealType === 'long' &&
+            // indicatorsData.obv1h.signal === 'sell' &&
+            // indicatorsData.obv15m.signal === 'sell' &&
+            // indicatorsData.obv5m.signal === 'sell' &&
+            // indicatorsData.obv1m.signal === 'sell',
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              // indicatorsData.obv1h.buySignalCount >= 30 &&
-              indicatorsData.obv15m.buySignalCount >= 20 &&
-              indicatorsData.obv5m.buySignalCount >= 20 &&
+              // indicatorsData.obv30m.buySignalCount >= 20 &&
+              // indicatorsData.obv15m.buySignalCount >= 20 &&
+              // indicatorsData.obv1h.buySignalCount >= 30,
+              indicatorsData.obv5m.buySignalCount >= 6 &&
+              indicatorsData.obv1m.buySignalCount >= 6 &&
               indicatorsData.cci.cci5m.cci > 0 &&
               indicatorsData.cci.cci1m.cci > 0,
-            // indicatorsData.obv1m.buySignalCount >= 20 &&
             // indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
-            // (indicatorsData.dmi1h.adxUpCount >= 2 ||
-            //   indicatorsData.dmi1h.adxDownCount >= 2),
-            // indicatorsData.cci.cci1m.upSignalCount >= 3 &&
-            // indicatorsData.stochRsi.stoch15m.signal === 'buy' &&
-            // indicatorsData.stochRsi.stoch5m.signal === 'buy',
-            // indicatorsData.dmi15m.buySignalCount >= 3,
+            // (indicatorsData.dmi1m.adxDownCount >= 3 ||
+            //   indicatorsData.dmi1m.adxUpCount >= 3),
+            // indicatorsData.obv1m.buySignalCount >= 6 &&
+            // (indicatorsData.dmi1m.adxUpCount >= 3 ||
+            // indicatorsData.dmi1m.adxDownCount >= 3,
+            // indicatorsData.cci.cci15m.upSignalCount >= 3,
 
-            // indicatorsData.obv5m.buySignalCount >= 20 &&
-            // indicatorsData.obv1m.buySignalCount >= 4 &&
+            // indicatorsData.ema.ema1m.slow.emaUpCount >= 3 &&
             // indicatorsData.macd.macd5m.buySignalCount >= 2 &&
+            // indicatorsData.obv5m.buySignalCount >= 10 &&
             // indicatorsData.obv5m.buySignalCount >= 20 &&
-            // indicatorsData.ema.ema1m.fast.emaUpCount >= 1 &&
-            // indicatorsData.ema.ema1m.middle.emaUpCount >= 1,
-            // indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
-            // indicatorsData.ema.ema1m.fast.emaUpCount >= 2 &&
+            // (indicatorsData.dmi1m.buySignalCount >= 2 ||
+            //   indicatorsData.dmi1m.sellSignalCount >= 2),
+
+            // indicatorsData.ema.ema1m.slow.emaUpCount >= 3,
+
             // ((indicatorsData.obv5m.buySignalCount >= 4 &&
             //   indicatorsData.obvAv5m.buySignalCount >= 1) ||
             //   (indicatorsData.obv5m.buySignalCount >= 1 &&
             //     indicatorsData.obvAv1m.buySignalCount >= 1 &&
             //     indicatorsData.obv1m.buySignalCount >= 4)),
+            // indicatorsData.ema.ema1m.middle.emaUpCount >= 2 &&
+            // indicatorsData.obv5m.buySignalCount >= 20 &&
+            // indicatorsData.obv1m.buySignalCount >= 4 &&
+            // indicatorsData.macd.macd5m.buySignalCount >= 2,
 
-            // indicatorsData.obv5m.buySignalCount >= 20 &&
-            // indicatorsData.obv1m.buySignalCount >= 6 &&
-            // indicatorsData.obv1w.buySignalCount >= 100,
-            // indicatorsData.obv30m.buySignalCount >= 60,
+            // indicatorsData.ema.ema1m.fast.emaUpCount >= 1,
+            // indicatorsData.cci.cci1m.upSignalCount >= 3,
+            // indicatorsData.obv15m.buySignalCount >= 20,
             // indicatorsData.ema.ema1m.slow.emaSignal === 'buy',
-            // indicatorsData.obv5m.buySignalCount >= 20 &&
-            // indicatorsData.obv1h.buySignalCount >= 30 &&
-            // indicatorsData.obv30m.buySignalCount >= 30 &&
-            // indicatorsData.obv15m.buySignalCount >= 30,
-            // (indicatorsData.obv1d.buySignalCount >= 100 ||
-            //   (indicatorsData.obv1h.buySignalCount >= 100 &&
-            //     (indicatorsData.obv15m.buySignalCount >= 10 ||
-            // indicatorsData.obv15m.buySignalCount >= 40)),
+            // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2,
+            // indicatorsData.avgPrices.avgSmall.avgPriceSignal === 'buy' &&
+            // (botState.dmi1m.adxUpCount > 0
+            //   ? indicatorsData.dmi1m.adxDownCount >= 4
+            //   : indicatorsData.dmi1m.adxUpCount >= 4 ||
+            // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4 &&
+            // indicatorsData.obv5m.buySignalCount >= 10),
+            // indicatorsData.dmi5m.adxDownCount > 0,
+            // indicatorsData.obv1m.buySignalCount >= 10,
+            // indicatorsData.avgPriceSignal === 'buy',
+            // indicatorsData.obv4h.buySignalCount >= 20 &&
+            // indicatorsData.obv1d.buySignalCount >= 30 &&
+            // indicatorsData.haCandle.ha1hCandle.signal === 'buy' &&
+            //   indicatorsData.haCandle.ha4hCandle.signal === 'buy',
+            // indicatorsData.obv1h.signal === 'buy' &&
+            // indicatorsData.obv15m.buySignalCount > 0 &&
+            // indicatorsData.obv5m.buySignalCount >= 5,
+            // indicatorsData.obv5m.buySignalCount >= 6,
+            // (indicatorsData.obv15m.buySignalCount >= 2 &&
+            //   indicatorsData.obv5m.buySignalCount >= 2) ||
+            // (indicatorsData.obv1m.buySignalCount >= 2 &&
+            //   indicatorsData.obv15m.buySignalCount >= 2) ||
+            // (indicatorsData.obv5m.buySignalCount >= 2 &&
+            //   indicatorsData.obv1m.buySignalCount >= 2)),
+            // botState.status === 'sell' &&
+            // botState.dealType === 'short' &&
+            // indicatorsData.obv1h.signal === 'buy' &&
+            // indicatorsData.obv15m.signal === 'buy' &&
+            // indicatorsData.obv5m.signal === 'buy' &&
+            // indicatorsData.obv1m.signal === 'buy',
           },
         },
       },
@@ -1654,9 +1723,10 @@ import { getCCISignal } from './components/cci-signals';
   //   indicatorsData.dmi15m,
   // );
 
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 30, 30);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 30, 30);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
   getCCISignal(symbol, '5m', indicatorsData.cci.cci5m);
   getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
