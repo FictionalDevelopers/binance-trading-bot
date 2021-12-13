@@ -1,1 +1,1 @@
-console.log(100 === 100.0);
+console.log(null < 70);
