@@ -2,8 +2,16 @@ import { CCI } from 'technicalindicators';
 import { from, Observable } from 'rxjs';
 import { last } from 'lodash';
 import _map from 'lodash/map';
+import * as dataForge from 'data-forge';
+import 'data-forge-fs'; // Add file system functions to Data-Forge.
+import 'data-forge-plot'; // Add chart plotting functions to Data-Forge.
+import 'data-forge-indicators'; // Add financial indicator functions to Data-Forge.
 import { map, pluck, switchMap, bufferCount } from 'rxjs/operators';
-import { getCandleStreamForInterval, getCandlesList } from '../api/candles';
+import {
+  getCandleStreamForInterval,
+  getCandlesList,
+  getLastClosedCandles,
+} from '../api/candles';
 import { cRSI as CRSI } from '@debut/indicators';
 
 type CRSIStreamConfig = {
@@ -11,15 +19,72 @@ type CRSIStreamConfig = {
   interval: string;
 };
 
-const crsi = new CRSI(3, 2, 100);
+// export const getCRSIStream = (config: CRSIStreamConfig) =>
+//   getCandleStreamForInterval(config.symbol, config.interval)
+//     .pipe(bufferCount(1, 1))
+//     .subscribe(async candle => {
+//       const klines = await getLastClosedCandles({
+//         symbol: config.symbol,
+//         interval: config.interval,
+//       });
+//       const mergedKlines = [
+//         ...klines,
+//         { ...candle[0], close: candle[0].closePrice },
+//       ].map(({ close }, ind, arr) => {
+//         arr[ind].close = +Number(close).toPrecision(4);
+//         return arr[ind];
+//       });
+//       console.log(mergedKlines.map(({ close }) => close));
+//       const inputSeries = new dataForge.DataFrame(mergedKlines);
+//       const crsi = inputSeries.deflate(row => +row.close).sma(30);
+//       // .crsi(3, 2, 100);
+//       console.log(crsi.toArray());
+//       // console.log(crsi.nextValue(Number(candle[0].closePrice)));
+//       // console.log(crsi.momentValue(Number(candle[0].closePrice)));
+//     });
 
-export const getCRSIStream = (config: CRSIStreamConfig) =>
+export const getCRSIStream = (config: CRSIStreamConfig, indicatorsData) =>
   getCandleStreamForInterval(config.symbol, config.interval)
     .pipe(bufferCount(1, 1))
-    .subscribe(candle => {
-      // console.log(candle);
-      console.log(crsi.nextValue(Number(candle[0].closePrice)));
-      console.log(crsi.momentValue(Number(candle[0].closePrice)));
+    .subscribe(async candle => {
+      const klines = await getLastClosedCandles({
+        symbol: config.symbol,
+        interval: config.interval,
+      });
+      const crsi = new CRSI(3, 2, 100);
+
+      const mergedKlines = [
+        ...klines,
+        { ...candle[0], close: candle[0].closePrice },
+      ]
+        .map(({ close }, ind, arr) => {
+          arr[ind].close = +Number(close);
+          return arr[ind];
+        })
+        .map(({ close }) => close);
+      mergedKlines.forEach((tick, index) => {
+        indicatorsData.values.push({
+          index,
+          tick,
+          moment: crsi.momentValue(tick),
+          next: crsi.nextValue(tick),
+        });
+      });
+      indicatorsData.crsi =
+        indicatorsData.values[indicatorsData.values.length - 1].moment;
+      indicatorsData.values.length = 0;
+
+      // mergedKlines.forEach(item => {
+      //   console.log(crsi.nextValue(item));
+      // });
+
+      // console.log(mergedKlines.map(({ close }) => close));
+      // const inputSeries = new dataForge.DataFrame(mergedKlines);
+      // const crsi = inputSeries.deflate(row => +row.close).sma(30);
+      // .crsi(3, 2, 100);
+      // console.log(crsi.toArray());
+      // console.log(crsi.nextValue(Number(candle[0].closePrice)));
+      // console.log(crsi.momentValue(Number(candle[0].closePrice)));
     });
 
 //     .pipe(
