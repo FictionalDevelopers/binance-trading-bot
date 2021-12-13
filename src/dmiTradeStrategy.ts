@@ -170,6 +170,10 @@ import { getCRSIStream } from './indicators/crsi';
 
   const indicatorsData = {
     crsi: {
+      crsi1h: {
+        crsi: null,
+        values: [],
+      },
       crsi15m: {
         crsi: null,
         values: [],
@@ -1062,6 +1066,7 @@ import { getCRSIStream } from './indicators/crsi';
                 // indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv5m.buySignalCount >= 20 &&
+                indicatorsData.crsi.crsi1h.crsi > 70 &&
                 indicatorsData.crsi.crsi15m.crsi > 70 &&
                 indicatorsData.crsi.crsi5m.crsi > 70,
           // indicatorsData.haCandle.ha5mCandle.buySignalCount >= 3 &&
@@ -1113,6 +1118,7 @@ import { getCRSIStream } from './indicators/crsi';
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv5m.sellSignalCount >= 20 &&
+                indicatorsData.crsi.crsi1h.crsi < 30 &&
                 indicatorsData.crsi.crsi15m.crsi < 30 &&
                 indicatorsData.crsi.crsi5m.crsi < 30,
           // indicatorsData.haCandle.ha5mCandle.sellSignalCount >= 3 &&
@@ -1618,6 +1624,7 @@ import { getCRSIStream } from './indicators/crsi';
   })
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(scalper);
+  getCRSIStream({ symbol, interval: '1h' }, indicatorsData.crsi.crsi1h);
   getCRSIStream({ symbol, interval: '15m' }, indicatorsData.crsi.crsi15m);
   getCRSIStream({ symbol, interval: '5m' }, indicatorsData.crsi.crsi5m);
 
