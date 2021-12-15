@@ -71,7 +71,7 @@ export function getCandlesList(
 
 export async function getLastClosedCandles(
   config: CandleListConfig,
-  options: { limit: number } = { limit: 100 },
+  options: { limit: number } = { limit: 150 },
 ): Promise<CandleListItem[]> {
   const { interval, symbol } = config;
   const { limit } = options;
