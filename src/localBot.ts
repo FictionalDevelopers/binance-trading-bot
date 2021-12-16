@@ -1756,7 +1756,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
