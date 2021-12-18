@@ -1066,7 +1066,7 @@ import { getCRSIStream } from './indicators/crsi';
                 // indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv5m.buySignalCount >= 10 &&
-                indicatorsData.cci.cci15m.cci > 100 &&
+                // indicatorsData.cci.cci15m.cci > 100 &&
                 indicatorsData.cci.cci5m.cci > 100 &&
                 indicatorsData.cci.cci1m.cci > 100,
           // indicatorsData.crsi.crsi1h.crsi > 70 &&
@@ -1119,7 +1119,7 @@ import { getCRSIStream } from './indicators/crsi';
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv5m.sellSignalCount >= 10 &&
-                indicatorsData.cci.cci15m.cci < -100 &&
+                // indicatorsData.cci.cci15m.cci < -100 &&
                 indicatorsData.cci.cci5m.cci < -100 &&
                 indicatorsData.cci.cci1m.cci < -100,
           // indicatorsData.crsi.crsi1h.crsi < 30 &&
