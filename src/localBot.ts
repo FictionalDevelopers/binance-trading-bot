@@ -1142,10 +1142,10 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
               : botState.status === 'buy' &&
                 // indicatorsData.obv1h.buySignalCount >= 30,
                 // indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.obv5m.buySignalCount >= 20 &&
-                // indicatorsData.cci.cci5m.cci > 100 &&
-                indicatorsData.cci.cci1m.cci > 100,
+                indicatorsData.obv15m.buySignalCount >= 6 &&
+                indicatorsData.obv5m.buySignalCount >= 6 &&
+                indicatorsData.cci.cci5m.cci > 0 &&
+                indicatorsData.cci.cci1m.cci > 0,
           // indicatorsData.obv1m.buySignalCount >= 4,
           // indicatorsData.crsi.crsi15m.crsi > 70 &&
           // indicatorsData.crsi.crsi5m.crsi > 70,
@@ -1194,10 +1194,10 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
               : botState.status === 'buy' &&
                 // indicatorsData.obv1h.sellSignalCount >= 30,
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.obv5m.sellSignalCount >= 20 &&
-                // indicatorsData.cci.cci5m.cci < -100 &&
-                indicatorsData.cci.cci1m.cci < -100,
+                indicatorsData.obv15m.sellSignalCount >= 6 &&
+                indicatorsData.obv5m.sellSignalCount >= 6 &&
+                indicatorsData.cci.cci5m.cci < 0 &&
+                indicatorsData.cci.cci1m.cci < 0,
           // indicatorsData.obv1m.sellSignalCount >= 4,
           // indicatorsData.crsi.crsi15m.crsi < 30 &&
           // indicatorsData.crsi.crsi5m.crsi < 30,
@@ -1280,9 +1280,9 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
               //   indicatorsData.dmi1m.adxUpCount >= 3) &&
               // indicatorsData.obv1h.sellSignalCount >= 30,
               // indicatorsData.obv15m.sellSignalCount >= 20 &&
-              (indicatorsData.obv15m.sellSignalCount >= 20 ||
-                indicatorsData.obv5m.sellSignalCount >= 20) &&
-              indicatorsData.cci.cci1m.cci < -100,
+              indicatorsData.obv15m.sellSignalCount >= 6 &&
+              indicatorsData.obv5m.sellSignalCount >= 6 &&
+              indicatorsData.cci.cci1m.cci < 0,
             // indicatorsData.obv1m.sellSignalCount >= 4,
             // indicatorsData.crsi.crsi5m.crsi < 30,
             // indicatorsData.obv1m.sellSignalCount >= 6 &&
@@ -1351,10 +1351,10 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
               // indicatorsData.obv30m.buySignalCount >= 20 &&
               // indicatorsData.obv15m.buySignalCount >= 20 &&
               // indicatorsData.obv1h.buySignalCount >= 30,
-              // indicatorsData.obv15m.buySignalCount >= 20 &&
-              (indicatorsData.obv5m.buySignalCount >= 20 ||
-                indicatorsData.obv1m.buySignalCount >= 20) &&
-              indicatorsData.cci.cci1m.cci > 100,
+              indicatorsData.obv15m.buySignalCount >= 6 &&
+              indicatorsData.obv5m.buySignalCount >= 6 &&
+              // indicatorsData.obv1m.buySignalCount >= 20 &&
+              indicatorsData.cci.cci1m.cci > 0,
 
             // indicatorsData.crsi.crsi15m.crsi > 70 &&
             // indicatorsData.crsi.crsi5m.crsi > 70,
@@ -1707,8 +1707,8 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
     .subscribe(scalper);
 
   // getCRSIStream({ symbol, interval: '15m' }, indicatorsData.crsi.crsi15m);
-  getCRSIStream({ symbol, interval: '5m' }, indicatorsData.crsi.crsi5m);
-  getCRSIStream({ symbol, interval: '1m' }, indicatorsData.crsi.crsi1m);
+  // getCRSIStream({ symbol, interval: '5m' }, indicatorsData.crsi.crsi5m);
+  // getCRSIStream({ symbol, interval: '1m' }, indicatorsData.crsi.crsi1m);
 
   // calculateAvgPriceChange(
   //   symbol,
