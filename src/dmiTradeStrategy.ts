@@ -1062,10 +1062,10 @@ import { getCRSIStream } from './indicators/crsi';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.obv1h.buySignalCount >= 30 &&
+                indicatorsData.obv1h.buySignalCount >= 30 &&
                 // indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.obv5m.buySignalCount >= 20,
+                indicatorsData.obv5m.buySignalCount >= 10,
           // indicatorsData.cci.cci15m.cci > 100 &&
           // indicatorsData.cci.cci5m.cci > 100 &&
           // indicatorsData.cci.cci1m.cci > 100,
@@ -1115,10 +1115,10 @@ import { getCRSIStream } from './indicators/crsi';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.obv1h.sellSignalCount >= 30 &&
+                indicatorsData.obv1h.sellSignalCount >= 30 &&
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.obv5m.sellSignalCount >= 20,
+                indicatorsData.obv5m.sellSignalCount >= 10,
           // indicatorsData.cci.cci15m.cci < -100 &&
           // indicatorsData.cci.cci5m.cci < -100 &&
           // indicatorsData.cci.cci1m.cci < -100,
@@ -1207,7 +1207,7 @@ import { getCRSIStream } from './indicators/crsi';
               // indicatorsData.obv1h.sellSignalCount >= 30,
               // indicatorsData.obv15m.sellSignalCount >= 20 &&
               indicatorsData.obv15m.sellSignalCount >= 20 &&
-              indicatorsData.obv5m.sellSignalCount >= 20,
+              indicatorsData.obv5m.sellSignalCount >= 10,
             // indicatorsData.cci.cci15m.cci < 0 &&
             // indicatorsData.cci.cci5m.cci < -100 &&
             // indicatorsData.cci.cci1m.cci < -100,
@@ -1281,7 +1281,7 @@ import { getCRSIStream } from './indicators/crsi';
               // indicatorsData.obv15m.buySignalCount >= 20 &&
               // indicatorsData.obv1h.buySignalCount >= 30,
               indicatorsData.obv15m.buySignalCount >= 20 &&
-              indicatorsData.obv5m.buySignalCount >= 20,
+              indicatorsData.obv5m.buySignalCount >= 10,
             // indicatorsData.cci.cci15m.cci > 0 &&
             // indicatorsData.cci.cci5m.cci > 100 &&
             // indicatorsData.cci.cci1m.cci > 100,
@@ -1767,7 +1767,7 @@ import { getCRSIStream } from './indicators/crsi';
   //   indicatorsData.dmi15m,
   // );
 
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 30, 30);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 30, 30);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
