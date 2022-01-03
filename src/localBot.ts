@@ -123,7 +123,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: true,
-      status: 'buy',
+      status: 'pending',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -1754,17 +1754,17 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
   // getHeikinAshiSignal(symbol, '4h', 6, 6, indicatorsData.haCandle.ha4hCandle);
   // getHeikinAshiSignal(symbol, '1h', 6, 6, indicatorsData.haCandle.ha1hCandle);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
-  getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
+  // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   // getEMASignal(symbol, '1m', indicatorsData.fast1mEMA)
-  getObvSignal(symbol, '2h', indicatorsData.obv1h, 60, 60);
-  // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
+  // getObvSignal(symbol, '2h', indicatorsData.obv1h, 60, 60);
+  getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
-  getObvSignal(symbol, '1h', indicatorsData.obv15m, 6, 6);
   // getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
-  getObvSignal(symbol, '30m', indicatorsData.obv5m, 6, 6);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getCCISignal(symbol, '5m', indicatorsData.cci.cci5m);
   // getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
@@ -2256,17 +2256,6 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
       //     ')',
       // );
       // console.log(
-      //   'OBV 30m: ' +
-      //     indicatorsData.obv30m.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv30m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv30m.sellSignalCount +
-      //     ')',
-      // );
-      // console.log(
       //   'OBV 1w: ' +
       //     indicatorsData.obv1w.signal +
       //     ' ' +
@@ -2311,6 +2300,17 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           indicatorsData.obv1h.sellSignalCount +
           ')',
       );
+      console.log(
+        'OBV 30m: ' +
+          indicatorsData.obv30m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv30m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv30m.sellSignalCount +
+          ')',
+      );
 
       console.log(
         'OBV 15m: ' +
@@ -2323,7 +2323,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
           indicatorsData.obv15m.sellSignalCount +
           ')',
       );
-      console.log('CRSI 15m: ' + indicatorsData.crsi.crsi15m.crsi);
+      // console.log('CRSI 15m: ' + indicatorsData.crsi.crsi15m.crsi);
       // console.log(
       //   'ADX 1m: ' +
       //     '(UP: ' +
