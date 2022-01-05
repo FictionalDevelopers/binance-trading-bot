@@ -32,6 +32,7 @@ import { getCCISignal } from './components/cci-signals';
 import { getTrixSignal } from './components/trix-signal';
 import { getHeikinAshiSignal } from './indicators/heikinAshi';
 import { getForceIndexSignal } from './components/forceIndex';
+import { getRocSignal } from './components/roc-signals';
 
 (async function() {
   await connect();
@@ -1140,20 +1141,24 @@ import { getForceIndexSignal } from './components/forceIndex';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.haCandle.ha15mCandle.buySignalCount >= 6 &&
-                indicatorsData.obv30m.buySignalCount >= 20 &&
-                indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.obv5m.buySignalCount >= 6 &&
+                indicatorsData.roc.roc1m.prevValue > 0 &&
+                indicatorsData.dmi5m.adxUpCount >= 3 &&
+                // ||
+                // indicatorsData.dmi5m.adxDownCount >= 3
+                // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
+                // indicatorsData.ema.ema1m.slow.emaUpCount >= 4 &&
+                // indicatorsData.obv30m.buySignalCount >= 20 &&
+                indicatorsData.obv15m.buySignalCount >= 10 &&
+                indicatorsData.obv5m.buySignalCount >= 10 &&
+                indicatorsData.obv1m.buySignalCount >= 10 &&
                 // indicatorsData.efi1m.prevEfi > 0 &&
                 indicatorsData.cci.cci1m.cci > 0,
           // indicatorsData.obv15m.buySignalCount >= 6 &&
-          // indicatorsData.obv1m.buySignalCount >= 10 &&
           // indicatorsData.cci.cci5m.cci > 0 &&
           // indicatorsData.crsi.crsi15m.crsi > 70 &&
           // indicatorsData.crsi.crsi5m.crsi > 70,
           // indicatorsData.haCandle.ha5mCandle.buySignalCount >= 3 &&
           // indicatorsData.obv1m.buySignalCount >= 6 &&
-          // indicatorsData.ema.ema1m.slow.emaUpCount >= 2 &&
           // (indicatorsData.dmi1m.adxDownCount >= 3 ||
           //   indicatorsData.dmi1m.adxUpCount >= 3),
           // indicatorsData.ema.ema1m.slow.emaUpCount >= 2 &&
@@ -1194,15 +1199,20 @@ import { getForceIndexSignal } from './components/forceIndex';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.haCandle.ha15mCandle.sellSignalCount >= 6 &&
-                indicatorsData.obv30m.sellSignalCount >= 20 &&
-                indicatorsData.obv15m.sellSignalCount >= 20 &&
+                indicatorsData.roc.roc1m.prevValue < 0 &&
+                indicatorsData.dmi5m.adxUpCount >= 3 &&
+                // ||
+                // indicatorsData.dmi5m.adxDownCount >= 3
+                // indicatorsData.haCandle.ha1mCandle.sellSignalCount >= 3 &&
+                // indicatorsData.ema.ema1m.slow.emaDownCount >= 4 &&
+                // indicatorsData.obv30m.sellSignalCount >= 20 &&
                 // indicatorsData.efi1m.prevEfi < 0 &&
-                indicatorsData.obv5m.sellSignalCount >= 6 &&
+                indicatorsData.obv15m.sellSignalCount >= 10 &&
+                indicatorsData.obv5m.sellSignalCount >= 10 &&
+                indicatorsData.obv1m.sellSignalCount >= 10 &&
                 indicatorsData.cci.cci1m.cci < 0,
           // indicatorsData.obv15m.sellSignalCount >= 20 &&
           // indicatorsData.obv15m.sellSignalCount >= 6 &&
-          // indicatorsData.obv1m.sellSignalCount >= 10 &&
           // indicatorsData.cci.cci5m.cci < 0 &&
           // indicatorsData.crsi.crsi15m.crsi < 30 &&
           // indicatorsData.crsi.crsi5m.crsi < 30,
@@ -1210,7 +1220,6 @@ import { getForceIndexSignal } from './components/forceIndex';
           // indicatorsData.obv1m.sellSignalCount >= 6 &&
           // (indicatorsData.dmi1m.adxDownCount >= 3 ||
           //   indicatorsData.dmi1m.adxUpCount >= 3) &&
-          // indicatorsData.ema.ema1m.slow.emaDownCount >= 2,
           // indicatorsData.obv1m.sellSignalCount >= 6 &&
           // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
           //   1 &&
@@ -1280,17 +1289,19 @@ import { getForceIndexSignal } from './components/forceIndex';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.obv30m.sellSignalCount >= 20 &&
-              indicatorsData.obv15m.sellSignalCount >= 20 &&
-              indicatorsData.obv5m.sellSignalCount >= 6 &&
-              indicatorsData.cci.cci1m.cci < 0,
+              (indicatorsData.dmi5m.adxDownCount >= 3 ||
+                (indicatorsData.obv5m.sellSignalCount >= 4 &&
+                  indicatorsData.obv1m.sellSignalCount >= 4)),
+            // indicatorsData.obv30m.sellSignalCount >= 20 &&
+            // indicatorsData.obv15m.sellSignalCount >= 20 &&
+            // indicatorsData.haCandle.ha1mCandle.sellSignalCount >= 3 &&
+            // indicatorsData.cci.cci1m.cci < 0,
             // indicatorsData.efi1m.prevEfi < 0 &&
             // indicatorsData.crsi.crsi5m.crsi < 30,
             // (indicatorsData.dmi1m.adxDownCount >= 3 ||
             //   indicatorsData.dmi1m.adxUpCount >= 3) &&
             // indicatorsData.obv1h.sellSignalCount >= 30,
             // indicatorsData.obv15m.sellSignalCount >= 20 &&
-            // indicatorsData.obv1m.sellSignalCount >= 6 &&
             // indicatorsData.cci.cci5m.cci < 0 &&
             // indicatorsData.ema.ema1m.slow.emaDownCount >= 2 &&
             // indicatorsData.obv15m.sellSignalCount >= 20,
@@ -1353,15 +1364,17 @@ import { getForceIndexSignal } from './components/forceIndex';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.obv30m.buySignalCount >= 20 &&
-              indicatorsData.obv15m.buySignalCount >= 20 &&
-              indicatorsData.obv5m.buySignalCount >= 6 &&
-              indicatorsData.cci.cci1m.cci > 0,
+              (indicatorsData.dmi5m.adxDownCount >= 3 ||
+                (indicatorsData.obv5m.buySignalCount >= 4 &&
+                  indicatorsData.obv1m.buySignalCount >= 4)),
+            // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
+            // indicatorsData.obv30m.buySignalCount >= 20 &&
+            // indicatorsData.obv15m.buySignalCount >= 20 &&
+            // indicatorsData.cci.cci1m.cci > 0,
             // indicatorsData.efi1m.prevEfi > 0,
 
             // indicatorsData.obv15m.buySignalCount >= 20 &&
             // indicatorsData.obv1h.buySignalCount >= 30,
-            // indicatorsData.obv1m.buySignalCount >= 6 &&
 
             // indicatorsData.crsi.crsi15m.crsi > 70 &&
             // indicatorsData.crsi.crsi5m.crsi > 70,
@@ -1727,7 +1740,7 @@ import { getForceIndexSignal } from './components/forceIndex';
   // calculateAvgPriceChange(
   //   symbol,
   //   RESOURCES.TRADE,
-  //   20,
+  //   10,
   //   botState,
   //   indicatorsData.avgPrices.avgSmall,
   // );
@@ -1762,18 +1775,21 @@ import { getForceIndexSignal } from './components/forceIndex';
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   // getEMASignal(symbol, '1m', indicatorsData.fast1mEMA)
   // getObvSignal(symbol, '2h', indicatorsData.obv1h, 60, 60);
-  getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
+  // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  getHeikinAshiSignal(symbol, '15m', 3, 3, indicatorsData.haCandle.ha15mCandle);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
+  getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
+  getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
+  getDMISignal(symbol, '1m', indicatorsData.dmi5m, 1, 0, 0);
+  // getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
+
   // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
   // getCCISignal(symbol, '5m', indicatorsData.cci.cci5m);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
@@ -1863,8 +1879,8 @@ import { getForceIndexSignal } from './components/forceIndex';
   //     }
   //     src.prevAdx = currentAdx;
   //   },
-  //   5000,
-  //   indicatorsData.dmi1m,
+  //   1000,
+  //   indicatorsData.dmi5m,
   // );
   // setInterval(
   //   src => {
@@ -1995,7 +2011,7 @@ import { getForceIndexSignal } from './components/forceIndex';
   //   interval: '1m',
   //   period: 99,
   // }).subscribe(slowEMA => {
-  //   indicatorsData.ema.ema1m.slow.ema = slowEMA;
+  //   indicatorsData.ema.ema1m.slow.emaAv = slowEMA;
   // });
 
   // setInterval(() => {
@@ -2192,7 +2208,6 @@ import { getForceIndexSignal } from './components/forceIndex';
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2);
   // getForceIndexSignal(symbol, '5m', 13, indicatorsData.efi5m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 4, 4);
-  // getRocSignal(symbol, '5m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
 
   /** *************************DATA LOGGER********************************/
   const getSum = (numbers = []) =>
@@ -2222,23 +2237,23 @@ import { getForceIndexSignal } from './components/forceIndex';
       //     indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount +
       //     ')',
       // );
-      // console.log(
-      //   'Avg Price Small: ' +
-      //     indicatorsData.avgPrices.avgSmall.avgPrice +
-      //     '( ' +
-      //     indicatorsData.avgPrices.avgSmall.avgPriceDiff +
-      //     ' %' +
-      //     ' )',
-      // );
-      // console.log(
-      //   'Avg Price Small Diff: ' +
-      //     indicatorsData.avgPrices.avgSmall.avgPriceSignal +
-      //     '(UP: ' +
-      //     indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount +
-      //     ' DOWN: ' +
-      //     indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount +
-      //     ')',
-      // );
+      console.log(
+        'Avg Price Small: ' +
+          indicatorsData.avgPrices.avgSmall.avgPrice +
+          '( ' +
+          indicatorsData.avgPrices.avgSmall.avgPriceDiff +
+          ' %' +
+          ' )',
+      );
+      console.log(
+        'Avg Price Small Diff: ' +
+          indicatorsData.avgPrices.avgSmall.avgPriceSignal +
+          '(UP: ' +
+          indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount +
+          ' DOWN: ' +
+          indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount +
+          ')',
+      );
       // calculateAvgDealPriceChange(botState, indicatorsData);
       // indicatorsData.dealType = determineDealType(indicatorsData, 4);
       // console.log(
@@ -2330,16 +2345,31 @@ import { getForceIndexSignal } from './components/forceIndex';
           ')',
       );
       // console.log('CRSI 15m: ' + indicatorsData.crsi.crsi15m.crsi);
-      // console.log(
-      //   'ADX 1m: ' +
-      //     '(UP: ' +
-      //     indicatorsData.dmi1m.adxUpCount +
-      //     'DOWN: ' +
-      //     indicatorsData.dmi1m.adxDownCount +
-      //     ' ' +
-      //     'Current: ' +
-      //     indicatorsData.dmi1m.adx,
-      // );
+      console.log(
+        'ADX 1m: ' +
+          '(UP: ' +
+          indicatorsData.dmi1m.adxUpCount +
+          'DOWN: ' +
+          indicatorsData.dmi1m.adxDownCount +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi1m.adx,
+      );
+      console.log(
+        'ADX 5m: ' +
+          '(UP: ' +
+          indicatorsData.dmi5m.adxUpCount +
+          'DOWN: ' +
+          indicatorsData.dmi5m.adxDownCount +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi5m.adx,
+        '(BUY Count: ' +
+          indicatorsData.dmi5m.buySignalCount +
+          'Sell Count: ' +
+          indicatorsData.dmi5m.sellSignalCount +
+          ')',
+      );
 
       console.log(
         'OBV 5m: ' +
@@ -2423,17 +2453,17 @@ import { getForceIndexSignal } from './components/forceIndex';
       //           ')',
       //       );
       // ;
-      // console.log(
-      //   'EMA 99: ' +
-      //     indicatorsData.ema.ema1m.slow.emaSignal +
-      //     ' ' +
-      //     '(UpCount: ' +
-      //     indicatorsData.ema.ema1m.slow.emaUpCount +
-      //     ' ' +
-      //     'DownCount: ' +
-      //     indicatorsData.ema.ema1m.slow.emaDownCount +
-      //     ')',
-      // );
+      console.log(
+        'EMA 99: ' +
+          indicatorsData.ema.ema1m.slow.emaSignal +
+          ' ' +
+          '(UpCount: ' +
+          indicatorsData.ema.ema1m.slow.emaUpCount +
+          ' ' +
+          'DownCount: ' +
+          indicatorsData.ema.ema1m.slow.emaDownCount +
+          ')',
+      );
       // console.log(
       //   'EMA 25: ' +
       //     indicatorsData.ema.ema1m.middle.emaSignal +

@@ -69,17 +69,17 @@ export const calculateAvgPriceChange = (
       }
       if (indicatorsData.avgPriceDiff > 0) {
         indicatorsData.avgPriceUpSignalCount++;
-        indicatorsData.avgPriceDownSignalCount = 0;
+        // indicatorsData.avgPriceDownSignalCount = 0;
       } else if (indicatorsData.avgPriceDiff < 0) {
         indicatorsData.avgPriceDownSignalCount++;
-        indicatorsData.avgPriceUpSignalCount = 0;
+        // indicatorsData.avgPriceUpSignalCount = 0;
       } else if (indicatorsData.avgPriceDiff === 0) {
-        indicatorsData.avgPriceDownSignalCount = 0;
-        indicatorsData.avgPriceUpSignalCount = 0;
+        // indicatorsData.avgPriceDownSignalCount = 0;
+        // indicatorsData.avgPriceUpSignalCount = 0;
       }
-      if (indicatorsData.avgPriceUpSignalCount >= 1)
+      if (indicatorsData.avgPriceUpSignalCount >= 3)
         indicatorsData.avgPriceSignal = 'buy';
-      else if (indicatorsData.avgPriceDownSignalCount >= 1)
+      else if (indicatorsData.avgPriceDownSignalCount >= 3)
         indicatorsData.avgPriceSignal = 'sell';
     });
 };
