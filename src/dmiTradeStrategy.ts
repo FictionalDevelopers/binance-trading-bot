@@ -1063,9 +1063,10 @@ import { getRocSignal } from './components/roc-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.roc.roc1m.prevValue > 0 &&
-                indicatorsData.roc.roc5m.prevValue > 0 &&
+                // indicatorsData.roc.roc1m.prevValue > 0 &&
+                // indicatorsData.roc.roc5m.prevValue > 0 &&
                 indicatorsData.dmi5m.adxUpCount >= 3 &&
+                indicatorsData.dmi1m.adxUpCount >= 3 &&
                 // ||
                 // indicatorsData.dmi5m.adxDownCount >= 3
                 // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
@@ -1122,9 +1123,10 @@ import { getRocSignal } from './components/roc-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.roc.roc1m.prevValue < 0 &&
-                indicatorsData.roc.roc5m.prevValue < 0 &&
+                // indicatorsData.roc.roc1m.prevValue < 0 &&
+                // indicatorsData.roc.roc5m.prevValue < 0 &&
                 indicatorsData.dmi5m.adxUpCount >= 3 &&
+                indicatorsData.dmi1m.adxUpCount >= 3 &&
                 // ||
                 // indicatorsData.dmi5m.adxDownCount >= 3
                 // indicatorsData.haCandle.ha1mCandle.sellSignalCount >= 3 &&
@@ -1785,9 +1787,10 @@ import { getRocSignal } from './components/roc-signals';
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
-  getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
-  getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
-  getDMISignal(symbol, '1m', indicatorsData.dmi5m, 1, 0, 0);
+  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
+  // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
