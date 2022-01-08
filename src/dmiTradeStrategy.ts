@@ -1065,7 +1065,7 @@ import { getRocSignal } from './components/roc-signals';
               : botState.status === 'buy' &&
                 // indicatorsData.roc.roc1m.prevValue > 0 &&
                 // indicatorsData.roc.roc5m.prevValue > 0 &&
-                indicatorsData.dmi5m.adxUpCount >= 3 &&
+                indicatorsData.dmi5m.adxUpCount >= 1 &&
                 indicatorsData.dmi1m.adxUpCount >= 3 &&
                 // ||
                 // indicatorsData.dmi5m.adxDownCount >= 3
@@ -1125,7 +1125,7 @@ import { getRocSignal } from './components/roc-signals';
               : botState.status === 'buy' &&
                 // indicatorsData.roc.roc1m.prevValue < 0 &&
                 // indicatorsData.roc.roc5m.prevValue < 0 &&
-                indicatorsData.dmi5m.adxUpCount >= 3 &&
+                indicatorsData.dmi5m.adxUpCount >= 1 &&
                 indicatorsData.dmi1m.adxUpCount >= 3 &&
                 // ||
                 // indicatorsData.dmi5m.adxDownCount >= 3
