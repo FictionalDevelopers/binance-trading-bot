@@ -1215,7 +1215,7 @@ import { getRocSignal } from './components/roc-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              (indicatorsData.dmi5m.adxDownCount >= 3 ||
+              (indicatorsData.dmi1m.adxDownCount >= 3 ||
                 (indicatorsData.obv5m.sellSignalCount >= 4 &&
                   indicatorsData.obv1m.sellSignalCount >= 4)),
             // indicatorsData.obv30m.sellSignalCount >= 20 &&
@@ -1290,7 +1290,7 @@ import { getRocSignal } from './components/roc-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              (indicatorsData.dmi5m.adxDownCount >= 3 ||
+              (indicatorsData.dmi1m.adxDownCount >= 3 ||
                 (indicatorsData.obv5m.buySignalCount >= 4 &&
                   indicatorsData.obv1m.buySignalCount >= 4)),
             // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&

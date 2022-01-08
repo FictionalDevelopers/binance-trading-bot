@@ -503,6 +503,30 @@ import { getRocSignal } from './components/roc-signals';
         sellSignalCount: 0,
         signal: null,
       },
+      roc1h: {
+        value: null,
+        prevValue: null,
+        diff: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
+      roc30m: {
+        value: null,
+        prevValue: null,
+        diff: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
+      roc15m: {
+        value: null,
+        prevValue: null,
+        diff: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
     },
     trix: {
       trix5m: {
@@ -1141,8 +1165,8 @@ import { getRocSignal } from './components/roc-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.roc.roc1m.prevValue > 0 &&
-                indicatorsData.dmi5m.adxUpCount >= 3 &&
+                // indicatorsData.roc.roc1m.prevValue > 0 &&
+                // indicatorsData.dmi5m.adxUpCount >= 3 &&
                 // ||
                 // indicatorsData.dmi5m.adxDownCount >= 3
                 // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
@@ -1150,9 +1174,10 @@ import { getRocSignal } from './components/roc-signals';
                 // indicatorsData.obv30m.buySignalCount >= 20 &&
                 indicatorsData.obv15m.buySignalCount >= 10 &&
                 indicatorsData.obv5m.buySignalCount >= 10 &&
-                indicatorsData.obv1m.buySignalCount >= 10 &&
-                // indicatorsData.efi1m.prevEfi > 0 &&
-                indicatorsData.cci.cci1m.cci > 0,
+                indicatorsData.roc.roc15m.buySignalCount >= 8,
+          // indicatorsData.obv1m.buySignalCount >= 10 &&
+          // indicatorsData.efi1m.prevEfi > 0 &&
+          // indicatorsData.cci.cci1m.cci > 0,
           // indicatorsData.obv15m.buySignalCount >= 6 &&
           // indicatorsData.cci.cci5m.cci > 0 &&
           // indicatorsData.crsi.crsi15m.crsi > 70 &&
@@ -1199,8 +1224,8 @@ import { getRocSignal } from './components/roc-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.roc.roc1m.prevValue < 0 &&
-                indicatorsData.dmi5m.adxUpCount >= 3 &&
+                // indicatorsData.roc.roc1m.prevValue < 0 &&
+                // indicatorsData.dmi5m.adxUpCount >= 3 &&
                 // ||
                 // indicatorsData.dmi5m.adxDownCount >= 3
                 // indicatorsData.haCandle.ha1mCandle.sellSignalCount >= 3 &&
@@ -1209,8 +1234,9 @@ import { getRocSignal } from './components/roc-signals';
                 // indicatorsData.efi1m.prevEfi < 0 &&
                 indicatorsData.obv15m.sellSignalCount >= 10 &&
                 indicatorsData.obv5m.sellSignalCount >= 10 &&
-                indicatorsData.obv1m.sellSignalCount >= 10 &&
-                indicatorsData.cci.cci1m.cci < 0,
+                indicatorsData.roc.roc15m.sellSignalCount >= 8,
+          // indicatorsData.obv1m.sellSignalCount >= 10 &&
+          // indicatorsData.cci.cci1m.cci < 0,
           // indicatorsData.obv15m.sellSignalCount >= 20 &&
           // indicatorsData.obv15m.sellSignalCount >= 6 &&
           // indicatorsData.cci.cci5m.cci < 0 &&
@@ -1289,9 +1315,12 @@ import { getRocSignal } from './components/roc-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              (indicatorsData.dmi5m.adxDownCount >= 3 ||
-                (indicatorsData.obv5m.sellSignalCount >= 4 &&
-                  indicatorsData.obv1m.sellSignalCount >= 4)),
+              (indicatorsData.obv15m.sellSignalCount >= 4 ||
+                indicatorsData.obv5m.sellSignalCount >= 4) &&
+              indicatorsData.roc.roc15m.sellSignalCount >= 8,
+            // (indicatorsData.dmi5m.adxDownCount >= 3 ||
+            //   (indicatorsData.obv5m.sellSignalCount >= 4 &&
+            //     indicatorsData.obv1m.sellSignalCount >= 4)),
             // indicatorsData.obv30m.sellSignalCount >= 20 &&
             // indicatorsData.obv15m.sellSignalCount >= 20 &&
             // indicatorsData.haCandle.ha1mCandle.sellSignalCount >= 3 &&
@@ -1364,9 +1393,12 @@ import { getRocSignal } from './components/roc-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              (indicatorsData.dmi5m.adxDownCount >= 3 ||
-                (indicatorsData.obv5m.buySignalCount >= 4 &&
-                  indicatorsData.obv1m.buySignalCount >= 4)),
+              (indicatorsData.obv15m.buySignalCount >= 4 ||
+                indicatorsData.obv5m.buySignalCount >= 4) &&
+              indicatorsData.roc.roc15m.buySignalCount >= 8,
+            // (indicatorsData.dmi5m.adxDownCount >= 3 ||
+            //   (indicatorsData.obv5m.buySignalCount >= 4 &&
+            //     indicatorsData.obv1m.buySignalCount >= 4)),
             // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
             // indicatorsData.obv30m.buySignalCount >= 20 &&
             // indicatorsData.obv15m.buySignalCount >= 20 &&
@@ -1778,11 +1810,14 @@ import { getRocSignal } from './components/roc-signals';
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
-  getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
-  getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
-  getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
-  getDMISignal(symbol, '1m', indicatorsData.dmi5m, 1, 0, 0);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
+  // getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
+  getRocSignal(symbol, '15m', indicatorsData.roc.roc15m, 0, -0.1, 4, 2);
+  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
+  // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
+  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
+  // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi5m, 1, 0, 0);
   // getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
 
   // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
@@ -2237,23 +2272,23 @@ import { getRocSignal } from './components/roc-signals';
       //     indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount +
       //     ')',
       // );
-      console.log(
-        'Avg Price Small: ' +
-          indicatorsData.avgPrices.avgSmall.avgPrice +
-          '( ' +
-          indicatorsData.avgPrices.avgSmall.avgPriceDiff +
-          ' %' +
-          ' )',
-      );
-      console.log(
-        'Avg Price Small Diff: ' +
-          indicatorsData.avgPrices.avgSmall.avgPriceSignal +
-          '(UP: ' +
-          indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount +
-          ' DOWN: ' +
-          indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount +
-          ')',
-      );
+      // console.log(
+      //   'Avg Price Small: ' +
+      //     indicatorsData.avgPrices.avgSmall.avgPrice +
+      //     '( ' +
+      //     indicatorsData.avgPrices.avgSmall.avgPriceDiff +
+      //     ' %' +
+      //     ' )',
+      // );
+      // console.log(
+      //   'Avg Price Small Diff: ' +
+      //     indicatorsData.avgPrices.avgSmall.avgPriceSignal +
+      //     '(UP: ' +
+      //     indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount +
+      //     ' DOWN: ' +
+      //     indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount +
+      //     ')',
+      // );
       // calculateAvgDealPriceChange(botState, indicatorsData);
       // indicatorsData.dealType = determineDealType(indicatorsData, 4);
       // console.log(
@@ -2391,6 +2426,34 @@ import { getRocSignal } from './components/roc-signals';
           ' ' +
           'Sell Count: ' +
           indicatorsData.obv1m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'ROC 15m: ' +
+          '(Buy Count: ' +
+          indicatorsData.roc.roc15m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.roc.roc15m.sellSignalCount +
+          ')',
+      );
+
+      console.log(
+        'ROC 5m: ' +
+          '(Buy Count: ' +
+          indicatorsData.roc.roc5m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.roc.roc5m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'ROC 1m: ' +
+          '(Buy Count: ' +
+          indicatorsData.roc.roc1m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.roc.roc1m.sellSignalCount +
           ')',
       );
 
