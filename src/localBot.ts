@@ -1166,16 +1166,17 @@ import { getRocSignal } from './components/roc-signals';
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.roc.roc1m.prevValue > 0 &&
-                // indicatorsData.dmi5m.adxUpCount >= 3 &&
+                // indicatorsData.roc.roc5m.prevValue > 0 &&
+                // indicatorsData.dmi5m.adxUpCount >= 1 &&
+                // indicatorsData.dmi1m.adxUpCount >= 3 &&
                 // ||
                 // indicatorsData.dmi5m.adxDownCount >= 3
                 // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
                 // indicatorsData.ema.ema1m.slow.emaUpCount >= 4 &&
                 // indicatorsData.obv30m.buySignalCount >= 20 &&
-                indicatorsData.obv15m.buySignalCount >= 10 &&
-                indicatorsData.obv5m.buySignalCount >= 10 &&
-                indicatorsData.roc.roc15m.buySignalCount >= 8,
-          // indicatorsData.obv1m.buySignalCount >= 10 &&
+                indicatorsData.obv15m.buySignalCount >= 60 &&
+                indicatorsData.obv5m.buySignalCount >= 60,
+          // indicatorsData.obv1m.buySignalCount >= 4,
           // indicatorsData.efi1m.prevEfi > 0 &&
           // indicatorsData.cci.cci1m.cci > 0,
           // indicatorsData.obv15m.buySignalCount >= 6 &&
@@ -1225,17 +1226,18 @@ import { getRocSignal } from './components/roc-signals';
               ? null
               : botState.status === 'buy' &&
                 // indicatorsData.roc.roc1m.prevValue < 0 &&
-                // indicatorsData.dmi5m.adxUpCount >= 3 &&
+                // indicatorsData.roc.roc5m.prevValue < 0 &&
+                // indicatorsData.dmi5m.adxUpCount >= 1 &&
+                // indicatorsData.dmi1m.adxUpCount >= 3 &&
                 // ||
                 // indicatorsData.dmi5m.adxDownCount >= 3
                 // indicatorsData.haCandle.ha1mCandle.sellSignalCount >= 3 &&
                 // indicatorsData.ema.ema1m.slow.emaDownCount >= 4 &&
                 // indicatorsData.obv30m.sellSignalCount >= 20 &&
                 // indicatorsData.efi1m.prevEfi < 0 &&
-                indicatorsData.obv15m.sellSignalCount >= 10 &&
-                indicatorsData.obv5m.sellSignalCount >= 10 &&
-                indicatorsData.roc.roc15m.sellSignalCount >= 8,
-          // indicatorsData.obv1m.sellSignalCount >= 10 &&
+                indicatorsData.obv15m.sellSignalCount >= 60 &&
+                indicatorsData.obv5m.sellSignalCount >= 60,
+          // indicatorsData.obv1m.sellSignalCount >= 4,
           // indicatorsData.cci.cci1m.cci < 0,
           // indicatorsData.obv15m.sellSignalCount >= 20 &&
           // indicatorsData.obv15m.sellSignalCount >= 6 &&
@@ -1315,14 +1317,11 @@ import { getRocSignal } from './components/roc-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              (indicatorsData.obv15m.sellSignalCount >= 4 ||
-                indicatorsData.obv5m.sellSignalCount >= 4) &&
-              indicatorsData.roc.roc15m.sellSignalCount >= 8,
-            // (indicatorsData.dmi5m.adxDownCount >= 3 ||
-            //   (indicatorsData.obv5m.sellSignalCount >= 4 &&
-            //     indicatorsData.obv1m.sellSignalCount >= 4)),
+              // (indicatorsData.dmi1m.adxDownCount >= 2 ||
+              indicatorsData.obv5m.sellSignalCount >= 60 &&
+              indicatorsData.obv15m.sellSignalCount >= 60,
+            // indicatorsData.obv1m.sellSignalCount >= 10)),
             // indicatorsData.obv30m.sellSignalCount >= 20 &&
-            // indicatorsData.obv15m.sellSignalCount >= 20 &&
             // indicatorsData.haCandle.ha1mCandle.sellSignalCount >= 3 &&
             // indicatorsData.cci.cci1m.cci < 0,
             // indicatorsData.efi1m.prevEfi < 0 &&
@@ -1393,15 +1392,12 @@ import { getRocSignal } from './components/roc-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              (indicatorsData.obv15m.buySignalCount >= 4 ||
-                indicatorsData.obv5m.buySignalCount >= 4) &&
-              indicatorsData.roc.roc15m.buySignalCount >= 8,
-            // (indicatorsData.dmi5m.adxDownCount >= 3 ||
-            //   (indicatorsData.obv5m.buySignalCount >= 4 &&
-            //     indicatorsData.obv1m.buySignalCount >= 4)),
+              // (indicatorsData.dmi1m.adxDownCount >= 2 ||
+              indicatorsData.obv5m.buySignalCount >= 60 &&
+              indicatorsData.obv15m.buySignalCount >= 60,
+            // indicatorsData.obv1m.buySignalCount >= 10)),
             // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
             // indicatorsData.obv30m.buySignalCount >= 20 &&
-            // indicatorsData.obv15m.buySignalCount >= 20 &&
             // indicatorsData.cci.cci1m.cci > 0,
             // indicatorsData.efi1m.prevEfi > 0,
 
@@ -1812,12 +1808,12 @@ import { getRocSignal } from './components/roc-signals';
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
-  getRocSignal(symbol, '15m', indicatorsData.roc.roc15m, 0, -0.1, 4, 2);
+  // getRocSignal(symbol, '15m', indicatorsData.roc.roc15m, 0, -0.1, 4, 2);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
   // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
   // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
-  // getDMISignal(symbol, '1m', indicatorsData.dmi5m, 1, 0, 0);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
 
   // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
