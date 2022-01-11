@@ -1204,20 +1204,20 @@ import { getRocSignal } from './components/roc-signals';
           // indicatorsData.haCandle.ha1hCandle.signal === 'sell',
         },
         sell: {
-          takeProfit: null,
-          // (botState.status === 'sell' &&
-          //   botState.dealType === 'long' &&
-          //   expectedProfitPercent <= -0.5) ||
-          // (botState.status === 'sell' &&
-          //   botState.dealType === 'short' &&
-          //   expectedProfitPercent >= 0.5),
+          takeProfit:
+            (botState.status === 'sell' &&
+              botState.dealType === 'long' &&
+              expectedProfitPercent <= -0.1) ||
+            (botState.status === 'sell' &&
+              botState.dealType === 'short' &&
+              expectedProfitPercent >= 0.1),
           stopLoss: {
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.dmi1m.adxUpCount >= 3 &&
-              (indicatorsData.obv5m.sellSignalCount >= 10 ||
-                indicatorsData.obv1m.sellSignalCount >= 10),
+              // indicatorsData.dmi1m.adxUpCount >= 3 &&
+              indicatorsData.obv5m.sellSignalCount >= 6 &&
+                indicatorsData.obv1m.sellSignalCount >= 4,
             // indicatorsData.obv30m.sellSignalCount >= 20 &&
             // indicatorsData.obv15m.sellSignalCount >= 20 &&
             // indicatorsData.haCandle.ha1mCandle.sellSignalCount >= 3 &&
@@ -1290,9 +1290,9 @@ import { getRocSignal } from './components/roc-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.dmi1m.adxUpCount >= 3 &&
-              (indicatorsData.obv5m.buySignalCount >= 10 ||
-                indicatorsData.obv1m.buySignalCount >= 10),
+              // indicatorsData.dmi1m.adxUpCount >= 3 &&
+              indicatorsData.obv5m.buySignalCount >= 6 &&
+                indicatorsData.obv1m.buySignalCount >= 4,
             // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
             // indicatorsData.obv30m.buySignalCount >= 20 &&
             // indicatorsData.obv15m.buySignalCount >= 20 &&
