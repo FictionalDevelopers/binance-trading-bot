@@ -1066,6 +1066,7 @@ import { getCRSIStream } from './indicators/crsi';
                 // indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv15m.buySignalCount >= 60 &&
                 indicatorsData.obv5m.buySignalCount >= 60 &&
+                indicatorsData.obv1m.buySignalCount >= 20 &&
                 // indicatorsData.cci.cci15m.cci > 100 &&
                 // indicatorsData.cci.cci5m.cci > 100 &&
                 indicatorsData.cci.cci1m.cci > 100,
@@ -1073,7 +1074,6 @@ import { getCRSIStream } from './indicators/crsi';
           // indicatorsData.crsi.crsi15m.crsi > 70 &&
           // indicatorsData.crsi.crsi5m.crsi > 70,
           // indicatorsData.haCandle.ha5mCandle.buySignalCount >= 3 &&
-          // indicatorsData.obv1m.buySignalCount >= 6 &&
           // indicatorsData.ema.ema1m.slow.emaUpCount >= 2 &&
           // (indicatorsData.dmi1m.adxDownCount >= 3 ||
           //   indicatorsData.dmi1m.adxUpCount >= 3),
@@ -1119,6 +1119,7 @@ import { getCRSIStream } from './indicators/crsi';
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv15m.sellSignalCount >= 60 &&
                 indicatorsData.obv5m.sellSignalCount >= 60 &&
+                indicatorsData.obv1m.sellSignalCount >= 20 &&
                 // indicatorsData.cci.cci15m.cci < -100 &&
                 // indicatorsData.cci.cci5m.cci < -100 &&
                 indicatorsData.cci.cci1m.cci < -100,
@@ -1126,7 +1127,6 @@ import { getCRSIStream } from './indicators/crsi';
           // indicatorsData.crsi.crsi15m.crsi < 30 &&
           // indicatorsData.crsi.crsi5m.crsi < 30,
           // indicatorsData.haCandle.ha5mCandle.sellSignalCount >= 3 &&
-          // indicatorsData.obv1m.sellSignalCount >= 6 &&
           // indicatorsData.cci.cci5m.cci < 0 &&
           // indicatorsData.cci.cci1m.cci < 0,
           // indicatorsData.obv5m.sellSignalCount >= 20 &&
@@ -1206,14 +1206,15 @@ import { getCRSIStream } from './indicators/crsi';
               //   indicatorsData.dmi1m.adxUpCount >= 3) &&
               // indicatorsData.obv1h.sellSignalCount >= 30,
               // indicatorsData.obv15m.sellSignalCount >= 20 &&
+
               (indicatorsData.obv15m.sellSignalCount >= 20 ||
-                indicatorsData.obv5m.sellSignalCount >= 20) &&
+                indicatorsData.obv5m.sellSignalCount >= 20 ||
+                indicatorsData.obv1m.sellSignalCount >= 20) &&
               // indicatorsData.cci.cci15m.cci < 0 &&
               // indicatorsData.cci.cci5m.cci < -100 &&
               indicatorsData.cci.cci1m.cci < -100,
             // indicatorsData.crsi.crsi15m.crsi < 30 &&
             // indicatorsData.crsi.crsi5m.crsi < 30,
-            // indicatorsData.obv1m.sellSignalCount >= 6 &&
             // indicatorsData.cci.cci5m.cci < 0 &&
             // indicatorsData.cci.cci1m.cci < 0,
             // indicatorsData.ema.ema1m.slow.emaDownCount >= 2 &&
@@ -1281,13 +1282,13 @@ import { getCRSIStream } from './indicators/crsi';
               // indicatorsData.obv15m.buySignalCount >= 20 &&
               // indicatorsData.obv1h.buySignalCount >= 30,
               (indicatorsData.obv15m.buySignalCount >= 20 ||
-                indicatorsData.obv5m.buySignalCount >= 20) &&
+                indicatorsData.obv5m.buySignalCount >= 20 ||
+                indicatorsData.obv1m.buySignalCount >= 20) &&
               // indicatorsData.cci.cci15m.cci > 0 &&
               // indicatorsData.cci.cci5m.cci > 100 &&
               indicatorsData.cci.cci1m.cci > 100,
             // indicatorsData.crsi.crsi15m.crsi > 70 &&
             // indicatorsData.crsi.crsi5m.crsi > 70,
-            // indicatorsData.obv1m.buySignalCount >= 6 &&
             // indicatorsData.cci.cci5m.cci > 0 &&
             // indicatorsData.cci.cci1m.cci > 0,
             // indicatorsData.ema.ema1m.slow.emaUpCount >= 2,
@@ -1770,7 +1771,7 @@ import { getCRSIStream } from './indicators/crsi';
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 30, 30);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
   // getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
   // getCCISignal(symbol, '5m', indicatorsData.cci.cci5m);
   getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
