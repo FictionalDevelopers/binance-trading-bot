@@ -124,7 +124,7 @@ import { getRocSignal } from './components/roc-signals';
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: true,
-      status: 'buy',
+      status: 'pending',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -1807,12 +1807,13 @@ import { getRocSignal } from './components/roc-signals';
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
-  getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
+  // getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
   // getRocSignal(symbol, '1d', indicatorsData.roc.roc15m, 0, -0.1, 4, 2);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
   // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
   // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
 
