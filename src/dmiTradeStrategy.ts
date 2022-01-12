@@ -1216,10 +1216,10 @@ import { getRocSignal } from './components/roc-signals';
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
               // indicatorsData.dmi1m.adxUpCount >= 3 &&
-              indicatorsData.obv5m.sellSignalCount >= 6 &&
-              indicatorsData.obv1m.sellSignalCount >= 4,
+              indicatorsData.obv15m.sellSignalCount >= 10 &&
+              indicatorsData.obv5m.sellSignalCount >= 10 &&
+              indicatorsData.obv1m.sellSignalCount >= 10,
             // indicatorsData.obv30m.sellSignalCount >= 20 &&
-            // indicatorsData.obv15m.sellSignalCount >= 20 &&
             // indicatorsData.haCandle.ha1mCandle.sellSignalCount >= 3 &&
             // indicatorsData.cci.cci1m.cci < 0,
             // indicatorsData.efi1m.prevEfi < 0 &&
@@ -1291,11 +1291,11 @@ import { getRocSignal } from './components/roc-signals';
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
               // indicatorsData.dmi1m.adxUpCount >= 3 &&
-              indicatorsData.obv5m.buySignalCount >= 6 &&
-              indicatorsData.obv1m.buySignalCount >= 4,
+              indicatorsData.obv15m.buySignalCount >= 10 &&
+              indicatorsData.obv5m.buySignalCount >= 10 &&
+              indicatorsData.obv1m.buySignalCount >= 10,
             // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
             // indicatorsData.obv30m.buySignalCount >= 20 &&
-            // indicatorsData.obv15m.buySignalCount >= 20 &&
             // indicatorsData.cci.cci1m.cci > 0,
             // indicatorsData.efi1m.prevEfi > 0,
 
