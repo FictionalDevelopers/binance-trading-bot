@@ -1067,6 +1067,8 @@ import { getCRSIStream } from './indicators/crsi';
                 // indicatorsData.obv15m.buySignalCount >= 60 &&
                 // indicatorsData.obv5m.buySignalCount >= 60 &&
                 indicatorsData.dmi1m.adxUpCount >= 3 &&
+                (indicatorsData.dmi5m.adxUpCount >= 2 ||
+                  indicatorsData.dmi5m.adxDownCount >= 2) &&
                 indicatorsData.obv1m.buySignalCount >= 20,
           // indicatorsData.cci.cci15m.cci > 100 &&
           // indicatorsData.cci.cci5m.cci > 100 &&
@@ -1115,6 +1117,8 @@ import { getCRSIStream } from './indicators/crsi';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
+                (indicatorsData.dmi5m.adxUpCount >= 2 ||
+                  indicatorsData.dmi5m.adxDownCount >= 2) &&
                 indicatorsData.dmi1m.adxUpCount >= 3 &&
                 // indicatorsData.obv1h.sellSignalCount >= 30 &&
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
@@ -1779,6 +1783,7 @@ import { getCRSIStream } from './indicators/crsi';
   // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
 
   getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
+  getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
 
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
   // getStochRSISignal(
