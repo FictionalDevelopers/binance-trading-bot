@@ -799,10 +799,10 @@ export const marketBuyAction = async (
       botState.dmi1m.adx = indicatorsData.dmi1m.adx;
       botState.dmi1m.adxUpCount = indicatorsData.dmi1m.adxUpCount;
       botState.dmi1m.adxDownCount = indicatorsData.dmi1m.adxDownCount;
-      indicatorsData.dmi1m.adxUpCount = 0;
-      indicatorsData.dmi1m.adxDownCount = 0;
-      indicatorsData.dmi5m.adxUpCount = 0;
-      indicatorsData.dmi5m.adxDownCount = 0;
+      // indicatorsData.dmi1m.adxUpCount = 0;
+      // indicatorsData.dmi1m.adxDownCount = 0;
+      // indicatorsData.dmi5m.adxUpCount = 0;
+      // indicatorsData.dmi5m.adxDownCount = 0;
       if (botState.logToTelegram) {
         await sendToRecipients(`BUY ${botState.local ? '(LOCAL)' : '(REMOTE)'}
                                Strategy:${strategy}
