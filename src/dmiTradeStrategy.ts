@@ -1773,9 +1773,9 @@ import { getCRSIStream } from './indicators/crsi';
   //   indicatorsData.dmi15m,
   // );
 
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 30, 30);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
+  getObvSignal(symbol, '30m', indicatorsData.obv30m, 30, 30);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
   // getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
   // getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
