@@ -1773,9 +1773,6 @@ import { getRocSignal } from './components/roc-signals';
   })
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(scalper);
-  getCandleStreamForInterval(symbol, '1m').subscribe(data => {
-    indicatorsData.candle.candle1m = data;
-  });
 
   // getCRSIStream({ symbol, interval: '15m' }, indicatorsData.crsi.crsi15m);
   // getCRSIStream({ symbol, interval: '5m' }, indicatorsData.crsi.crsi5m);
@@ -2477,8 +2474,9 @@ import { getRocSignal } from './components/roc-signals';
       //     ')',
       // );
 
-      // console.log('CRSI 5m: ' + indicatorsData.crsi.crsi5m.crsi);
-      // console.log('CRSI 1m: ' + indicatorsData.crsi.crsi1m.crsi);
+      console.log('CRSI 15m: ' + indicatorsData.crsi.crsi15m.crsi);
+      console.log('CRSI 5m: ' + indicatorsData.crsi.crsi5m.crsi);
+      console.log('CRSI 1m: ' + indicatorsData.crsi.crsi1m.crsi);
 
       // console.log('CCI 5m: ' + indicatorsData.cci.cci5m.cci);
       // console.log(
