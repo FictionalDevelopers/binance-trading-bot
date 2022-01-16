@@ -1063,7 +1063,7 @@ import { getForceIndexSignal } from './components/forceIndex';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.efi1m.efi > 0 &&
+                indicatorsData.efi1m.prevEfi > 0 &&
                 indicatorsData.obv30m.buySignalCount >= 20 &&
                 indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv5m.buySignalCount >= 20,
@@ -1122,7 +1122,7 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // (indicatorsData.dmi5m.adxUpCount >= 2 ||
                 //   indicatorsData.dmi5m.adxDownCount >= 2) &&
                 // indicatorsData.dmi1m.adxUpCount >= 3 &&
-                indicatorsData.efi1m.efi < 0 &&
+                indicatorsData.efi1m.prevEfi < 0 &&
                 indicatorsData.obv30m.sellSignalCount >= 20 &&
                 indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv5m.sellSignalCount >= 20,
@@ -1213,7 +1213,7 @@ import { getForceIndexSignal } from './components/forceIndex';
                 indicatorsData.obv30m.sellSignalCount >= 20 &&
                 indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv5m.sellSignalCount >= 20) ||
-              (indicatorsData.efi1m.efi < 0 && expectedProfitPercent < 0),
+              (indicatorsData.efi1m.prevEfi < 0 && expectedProfitPercent < 0),
 
             // indicatorsData.obv1m.sellSignalCount >= 10,
             // (indicatorsData.dmi1m.adxDownCount >= 3 ||
@@ -1295,7 +1295,7 @@ import { getForceIndexSignal } from './components/forceIndex';
                 indicatorsData.obv30m.buySignalCount >= 20 &&
                 indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv5m.buySignalCount >= 20) ||
-              (indicatorsData.efi1m.efi > 0 && expectedProfitPercent > 0),
+              (indicatorsData.efi1m.prevEfi > 0 && expectedProfitPercent > 0),
             // indicatorsData.obv1m.buySignalCount >= 10,
             // indicatorsData.obv30m.buySignalCount >= 20 &&
             // indicatorsData.obv15m.buySignalCount >= 20 &&
