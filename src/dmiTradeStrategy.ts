@@ -1210,11 +1210,12 @@ import { getForceIndexSignal } from './components/forceIndex';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              ((indicatorsData.obv30m.sellSignalCount >= 20 &&
+              indicatorsData.obv30m.sellSignalCount >= 20 &&
                 indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.obv5m.sellSignalCount >= 20) ||
-                (indicatorsData.efi1m.prevEfi < 0 &&
-                  expectedProfitPercent < 0)),
+                indicatorsData.obv5m.sellSignalCount >= 20,
+              // ||
+              // (indicatorsData.efi1m.prevEfi < 0 &&
+              //   expectedProfitPercent < 0)
 
             // indicatorsData.obv1m.sellSignalCount >= 10,
             // (indicatorsData.dmi1m.adxDownCount >= 3 ||
@@ -1293,11 +1294,13 @@ import { getForceIndexSignal } from './components/forceIndex';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              ((indicatorsData.obv30m.buySignalCount >= 20 &&
+              indicatorsData.obv30m.buySignalCount >= 20 &&
                 indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.obv5m.buySignalCount >= 20) ||
-                (indicatorsData.efi1m.prevEfi > 0 &&
-                  expectedProfitPercent > 0)),
+                indicatorsData.obv5m.buySignalCount >= 20,
+              // ||
+
+              // (indicatorsData.efi1m.prevEfi > 0 &&
+              //   expectedProfitPercent > 0)
             // indicatorsData.obv1m.buySignalCount >= 10,
             // indicatorsData.obv30m.buySignalCount >= 20 &&
             // indicatorsData.obv15m.buySignalCount >= 20 &&
