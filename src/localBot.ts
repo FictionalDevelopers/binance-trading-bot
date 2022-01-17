@@ -34,6 +34,7 @@ import { getTrixSignal } from './components/trix-signal';
 import { getHeikinAshiSignal } from './indicators/heikinAshi';
 import { getForceIndexSignal } from './components/forceIndex';
 import { getRocSignal } from './components/roc-signals';
+import { getRSISignal } from './components/rsi-signals';
 
 (async function() {
   await connect();
@@ -1169,24 +1170,21 @@ import { getRocSignal } from './components/roc-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.candle.candle1m !== null &&
-                +indicatorsData.candle.candle1m.takerBuyBaseAssetVolume /
-                  +indicatorsData.candle.candle1m.baseAssetVolume >=
-                  1.5,
-
-          // indicatorsData.roc.roc1m.prevValue > 0 &&
-          // indicatorsData.roc.roc5m.prevValue > 0 &&
-          // indicatorsData.dmi5m.adxUpCount >= 1 &&
-          // indicatorsData.dmi1m.adxUpCount >= 5 &&
-          // ||
-          // indicatorsData.dmi5m.adxDownCount >= 3
-          // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
-          // indicatorsData.ema.ema1m.slow.emaUpCount >= 4 &&
-          // indicatorsData.obv30m.buySignalCount >= 20 &&
-          // indicatorsData.cci.cci1m.cci > 0 &&
-          // indicatorsData.obv15m.buySignalCount >= 20 &&
-          // indicatorsData.obv5m.buySignalCount >= 60,
-          // indicatorsData.obv1m.buySignalCount >= 20,
+                // indicatorsData.roc.roc1m.prevValue > 0 &&
+                // indicatorsData.roc.roc5m.prevValue > 0 &&
+                // indicatorsData.dmi5m.adxUpCount >= 1 &&
+                // indicatorsData.dmi1m.adxUpCount >= 5 &&
+                // ||
+                // indicatorsData.dmi5m.adxDownCount >= 3
+                // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
+                // indicatorsData.ema.ema1m.slow.emaUpCount >= 4 &&
+                // indicatorsData.obv30m.buySignalCount >= 20 &&
+                // indicatorsData.cci.cci1m.cci > 0 &&
+                // indicatorsData.obv15m.buySignalCount >= 20 &&
+                indicatorsData.rsi1m.rsiValue > 60 &&
+                indicatorsData.rsi5m.rsiValue > 60 &&
+                indicatorsData.obv5m.buySignalCount >= 20 &&
+                indicatorsData.obv1m.buySignalCount >= 4,
           // indicatorsData.efi1m.prevEfi > 0 &&
           // indicatorsData.obv15m.buySignalCount >= 6 &&
           // indicatorsData.cci.cci5m.cci > 0 &&
@@ -1234,25 +1232,24 @@ import { getRocSignal } from './components/roc-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.candle.candle1m !== null &&
-                +indicatorsData.candle.candle1m.baseAssetVolume /
-                  +indicatorsData.candle.candle1m.takerBuyBaseAssetVolume >=
-                  1.5,
-
-          // indicatorsData.roc.roc1m.prevValue < 0 &&
-          // indicatorsData.roc.roc5m.prevValue < 0 &&
-          // indicatorsData.dmi5m.adxUpCount >= 1 &&
-          // indicatorsData.dmi1m.adxUpCount >= 5 &&
-          // ||
-          // indicatorsData.dmi5m.adxDownCount >= 3
-          // indicatorsData.haCandle.ha1mCandle.sellSignalCount >= 3 &&
-          // indicatorsData.ema.ema1m.slow.emaDownCount >= 4 &&
-          // indicatorsData.obv30m.sellSignalCount >= 20 &&
-          // indicatorsData.efi1m.prevEfi < 0 &&
-          // indicatorsData.obv15m.sellSignalCount >= 20 &&
-          // indicatorsData.cci.cci1m.cci < 0 &&
-          // indicatorsData.obv5m.sellSignalCount >= 60,
-          // indicatorsData.obv1m.sellSignalCount >= 20,
+                indicatorsData.rsi1m.rsiValue !== null &&
+                indicatorsData.rsi1m.rsiValue < 40 &&
+                indicatorsData.rsi5m.rsiValue !== null &&
+                indicatorsData.rsi5m.rsiValue < 40 &&
+                // indicatorsData.roc.roc1m.prevValue < 0 &&
+                // indicatorsData.roc.roc5m.prevValue < 0 &&
+                // indicatorsData.dmi5m.adxUpCount >= 1 &&
+                // indicatorsData.dmi1m.adxUpCount >= 5 &&
+                // ||
+                // indicatorsData.dmi5m.adxDownCount >= 3
+                // indicatorsData.haCandle.ha1mCandle.sellSignalCount >= 3 &&
+                // indicatorsData.ema.ema1m.slow.emaDownCount >= 4 &&
+                // indicatorsData.obv30m.sellSignalCount >= 20 &&
+                // indicatorsData.efi1m.prevEfi < 0 &&
+                // indicatorsData.obv15m.sellSignalCount >= 20 &&
+                // indicatorsData.cci.cci1m.cci < 0 &&
+                indicatorsData.obv5m.sellSignalCount >= 20 &&
+                indicatorsData.obv1m.sellSignalCount >= 4,
           // indicatorsData.obv15m.sellSignalCount >= 20 &&
           // indicatorsData.obv15m.sellSignalCount >= 6 &&
           // indicatorsData.cci.cci5m.cci < 0 &&
@@ -1331,12 +1328,11 @@ import { getRocSignal } from './components/roc-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              +indicatorsData.candle.candle1m.baseAssetVolume /
-                +indicatorsData.candle.candle1m.takerBuyBaseAssetVolume >=
-                1.5,
-            // (indicatorsData.dmi1m.adxDownCount >= 2 ||
-            // indicatorsData.obv5m.sellSignalCount >= 20,
-            // indicatorsData.obv1m.sellSignalCount >= 2 &&
+              // (indicatorsData.dmi1m.adxDownCount >= 2 ||
+              indicatorsData.obv5m.sellSignalCount >= 4 &&
+              indicatorsData.obv1m.sellSignalCount >= 4 &&
+              indicatorsData.rsi1m.rsiValue < 60,
+
             // indicatorsData.cci.cci1m.cci < 0,
             // indicatorsData.obv1m.sellSignalCount >= 20,
             // indicatorsData.obv30m.sellSignalCount >= 20 &&
@@ -1409,13 +1405,12 @@ import { getRocSignal } from './components/roc-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              +indicatorsData.candle.candle1m.takerBuyBaseAssetVolume /
-                +indicatorsData.candle.candle1m.baseAssetVolume >=
-                1.5,
-            // (indicatorsData.dmi1m.adxDownCount >= 2 ||
-            // indicatorsData.cci.cci1m.cci > 0 &&
-            // indicatorsData.obv5m.buySignalCount >= 20,
-            // indicatorsData.obv1m.buySignalCount >= 2,
+              // (indicatorsData.dmi1m.adxDownCount >= 2 ||
+              // indicatorsData.cci.cci1m.cci > 0 &&
+              indicatorsData.obv5m.buySignalCount >= 4 &&
+              indicatorsData.obv1m.buySignalCount >= 4 &&
+              indicatorsData.rsi1m.rsiValue > 60,
+
             // indicatorsData.obv1m.buySignalCount >= 20,
             // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
             // indicatorsData.obv30m.buySignalCount >= 20 &&
@@ -1825,8 +1820,10 @@ import { getRocSignal } from './components/roc-signals';
   // getObvSignal(symbol, '2h', indicatorsData.obv1h, 60, 60);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
+  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
   // getRocSignal(symbol, '1d', indicatorsData.roc.roc15m, 0, -0.1, 4, 2);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
@@ -2350,7 +2347,7 @@ import { getRocSignal } from './components/roc-signals';
       //     indicatorsData.obv1d.sellSignalCount +
       //     ')',
       // );
-      console.log(indicatorsData.candle.candle1m);
+      // console.log(indicatorsData.candle.candle1m);
       // console.log(
       //   'OBV 4h: ' +
       //     indicatorsData.obv4h.signal +
@@ -2423,28 +2420,30 @@ import { getRocSignal } from './components/roc-signals';
       //     ')',
       // );
       //
-      // console.log(
-      //   'OBV 5m: ' +
-      //     indicatorsData.obv5m.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv5m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv5m.sellSignalCount +
-      //     ')',
-      // );
-      // console.log(
-      //   'OBV 1m: ' +
-      //     indicatorsData.obv1m.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv1m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv1m.sellSignalCount +
-      //     ')',
-      // );
+      console.log(
+        'OBV 5m: ' +
+          indicatorsData.obv5m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv5m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv5m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 1m: ' +
+          indicatorsData.obv1m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv1m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv1m.sellSignalCount +
+          ')',
+      );
+      console.log('RSI 1m: ' + indicatorsData.rsi1m.rsiValue);
+      console.log('RSI 5m: ' + indicatorsData.rsi5m.rsiValue);
       // console.log(
       //   'ROC 15m: ' +
       //     '(Buy Count: ' +
@@ -2474,9 +2473,9 @@ import { getRocSignal } from './components/roc-signals';
       //     ')',
       // );
 
-      console.log('CRSI 15m: ' + indicatorsData.crsi.crsi15m.crsi);
-      console.log('CRSI 5m: ' + indicatorsData.crsi.crsi5m.crsi);
-      console.log('CRSI 1m: ' + indicatorsData.crsi.crsi1m.crsi);
+      // console.log('CRSI 15m: ' + indicatorsData.crsi.crsi15m.crsi);
+      // console.log('CRSI 5m: ' + indicatorsData.crsi.crsi5m.crsi);
+      // console.log('CRSI 1m: ' + indicatorsData.crsi.crsi1m.crsi);
 
       // console.log('CCI 5m: ' + indicatorsData.cci.cci5m.cci);
       // console.log(

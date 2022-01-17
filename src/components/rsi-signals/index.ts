@@ -5,7 +5,7 @@ import _throttle from 'lodash/throttle';
 export const getRSISignal = (symbol, timeFrame, indicatorsData) => {
   getRsiStream({
     symbol: symbol,
-    period: 14,
+    period: 4,
     interval: timeFrame,
   }).subscribe(rsi => {
     if (!indicatorsData.prevRsi) {
