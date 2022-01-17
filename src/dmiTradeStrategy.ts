@@ -1064,8 +1064,8 @@ import { getForceIndexSignal } from './components/forceIndex';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.rsi15m.rsiValue > 60 &&
-                indicatorsData.rsi5m.rsiValue > 60 &&
-                indicatorsData.rsi1m.rsiValue > 60 &&
+                // indicatorsData.rsi5m.rsiValue > 60 &&
+                // indicatorsData.rsi1m.rsiValue > 60 &&
                 indicatorsData.obv30m.buySignalCount >= 20 &&
                 indicatorsData.obv15m.buySignalCount >= 20 &&
                 indicatorsData.obv5m.buySignalCount >= 20,
@@ -1126,10 +1126,10 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // indicatorsData.dmi1m.adxUpCount >= 3 &&
                 indicatorsData.rsi15m.rsiValue !== null &&
                 indicatorsData.rsi15m.rsiValue < 40 &&
-                indicatorsData.rsi5m.rsiValue !== null &&
-                indicatorsData.rsi5m.rsiValue < 40 &&
-                indicatorsData.rsi1m.rsiValue !== null &&
-                indicatorsData.rsi1m.rsiValue < 40 &&
+                // indicatorsData.rsi5m.rsiValue !== null &&
+                // indicatorsData.rsi5m.rsiValue < 40 &&
+                // indicatorsData.rsi1m.rsiValue !== null &&
+                // indicatorsData.rsi1m.rsiValue < 40 &&
                 indicatorsData.obv30m.sellSignalCount >= 20 &&
                 indicatorsData.obv15m.sellSignalCount >= 20 &&
                 indicatorsData.obv5m.sellSignalCount >= 20,
@@ -1803,8 +1803,8 @@ import { getForceIndexSignal } from './components/forceIndex';
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   getRSISignal(symbol, '15m', indicatorsData.rsi15m);
-  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  getRSISignal(symbol, '1m', indicatorsData.rsi1m);
+  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
