@@ -1071,7 +1071,7 @@ import { getForceIndexSignal } from './components/forceIndex';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.rsi15m.rsiValue > 60 &&
+                indicatorsData.rsi15m.rsiValue > 60 &&
                 // indicatorsData.rsi5m.rsiValue > 60 &&
                 // indicatorsData.rsi1m.rsiValue > 60 &&
                 indicatorsData.obv2h.buySignalCount >= 20 &&
@@ -1134,8 +1134,8 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // (indicatorsData.dmi5m.adxUpCount >= 2 ||
                 //   indicatorsData.dmi5m.adxDownCount >= 2) &&
                 // indicatorsData.dmi1m.adxUpCount >= 3 &&
-                // indicatorsData.rsi15m.rsiValue !== null &&
-                // indicatorsData.rsi15m.rsiValue < 40 &&
+                indicatorsData.rsi15m.rsiValue !== null &&
+                indicatorsData.rsi15m.rsiValue < 40 &&
                 // indicatorsData.rsi5m.rsiValue !== null &&
                 // indicatorsData.rsi5m.rsiValue < 40 &&
                 // indicatorsData.rsi1m.rsiValue !== null &&
@@ -1820,10 +1820,10 @@ import { getForceIndexSignal } from './components/forceIndex';
   getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2);
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
   getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
+  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 30, 30);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
-  // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
