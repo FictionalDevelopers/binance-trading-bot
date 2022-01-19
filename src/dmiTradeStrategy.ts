@@ -1822,7 +1822,7 @@ import { getForceIndexSignal } from './components/forceIndex';
   getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 30, 30);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
