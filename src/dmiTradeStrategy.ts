@@ -1074,10 +1074,10 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // indicatorsData.rsi15m.rsiValue > 60 &&
                 // indicatorsData.rsi5m.rsiValue > 60 &&
                 // indicatorsData.rsi1m.rsiValue > 60 &&
-                indicatorsData.obv2h.buySignalCount >= 20 &&
-                indicatorsData.obv1h.buySignalCount >= 20 &&
-                indicatorsData.obv30m.buySignalCount >= 20,
-          // indicatorsData.obv15m.buySignalCount >= 20 &&
+                // indicatorsData.obv2h.buySignalCount >= 20 &&
+                indicatorsData.obv1h.buySignalCount >= 40 &&
+                indicatorsData.obv30m.buySignalCount >= 40 &&
+                indicatorsData.obv15m.buySignalCount >= 40,
           // indicatorsData.obv5m.buySignalCount >= 20,
           // indicatorsData.obv1m.buySignalCount >= 10,
           // indicatorsData.obv15m.buySignalCount >= 60 &&
@@ -1140,10 +1140,10 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // indicatorsData.rsi5m.rsiValue < 40 &&
                 // indicatorsData.rsi1m.rsiValue !== null &&
                 // indicatorsData.rsi1m.rsiValue < 40 &&
-                indicatorsData.obv2h.sellSignalCount >= 20 &&
-                indicatorsData.obv1h.sellSignalCount >= 20 &&
-                indicatorsData.obv30m.sellSignalCount >= 20,
-          // indicatorsData.obv15m.sellSignalCount >= 20 &&
+                // indicatorsData.obv2h.sellSignalCount >= 20 &&
+                indicatorsData.obv1h.sellSignalCount >= 40 &&
+                indicatorsData.obv30m.sellSignalCount >= 40 &&
+                indicatorsData.obv15m.sellSignalCount >= 40,
           // indicatorsData.obv5m.sellSignalCount >= 20,
           // indicatorsData.obv1m.sellSignalCount >= 10,
           // indicatorsData.obv15m.sellSignalCount >= 60 &&
@@ -1229,10 +1229,10 @@ import { getForceIndexSignal } from './components/forceIndex';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.obv2h.sellSignalCount >= 20 &&
-              indicatorsData.obv1h.sellSignalCount >= 20 &&
-              indicatorsData.obv30m.sellSignalCount >= 20,
-            // indicatorsData.obv30m.sellSignalCount >= 20 &&
+              // indicatorsData.obv2h.sellSignalCount >= 20 &&
+              indicatorsData.obv1h.sellSignalCount >= 40 &&
+              indicatorsData.obv30m.sellSignalCount >= 40 &&
+              indicatorsData.obv15m.sellSignalCount >= 40,
             // indicatorsData.obv15m.sellSignalCount >= 20 &&
             // indicatorsData.obv5m.sellSignalCount >= 20,
             // ||
@@ -1316,10 +1316,10 @@ import { getForceIndexSignal } from './components/forceIndex';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.obv2h.buySignalCount >= 20 &&
-              indicatorsData.obv1h.buySignalCount >= 20 &&
-              indicatorsData.obv30m.buySignalCount >= 20,
-            // indicatorsData.obv30m.buySignalCount >= 20 &&
+              // indicatorsData.obv2h.buySignalCount >= 20 &&
+              indicatorsData.obv1h.buySignalCount >= 40 &&
+              indicatorsData.obv30m.buySignalCount >= 40 &&
+              indicatorsData.obv15m.buySignalCount >= 40,
             // indicatorsData.obv15m.buySignalCount >= 20 &&
             // indicatorsData.obv5m.buySignalCount >= 20,
             // ||
@@ -1817,12 +1817,12 @@ import { getForceIndexSignal } from './components/forceIndex';
   //   indicatorsData.dmi15m,
   // );
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
-  getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2);
+  // getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2);
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
   getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 30, 30);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
