@@ -1808,7 +1808,10 @@ import { getForceIndexSignal } from './components/forceIndex';
   //   indicatorsData.dmi15m,
   // );
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);

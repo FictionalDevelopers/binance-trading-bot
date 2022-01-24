@@ -312,21 +312,18 @@ export const marketSellAction = async (
           OBV 1h: BSC: ${indicatorsData.obv1h.buySignalCount} SSC: ${
             indicatorsData.obv1h.sellSignalCount
           }                                   
-           OBV 30m: BSC: ${indicatorsData.obv30m.buySignalCount} SSC: ${
+          OBV 30m: BSC: ${indicatorsData.obv30m.buySignalCount} SSC: ${
             indicatorsData.obv30m.sellSignalCount
           }
-                                    OBV 15m: BSC: ${
-                                      indicatorsData.obv15m.buySignalCount
-                                    } SSC: ${
+          OBV 15m: BSC: ${indicatorsData.obv15m.buySignalCount} SSC: ${
             indicatorsData.obv15m.sellSignalCount
           }
-                                    OBV 5m: BSC: ${
-                                      indicatorsData.obv5m.buySignalCount
-                                    } SSC: ${
+          OBV 5m: BSC: ${indicatorsData.obv5m.buySignalCount} SSC: ${
             indicatorsData.obv5m.sellSignalCount
-          }                         OBV 1m: BSC: ${
-            indicatorsData.obv1m.buySignalCount
-          } SSC: ${indicatorsData.obv1m.sellSignalCount}
+          }                         
+          OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
+            indicatorsData.obv1m.sellSignalCount
+          }
           ADX 1m: ${'(UP: ' +
             indicatorsData.dmi1m.adxUpCount +
             ' ' +
@@ -830,15 +827,10 @@ export const marketBuyAction = async (
         OBV 30m: BSC: ${indicatorsData.obv30m.buySignalCount} SSC: ${
           indicatorsData.obv30m.sellSignalCount
         }
-                                    OBV 15m: BSC: ${
-                                      indicatorsData.obv15m.buySignalCount
-                                    } SSC: ${
+        OBV 15m: BSC: ${indicatorsData.obv15m.buySignalCount} SSC: ${
           indicatorsData.obv15m.sellSignalCount
         }
-
-                                    OBV 5m: BSC: ${
-                                      indicatorsData.obv5m.buySignalCount
-                                    } SSC: ${
+        OBV 5m: BSC: ${indicatorsData.obv5m.buySignalCount} SSC: ${
           indicatorsData.obv5m.sellSignalCount
         }
          OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
@@ -861,7 +853,6 @@ export const marketBuyAction = async (
           ' ' +
           'Current: ' +
           indicatorsData.dmi5m.adx}
-      
       ADX 15m: ${'(UP: ' +
         indicatorsData.dmi15m.buySignalCount +
         ' ' +
@@ -878,9 +869,6 @@ export const marketBuyAction = async (
         ' ' +
         'Current: ' +
         indicatorsData.dmi1h.adx}
-      
-                                                            
-                        
                         `);
       }
       console.log(`BUY
