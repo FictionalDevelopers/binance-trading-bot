@@ -15,7 +15,7 @@ export const getDMISignal = (
   getDmiStream({
     symbol: symbol,
     interval: timeFrame,
-    period: 14,
+    period: 2,
   }).subscribe(dmi => {
     if (!indicatorsData.prevDmi) {
       indicatorsData.prevDmi = dmi;
@@ -28,7 +28,7 @@ export const getDMISignal = (
     // if ((dmi.pdi / dmi.adx) * 100 - 100 >= 2.5) indicatorsData.adxSignal = 1;
     // if (dmi.mdi > dmi.pdi) {
     //   if (indicatorsData.trend === 'UP') {
-    //     indicatorsData.adxBuySignalVolume = 0;
+    //     indicatorsData.adxBuySignalVolume++;
     //     indicatorsData.adxSellSignalVolume = 0;
     //   }
     //   indicatorsData.mdiSignal = -1;
@@ -37,7 +37,7 @@ export const getDMISignal = (
     // if (dmi.pdi > dmi.mdi) {
     //   if (indicatorsData.trend === 'DOWN') {
     //     indicatorsData.adxBuySignalVolume = 0;
-    //     indicatorsData.adxSellSignalVolume = 0;
+    //     indicatorsData.adxSellSignalVolume++;
     //   }
     //   indicatorsData.mdiSignal = 1;
     //   indicatorsData.trend = 'UP';
@@ -170,6 +170,8 @@ export const getDMISignal = (
     //     '\n',
     // );
     indicatorsData.prevDmi = dmi;
+    // console.log(dmi);
+    // console.log(Number(dmi.adx).toLocaleString());
     indicatorsData.prevDiff =
       Number(dmi.pdi).toPrecision(4) / Number(dmi.mdi).toPrecision(4);
   });
