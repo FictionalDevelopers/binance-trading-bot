@@ -341,10 +341,10 @@ export const marketSellAction = async (
           'Current: ' +
           indicatorsData.dmi5m.adx}
       ADX 15m: ${'(UP: ' +
-        indicatorsData.dmi15m.buySignalCount +
+        indicatorsData.dmi15m.adxUpCount +
         ' ' +
         'DOWN: ' +
-        indicatorsData.dmi15m.sellSignalCount +
+        indicatorsData.dmi15m.adxDownCount +
         ' ' +
         'Current: ' +
         indicatorsData.dmi15m.adx}
@@ -854,10 +854,10 @@ export const marketBuyAction = async (
           'Current: ' +
           indicatorsData.dmi5m.adx}
       ADX 15m: ${'(UP: ' +
-        indicatorsData.dmi15m.buySignalCount +
+        indicatorsData.dmi15m.adxUpCount +
         ' ' +
         'DOWN: ' +
-        indicatorsData.dmi15m.sellSignalCount +
+        indicatorsData.dmi15m.adxDownCount +
         ' ' +
         'Current: ' +
         indicatorsData.dmi15m.adx}

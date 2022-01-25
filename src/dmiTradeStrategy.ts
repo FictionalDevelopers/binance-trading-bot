@@ -1234,10 +1234,10 @@ import { getForceIndexSignal } from './components/forceIndex';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.dmi5m.adxDownCount >= 1 &&
-              indicatorsData.dmi1m.adxUpCount >= 2 &&
-              (indicatorsData.obv5m.sellSignalCount >= 4 ||
-                indicatorsData.obv1m.sellSignalCount >= 4),
+              indicatorsData.dmi5m.adxDownCount >= 1,
+            // indicatorsData.dmi1m.adxUpCount >= 2 &&
+            // (indicatorsData.obv5m.sellSignalCount >= 4 ||
+            //   indicatorsData.obv1m.sellSignalCount >= 4),
 
             // (indicatorsData.dmi1m.adxDownCount >= 2 ||
             // indicatorsData.obv5m.sellSignalCount >= 4 &&
@@ -1316,10 +1316,10 @@ import { getForceIndexSignal } from './components/forceIndex';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.dmi5m.adxDownCount >= 1 &&
-              indicatorsData.dmi1m.adxUpCount >= 2 &&
-              (indicatorsData.obv5m.buySignalCount >= 4 ||
-                indicatorsData.obv1m.buySignalCount >= 4),
+              indicatorsData.dmi5m.adxDownCount >= 1,
+            // indicatorsData.dmi1m.adxUpCount >= 2 &&
+            // (indicatorsData.obv5m.buySignalCount >= 4 ||
+            //   indicatorsData.obv1m.buySignalCount >= 4),
 
             // (indicatorsData.dmi1m.adxDownCount >= 2 ||
             // indicatorsData.cci.cci1m.cci > 0 &&
@@ -1819,6 +1819,7 @@ import { getForceIndexSignal } from './components/forceIndex';
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
+  getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
