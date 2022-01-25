@@ -1080,18 +1080,19 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
                 // indicatorsData.ema.ema1m.slow.emaUpCount >= 4 &&
                 // indicatorsData.obv30m.buySignalCount >= 20 &&
-                // indicatorsData.cci.cci1m.cci > 0 &&
+                indicatorsData.cci.cci1m.cci > 60 &&
+                indicatorsData.cci.cci5m.cci > 60 &&
                 // indicatorsData.obv15m.buySignalCount >= 20 &&
                 // indicatorsData.rsi1m.rsiValue > 60 &&
                 // indicatorsData.rsi5m.rsiValue > 60 &&
                 // indicatorsData.obv5m.buySignalCount >= 20 &&
                 // indicatorsData.obv1m.buySignalCount >= 4,
                 // indicatorsData.efi1m.prevEfi > 0 &&
-                indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.obv5m.buySignalCount >= 20 &&
-                indicatorsData.obv1m.buySignalCount >= 4 &&
+                // indicatorsData.obv15m.buySignalCount >= 20 &&
+                // indicatorsData.obv5m.buySignalCount >= 20 &&
+                // indicatorsData.obv1m.buySignalCount >= 4 &&
                 // indicatorsData.dmi15m.adxUpCount >= 1 &&
-                indicatorsData.dmi5m.adxUpCount >= 2 &&
+                indicatorsData.dmi5m.adxUpCount >= 1 &&
                 indicatorsData.dmi1m.adxUpCount >= 2,
           // indicatorsData.cci.cci5m.cci > 0 &&
           // indicatorsData.crsi.crsi15m.crsi > 70 &&
@@ -1152,11 +1153,13 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // indicatorsData.efi1m.prevEfi < 0 &&
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 // indicatorsData.cci.cci1m.cci < 0 &&
-                indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.obv5m.sellSignalCount >= 20 &&
-                indicatorsData.obv1m.sellSignalCount >= 4 &&
+                // indicatorsData.obv15m.sellSignalCount >= 20 &&
+                // indicatorsData.obv5m.sellSignalCount >= 20 &&
+                // indicatorsData.obv1m.sellSignalCount >= 4 &&
                 // indicatorsData.dmi15m.adxUpCount >= 1 &&
-                indicatorsData.dmi5m.adxUpCount >= 2 &&
+                indicatorsData.cci.cci1m.cci < -60 &&
+                indicatorsData.cci.cci5m.cci < -60 &&
+                indicatorsData.dmi5m.adxUpCount >= 1 &&
                 indicatorsData.dmi1m.adxUpCount >= 2,
 
           // indicatorsData.obv15m.sellSignalCount >= 6 &&
@@ -1820,12 +1823,14 @@ import { getForceIndexSignal } from './components/forceIndex';
   //   1000,
   //   indicatorsData.dmi15m,
   // );
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
-  getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
+  // getDMISignal(symbol, '15m', indicatorsData.dmi15m, 1, 0, 0);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
+  getCCISignal(symbol, '5m', indicatorsData.cci.cci5m);
+  getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
@@ -1841,7 +1846,6 @@ import { getForceIndexSignal } from './components/forceIndex';
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
   // getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
-  // getCCISignal(symbol, '5m', indicatorsData.cci.cci5m);
   // getHeikinAshiSignal(symbol, '5m', 3, 3, indicatorsData.haCandle.ha5mCandle);
 
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 20, 20);
