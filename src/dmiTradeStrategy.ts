@@ -1235,7 +1235,9 @@ import { getForceIndexSignal } from './components/forceIndex';
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
               indicatorsData.dmi5m.adxDownCount >= 1 &&
-              indicatorsData.dmi1m.adxDownCount >= 2,
+              indicatorsData.dmi1m.adxUpCount >= 2 &&
+              (indicatorsData.obv5m.sellSignalCount >= 4 ||
+                indicatorsData.obv1m.sellSignalCount >= 4),
 
             // (indicatorsData.dmi1m.adxDownCount >= 2 ||
             // indicatorsData.obv5m.sellSignalCount >= 4 &&
@@ -1315,7 +1317,9 @@ import { getForceIndexSignal } from './components/forceIndex';
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
               indicatorsData.dmi5m.adxDownCount >= 1 &&
-              indicatorsData.dmi1m.adxDownCount >= 2,
+              indicatorsData.dmi1m.adxUpCount >= 2 &&
+              (indicatorsData.obv5m.buySignalCount >= 4 ||
+                indicatorsData.obv1m.buySignalCount >= 4),
 
             // (indicatorsData.dmi1m.adxDownCount >= 2 ||
             // indicatorsData.cci.cci1m.cci > 0 &&
