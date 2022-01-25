@@ -35,6 +35,7 @@ import { getHeikinAshiSignal } from './indicators/heikinAshi';
 import { getForceIndexSignal } from './components/forceIndex';
 import { getRocSignal } from './components/roc-signals';
 import { getRSISignal } from './components/rsi-signals';
+import { getVolumeProfileStream } from './indicators/volumeProfile';
 
 (async function() {
   await connect();
@@ -126,7 +127,7 @@ import { getRSISignal } from './components/rsi-signals';
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: true,
-      status: 'buy',
+      status: 'pending',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -1783,6 +1784,15 @@ import { getRSISignal } from './components/rsi-signals';
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(scalper);
 
+  // getVolumeProfileStream({
+  //   symbol,
+  //   interval: '1m',
+  //   pricesRangeCount: 5,
+  //   barsCount: 20,
+  // }).subscribe(data => {
+  //   indicatorsData.candle.candle1m = data;
+  // });
+
   // getCRSIStream({ symbol, interval: '15m' }, indicatorsData.crsi.crsi15m);
   // getCRSIStream({ symbol, interval: '5m' }, indicatorsData.crsi.crsi5m);
   // getCRSIStream({ symbol, interval: '1m' }, indicatorsData.crsi.crsi1m);
@@ -2406,7 +2416,7 @@ import { getRSISignal } from './components/rsi-signals';
       //     indicatorsData.obv30m.sellSignalCount +
       //     ')',
       // );
-
+      console.log(indicatorsData.candle.candle1m);
       console.log(
         'OBV 15m: ' +
           indicatorsData.obv15m.signal +
