@@ -1087,11 +1087,11 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // indicatorsData.obv5m.buySignalCount >= 20 &&
                 // indicatorsData.obv1m.buySignalCount >= 4,
                 // indicatorsData.efi1m.prevEfi > 0 &&
-                indicatorsData.obv15m.buySignalCount >= 10 &&
-                indicatorsData.obv5m.buySignalCount >= 4 &&
+                indicatorsData.obv15m.buySignalCount >= 20 &&
+                indicatorsData.obv5m.buySignalCount >= 20 &&
                 indicatorsData.obv1m.buySignalCount >= 4 &&
-                indicatorsData.dmi15m.adxUpCount >= 1 &&
-                indicatorsData.dmi5m.adxUpCount >= 1 &&
+                // indicatorsData.dmi15m.adxUpCount >= 1 &&
+                indicatorsData.dmi5m.adxUpCount >= 2 &&
                 indicatorsData.dmi1m.adxUpCount >= 2,
           // indicatorsData.cci.cci5m.cci > 0 &&
           // indicatorsData.crsi.crsi15m.crsi > 70 &&
@@ -1152,11 +1152,11 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // indicatorsData.efi1m.prevEfi < 0 &&
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 // indicatorsData.cci.cci1m.cci < 0 &&
-                indicatorsData.obv15m.sellSignalCount >= 10 &&
-                indicatorsData.obv5m.sellSignalCount >= 4 &&
+                indicatorsData.obv15m.sellSignalCount >= 20 &&
+                indicatorsData.obv5m.sellSignalCount >= 20 &&
                 indicatorsData.obv1m.sellSignalCount >= 4 &&
-                indicatorsData.dmi15m.adxUpCount >= 1 &&
-                indicatorsData.dmi5m.adxUpCount >= 1 &&
+                // indicatorsData.dmi15m.adxUpCount >= 1 &&
+                indicatorsData.dmi5m.adxUpCount >= 2 &&
                 indicatorsData.dmi1m.adxUpCount >= 2,
 
           // indicatorsData.obv15m.sellSignalCount >= 6 &&
