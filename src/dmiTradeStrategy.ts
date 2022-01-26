@@ -1082,15 +1082,15 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // indicatorsData.obv30m.buySignalCount >= 20 &&
                 // indicatorsData.cci.cci1m.cci > 0 &&
                 // indicatorsData.obv15m.buySignalCount >= 20 &&
-                // indicatorsData.rsi1m.rsiValue > 60 &&
-                // indicatorsData.rsi5m.rsiValue > 60 &&
                 // indicatorsData.obv5m.buySignalCount >= 20 &&
                 // indicatorsData.obv1m.buySignalCount >= 4,
                 // indicatorsData.efi1m.prevEfi > 0 &&
+                indicatorsData.rsi15m.rsiValue > 70 &&
+                indicatorsData.rsi5m.rsiValue > 70 &&
                 indicatorsData.obv15m.buySignalCount >= 10 &&
                 indicatorsData.obv5m.buySignalCount >= 4 &&
-                // indicatorsData.obv1m.buySignalCount >= 4 &&
                 indicatorsData.dmi5m.adxUpCount >= 1,
+          // indicatorsData.obv1m.buySignalCount >= 4 &&
           // indicatorsData.dmi1m.adxUpCount >= 2,
           // indicatorsData.cci.cci1m.cci > 0,
           // indicatorsData.crsi.crsi15m.crsi > 70 &&
@@ -1135,10 +1135,6 @@ import { getForceIndexSignal } from './components/forceIndex';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.rsi1m.rsiValue !== null &&
-                // indicatorsData.rsi1m.rsiValue < 40 &&
-                // indicatorsData.rsi5m.rsiValue !== null &&
-                // indicatorsData.rsi5m.rsiValue < 40 &&
                 // indicatorsData.roc.roc1m.prevValue < 0 &&
                 // indicatorsData.roc.roc5m.prevValue < 0 &&
                 // indicatorsData.dmi5m.adxUpCount >= 1 &&
@@ -1151,10 +1147,14 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // indicatorsData.efi1m.prevEfi < 0 &&
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 // indicatorsData.cci.cci1m.cci < 0 &&
+                indicatorsData.rsi15m.rsiValue !== null &&
+                indicatorsData.rsi15m.rsiValue < 30 &&
+                indicatorsData.rsi5m.rsiValue !== null &&
+                indicatorsData.rsi5m.rsiValue < 30 &&
                 indicatorsData.obv15m.sellSignalCount >= 10 &&
                 indicatorsData.obv5m.sellSignalCount >= 4 &&
-                // indicatorsData.obv1m.sellSignalCount >= 4 &&
                 indicatorsData.dmi5m.adxUpCount >= 1,
+          // indicatorsData.obv1m.sellSignalCount >= 4 &&
           // indicatorsData.dmi1m.adxUpCount >= 2,
           // indicatorsData.cci.cci1m.cci < 0,
 
@@ -1814,9 +1814,11 @@ import { getForceIndexSignal } from './components/forceIndex';
   // );
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
-  getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
+  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
+  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
+  // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2);
@@ -1824,9 +1826,7 @@ import { getForceIndexSignal } from './components/forceIndex';
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
-  // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 30, 30);
-  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
