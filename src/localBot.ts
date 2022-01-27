@@ -1784,6 +1784,13 @@ import { getVolumeProfileStream } from './indicators/volumeProfile';
     .pipe(pluck('price'), bufferCount(1, 1))
     .subscribe(scalper);
 
+  getTradeStream({
+    symbol: symbol,
+    resource: RESOURCES.TRADE,
+  })
+    .pipe(bufferCount(1, 1))
+    .subscribe(data => console.log(data));
+
   // getVolumeProfileStream({
   //   symbol,
   //   interval: '1m',

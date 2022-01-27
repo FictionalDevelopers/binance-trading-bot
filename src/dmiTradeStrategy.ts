@@ -1087,8 +1087,8 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // indicatorsData.efi1m.prevEfi > 0 &&
                 indicatorsData.rsi15m.rsiValue > 70 &&
                 indicatorsData.rsi5m.rsiValue > 70 &&
-                indicatorsData.obv15m.buySignalCount >= 20 &&
-                indicatorsData.obv5m.buySignalCount >= 20 &&
+                indicatorsData.obv15m.buySignalCount >= 10 &&
+                indicatorsData.obv5m.buySignalCount >= 4 &&
                 indicatorsData.dmi5m.adxUpCount >= 1,
           // indicatorsData.obv1m.buySignalCount >= 4 &&
           // indicatorsData.dmi1m.adxUpCount >= 2,
@@ -1151,8 +1151,8 @@ import { getForceIndexSignal } from './components/forceIndex';
                 indicatorsData.rsi15m.rsiValue < 30 &&
                 indicatorsData.rsi5m.rsiValue !== null &&
                 indicatorsData.rsi5m.rsiValue < 30 &&
-                indicatorsData.obv15m.sellSignalCount >= 20 &&
-                indicatorsData.obv5m.sellSignalCount >= 20 &&
+                indicatorsData.obv15m.sellSignalCount >= 10 &&
+                indicatorsData.obv5m.sellSignalCount >= 4 &&
                 indicatorsData.dmi5m.adxUpCount >= 1,
           // indicatorsData.obv1m.sellSignalCount >= 4 &&
           // indicatorsData.dmi1m.adxUpCount >= 2,
