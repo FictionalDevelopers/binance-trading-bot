@@ -1085,8 +1085,8 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // indicatorsData.obv5m.buySignalCount >= 20 &&
                 // indicatorsData.obv1m.buySignalCount >= 4,
                 // indicatorsData.efi1m.prevEfi > 0 &&
-                indicatorsData.rsi15m.rsiValue > 70 &&
-                indicatorsData.rsi5m.rsiValue > 70 &&
+                // indicatorsData.rsi15m.rsiValue > 70 &&
+                // indicatorsData.rsi5m.rsiValue > 70 &&
                 indicatorsData.obv15m.buySignalCount >= 10 &&
                 indicatorsData.obv5m.buySignalCount >= 4 &&
                 indicatorsData.dmi5m.adxUpCount >= 1,
@@ -1147,10 +1147,10 @@ import { getForceIndexSignal } from './components/forceIndex';
                 // indicatorsData.efi1m.prevEfi < 0 &&
                 // indicatorsData.obv15m.sellSignalCount >= 20 &&
                 // indicatorsData.cci.cci1m.cci < 0 &&
-                indicatorsData.rsi15m.rsiValue !== null &&
-                indicatorsData.rsi15m.rsiValue < 30 &&
-                indicatorsData.rsi5m.rsiValue !== null &&
-                indicatorsData.rsi5m.rsiValue < 30 &&
+                // indicatorsData.rsi15m.rsiValue !== null &&
+                // indicatorsData.rsi15m.rsiValue < 30 &&
+                // indicatorsData.rsi5m.rsiValue !== null &&
+                // indicatorsData.rsi5m.rsiValue < 30 &&
                 indicatorsData.obv15m.sellSignalCount >= 10 &&
                 indicatorsData.obv5m.sellSignalCount >= 4 &&
                 indicatorsData.dmi5m.adxUpCount >= 1,
@@ -1226,10 +1226,10 @@ import { getForceIndexSignal } from './components/forceIndex';
           takeProfit:
             (botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              expectedProfitPercent <= -0.3) ||
+              expectedProfitPercent <= -0.1) ||
             (botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              expectedProfitPercent >= 0.3),
+              expectedProfitPercent >= 0.1),
           stopLoss: {
             long:
               botState.status === 'sell' &&
@@ -1815,8 +1815,8 @@ import { getForceIndexSignal } from './components/forceIndex';
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
-  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
-  getRSISignal(symbol, '5m', indicatorsData.rsi5m);
+  // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
+  // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
