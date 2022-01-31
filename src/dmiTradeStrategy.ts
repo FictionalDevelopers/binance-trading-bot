@@ -1102,27 +1102,26 @@ import { getMfiSignal } from './components/mfi-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.mfi.mfi1m.buySignalCount >= 6,
-
-          // indicatorsData.roc.roc1m.prevValue > 0 &&
-          // indicatorsData.roc.roc5m.prevValue > 0 &&
-          // indicatorsData.dmi5m.adxUpCount >= 1 &&
-          // indicatorsData.dmi1m.adxUpCount >= 5 &&
-          // ||
-          // indicatorsData.dmi5m.adxDownCount >= 3
-          // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
-          // indicatorsData.ema.ema1m.slow.emaUpCount >= 4 &&
-          // indicatorsData.obv30m.buySignalCount >= 20 &&
-          // indicatorsData.cci.cci1m.cci > 0 &&
-          // indicatorsData.obv15m.buySignalCount >= 20 &&
-          // indicatorsData.obv5m.buySignalCount >= 20 &&
+                // indicatorsData.roc.roc1m.prevValue > 0 &&
+                // indicatorsData.roc.roc5m.prevValue > 0 &&
+                // indicatorsData.dmi5m.adxUpCount >= 1 &&
+                // indicatorsData.dmi1m.adxUpCount >= 5 &&
+                // ||
+                // indicatorsData.dmi5m.adxDownCount >= 3
+                // indicatorsData.haCandle.ha1mCandle.buySignalCount >= 3 &&
+                // indicatorsData.ema.ema1m.slow.emaUpCount >= 4 &&
+                // indicatorsData.obv30m.buySignalCount >= 20 &&
+                // indicatorsData.cci.cci1m.cci > 0 &&
+                indicatorsData.mfi.mfi1m.buySignalCount >= 6 &&
+                indicatorsData.obv15m.buySignalCount >= 10 &&
+                indicatorsData.obv5m.buySignalCount >= 4 &&
+                indicatorsData.dmi5m.adxUpCount >= 1,
           // indicatorsData.obv1m.buySignalCount >= 4,
           // indicatorsData.efi1m.prevEfi > 0 &&
           // indicatorsData.rsi15m.rsiValue > 70 &&
           // indicatorsData.rsi5m.rsiValue > 70 &&
           // indicatorsData.obv15m.buySignalCount >= 10 &&
           // indicatorsData.obv5m.buySignalCount >= 4 &&
-          // indicatorsData.dmi5m.adxUpCount >= 1,
           // indicatorsData.obv1m.buySignalCount >= 4 &&
           // indicatorsData.dmi1m.adxUpCount >= 2,
           // indicatorsData.cci.cci1m.cci > 0,
@@ -1168,11 +1167,13 @@ import { getMfiSignal } from './components/mfi-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.mfi.mfi1m.sellSignalCount >= 6,
+                indicatorsData.mfi.mfi1m.sellSignalCount >= 6 &&
+                indicatorsData.dmi5m.adxUpCount >= 1 &&
+                indicatorsData.obv15m.sellSignalCount >= 10 &&
+                indicatorsData.obv5m.sellSignalCount >= 4,
 
           // indicatorsData.roc.roc1m.prevValue < 0 &&
           // indicatorsData.roc.roc5m.prevValue < 0 &&
-          // indicatorsData.dmi5m.adxUpCount >= 1 &&
           // indicatorsData.dmi1m.adxUpCount >= 5 &&
           // ||
           // indicatorsData.dmi5m.adxDownCount >= 3
@@ -1180,14 +1181,12 @@ import { getMfiSignal } from './components/mfi-signals';
           // indicatorsData.ema.ema1m.slow.emaDownCount >= 4 &&
           // indicatorsData.obv30m.sellSignalCount >= 20 &&
           // indicatorsData.efi1m.prevEfi < 0 &&
-          // indicatorsData.obv15m.sellSignalCount >= 20 &&
           // indicatorsData.cci.cci1m.cci < 0 &&
           // indicatorsData.rsi15m.rsiValue !== null &&
           // indicatorsData.rsi15m.rsiValue < 30 &&
           // indicatorsData.rsi5m.rsiValue !== null &&
           // indicatorsData.rsi5m.rsiValue < 30 &&
           // indicatorsData.obv15m.sellSignalCount >= 10 &&
-          // indicatorsData.obv5m.sellSignalCount >= 4 &&
           // indicatorsData.dmi5m.adxUpCount >= 1,
           // indicatorsData.obv1m.sellSignalCount >= 4 &&
           // indicatorsData.dmi1m.adxUpCount >= 2,
@@ -1269,9 +1268,9 @@ import { getMfiSignal } from './components/mfi-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.mfi.mfi1m.sellSignalCount >= 6,
+              indicatorsData.mfi.mfi1m.sellSignalCount >= 6 &&
+              indicatorsData.dmi5m.adxDownCount >= 1,
 
-            // indicatorsData.dmi5m.adxDownCount >= 1,
             // indicatorsData.cci.cci1m.cci < 0,
             // indicatorsData.dmi1m.adxDownCount >= 2,
 
@@ -1351,9 +1350,9 @@ import { getMfiSignal } from './components/mfi-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.mfi.mfi1m.buySignalCount >= 6,
+              indicatorsData.mfi.mfi1m.buySignalCount >= 6 &&
+              indicatorsData.dmi5m.adxDownCount >= 1,
 
-            // indicatorsData.dmi5m.adxDownCount >= 1,
             // indicatorsData.cci.cci1m.cci > 0,
             // indicatorsData.dmi1m.adxDownCount >= 2,
 
