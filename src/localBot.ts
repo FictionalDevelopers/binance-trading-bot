@@ -129,7 +129,7 @@ import { getMfiSignal } from './components/mfi-signals';
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: true,
-      status: 'pending',
+      status: 'buy',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -231,7 +231,21 @@ import { getMfiSignal } from './components/mfi-signals';
         sellSignalCount: 0,
         signal: null,
       },
+      mfi12m: {
+        mfi: null,
+        prevMfi: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
       mfi5m: {
+        mfi: null,
+        prevMfi: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
+      mfi52m: {
         mfi: null,
         prevMfi: null,
         buySignalCount: 0,
@@ -1197,8 +1211,10 @@ import { getMfiSignal } from './components/mfi-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.mfi.mfi5m.buySignalCount >= 20 &&
+                // indicatorsData.mfi.mfi5m.buySignalCount >= 6 &&
+                // indicatorsData.mfi.mfi52m.buySignalCount >= 6 &&
                 indicatorsData.mfi.mfi1m.buySignalCount >= 6,
+          // indicatorsData.mfi.mfi12m.buySignalCount >= 6,
           // indicatorsData.roc.roc1m.prevValue > 0 &&
           // indicatorsData.roc.roc5m.prevValue > 0 &&
           // indicatorsData.dmi5m.adxUpCount >= 1 &&
@@ -1261,8 +1277,10 @@ import { getMfiSignal } from './components/mfi-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.mfi.mfi5m.sellSignalCount >= 20 &&
+                // indicatorsData.mfi.mfi5m.sellSignalCount >= 6 &&
+                // indicatorsData.mfi.mfi52m.sellSignalCount >= 6 &&
                 indicatorsData.mfi.mfi1m.sellSignalCount >= 6,
+          // indicatorsData.mfi.mfi12m.sellSignalCount >= 6,
           // indicatorsData.rsi1m.rsiValue !== null &&
           // indicatorsData.rsi1m.rsiValue < 40 &&
           // indicatorsData.rsi5m.rsiValue !== null &&
@@ -1361,8 +1379,10 @@ import { getMfiSignal } from './components/mfi-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.mfi.mfi5m.sellSignalCount >= 20 &&
-              indicatorsData.mfi.mfi1m.sellSignalCount >= 6,
+              // indicatorsData.mfi.mfi5m.sellSignalCount >= 6 &&
+              // indicatorsData.mfi.mfi52m.sellSignalCount >= 6 &&
+              indicatorsData.mfi.mfi1m.sellSignalCount >= 2,
+            // indicatorsData.mfi.mfi12m.sellSignalCount >= 6,
             // indicatorsData.dmi5m.adxDownCount >= 2,
 
             // (indicatorsData.dmi1m.adxDownCount >= 2 ||
@@ -1442,8 +1462,10 @@ import { getMfiSignal } from './components/mfi-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.mfi.mfi5m.buySignalCount >= 20 &&
-              indicatorsData.mfi.mfi1m.buySignalCount >= 6,
+              // indicatorsData.mfi.mfi5m.buySignalCount >= 6 &&
+              // indicatorsData.mfi.mfi52m.buySignalCount >= 6 &&
+              indicatorsData.mfi.mfi1m.buySignalCount >= 2,
+            // indicatorsData.mfi.mfi12m.buySignalCount >= 6,
             // indicatorsData.dmi5m.adxDownCount >= 2,
 
             // (indicatorsData.dmi1m.adxDownCount >= 2 ||
@@ -1879,8 +1901,11 @@ import { getMfiSignal } from './components/mfi-signals';
   // getObvSignal(symbol, '2h', indicatorsData.obv1h, 60, 60);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
-  getMfiSignal(symbol, '1m', 4, indicatorsData.mfi.mfi1m, 1, 1);
-  getMfiSignal(symbol, '5m', 4, indicatorsData.mfi.mfi5m, 1, 1);
+  getMfiSignal(symbol, '1m', 14, indicatorsData.mfi.mfi1m, 1, 1);
+  // getMfiSignal(symbol, '15m', 14, indicatorsData.mfi.mfi5m, 1, 1);
+  // getMfiSignal(symbol, '15m', 4, indicatorsData.mfi.mfi52m, 1, 1);
+  // getMfiSignal(symbol, '5m', 14, indicatorsData.mfi.mfi1m, 1, 1);
+  // getMfiSignal(symbol, '5m', 4, indicatorsData.mfi.mfi12m, 1, 1);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
@@ -2463,12 +2488,30 @@ import { getMfiSignal } from './components/mfi-signals';
           ')',
       );
       console.log(
+        'MFI 52m: ' +
+          '(Buy Count: ' +
+          indicatorsData.mfi.mfi52m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.mfi.mfi52m.sellSignalCount +
+          ')',
+      );
+      console.log(
         'MFI 1m: ' +
           '(Buy Count: ' +
           indicatorsData.mfi.mfi1m.buySignalCount +
           ' ' +
           'Sell Count: ' +
           indicatorsData.mfi.mfi1m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'MFI 12m: ' +
+          '(Buy Count: ' +
+          indicatorsData.mfi.mfi12m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.mfi.mfi12m.sellSignalCount +
           ')',
       );
       console.log(
