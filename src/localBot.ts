@@ -1213,7 +1213,7 @@ import { getMfiSignal } from './components/mfi-signals';
               : botState.status === 'buy' &&
                 // indicatorsData.mfi.mfi5m.buySignalCount >= 6 &&
                 // indicatorsData.mfi.mfi52m.buySignalCount >= 6 &&
-                indicatorsData.mfi.mfi1m.buySignalCount >= 6,
+                indicatorsData.mfi.mfi1m.buySignalCount >= 4,
           // indicatorsData.mfi.mfi12m.buySignalCount >= 6,
           // indicatorsData.roc.roc1m.prevValue > 0 &&
           // indicatorsData.roc.roc5m.prevValue > 0 &&
@@ -1279,7 +1279,7 @@ import { getMfiSignal } from './components/mfi-signals';
               : botState.status === 'buy' &&
                 // indicatorsData.mfi.mfi5m.sellSignalCount >= 6 &&
                 // indicatorsData.mfi.mfi52m.sellSignalCount >= 6 &&
-                indicatorsData.mfi.mfi1m.sellSignalCount >= 6,
+                indicatorsData.mfi.mfi1m.sellSignalCount >= 4,
           // indicatorsData.mfi.mfi12m.sellSignalCount >= 6,
           // indicatorsData.rsi1m.rsiValue !== null &&
           // indicatorsData.rsi1m.rsiValue < 40 &&
@@ -1381,7 +1381,7 @@ import { getMfiSignal } from './components/mfi-signals';
               botState.dealType === 'long' &&
               // indicatorsData.mfi.mfi5m.sellSignalCount >= 6 &&
               // indicatorsData.mfi.mfi52m.sellSignalCount >= 6 &&
-              indicatorsData.mfi.mfi1m.sellSignalCount >= 2,
+              indicatorsData.mfi.mfi1m.sellSignalCount >= 4,
             // indicatorsData.mfi.mfi12m.sellSignalCount >= 6,
             // indicatorsData.dmi5m.adxDownCount >= 2,
 
@@ -1464,7 +1464,7 @@ import { getMfiSignal } from './components/mfi-signals';
               botState.dealType === 'short' &&
               // indicatorsData.mfi.mfi5m.buySignalCount >= 6 &&
               // indicatorsData.mfi.mfi52m.buySignalCount >= 6 &&
-              indicatorsData.mfi.mfi1m.buySignalCount >= 2,
+              indicatorsData.mfi.mfi1m.buySignalCount >= 4,
             // indicatorsData.mfi.mfi12m.buySignalCount >= 6,
             // indicatorsData.dmi5m.adxDownCount >= 2,
 
