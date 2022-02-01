@@ -1126,8 +1126,8 @@ import { getATRSignal } from './components/atr-signals';
               : botState.status === 'buy' &&
                 // indicatorsData.mfi.mfi5m.buySignalCount >= 6 &&
                 // indicatorsData.mfi.mfi52m.buySignalCount >= 6 &&
-                indicatorsData.mfi.mfi1m.buySignalCount >= 20 &&
-                indicatorsData.mfi.mfi12m.buySignalCount >= 20 &&
+                indicatorsData.mfi.mfi1m.buySignalCount >= 10 &&
+                indicatorsData.mfi.mfi12m.buySignalCount >= 10 &&
                 indicatorsData.mfi.mfi13m.buySignalCount >= 10,
           // indicatorsData.atr.atr1m.buySignalCount >= 2,
           // indicatorsData.dmi1m.adxUpCount >= 2,
@@ -1197,8 +1197,8 @@ import { getATRSignal } from './components/atr-signals';
               : botState.status === 'buy' &&
                 // indicatorsData.mfi.mfi5m.sellSignalCount >= 6 &&
                 // indicatorsData.mfi.mfi52m.sellSignalCount >= 6 &&
-                indicatorsData.mfi.mfi1m.sellSignalCount >= 20 &&
-                indicatorsData.mfi.mfi12m.sellSignalCount >= 20 &&
+                indicatorsData.mfi.mfi1m.sellSignalCount >= 10 &&
+                indicatorsData.mfi.mfi12m.sellSignalCount >= 10 &&
                 indicatorsData.mfi.mfi13m.sellSignalCount >= 10,
           // indicatorsData.atr.atr1m.buySignalCount >= 2,
 
