@@ -324,6 +324,14 @@ export const marketSellAction = async (
           OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
             indicatorsData.obv1m.sellSignalCount
           }
+          ATR 1m: ${'(UP: ' +
+            indicatorsData.atr.atr1m.buySignalCount +
+            ' ' +
+            'DOWN: ' +
+            indicatorsData.atr.atr1m.sellSignalCount +
+            ' ' +
+            'Current: ' +
+            indicatorsData.atr.atr1m.prevAtr}
           ADX 1m: ${'(UP: ' +
             indicatorsData.dmi1m.adxUpCount +
             ' ' +
@@ -837,6 +845,14 @@ export const marketBuyAction = async (
           indicatorsData.obv1m.sellSignalCount
         }
         
+       ATR 1m: ${'(UP: ' +
+         indicatorsData.atr.atr1m.buySignalCount +
+         ' ' +
+         'DOWN: ' +
+         indicatorsData.atr.atr1m.sellSignalCount +
+         ' ' +
+         'Current: ' +
+         indicatorsData.atr.atr1m.prevAtr}
        ADX 1m: ${'(UP: ' +
          indicatorsData.dmi1m.adxUpCount +
          ' ' +
