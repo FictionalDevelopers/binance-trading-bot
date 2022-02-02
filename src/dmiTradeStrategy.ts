@@ -1128,10 +1128,11 @@ import { getATRSignal } from './components/atr-signals';
                 // indicatorsData.mfi.mfi52m.buySignalCount >= 6 &&
                 indicatorsData.mfi.mfi1m.buySignalCount >= 10 &&
                 indicatorsData.mfi.mfi12m.buySignalCount >= 10 &&
-                indicatorsData.mfi.mfi13m.buySignalCount >= 10,
+                indicatorsData.obv5m.buySignalCount >= 10 &&
+                indicatorsData.obv1m.buySignalCount >= 10,
+          // indicatorsData.mfi.mfi13m.buySignalCount >= 10,
           // indicatorsData.atr.atr1m.buySignalCount >= 2,
           // indicatorsData.dmi1m.adxUpCount >= 2,
-          // indicatorsData.obv1m.buySignalCount >= 4 &&
 
           // indicatorsData.mfi.mfi12m.buySignalCount >= 6,
           // indicatorsData.roc.roc1m.prevValue > 0 &&
@@ -1147,7 +1148,6 @@ import { getATRSignal } from './components/atr-signals';
           // indicatorsData.obv15m.buySignalCount >= 20 &&
           // indicatorsData.rsi1m.rsiValue > 60 &&
           // indicatorsData.rsi5m.rsiValue > 60 &&
-          // indicatorsData.obv5m.buySignalCount >= 20 &&
           // indicatorsData.efi1m.prevEfi > 0 &&
           // indicatorsData.obv15m.buySignalCount >= 10 &&
           // indicatorsData.dmi5m.adxUpCount >= 2,
@@ -1199,11 +1199,12 @@ import { getATRSignal } from './components/atr-signals';
                 // indicatorsData.mfi.mfi52m.sellSignalCount >= 6 &&
                 indicatorsData.mfi.mfi1m.sellSignalCount >= 10 &&
                 indicatorsData.mfi.mfi12m.sellSignalCount >= 10 &&
-                indicatorsData.mfi.mfi13m.sellSignalCount >= 10,
+                indicatorsData.obv5m.sellSignalCount >= 10 &&
+                indicatorsData.obv1m.sellSignalCount >= 10,
+          // indicatorsData.mfi.mfi13m.sellSignalCount >= 10,
           // indicatorsData.atr.atr1m.buySignalCount >= 2,
 
           // indicatorsData.dmi1m.adxUpCount >= 2,
-          // indicatorsData.obv1m.sellSignalCount >= 4 &&
 
           // indicatorsData.mfi.mfi12m.sellSignalCount >= 6,
           // indicatorsData.rsi1m.rsiValue !== null &&
@@ -1222,7 +1223,6 @@ import { getATRSignal } from './components/atr-signals';
           // indicatorsData.efi1m.prevEfi < 0 &&
           // indicatorsData.obv15m.sellSignalCount >= 20 &&
           // indicatorsData.cci.cci1m.cci < 0 &&
-          // indicatorsData.obv5m.sellSignalCount >= 20 &&
           // indicatorsData.obv15m.sellSignalCount >= 10 &&
           // indicatorsData.dmi5m.adxUpCount >= 2,
 
@@ -1307,12 +1307,13 @@ import { getATRSignal } from './components/atr-signals';
               // indicatorsData.mfi.mfi52m.sellSignalCount >= 6 &&
               indicatorsData.mfi.mfi1m.sellSignalCount >= 10 &&
               indicatorsData.mfi.mfi12m.sellSignalCount >= 10 &&
-              indicatorsData.mfi.mfi13m.sellSignalCount >= 10,
+              indicatorsData.obv5m.sellSignalCount >= 10 &&
+              indicatorsData.obv1m.sellSignalCount >= 10,
+            // indicatorsData.mfi.mfi13m.sellSignalCount >= 10,
             // indicatorsData.atr.atr1m.buySignalCount >= 2,
 
             // indicatorsData.dmi1m.adxDownCount >= 1),
 
-            // indicatorsData.obv1m.sellSignalCount >= 4) ||
             // indicatorsData.mfi.mfi12m.sellSignalCount >= 6,
             // indicatorsData.dmi5m.adxDownCount >= 2,
 
@@ -1396,11 +1397,12 @@ import { getATRSignal } from './components/atr-signals';
               // indicatorsData.mfi.mfi52m.buySignalCount >= 6 &&
               indicatorsData.mfi.mfi1m.buySignalCount >= 10 &&
               indicatorsData.mfi.mfi12m.buySignalCount >= 10 &&
-              indicatorsData.mfi.mfi13m.buySignalCount >= 10,
+              indicatorsData.obv5m.buySignalCount >= 10 &&
+              indicatorsData.obv1m.buySignalCount >= 10,
+            // indicatorsData.mfi.mfi13m.buySignalCount >= 10,
             // indicatorsData.atr.atr1m.buySignalCount >= 2,
 
             // indicatorsData.dmi1m.adxDownCount >= 1),
-            // indicatorsData.obv1m.buySignalCount >= 4) ||
             // indicatorsData.mfi.mfi12m.buySignalCount >= 6,
             // indicatorsData.dmi5m.adxDownCount >= 2,
 
@@ -1900,11 +1902,12 @@ import { getATRSignal } from './components/atr-signals';
   // );
   getMfiSignal(symbol, '1m', 14, indicatorsData.mfi.mfi1m, 1, 1);
   getMfiSignal(symbol, '1m', 6, indicatorsData.mfi.mfi12m, 1, 1);
-  getMfiSignal(symbol, '1m', 2, indicatorsData.mfi.mfi13m, 1, 1);
-  getATRSignal(symbol, '5m', 14, indicatorsData.atr.atr5m);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
+  // getMfiSignal(symbol, '1m', 2, indicatorsData.mfi.mfi13m, 1, 1);
+  // getATRSignal(symbol, '5m', 14, indicatorsData.atr.atr5m);
 
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
   // getMfiSignal(symbol, '1m', 14, indicatorsData.mfi.mfi1m, 1, 1);
 
