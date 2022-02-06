@@ -281,6 +281,20 @@ import { getMfiSignal } from './components/mfi-signals';
         sellSignalCount: 0,
         signal: null,
       },
+      mfi53m: {
+        mfi: null,
+        prevMfi: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
+      mfi54m: {
+        mfi: null,
+        prevMfi: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
     },
     crsi: {
       crsi15m: {
@@ -1953,13 +1967,13 @@ import { getMfiSignal } from './components/mfi-signals';
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
 
   // getATRSignal(symbol, '5m', 14, indicatorsData.atr.atr1m);
-  // getMfiSignal(symbol, '1m', 25, indicatorsData.mfi.mfi14m, 1, 1);
-  getMfiSignal(symbol, '1m', 14, indicatorsData.mfi.mfi1m, 1, 1);
-  getMfiSignal(symbol, '1m', 6, indicatorsData.mfi.mfi12m, 1, 1);
+  // getMfiSignal(symbol, '5m', 4, indicatorsData.mfi.mfi53m, 1, 1);
+  // getMfiSignal(symbol, '5m', 2, indicatorsData.mfi.mfi54m, 1, 1);
+  getMfiSignal(symbol, '1m', 4, indicatorsData.mfi.mfi13m, 1, 1);
+  getMfiSignal(symbol, '1m', 2, indicatorsData.mfi.mfi14m, 1, 1);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
-  // getMfiSignal(symbol, '1m', 2, indicatorsData.mfi.mfi13m, 1, 1);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
 
   // getMfiSignal(symbol, '15m', 14, indicatorsData.mfi.mfi5m, 1, 1);
@@ -2554,30 +2568,39 @@ import { getMfiSignal } from './components/mfi-signals';
       //     ')',
       // );
       // console.log(
-      //   'MFI 14m: ' +
+      //   'MFI 1m: ' +
       //     '(Buy Count: ' +
-      //     indicatorsData.mfi.mfi14m.buySignalCount +
+      //     indicatorsData.mfi.mfi1m.buySignalCount +
       //     ' ' +
       //     'Sell Count: ' +
-      //     indicatorsData.mfi.mfi14m.sellSignalCount +
+      //     indicatorsData.mfi.mfi1m.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'MFI 12m: ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.mfi.mfi12m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.mfi.mfi12m.sellSignalCount +
       //     ')',
       // );
       console.log(
-        'MFI 1m: ' +
+        'MFI 53m: ' +
           '(Buy Count: ' +
-          indicatorsData.mfi.mfi1m.buySignalCount +
+          indicatorsData.mfi.mfi53m.buySignalCount +
           ' ' +
           'Sell Count: ' +
-          indicatorsData.mfi.mfi1m.sellSignalCount +
+          indicatorsData.mfi.mfi53m.sellSignalCount +
           ')',
       );
       console.log(
-        'MFI 12m: ' +
+        'MFI 54m: ' +
           '(Buy Count: ' +
-          indicatorsData.mfi.mfi12m.buySignalCount +
+          indicatorsData.mfi.mfi54m.buySignalCount +
           ' ' +
           'Sell Count: ' +
-          indicatorsData.mfi.mfi12m.sellSignalCount +
+          indicatorsData.mfi.mfi54m.sellSignalCount +
           ')',
       );
       console.log(
@@ -2589,6 +2612,16 @@ import { getMfiSignal } from './components/mfi-signals';
           indicatorsData.mfi.mfi13m.sellSignalCount +
           ')',
       );
+      console.log(
+        'MFI 14m: ' +
+          '(Buy Count: ' +
+          indicatorsData.mfi.mfi14m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.mfi.mfi14m.sellSignalCount +
+          ')',
+      );
+
       console.log(
         'OBV 5m: ' +
           indicatorsData.obv5m.signal +
