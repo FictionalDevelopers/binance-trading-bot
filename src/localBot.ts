@@ -1969,9 +1969,9 @@ import { getMfiSignal } from './components/mfi-signals';
   // getATRSignal(symbol, '5m', 14, indicatorsData.atr.atr1m);
   // getMfiSignal(symbol, '5m', 4, indicatorsData.mfi.mfi53m, 1, 1);
   // getMfiSignal(symbol, '5m', 2, indicatorsData.mfi.mfi54m, 1, 1);
-  getMfiSignal(symbol, '30m', 4, indicatorsData.mfi.mfi13m, 1, 1);
-  getMfiSignal(symbol, '30m', 2, indicatorsData.mfi.mfi14m, 1, 1);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
+  getMfiSignal(symbol, '15m', 4, indicatorsData.mfi.mfi13m, 1, 1);
+  getMfiSignal(symbol, '15m', 2, indicatorsData.mfi.mfi14m, 1, 1);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
@@ -2613,6 +2613,18 @@ import { getMfiSignal } from './components/mfi-signals';
           ')',
       );
       console.log(
+        'OBV 15m: ' +
+          indicatorsData.obv15m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv15m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv15m.sellSignalCount +
+          ')',
+      );
+
+      console.log(
         'MFI 14m: ' +
           '(Buy Count: ' +
           indicatorsData.mfi.mfi14m.buySignalCount +
@@ -2633,17 +2645,6 @@ import { getMfiSignal } from './components/mfi-signals';
           indicatorsData.obv5m.sellSignalCount +
           ')',
       );
-      // console.log(
-      //   'OBV 15m: ' +
-      //     indicatorsData.obv15m.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv15m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv15m.sellSignalCount +
-      //     ')',
-      // );
 
       console.log(
         'OBV 1m: ' +
