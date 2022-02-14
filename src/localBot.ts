@@ -39,6 +39,7 @@ import { getRSISignal } from './components/rsi-signals';
 import { getVolumeProfileStream } from './indicators/volumeProfile';
 import { getMfiStream } from './indicators/mfi';
 import { getMfiSignal } from './components/mfi-signals';
+import { getStochRSISignal } from './components/stochRSI-signals';
 
 (async function() {
   await connect();
@@ -1977,8 +1978,17 @@ import { getMfiSignal } from './components/mfi-signals';
   // getMfiSignal(symbol, '5m', 2, indicatorsData.mfi.mfi54m, 1, 1);
   // getMfiSignal(symbol, '5m', 6, indicatorsData.mfi.mfi13m, 1, 1);
   // getMfiSignal(symbol, '15m', 4, indicatorsData.mfi.mfi14m, 1, 1);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
+  getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
+  getStochRSISignal(
+    symbol,
+    '15m',
+    indicatorsData.stochRsi.stoch15m,
+    null,
+    null,
+    null,
+    null,
+  );
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
@@ -2709,6 +2719,8 @@ import { getMfiSignal } from './components/mfi-signals';
           indicatorsData.dmi5m.adx,
         ')',
       );
+      console.log('STOCH 15m ' + indicatorsData.stochRsi.stoch15m.data.d);
+      console.log('CCI 15m ' + indicatorsData.cci.cci15m.cci);
 
       // console.log(
       //   'OBV 1m: ' +

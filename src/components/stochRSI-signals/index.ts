@@ -1,6 +1,7 @@
 import * as service from './service';
 import { getStochRsiStream } from '../../indicators/stochRSI';
 import _throttle from 'lodash/throttle';
+import indicatorsData from '../indicators-data';
 
 export const runStochRsiInterval = stochRsi => {
   setInterval(async () => {
@@ -52,31 +53,33 @@ export const getStochRSISignal = (
     symbol: symbol,
     interval: timeFrame,
   }).subscribe(stochRsi => {
-    stochRsiData.data = stochRsi;
-
-    if (
-      Number(stochRsi.k) - Number(stochRsi.d) >= buySens ||
-      Number(stochRsi.k).toFixed() >= Number(100)
-    ) {
+    // if (
+    //   Number(stochRsi.k) - Number(stochRsi.d) >= buySens ||
+    //   Number(stochRsi.k).toFixed() >= Number(100)
+    // ) {
+    //   stochRsiData.buySignalCount++;
+    //   stochRsiData.sellSignalCount = 0;
+    // } else if (
+    //   Number(stochRsi.d) - Number(stochRsi.k) >= sellSens ||
+    //   Number(stochRsi.k).toFixed() <= Number(0)
+    // ) {
+    //   stochRsiData.sellSignalCount++;
+    //   stochRsiData.buySignalCount = 0;
+    // }
+    // if (stochRsiData.buySignalCount >= buySignalCount)
+    //   stochRsiData.signal = 'buy';
+    // else if (stochRsiData.sellSignalCount >= sellSignalCount)
+    //   stochRsiData.signal = 'sell';
+    if (Number(stochRsi.d) > 0) {
       stochRsiData.buySignalCount++;
       stochRsiData.sellSignalCount = 0;
-    } else if (
-      Number(stochRsi.d) - Number(stochRsi.k) >= sellSens ||
-      Number(stochRsi.k).toFixed() <= Number(0)
-    ) {
+    } else if (Number(stochRsi.d) < 0) {
       stochRsiData.sellSignalCount++;
       stochRsiData.buySignalCount = 0;
     }
-    if (stochRsiData.buySignalCount >= buySignalCount)
-      stochRsiData.signal = 'buy';
-    else if (stochRsiData.sellSignalCount >= sellSignalCount)
-      stochRsiData.signal = 'sell';
+    stochRsiData.data = stochRsi;
 
-    stochRsiData.value = stochRsi.k;
-    // console.log(stochRsiData.value);
-    // console.log(`StochRSI:${JSON.stringify(stochRsi)}`);
-    // console.log(`Signal: ${indicatorsData.stochRsiSignal}`);
-    // console.log(`Diff: ${Number(stochRsi.k) - Number(stochRsi.d)} \n`);
+    // stochRsiData.value = stochRsi.k;
   });
 };
 

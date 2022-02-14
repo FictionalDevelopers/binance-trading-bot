@@ -17,10 +17,10 @@ export function getStochRsiStream(
     switchMap(() =>
       from(
         stochasticRSI(
-          3,
-          3,
-          14,
-          14,
+          1,
+          1,
+          2,
+          2,
           'close',
           'binance',
           INDICATORS_LIST_SYMBOLS[config.symbol],
