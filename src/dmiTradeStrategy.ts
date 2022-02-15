@@ -1897,6 +1897,8 @@ import { getMfiSignal } from './components/mfi-signals';
     null,
     null,
   );
+  getRSISignal(symbol, '1h', indicatorsData.rsi1h);
+  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   // getRSISignal(symbol, '1h', indicatorsData.rsi1h);
@@ -1915,7 +1917,6 @@ import { getMfiSignal } from './components/mfi-signals';
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 30, 30);
-  // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);

@@ -324,6 +324,8 @@ export const marketSellAction = async (
           OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
             indicatorsData.obv1m.sellSignalCount
           }
+          RSI 1h: ${indicatorsData.rsi1h.prevRsi}        
+          RSI 15m: ${indicatorsData.rsi15m.prevRsi}
           ADX 1m: ${'(UP: ' +
             indicatorsData.dmi1m.adxUpCount +
             ' ' +
@@ -835,8 +837,9 @@ export const marketBuyAction = async (
         }
          OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
           indicatorsData.obv1m.sellSignalCount
-        }
-        
+        } 
+        RSI 1h: ${indicatorsData.rsi1h.prevRsi}        
+        RSI 15m: ${indicatorsData.rsi15m.prevRsi}        
        ADX 1m: ${'(UP: ' +
          indicatorsData.dmi1m.adxUpCount +
          ' ' +
