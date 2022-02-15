@@ -1131,11 +1131,11 @@ import { getMfiSignal } from './components/mfi-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.stochRsi.stoch15m.buySignalCount >= 3 &&
-                indicatorsData.cci.cci15m.buySignalCount >= 3,
+                indicatorsData.cci.cci15m.buySignalCount >= 3 &&
+          indicatorsData.rsi1h.rsiValue > 60 &&
+          indicatorsData.rsi15m.rsiValue > 70,
           // indicatorsData.obv1h.buySignalCount >= 30 &&
           // indicatorsData.obv15m.buySignalCount >= 20 &&
-          // indicatorsData.rsi1h.rsiValue > 60 &&
-          // indicatorsData.rsi15m.rsiValue > 60,
           // indicatorsData.mfi.mfi14m.buySignalCount >= 6,
           // indicatorsData.roc.roc1m.prevValue > 0 &&
           // indicatorsData.roc.roc5m.prevValue > 0 &&
@@ -1200,13 +1200,13 @@ import { getMfiSignal } from './components/mfi-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.stochRsi.stoch15m.sellSignalCount >= 3 &&
-                indicatorsData.cci.cci15m.sellSignalCount >= 3,
+                indicatorsData.cci.cci15m.sellSignalCount >= 3 &&
           // indicatorsData.obv1h.sellSignalCount >= 30 &&
           // indicatorsData.obv15m.sellSignalCount >= 20 &&
-          // indicatorsData.rsi1h.rsiValue !== null &&
-          // indicatorsData.rsi1h.rsiValue < 40 &&
-          // indicatorsData.rsi15m.rsiValue !== null &&
-          // indicatorsData.rsi15m.rsiValue < 40,
+          indicatorsData.rsi1h.rsiValue !== null &&
+          indicatorsData.rsi1h.rsiValue < 40 &&
+          indicatorsData.rsi15m.rsiValue !== null &&
+          indicatorsData.rsi15m.rsiValue < 30,
           // indicatorsData.mfi.mfi14m.sellSignalCount >= 6,
           // indicatorsData.roc.roc1m.prevValue < 0 &&
           // indicatorsData.roc.roc5m.prevValue < 0 &&
