@@ -27,18 +27,18 @@ export const getDMISignal = (
     if ((dmi.adx / dmi.pdi) * 100 - 100 >= 2.5) indicatorsData.adxSignal = -1;
     if ((dmi.pdi / dmi.adx) * 100 - 100 >= 2.5) indicatorsData.adxSignal = 1;
     if (dmi.mdi > dmi.pdi) {
-      // if (indicatorsData.trend === 'UP') {
-      //   indicatorsData.adxBuySignalVolume++;
-      //   indicatorsData.adxSellSignalVolume = 0;
-      // }
+      if (indicatorsData.trend === 'UP') {
+        indicatorsData.adxBuySignalVolume = 0;
+        indicatorsData.adxSellSignalVolume = 0;
+      }
       indicatorsData.mdiSignal = -1;
       indicatorsData.trend = 'DOWN';
     }
     if (dmi.pdi > dmi.mdi) {
-      // if (indicatorsData.trend === 'DOWN') {
-      //   indicatorsData.adxBuySignalVolume = 0;
-      //   indicatorsData.adxSellSignalVolume++;
-      // }
+      if (indicatorsData.trend === 'DOWN') {
+        indicatorsData.adxBuySignalVolume = 0;
+        indicatorsData.adxSellSignalVolume = 0;
+      }
       indicatorsData.mdiSignal = 1;
       indicatorsData.trend = 'UP';
     }
