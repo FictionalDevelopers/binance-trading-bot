@@ -1129,11 +1129,11 @@ import { getMfiSignal } from './components/mfi-signals';
           long:
             botState.initialDealType === 'short'
               ? null
-              : botState.status === 'buy' &&
-                indicatorsData.stochRsi.stoch15m.buySignalCount >= 3 &&
-                indicatorsData.cci.cci15m.buySignalCount >= 3 &&
-          indicatorsData.rsi1h.rsiValue > 60 &&
-          indicatorsData.rsi15m.rsiValue > 70,
+              : botState.status === 'buy' && indicatorsData.dmi1h.willPriceGrow,
+          // indicatorsData.stochRsi.stoch15m.buySignalCount >= 3 &&
+          // indicatorsData.cci.cci15m.buySignalCount >= 3 &&
+          // indicatorsData.rsi1h.rsiValue > 60 &&
+          // indicatorsData.rsi15m.rsiValue > 70,
           // indicatorsData.obv1h.buySignalCount >= 30 &&
           // indicatorsData.obv15m.buySignalCount >= 20 &&
           // indicatorsData.mfi.mfi14m.buySignalCount >= 6,
@@ -1195,18 +1195,18 @@ import { getMfiSignal } from './components/mfi-signals';
           // indicatorsData.haCandle.ha4hCandle.signal === 'buy' &&
           // indicatorsData.obv1d.buySignalCount >= 30 &&
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy',
-          short:
-            botState.initialDealType === 'long'
-              ? null
-              : botState.status === 'buy' &&
-                indicatorsData.stochRsi.stoch15m.sellSignalCount >= 3 &&
-                indicatorsData.cci.cci15m.sellSignalCount >= 3 &&
-          // indicatorsData.obv1h.sellSignalCount >= 30 &&
-          // indicatorsData.obv15m.sellSignalCount >= 20 &&
-          indicatorsData.rsi1h.rsiValue !== null &&
-          indicatorsData.rsi1h.rsiValue < 40 &&
-          indicatorsData.rsi15m.rsiValue !== null &&
-          indicatorsData.rsi15m.rsiValue < 30,
+          short: null,
+          // botState.initialDealType === 'long'
+          //   ? null
+          //   : botState.status === 'buy' &&
+          //     indicatorsData.stochRsi.stoch15m.sellSignalCount >= 3 &&
+          //     indicatorsData.cci.cci15m.sellSignalCount >= 3 &&
+          //     indicatorsData.obv1h.sellSignalCount >= 30 &&
+          //     indicatorsData.obv15m.sellSignalCount >= 20 &&
+          // indicatorsData.rsi1h.rsiValue !== null &&
+          // indicatorsData.rsi1h.rsiValue < 40 &&
+          // indicatorsData.rsi15m.rsiValue !== null &&
+          // indicatorsData.rsi15m.rsiValue < 30,
           // indicatorsData.mfi.mfi14m.sellSignalCount >= 6,
           // indicatorsData.roc.roc1m.prevValue < 0 &&
           // indicatorsData.roc.roc5m.prevValue < 0 &&
@@ -1303,8 +1303,9 @@ import { getMfiSignal } from './components/mfi-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.stochRsi.stoch15m.sellSignalCount >= 3 &&
-              indicatorsData.cci.cci15m.sellSignalCount >= 3,
+              !indicatorsData.dmi1h.willPriceGrow,
+            // indicatorsData.stochRsi.stoch15m.sellSignalCount >= 3 &&
+            // indicatorsData.cci.cci15m.sellSignalCount >= 3,
             // indicatorsData.obv15m.sellSignalCount >= 20,
             // indicatorsData.mfi.mfi14m.sellSignalCount >= 6,
             // indicatorsData.dmi5m.adxDownCount >= 1,
@@ -1887,35 +1888,35 @@ import { getMfiSignal } from './components/mfi-signals';
   //   1000,
   //   indicatorsData.dmi15m,
   // );
-  getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
-  getStochRSISignal(
-    symbol,
-    '15m',
-    indicatorsData.stochRsi.stoch15m,
-    null,
-    null,
-    null,
-    null,
-  );
-  getRSISignal(symbol, '1h', indicatorsData.rsi1h);
-  getRSISignal(symbol, '15m', indicatorsData.rsi15m);
+  // getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
+  // getStochRSISignal(
+  //   symbol,
+  //   '15m',
+  //   indicatorsData.stochRsi.stoch15m,
+  //   null,
+  //   null,
+  //   null,
+  //   null,
+  // );
+  // getRSISignal(symbol, '1h', indicatorsData.rsi1h);
+  // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   // getRSISignal(symbol, '1h', indicatorsData.rsi1h);
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getMfiSignal(symbol, '30m', 2, indicatorsData.mfi.mfi14m, 1, 1);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
+  getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
   // getCCISignal(symbol, '1m', indicatorsData.cci.cci1m);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2);
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 30, 30);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 30, 30);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
