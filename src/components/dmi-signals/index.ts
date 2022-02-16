@@ -15,7 +15,7 @@ export const getDMISignal = (
   getDmiStream({
     symbol: symbol,
     interval: timeFrame,
-    period: 4,
+    period: 14,
   }).subscribe(dmi => {
     if (!indicatorsData.prevDmi) {
       indicatorsData.prevDmi = dmi;
