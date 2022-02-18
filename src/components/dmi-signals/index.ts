@@ -44,10 +44,10 @@ export const getDMISignal = (
     }
 
     if (indicatorsData.trend === 'DOWN') {
-      if (indicatorsData.prevDmi.adx > dmi.adx) {
-        indicatorsData.adxBuySignalVolume++;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
+      // if (indicatorsData.prevDmi.adx > dmi.adx) {
+      //   indicatorsData.adxBuySignalVolume++;
+      //   indicatorsData.adxSellSignalVolume = 0;
+      // }
       if (indicatorsData.prevDmi.adx < dmi.adx) {
         indicatorsData.adxSellSignalVolume++;
         indicatorsData.adxBuySignalVolume = 0;
