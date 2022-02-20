@@ -1129,7 +1129,9 @@ import { getMfiSignal } from './components/mfi-signals';
           long:
             botState.initialDealType === 'short'
               ? null
-              : botState.status === 'buy' && indicatorsData.dmi1h.willPriceGrow,
+              : botState.status === 'buy' &&
+                indicatorsData.dmi1h.willPriceGrow &&
+                indicatorsData.dmi1h.trend === 'UP',
           // indicatorsData.stochRsi.stoch15m.buySignalCount >= 3 &&
           // indicatorsData.cci.cci15m.buySignalCount >= 3 &&
           // indicatorsData.rsi1h.rsiValue > 60 &&
@@ -1198,7 +1200,10 @@ import { getMfiSignal } from './components/mfi-signals';
           short:
             botState.initialDealType === 'long'
               ? null
-              : botState.status === 'buy' && indicatorsData.dmi1h.willPriceGrow,
+              : botState.status === 'buy' &&
+                indicatorsData.dmi1h.willPriceGrow &&
+                indicatorsData.dmi1h.trend === 'DOWN',
+
           //     indicatorsData.stochRsi.stoch15m.sellSignalCount >= 3 &&
           //     indicatorsData.cci.cci15m.sellSignalCount >= 3 &&
           //     indicatorsData.obv1h.sellSignalCount >= 30 &&
