@@ -1195,10 +1195,10 @@ import { getMfiSignal } from './components/mfi-signals';
           // indicatorsData.haCandle.ha4hCandle.signal === 'buy' &&
           // indicatorsData.obv1d.buySignalCount >= 30 &&
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy',
-          short: null,
-          // botState.initialDealType === 'long'
-          //   ? null
-          //   : botState.status === 'buy' &&
+          short:
+            botState.initialDealType === 'long'
+              ? null
+              : botState.status === 'buy' && indicatorsData.dmi1h.willPriceGrow,
           //     indicatorsData.stochRsi.stoch15m.sellSignalCount >= 3 &&
           //     indicatorsData.cci.cci15m.sellSignalCount >= 3 &&
           //     indicatorsData.obv1h.sellSignalCount >= 30 &&
@@ -1387,8 +1387,10 @@ import { getMfiSignal } from './components/mfi-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.stochRsi.stoch15m.buySignalCount >= 3 &&
-              indicatorsData.cci.cci15m.buySignalCount >= 3,
+              !indicatorsData.dmi1h.willPriceGrow,
+
+            // indicatorsData.stochRsi.stoch15m.buySignalCount >= 3 &&
+            // indicatorsData.cci.cci15m.buySignalCount >= 3,
             // indicatorsData.obv15m.buySignalCount >= 20,
             // indicatorsData.mfi.mfi14m.buySignalCount >= 6,
             // indicatorsData.dmi5m.adxDownCount >= 1,
@@ -1906,7 +1908,7 @@ import { getMfiSignal } from './components/mfi-signals';
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getMfiSignal(symbol, '30m', 2, indicatorsData.mfi.mfi14m, 1, 1);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
+  getDMISignal(symbol, '1h', indicatorsData.dmi1h, botState, 1, 0, 0);
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);

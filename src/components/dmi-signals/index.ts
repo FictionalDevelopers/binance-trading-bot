@@ -5,6 +5,7 @@ export const getDMISignal = (
   symbol,
   timeFrame,
   indicatorsData,
+  botState,
   buyCount,
   // sellCount,
   // pdiMdiBuyDiff,
@@ -44,13 +45,23 @@ export const getDMISignal = (
     }
 
     if (indicatorsData.trend === 'DOWN') {
-      // if (indicatorsData.prevDmi.adx > dmi.adx) {
-      //   indicatorsData.adxBuySignalVolume++;
-      //   indicatorsData.adxSellSignalVolume = 0;
-      // }
-      if (indicatorsData.prevDmi.adx < dmi.adx) {
-        indicatorsData.adxSellSignalVolume++;
-        indicatorsData.adxBuySignalVolume = 0;
+      if (botState.dealType !== 'long') {
+        if (indicatorsData.prevDmi.adx < dmi.adx) {
+          indicatorsData.adxSellSignalVolume = 0;
+          indicatorsData.adxBuySignalVolume++;
+        }
+      }
+      if (botState.dealType === 'short') {
+        if (indicatorsData.prevDmi.adx > dmi.adx) {
+          indicatorsData.adxBuySignalVolume = 0;
+          indicatorsData.adxSellSignalVolume++;
+        }
+      }
+      if (botState.dealType === 'long') {
+        if (indicatorsData.prevDmi.adx < dmi.adx) {
+          indicatorsData.adxSellSignalVolume++;
+          indicatorsData.adxBuySignalVolume = 0;
+        }
       }
       if (indicatorsData.prevDmi.adx === dmi.adx) {
         indicatorsData.adxBuySignalVolume = 0;
@@ -58,13 +69,24 @@ export const getDMISignal = (
       }
     }
     if (indicatorsData.trend === 'UP') {
-      if (indicatorsData.prevDmi.adx > dmi.adx) {
-        indicatorsData.adxSellSignalVolume++;
-        indicatorsData.adxBuySignalVolume = 0;
+      if (botState.dealType === 'short') {
+        if (indicatorsData.prevDmi.adx < dmi.adx) {
+          indicatorsData.adxSellSignalVolume++;
+          indicatorsData.adxBuySignalVolume = 0;
+        }
       }
-      if (indicatorsData.prevDmi.adx < dmi.adx) {
-        indicatorsData.adxBuySignalVolume++;
-        indicatorsData.adxSellSignalVolume = 0;
+      if (botState.dealType !== 'short') {
+        if (indicatorsData.prevDmi.adx < dmi.adx) {
+          indicatorsData.adxBuySignalVolume++;
+          indicatorsData.adxSellSignalVolume = 0;
+        }
+      }
+
+      if (botState.dealType === 'long') {
+        if (indicatorsData.prevDmi.adx > dmi.adx) {
+          indicatorsData.adxBuySignalVolume = 0;
+          indicatorsData.adxSellSignalVolume++;
+        }
       }
       if (indicatorsData.prevDmi.adx === dmi.adx) {
         indicatorsData.adxBuySignalVolume = 0;
