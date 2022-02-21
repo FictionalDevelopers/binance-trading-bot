@@ -27,6 +27,7 @@ export const getDMISignal = (
     indicatorsData.adx = dmi.adx;
     if ((dmi.adx / dmi.pdi) * 100 - 100 >= 2.5) indicatorsData.adxSignal = -1;
     if ((dmi.pdi / dmi.adx) * 100 - 100 >= 2.5) indicatorsData.adxSignal = 1;
+
     if (dmi.mdi > dmi.pdi) {
       if (indicatorsData.trend === 'UP') {
         indicatorsData.adxBuySignalVolume = 0;
@@ -97,11 +98,11 @@ export const getDMISignal = (
       indicatorsData.willPriceGrow = true;
     if (indicatorsData.adxSellSignalVolume > 0)
       indicatorsData.willPriceGrow = false;
-    console.log(dmi.adx);
-    if ((dmi.adx / indicatorsData.prevDmi.adx) * 100 - 100 >= 0.5)
-      indicatorsData.adxSignal = 'buy';
-    if ((indicatorsData.prevDmi.adx / dmi.adx) * 100 - 100 >= 0.5)
-      indicatorsData.adxSignal = 'sell';
+    // console.log(dmi.adx);
+    // if ((dmi.adx / indicatorsData.prevDmi.adx) * 100 - 100 >= 0.5)
+    //   indicatorsData.adxSignal = 'buy';
+    // if ((indicatorsData.prevDmi.adx / dmi.adx) * 100 - 100 >= 0.5)
+    //   indicatorsData.adxSignal = 'sell';
 
     // if (buyCount) {
     //   if (

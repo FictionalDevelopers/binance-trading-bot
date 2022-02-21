@@ -32,6 +32,7 @@ const resetValuesAfterSell = (botState, indicatorsData) => {
   botState.dealPricesArr = [];
   botState.confirmation = false;
   botState.initialDealType = null;
+  botState.dealType = null;
 };
 
 export const marketBuy = (symbol: string, quantity: number): Promise<unknown> =>
