@@ -296,6 +296,20 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         sellSignalCount: 0,
         signal: null,
       },
+      mfi15m: {
+        mfi: null,
+        prevMfi: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
+      mfi30m: {
+        mfi: null,
+        prevMfi: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
     },
     crsi: {
       crsi15m: {
@@ -1255,9 +1269,22 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.cci.cci1m.buySignalCount >= 2 &&
-                indicatorsData.obv5m.buySignalCount >= 4,
-          // indicatorsData.mfi.mfi5m.buySignalCount >= 6 &&
+                // indicatorsData.cci.cci1m.buySignalCount >= 2 &&
+                // indicatorsData.obv30m.buySignalCount >= 10 &&
+                // indicatorsData.obv15m.buySignalCount >= 20 &&
+                // indicatorsData.obv5m.buySignalCount >= 20 &&
+                // indicatorsData.mfi.mfi15m.buySignalCount >= 4 &&
+                // indicatorsData.mfi.mfi5m.buySignalCount >= 4 &&
+                // indicatorsData.mfi.mfi1m.buySignalCount >= 4 &&
+                // indicatorsData.mfi.mfi12m.buySignalCount >= 4 &&
+                indicatorsData.dmi15m.adxBuySignalVolume >= 2 &&
+                // indicatorsData.dmi5m.adxBuySignalVolume >= 2 &&
+                indicatorsData.roc.roc15m.prevValue > 0,
+          // indicatorsData.roc.roc5m.prevValue > 0,
+          // indicatorsData.mfi.mfi13m.buySignalCount >= 4 &&
+          // indicatorsData.mfi.mfi14m.buySignalCount >= 4,
+          // indicatorsData.obv5m.buySignalCount >= 2 &&
+          // indicatorsData.obv1m.buySignalCount >= 2,
           // indicatorsData.mfi.mfi52m.buySignalCount >= 6 &&
           // indicatorsData.mfi.mfi1m.buySignalCount >= 4 &&
           // indicatorsData.mfi.mfi12m.buySignalCount >= 4 &&
@@ -1279,7 +1306,6 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           // indicatorsData.obv15m.buySignalCount >= 20 &&
           // indicatorsData.rsi1m.rsiValue > 60 &&
           // indicatorsData.rsi5m.rsiValue > 60 &&
-          // indicatorsData.obv5m.buySignalCount >= 20 &&
           // indicatorsData.efi1m.prevEfi > 0 &&
           // indicatorsData.obv15m.buySignalCount >= 10 &&
           // indicatorsData.dmi5m.adxUpCount >= 2,
@@ -1327,9 +1353,23 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.cci.cci1m.sellSignalCount >= 2 &&
-                indicatorsData.obv5m.sellSignalCount >= 4,
-          // indicatorsData.mfi.mfi5m.sellSignalCount >= 6 &&
+                // indicatorsData.cci.cci1m.sellSignalCount >= 2 &&
+                // indicatorsData.obv1h.sellSignalCount >= 20,
+                // indicatorsData.obv30m.sellSignalCount >= 10 &&
+                // indicatorsData.obv15m.sellSignalCount >= 20 &&
+                // indicatorsData.obv5m.sellSignalCount >= 20 &&
+                // indicatorsData.mfi.mfi15m.sellSignalCount >= 4 &&
+                // indicatorsData.mfi.mfi5m.sellSignalCount >= 4 &&
+                // indicatorsData.mfi.mfi1m.sellSignalCount >= 4 &&
+                // indicatorsData.mfi.mfi12m.sellSignalCount >= 4 &&
+                indicatorsData.dmi15m.adxBuySignalVolume >= 2 &&
+                // indicatorsData.dmi5m.adxBuySignalVolume >= 2 &&
+                indicatorsData.roc.roc15m.prevValue < 0,
+          // indicatorsData.roc.roc5m.prevValue < 0,
+          // indicatorsData.mfi.mfi13m.sellSignalCount >= 4 &&
+          // indicatorsData.mfi.mfi14m.sellSignalCount >= 4,
+          // indicatorsData.obv5m.sellSignalCount >= 2 &&
+          // indicatorsData.obv1m.sellSignalCount >= 2,
           // indicatorsData.mfi.mfi52m.sellSignalCount >= 6 &&
           // indicatorsData.mfi.mfi1m.sellSignalCount >= 4 &&
           // indicatorsData.mfi.mfi12m.sellSignalCount >= 4 &&
@@ -1356,7 +1396,6 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           // indicatorsData.efi1m.prevEfi < 0 &&
           // indicatorsData.obv15m.sellSignalCount >= 20 &&
           // indicatorsData.cci.cci1m.cci < 0 &&
-          // indicatorsData.obv5m.sellSignalCount >= 20 &&
           // indicatorsData.obv15m.sellSignalCount >= 10 &&
           // indicatorsData.dmi5m.adxUpCount >= 2,
 
@@ -1437,12 +1476,21 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              // indicatorsData.mfi.mfi5m.sellSignalCount >= 6 &&
-              // indicatorsData.mfi.mfi52m.sellSignalCount >= 6 &&
+              // indicatorsData.mfi.mfi15m.sellSignalCount >= 2 &&
+              // indicatorsData.mfi.mfi5m.sellSignalCount >= 2 &&
               // indicatorsData.mfi.mfi1m.sellSignalCount >= 4 &&
               // indicatorsData.mfi.mfi12m.sellSignalCount >= 4 &&
-              indicatorsData.obv5m.sellSignalCount >= 4 &&
-              indicatorsData.cci.cci1m.sellSignalCount >= 2,
+              indicatorsData.dmi15m.adxSellSignalVolume >= 1,
+            // indicatorsData.mfi.mfi13m.sellSignalCount >= 4 &&
+            // indicatorsData.mfi.mfi14m.sellSignalCount >= 4,
+            // indicatorsData.obv1m.sellSignalCount >= 2,
+            // indicatorsData.obv15m.sellSignalCount >= 4 &&
+            // indicatorsData.obv5m.sellSignalCount >= 4,
+            // indicatorsData.mfi.mfi52m.sellSignalCount >= 6 &&
+            // indicatorsData.mfi.mfi1m.sellSignalCount >= 4 &&
+            // indicatorsData.mfi.mfi12m.sellSignalCount >= 4 &&
+            // indicatorsData.obv1h.sellSignalCount >= 20,
+            // indicatorsData.cci.cci1m.sellSignalCount >= 2,
             // indicatorsData.atr.atr1m.buySignalCount >= 2,
 
             // indicatorsData.dmi1m.adxDownCount >= 1),
@@ -1452,7 +1500,6 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             // indicatorsData.dmi5m.adxDownCount >= 2,
 
             // (indicatorsData.dmi1m.adxDownCount >= 2 ||
-            // indicatorsData.obv5m.sellSignalCount >= 4 &&
             // indicatorsData.obv1m.sellSignalCount >= 4 &&
             // indicatorsData.rsi1m.rsiValue < 60,
 
@@ -1527,13 +1574,20 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.obv5m.buySignalCount >= 4 &&
-              indicatorsData.cci.cci1m.buySignalCount >= 2,
-            // indicatorsData.mfi.mfi5m.buySignalCount >= 6 &&
+              // indicatorsData.obv1h.buySignalCount >= 20,
+              // indicatorsData.cci.cci1m.buySignalCount >= 2,
+              // indicatorsData.mfi.mfi15m.buySignalCount >= 2 &&
+              // indicatorsData.mfi.mfi5m.buySignalCount >= 2 &&
+              // indicatorsData.mfi.mfi1m.buySignalCount >= 4 &&
+              // indicatorsData.mfi.mfi12m.buySignalCount >= 4 &&
+              indicatorsData.dmi15m.adxSellSignalVolume >= 1,
+            // indicatorsData.mfi.mfi13m.buySignalCount >= 4 &&
+            // indicatorsData.mfi.mfi14m.buySignalCount >= 4,
+            // indicatorsData.obv1m.buySignalCount >= 2,
+            // indicatorsData.obv15m.buySignalCount >= 4 &&
             // indicatorsData.mfi.mfi52m.buySignalCount >= 6 &&
             // indicatorsData.mfi.mfi1m.buySignalCount >= 4 &&
             // indicatorsData.mfi.mfi12m.buySignalCount >= 4 &&
-            // indicatorsData.obv1m.buySignalCount >= 4,
             // indicatorsData.atr.atr1m.buySignalCount >= 2,
 
             // indicatorsData.dmi1m.adxDownCount >= 1),
@@ -1971,24 +2025,46 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 20, 20);
   // getEMASignal(symbol, '1m', indicatorsData.fast1mEMA)
   // getObvSignal(symbol, '2h', indicatorsData.obv1h, 60, 60);
-  // getDMISignal(symbol, '5m', indicatorsData.dmi5m, 1, 0, 0);
 
   // getATRSignal(symbol, '5m', 14, indicatorsData.atr.atr1m);
-  // getMfiSignal(symbol, '5m', 4, indicatorsData.mfi.mfi53m, 1, 1);
-  // getMfiSignal(symbol, '5m', 2, indicatorsData.mfi.mfi54m, 1, 1);
+  // getDMISignal(
+  //   symbol,
+  //   '15m',
+  //   3,
+  //   indicatorsData.dmi15m,
+  //   botState,
+  //   1,
+  //   true,
+  //   0,
+  //   0,
+  // );
+  // getDMISignal(symbol, '5m', 3, indicatorsData.dmi5m, botState, 1, true, 0, 0);
+  getMfiSignal(symbol, '30m', 3, indicatorsData.mfi.mfi1m, 1, 1);
+  getMfiSignal(symbol, '30m', 7, indicatorsData.mfi.mfi12m, 1, 1);
+  // getMfiSignal(symbol, '5m', 7, indicatorsData.mfi.mfi13m, 1, 1);
+  // getMfiSignal(symbol, '15m', 7, indicatorsData.mfi.mfi14m, 1, 1);
+  // getRocSignal(symbol, '15m', 3, indicatorsData.roc.roc15m, 0, -0.1, 4, 2);
+  // getRocSignal(symbol, '5m', 3, indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
+  // getMfiSignal(symbol, '1m', 30, indicatorsData.mfi.mfi13m, 1, 1);
+  // getMfiSignal(symbol, '1m', 40, indicatorsData.mfi.mfi14m, 1, 1);
+  // getMfiSignal(symbol, '5m', 14, indicatorsData.mfi.mfi5m, 1, 1);
+  // getMfiSignal(symbol, '15m', 14, indicatorsData.mfi.mfi15m, 1, 1);
+  // getMfiSignal(symbol, '30m', 14, indicatorsData.mfi.mfi30m, 1, 1);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   // getMfiSignal(symbol, '5m', 6, indicatorsData.mfi.mfi13m, 1, 1);
   // getMfiSignal(symbol, '15m', 4, indicatorsData.mfi.mfi14m, 1, 1);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
-  getStochRSISignal(
-    symbol,
-    '15m',
-    indicatorsData.stochRsi.stoch15m,
-    null,
-    null,
-    null,
-    null,
-  );
+  // getCCISignal(symbol, '15m', indicatorsData.cci.cci15m);
+  // getStochRSISignal(
+  //   symbol,
+  //   '15m',
+  //   indicatorsData.stochRsi.stoch15m,
+  //   null,
+  //   null,
+  //   null,
+  //   null,
+  // );
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
@@ -1997,22 +2073,21 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getMfiSignal(symbol, '15m', 4, indicatorsData.mfi.mfi52m, 1, 1);
   // getMfiSignal(symbol, '5m', 14, indicatorsData.mfi.mfi1m, 1, 1);
   // getMfiSignal(symbol, '5m', 4, indicatorsData.mfi.mfi12m, 1, 1);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getRSISignal(symbol, '1m', indicatorsData.rsi1m);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getRocSignal(symbol, '1d', indicatorsData.roc.roc15m, 0, -0.1, 4, 2);
-  // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
   // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
   // getRocSignal(symbol, '5m', indicatorsData.roc.roc5m, 0, -0.1, 4, 2);
   // getRocSignal(symbol, '1m', indicatorsData.roc.roc1m, 0, -0.1, 4, 2);
   // getHeikinAshiSignal(symbol, '1m', 3, 3, indicatorsData.haCandle.ha1mCandle);
 
   // getForceIndexSignal(symbol, '1m', 13, indicatorsData.efi1m);
-  // getObvSignal(symbol, '1w', indicatorsData.obv1w, 10, 10);
-  // getObvSignal(symbol, '1d', indicatorsData.obv1d, 10, 10);
+  // getObvSignal(symbol, '30m', indicatorsData.obv30m, 10, 10);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 10, 10);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 10, 10);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
-  // getCCISignal(symbol, '5m', indicatorsData.cci.cci5m);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 6, 6);
+  // getCCISignal(symbol, '5m', indicatorsData.cci.cci5m);
 
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h, 1, 0, 0);
   // getCCISignal(symbol, '5m', indicatorsData.cci.cci5m);
@@ -2542,38 +2617,90 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       //     indicatorsData.obv2h.sellSignalCount +
       //     ')',
       // );
-      // console.log(
-      //   'OBV 1h: ' +
-      //     indicatorsData.obv1h.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv1h.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv1h.sellSignalCount +
-      //     ')',
-      // );
-      // console.log(
-      //   'OBV 30m: ' +
-      //     indicatorsData.obv30m.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv30m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv30m.sellSignalCount +
-      //     ')',
-      // );
+      console.log(
+        'OBV 1h: ' +
+          indicatorsData.obv1h.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv1h.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv1h.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 30m: ' +
+          indicatorsData.obv30m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv30m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv30m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 15m: ' +
+          indicatorsData.obv15m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv15m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv15m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 5m: ' +
+          indicatorsData.obv5m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv5m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv5m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'OBV 1m: ' +
+          indicatorsData.obv1m.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv1m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv1m.sellSignalCount +
+          ')',
+      );
+
       // console.log(indicatorsData.candle.candle1m);
-      // console.log(
-      //   'MFI 5m: ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.mfi.mfi5m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.mfi.mfi5m.sellSignalCount +
-      //     ')',
-      // );
+      console.log(
+        'MFI 30m: ' +
+          '(Buy Count: ' +
+          indicatorsData.mfi.mfi30m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.mfi.mfi30m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'MFI 15m: ' +
+          '(Buy Count: ' +
+          indicatorsData.mfi.mfi15m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.mfi.mfi15m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'MFI 5m: ' +
+          '(Buy Count: ' +
+          indicatorsData.mfi.mfi5m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.mfi.mfi5m.sellSignalCount +
+          ')',
+      );
       // console.log(
       //   'MFI 52m: ' +
       //     '(Buy Count: ' +
@@ -2583,40 +2710,22 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       //     indicatorsData.mfi.mfi52m.sellSignalCount +
       //     ')',
       // );
-      // console.log(
-      //   'MFI 1m: ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.mfi.mfi1m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.mfi.mfi1m.sellSignalCount +
-      //     ')',
-      // );
-      // console.log(
-      //   'MFI 12m: ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.mfi.mfi12m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.mfi.mfi12m.sellSignalCount +
-      //     ')',
-      // );
       console.log(
-        'MFI 53m: ' +
+        'MFI 1m: ' +
           '(Buy Count: ' +
-          indicatorsData.mfi.mfi53m.buySignalCount +
+          indicatorsData.mfi.mfi1m.buySignalCount +
           ' ' +
           'Sell Count: ' +
-          indicatorsData.mfi.mfi53m.sellSignalCount +
+          indicatorsData.mfi.mfi1m.sellSignalCount +
           ')',
       );
       console.log(
-        'MFI 54m: ' +
+        'MFI 12m: ' +
           '(Buy Count: ' +
-          indicatorsData.mfi.mfi54m.buySignalCount +
+          indicatorsData.mfi.mfi12m.buySignalCount +
           ' ' +
           'Sell Count: ' +
-          indicatorsData.mfi.mfi54m.sellSignalCount +
+          indicatorsData.mfi.mfi12m.sellSignalCount +
           ')',
       );
       console.log(
@@ -2629,18 +2738,6 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           ')',
       );
       console.log(
-        'OBV 15m: ' +
-          indicatorsData.obv15m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv15m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv15m.sellSignalCount +
-          ')',
-      );
-
-      console.log(
         'MFI 14m: ' +
           '(Buy Count: ' +
           indicatorsData.mfi.mfi14m.buySignalCount +
@@ -2650,29 +2747,80 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           ')',
       );
 
-      console.log(
-        'OBV 5m: ' +
-          indicatorsData.obv5m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv5m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv5m.sellSignalCount +
-          ')',
-      );
+      // console.log(
+      //   'MFI 53m: ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.mfi.mfi53m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.mfi.mfi53m.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'MFI 54m: ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.mfi.mfi54m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.mfi.mfi54m.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 15m: ' +
+      //     indicatorsData.obv15m.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv15m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv15m.sellSignalCount +
+      //     ')',
+      // );
 
-      console.log(
-        'OBV 1m: ' +
-          indicatorsData.obv1m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1m.sellSignalCount +
-          ')',
-      );
+      // console.log(
+      //   'MFI 14m: ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.mfi.mfi14m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.mfi.mfi14m.sellSignalCount +
+      //     ')',
+      // );
+
+      // console.log(
+      //   'OBV 1h: ' +
+      //     indicatorsData.obv1h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1h.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 5m: ' +
+      //     indicatorsData.obv5m.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv5m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv5m.sellSignalCount +
+      //     ')',
+      // );
+
+      // console.log(
+      //   'OBV 1m: ' +
+      //     indicatorsData.obv1m.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1m.sellSignalCount +
+      //     ')',
+      // );
       // console.log(
       //   'ATR 1m: ' +
       //     indicatorsData.atr.atr1m.prevAtr +
@@ -2685,42 +2833,31 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       //     ')',
       // );
 
-      console.log(
-        'OBV 15m: ' +
-          indicatorsData.obv15m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv15m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv15m.sellSignalCount +
-          ')',
-      );
       // // console.log('CRSI 15m: ' + indicatorsData.crsi.crsi15m.crsi);
       console.log(
-        'ADX 1m: ' +
+        'ADX 15m: ' +
           '(UP: ' +
-          indicatorsData.dmi1m.adxUpCount +
+          indicatorsData.dmi15m.adxBuySignalVolume +
           ' DOWN: ' +
-          indicatorsData.dmi1m.adxDownCount +
+          indicatorsData.dmi15m.adxSellSignalVolume +
           ' ' +
           'Current: ' +
-          indicatorsData.dmi1m.adx,
+          indicatorsData.dmi15m.adx,
         ')',
       );
       console.log(
         'ADX 5m: ' +
           '(UP: ' +
-          indicatorsData.dmi5m.adxUpCount +
+          indicatorsData.dmi5m.adxBuySignalVolume +
           ' DOWN: ' +
-          indicatorsData.dmi5m.adxDownCount +
+          indicatorsData.dmi5m.adxSellSignalVolume +
           ' ' +
           'Current: ' +
           indicatorsData.dmi5m.adx,
         ')',
       );
-      console.log('STOCH 15m ' + indicatorsData.stochRsi.stoch15m.data.d);
-      console.log('CCI 15m ' + indicatorsData.cci.cci15m.cci);
+      // console.log('STOCH 15m ' + indicatorsData.stochRsi.stoch15m.data.d);
+      // console.log('CCI 15m ' + indicatorsData.cci.cci15m.cci);
 
       // console.log(
       //   'OBV 1m: ' +
@@ -2735,15 +2872,26 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       // );
       // console.log('RSI 1m: ' + indicatorsData.rsi1m.rsiValue);
       // console.log('RSI 5m: ' + indicatorsData.rsi5m.rsiValue);
-      // console.log(
-      //   'ROC 15m: ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.roc.roc15m.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.roc.roc15m.sellSignalCount +
-      //     ')',
-      // );
+      console.log(
+        'ROC 15m: ' +
+          indicatorsData.roc.roc15m.prevValue +
+          ' (Buy Count: ' +
+          indicatorsData.roc.roc15m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.roc.roc15m.sellSignalCount +
+          ')',
+      );
+      console.log(
+        'ROC 5m: ' +
+          indicatorsData.roc.roc5m.prevValue +
+          ' (Buy Count: ' +
+          indicatorsData.roc.roc5m.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.roc.roc5m.sellSignalCount +
+          ')',
+      );
       //
       // console.log(
       //   'ROC 5m: ' +

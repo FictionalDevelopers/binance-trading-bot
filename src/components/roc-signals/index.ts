@@ -3,6 +3,7 @@ import { getRocStream } from '../../indicators/roc';
 export const getRocSignal = (
   symbol,
   timeFrame,
+  period,
   rocData,
   buySens,
   sellSens,
@@ -12,7 +13,7 @@ export const getRocSignal = (
   getRocStream({
     symbol: symbol,
     interval: timeFrame,
-    period: 9,
+    period,
   }).subscribe(roc => {
     if (!rocData.prevValue) {
       rocData.prevValue = roc;

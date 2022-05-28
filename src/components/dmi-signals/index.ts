@@ -4,9 +4,11 @@ import _throttle from 'lodash/throttle';
 export const getDMISignal = (
   symbol,
   timeFrame,
+  period,
   indicatorsData,
   botState,
   buyCount,
+  onlyADX,
   // sellCount,
   // pdiMdiBuyDiff,
   // pdiMdiSellDiff,
@@ -16,7 +18,7 @@ export const getDMISignal = (
   getDmiStream({
     symbol: symbol,
     interval: timeFrame,
-    period: 14,
+    period,
   }).subscribe(dmi => {
     if (!indicatorsData.prevDmi) {
       indicatorsData.prevDmi = dmi;
@@ -28,76 +30,89 @@ export const getDMISignal = (
     // if ((dmi.adx / dmi.pdi) * 100 - 100 >= 2.5) indicatorsData.adxSignal = -1;
     // if ((dmi.pdi / dmi.adx) * 100 - 100 >= 2.5) indicatorsData.adxSignal = 1;
 
-    if (dmi.mdi > dmi.pdi) {
-      if (indicatorsData.trend === 'UP') {
-        indicatorsData.adxBuySignalVolume = 0;
-        indicatorsData.adxSellSignalVolume = 0;
+    if (!onlyADX) {
+      if (dmi.mdi > dmi.pdi) {
+        if (indicatorsData.trend === 'UP') {
+          indicatorsData.adxBuySignalVolume = 0;
+          indicatorsData.adxSellSignalVolume = 0;
+        }
+        indicatorsData.mdiSignal = -1;
+        indicatorsData.trend = 'DOWN';
       }
-      indicatorsData.mdiSignal = -1;
-      indicatorsData.trend = 'DOWN';
-    }
-    if (dmi.pdi > dmi.mdi) {
+      if (dmi.pdi > dmi.mdi) {
+        if (indicatorsData.trend === 'DOWN') {
+          indicatorsData.adxBuySignalVolume = 0;
+          indicatorsData.adxSellSignalVolume = 0;
+        }
+        indicatorsData.mdiSignal = 1;
+        indicatorsData.trend = 'UP';
+      }
+
       if (indicatorsData.trend === 'DOWN') {
-        indicatorsData.adxBuySignalVolume = 0;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-      indicatorsData.mdiSignal = 1;
-      indicatorsData.trend = 'UP';
-    }
-
-    if (indicatorsData.trend === 'DOWN') {
-      if (botState.dealType !== 'long') {
-        if (indicatorsData.prevDmi.adx < dmi.adx) {
-          indicatorsData.adxSellSignalVolume = 0;
-          indicatorsData.adxBuySignalVolume++;
+        if (botState.dealType !== 'long') {
+          if (indicatorsData.prevDmi.adx < dmi.adx) {
+            indicatorsData.adxSellSignalVolume = 0;
+            indicatorsData.adxBuySignalVolume++;
+          }
         }
-      }
-      if (botState.dealType === 'short') {
-        if (indicatorsData.prevDmi.adx > dmi.adx) {
+        if (botState.dealType === 'short') {
+          if (indicatorsData.prevDmi.adx > dmi.adx) {
+            indicatorsData.adxBuySignalVolume = 0;
+            indicatorsData.adxSellSignalVolume++;
+          }
+        }
+        if (botState.dealType === 'long') {
+          if (indicatorsData.prevDmi.adx < dmi.adx) {
+            indicatorsData.adxSellSignalVolume++;
+            indicatorsData.adxBuySignalVolume = 0;
+          }
+        }
+        if (indicatorsData.prevDmi.adx === dmi.adx) {
           indicatorsData.adxBuySignalVolume = 0;
-          indicatorsData.adxSellSignalVolume++;
-        }
-      }
-      if (botState.dealType === 'long') {
-        if (indicatorsData.prevDmi.adx < dmi.adx) {
-          indicatorsData.adxSellSignalVolume++;
-          indicatorsData.adxBuySignalVolume = 0;
-        }
-      }
-      if (indicatorsData.prevDmi.adx === dmi.adx) {
-        indicatorsData.adxBuySignalVolume = 0;
-        indicatorsData.adxSellSignalVolume = 0;
-      }
-    }
-    if (indicatorsData.trend === 'UP') {
-      if (botState.dealType === 'short') {
-        if (indicatorsData.prevDmi.adx < dmi.adx) {
-          indicatorsData.adxSellSignalVolume++;
-          indicatorsData.adxBuySignalVolume = 0;
-        }
-      }
-      if (botState.dealType !== 'short') {
-        if (indicatorsData.prevDmi.adx < dmi.adx) {
-          indicatorsData.adxBuySignalVolume++;
           indicatorsData.adxSellSignalVolume = 0;
         }
       }
+      if (indicatorsData.trend === 'UP') {
+        if (botState.dealType === 'short') {
+          if (indicatorsData.prevDmi.adx < dmi.adx) {
+            indicatorsData.adxSellSignalVolume++;
+            indicatorsData.adxBuySignalVolume = 0;
+          }
+        }
+        if (botState.dealType !== 'short') {
+          if (indicatorsData.prevDmi.adx < dmi.adx) {
+            indicatorsData.adxBuySignalVolume++;
+            indicatorsData.adxSellSignalVolume = 0;
+          }
+        }
 
-      if (botState.dealType === 'long') {
-        if (indicatorsData.prevDmi.adx > dmi.adx) {
+        if (botState.dealType === 'long') {
+          if (indicatorsData.prevDmi.adx > dmi.adx) {
+            indicatorsData.adxBuySignalVolume = 0;
+            indicatorsData.adxSellSignalVolume++;
+          }
+        }
+        if (indicatorsData.prevDmi.adx === dmi.adx) {
           indicatorsData.adxBuySignalVolume = 0;
-          indicatorsData.adxSellSignalVolume++;
+          indicatorsData.adxSellSignalVolume = 0;
         }
       }
-      if (indicatorsData.prevDmi.adx === dmi.adx) {
-        indicatorsData.adxBuySignalVolume = 0;
+      if (indicatorsData.adxBuySignalVolume >= 1)
+        indicatorsData.willPriceGrow = true;
+      if (indicatorsData.adxSellSignalVolume > 0)
+        indicatorsData.willPriceGrow = false;
+    } else {
+      if (indicatorsData.prevDmi.adx < dmi.adx) {
         indicatorsData.adxSellSignalVolume = 0;
+        indicatorsData.adxBuySignalVolume++;
+      } else if (indicatorsData.prevDmi.adx > dmi.adx) {
+        indicatorsData.adxSellSignalVolume++;
+        indicatorsData.adxBuySignalVolume = 0;
+      } else if (indicatorsData.prevDmi.adx === dmi.adx) {
+        // indicatorsData.adxSellSignalVolume = 0;
+        // indicatorsData.adxBuySignalVolume = 0;
       }
     }
-    if (indicatorsData.adxBuySignalVolume >= 1)
-      indicatorsData.willPriceGrow = true;
-    if (indicatorsData.adxSellSignalVolume > 0)
-      indicatorsData.willPriceGrow = false;
     // console.log(dmi.adx);
     // if ((dmi.adx / indicatorsData.prevDmi.adx) * 100 - 100 >= 0.5)
     //   indicatorsData.adxSignal = 'buy';

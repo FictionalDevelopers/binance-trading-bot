@@ -228,6 +228,13 @@ import { getMfiSignal } from './components/mfi-signals';
         sellSignalCount: 0,
         signal: null,
       },
+      mfi30m: {
+        mfi: null,
+        prevMfi: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+        signal: null,
+      },
     },
     crsi: {
       crsi1h: {
@@ -1130,12 +1137,13 @@ import { getMfiSignal } from './components/mfi-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.dmi1h.willPriceGrow &&
-                indicatorsData.dmi15m.willPriceGrow &&
-                indicatorsData.dmi1h.trend === 'UP' &&
-                indicatorsData.obv1h.buySignalCount >= 10 &&
-                indicatorsData.obv15m.buySignalCount >= 10 &&
-                indicatorsData.obv5m.buySignalCount >= 10,
+                indicatorsData.mfi.mfi30m.buySignalCount >= 2,
+          // indicatorsData.dmi1h.willPriceGrow &&
+          // indicatorsData.dmi15m.willPriceGrow &&
+          // indicatorsData.dmi1h.trend === 'UP' &&
+          // indicatorsData.obv1h.buySignalCount >= 10 &&
+          // indicatorsData.obv15m.buySignalCount >= 10 &&
+          // indicatorsData.obv5m.buySignalCount >= 10,
 
           // indicatorsData.stochRsi.stoch15m.buySignalCount >= 3 &&
           // indicatorsData.cci.cci15m.buySignalCount >= 3 &&
@@ -1204,12 +1212,13 @@ import { getMfiSignal } from './components/mfi-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.dmi1h.willPriceGrow &&
-                indicatorsData.dmi15m.willPriceGrow &&
-                indicatorsData.dmi1h.trend === 'DOWN' &&
-                indicatorsData.obv1h.sellSignalCount >= 10 &&
-                indicatorsData.obv15m.sellSignalCount >= 10 &&
-                indicatorsData.obv5m.sellSignalCount >= 10,
+                indicatorsData.mfi.mfi30m.sellSignalCount >= 2,
+          // indicatorsData.dmi1h.willPriceGrow &&
+          // indicatorsData.dmi15m.willPriceGrow &&
+          // indicatorsData.dmi1h.trend === 'DOWN' &&
+          // indicatorsData.obv1h.sellSignalCount >= 10 &&
+          // indicatorsData.obv15m.sellSignalCount >= 10 &&
+          // indicatorsData.obv5m.sellSignalCount >= 10,
 
           //     indicatorsData.stochRsi.stoch15m.sellSignalCount >= 3 &&
           //     indicatorsData.cci.cci15m.sellSignalCount >= 3 &&
@@ -1315,8 +1324,9 @@ import { getMfiSignal } from './components/mfi-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              // !indicatorsData.dmi1h.willPriceGrow &&
-              !indicatorsData.dmi15m.willPriceGrow,
+              indicatorsData.mfi.mfi30m.sellSignalCount >= 2,
+            // !indicatorsData.dmi1h.willPriceGrow &&
+            // !indicatorsData.dmi15m.willPriceGrow,
             // indicatorsData.stochRsi.stoch15m.sellSignalCount >= 3 &&
             // indicatorsData.cci.cci15m.sellSignalCount >= 3,
             // indicatorsData.obv15m.sellSignalCount >= 20,
@@ -1400,8 +1410,9 @@ import { getMfiSignal } from './components/mfi-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              // !indicatorsData.dmi1h.willPriceGrow &&
-              !indicatorsData.dmi15m.willPriceGrow,
+              indicatorsData.mfi.mfi30m.buySignalCount >= 2,
+            // !indicatorsData.dmi1h.willPriceGrow &&
+            // !indicatorsData.dmi15m.willPriceGrow,
 
             // indicatorsData.stochRsi.stoch15m.buySignalCount >= 3 &&
             // indicatorsData.cci.cci15m.buySignalCount >= 3,
@@ -1914,6 +1925,8 @@ import { getMfiSignal } from './components/mfi-signals';
   //   null,
   //   null,
   // );
+  // getMfiSignal(symbol, '30m', 3, indicatorsData.mfi.mfi1m, 1, 1);
+  getMfiSignal(symbol, '30m', 7, indicatorsData.mfi.mfi30m, 1, 1);
   // getRSISignal(symbol, '1h', indicatorsData.rsi1h);
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 6, 6);
@@ -1922,11 +1935,11 @@ import { getMfiSignal } from './components/mfi-signals';
   // getRSISignal(symbol, '15m', indicatorsData.rsi15m);
   // getMfiSignal(symbol, '30m', 2, indicatorsData.mfi.mfi14m, 1, 1);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 6, 6);
-  getDMISignal(symbol, '1h', indicatorsData.dmi1h, botState, 1, 0, 0);
-  getDMISignal(symbol, '15m', indicatorsData.dmi15m, botState, 1, 0, 0);
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
+  // getDMISignal(symbol, '1h', indicatorsData.dmi1h, botState, 1, 0, 0);
+  // getDMISignal(symbol, '15m', indicatorsData.dmi15m, botState, 1, 0, 0);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 30, 30);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 30, 30);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 6, 6);
   // getDMISignal(symbol, '1m', indicatorsData.dmi1m, 1, 0, 0);
