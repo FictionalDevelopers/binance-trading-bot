@@ -38,7 +38,12 @@ jobs:
 
       - name: Create configmap
         run: |
-          kubectl create -n=binance-bot configmap binance-bot-env-config
+          kubectl delete -n=binance-bot configmap binance-bot-env-config || true
+          kubectl create -n=binance-bot configmap binance-bot-env-config \
+              --from-literal=APIKEY=${{ secrets.ENV_APIKEY }} \
+              --from-literal=APISECRET=${{ secrets.ENV_APISECRET }} \
+              --from-literal=DB_URL=${{ secrets.ENV_DB_URL }} \
+              --from-literal=TELEGRAM_API_URL=${{ secrets.ENV_TELEGRAM_API_URL }} \
 
       - name: Apply k8s configs
         run: kubectl -n=binance-bot apply -f deploy
