@@ -9,6 +9,7 @@ on:
     paths:
       - .github/workflows/build.yaml
       - package.json
+      - Dockerfile
       - package-lock.json
       - src/**
 
@@ -62,3 +63,7 @@ jobs:
     uses: ./.github/workflows/deploy.yaml
     secrets:
       DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      ENV_TELEGRAM_API_URL: ${{ secrets.ENV_TELEGRAM_API_URL }}
+      ENV_APIKEY: ${{ secrets.ENV_APIKEY }}
+      ENV_APISECRET: ${{ secrets.ENV_APISECRET }}
+      ENV_DB_URL: ${{ secrets.ENV_DB_URL }}
