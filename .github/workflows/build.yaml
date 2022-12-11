@@ -8,9 +8,9 @@ on:
 
     paths:
       - .github/workflows/build.yaml
-      - checker/package.json
-      - checker/package-lock.json
-      - checker/src/**
+      - package.json
+      - package-lock.json
+      - src/**
 
 concurrency:
   group: binance-bot-build
