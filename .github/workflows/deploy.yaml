@@ -1,0 +1,48 @@
+name: Deploy
+
+on:
+  workflow_call:
+    secrets:
+      DIGITALOCEAN_ACCESS_TOKEN:
+        required: true
+  push:
+    branches:
+      - main
+      - deploy
+
+    paths:
+      - .github/workflows/deploy.yaml
+      - deploy/**
+
+concurrency:
+  group: binance-bot-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: Staging
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Digitalocean login
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Save Digitalocean k8s config
+        run: doctl kubernetes cluster kubeconfig save ficdev
+
+      - name: Create namespace
+        run: kubectl create namespace binance-bot || true
+
+      - name: Create configmap
+        run: |
+          kubectl delete -n=binance-bot configmap binance-bot-env-config || true
+          kubectl create -n=binance-bot configmap binance-bot-env-config --from-env-file=.env
+
+      - name: Apply k8s configs
+        run: kubectl -n=binance-bot apply -f deploy
+
+      - name: Restart deployment
+        run: kubectl -n=binance-bot rollout restart deployment binance-bot-deployment
