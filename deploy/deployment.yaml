@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: binance-bot
   name: binance-bot-deployment
 spec:
   replicas: 1
