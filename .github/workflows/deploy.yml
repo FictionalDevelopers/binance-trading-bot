@@ -15,8 +15,14 @@ jobs:
   docker-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_LOGIN }} --password-stdin
+      - uses: actions/checkout@v3
+
+      - name: 🔑 Docker Login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Prepare env
         run: |
           cat <<EOT >> .env
@@ -25,23 +31,38 @@ jobs:
           DB_URL=${{ secrets.ENV_DB_URL }}
           TELEGRAM_API_URL=${{ secrets.ENV_TELEGRAM_API_URL }}
           EOT
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
+
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
-      - run: docker build -t fictionaldev/binance-bot .
-      - run: docker push fictionaldev/binance-bot
-      - uses: digitalocean/action-doctl@v2
+
+      - name: 🐳 Docker build
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: fictionaldev/binance-bot
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
+
+      - name: Digitalocean login
+        uses: digitalocean/action-doctl@v2
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
-      - run: doctl kubernetes cluster kubeconfig save ficdev
+
+      - name: Save Digitalocean k8s config
+        run: doctl kubernetes cluster kubeconfig save ficdev
+
       - name: Create configmap
         run: |
           kubectl delete configmap binance-bot-env-config
           kubectl create configmap binance-bot-env-config --from-env-file=.env
+
       - run: kubectl rollout restart deployment binance-bot-deployment
