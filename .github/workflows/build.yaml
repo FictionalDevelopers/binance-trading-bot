@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - deploy
-
     paths:
       - .github/workflows/build.yaml
       - checker/package.json
@@ -53,7 +52,7 @@ jobs:
       - name: 🐳 Docker build
         uses: docker/build-push-action@v3
         with:
-          context: ./checker
+          context: .
           push: true
           tags: fictionaldev/binance-bot
           cache-from: type=local,src=/tmp/.buildx-cache
