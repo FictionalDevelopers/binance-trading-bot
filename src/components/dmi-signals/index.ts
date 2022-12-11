@@ -7,13 +7,8 @@ export const getDMISignal = (
   period,
   indicatorsData,
   botState,
-  buyCount,
   onlyADX,
-  // sellCount,
-  // pdiMdiBuyDiff,
-  // pdiMdiSellDiff,
-  adxBuyDiff,
-  adxSellDiff,
+  doubleSignalConfirmation,
 ) => {
   getDmiStream({
     symbol: symbol,
@@ -102,16 +97,41 @@ export const getDMISignal = (
       if (indicatorsData.adxSellSignalVolume > 0)
         indicatorsData.willPriceGrow = false;
     } else {
+      if (dmi.mdi > dmi.pdi) {
+        if (indicatorsData.trend === 'UP') {
+          // indicatorsData.adxBuySignalVolume = 0;
+          // indicatorsData.adxSellSignalVolume = 0;
+        }
+        // indicatorsData.mdiSignal = -1;
+        indicatorsData.trend = 'DOWN';
+      }
+      if (dmi.pdi > dmi.mdi) {
+        if (indicatorsData.trend === 'DOWN') {
+          // indicatorsData.adxBuySignalVolume = 0;
+          // indicatorsData.adxSellSignalVolume = 0;
+        }
+        // indicatorsData.mdiSignal = 1;
+        indicatorsData.trend = 'UP';
+      }
+
       if (indicatorsData.prevDmi.adx < dmi.adx) {
         indicatorsData.adxSellSignalVolume = 0;
         indicatorsData.adxBuySignalVolume++;
       } else if (indicatorsData.prevDmi.adx > dmi.adx) {
         indicatorsData.adxSellSignalVolume++;
         indicatorsData.adxBuySignalVolume = 0;
-      } else if (indicatorsData.prevDmi.adx === dmi.adx) {
-        // indicatorsData.adxSellSignalVolume = 0;
-        // indicatorsData.adxBuySignalVolume = 0;
+      } else if (doubleSignalConfirmation) {
+        if (indicatorsData.prevDmi.adx === dmi.adx) {
+          indicatorsData.adxSellSignalVolume = 0;
+          indicatorsData.adxBuySignalVolume = 0;
+        }
       }
+      if (
+        indicatorsData.adxSellSignalVolume >= 2 ||
+        indicatorsData.adxBuySignalVolume >= 2
+      )
+        indicatorsData.willPriceGrow = true;
+      else indicatorsData.willPriceGrow = false;
     }
     // console.log(dmi.adx);
     // if ((dmi.adx / indicatorsData.prevDmi.adx) * 100 - 100 >= 0.5)

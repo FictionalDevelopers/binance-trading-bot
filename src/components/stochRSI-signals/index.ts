@@ -70,10 +70,10 @@ export const getStochRSISignal = (
     //   stochRsiData.signal = 'buy';
     // else if (stochRsiData.sellSignalCount >= sellSignalCount)
     //   stochRsiData.signal = 'sell';
-    if (Number(stochRsi.d) > 80) {
+    if (Number(stochRsi.d) === 100) {
       stochRsiData.buySignalCount++;
       stochRsiData.sellSignalCount = 0;
-    } else if (Number(stochRsi.d) < 20) {
+    } else if (Number(stochRsi.d) === 0) {
       stochRsiData.sellSignalCount++;
       stochRsiData.buySignalCount = 0;
     }

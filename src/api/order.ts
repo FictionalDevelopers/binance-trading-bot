@@ -321,12 +321,15 @@ export const marketSellAction = async (
           }
           OBV 5m: BSC: ${indicatorsData.obv5m.buySignalCount} SSC: ${
             indicatorsData.obv5m.sellSignalCount
-          }                         
+          }          
+          MFI 1m: BSC: ${indicatorsData.mfi.mfi1m.buySignalCount} SSC: ${
+            indicatorsData.mfi.mfi1m.sellSignalCount
+          }               
           OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
             indicatorsData.obv1m.sellSignalCount
           }
-          RSI 1h: ${indicatorsData.rsi1h.prevRsi}        
-          RSI 15m: ${indicatorsData.rsi15m.prevRsi}
+          RSI 5m: ${indicatorsData.rsi5m.rsiValue}        
+          RSI 1m: ${indicatorsData.rsi1m.rsiValue}
           ADX 1m: ${'(UP: ' +
             indicatorsData.dmi1m.adxUpCount +
             ' ' +
@@ -336,26 +339,26 @@ export const marketSellAction = async (
             'Current: ' +
             indicatorsData.dmi1m.adx}
         ADX 5m: ${'(UP: ' +
-          indicatorsData.dmi5m.adxUpCount +
+          indicatorsData.dmi5m.adxBuySignalVolume +
           ' ' +
           'DOWN: ' +
-          indicatorsData.dmi5m.adxDownCount +
+          indicatorsData.dmi5m.adxSellSignalVolume +
           ' ' +
           'Current: ' +
           indicatorsData.dmi5m.adx}
       ADX 15m: ${'(UP: ' +
-        indicatorsData.dmi15m.adxUpCount +
+        indicatorsData.dmi15m.adxBuySignalVolume +
         ' ' +
         'DOWN: ' +
-        indicatorsData.dmi15m.adxDownCount +
+        indicatorsData.dmi15m.adxSellSignalVolume +
         ' ' +
         'Current: ' +
         indicatorsData.dmi15m.adx}
         ADX 1h: ${'(UP: ' +
-          indicatorsData.dmi1h.buySignalCount +
+          indicatorsData.dmi1h.adxBuySignalVolume +
           ' ' +
           'DOWN: ' +
-          indicatorsData.dmi1h.sellSignalCount +
+          indicatorsData.dmi1h.adxSellSignalVolume +
           ' ' +
           'Current: ' +
           indicatorsData.dmi1h.adx}
@@ -836,11 +839,14 @@ export const marketBuyAction = async (
         OBV 5m: BSC: ${indicatorsData.obv5m.buySignalCount} SSC: ${
           indicatorsData.obv5m.sellSignalCount
         }
+        MFI 1m: BSC: ${indicatorsData.mfi.mfi1m.buySignalCount} SSC: ${
+          indicatorsData.mfi.mfi1m.sellSignalCount
+        }
          OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
           indicatorsData.obv1m.sellSignalCount
         } 
-        RSI 1h: ${indicatorsData.rsi1h.prevRsi}        
-        RSI 15m: ${indicatorsData.rsi15m.prevRsi}        
+        RSI 5m: ${indicatorsData.rsi5m.rsiValue}        
+        RSI 1m: ${indicatorsData.rsi1m.rsiValue}        
        ADX 1m: ${'(UP: ' +
          indicatorsData.dmi1m.adxUpCount +
          ' ' +
@@ -850,26 +856,26 @@ export const marketBuyAction = async (
          'Current: ' +
          indicatorsData.dmi1m.adx}
         ADX 5m: ${'(UP: ' +
-          indicatorsData.dmi5m.adxUpCount +
+          indicatorsData.dmi5m.adxBuySignalVolume +
           ' ' +
           'DOWN: ' +
-          indicatorsData.dmi5m.adxDownCount +
+          indicatorsData.dmi5m.adxSellSignalVolume +
           ' ' +
           'Current: ' +
           indicatorsData.dmi5m.adx}
       ADX 15m: ${'(UP: ' +
-        indicatorsData.dmi15m.adxUpCount +
+        indicatorsData.dmi15m.adxBuySignalVolume +
         ' ' +
         'DOWN: ' +
-        indicatorsData.dmi15m.adxDownCount +
+        indicatorsData.dmi15m.adxSellSignalVolume +
         ' ' +
         'Current: ' +
         indicatorsData.dmi15m.adx}
       ADX 1h: ${'(UP: ' +
-        indicatorsData.dmi1h.buySignalCount +
+        indicatorsData.dmi1h.adxBuySignalVolume +
         ' ' +
         'DOWN: ' +
-        indicatorsData.dmi1h.sellSignalCount +
+        indicatorsData.dmi1h.adxSellSignalVolume +
         ' ' +
         'Current: ' +
         indicatorsData.dmi1h.adx}
