@@ -5,6 +5,14 @@ on:
     secrets:
       DIGITALOCEAN_ACCESS_TOKEN:
         required: true
+      ENV_TELEGRAM_API_URL:
+        required: true
+      ENV_APIKEY:
+        required: true
+      ENV_APISECRET:
+        required: true
+      ENV_DB_URL:
+        required: true
   push:
     branches:
       - master
