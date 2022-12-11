@@ -38,8 +38,7 @@ jobs:
 
       - name: Create configmap
         run: |
-          kubectl delete -n=binance-bot configmap binance-bot-env-config || true
-          kubectl create -n=binance-bot configmap binance-bot-env-config --from-env-file=.env
+          kubectl create -n=binance-bot configmap binance-bot-env-config
 
       - name: Apply k8s configs
         run: kubectl -n=binance-bot apply -f deploy
