@@ -81,7 +81,7 @@ import { getMfiSignal } from './components/mfi-signals';
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: false,
       // status: 'buy',
-      // testMode: true,
+      testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
         this[`${fieldName}`] = value;
