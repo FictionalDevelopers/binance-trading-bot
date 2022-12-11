@@ -41,19 +41,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Prepare env
-        run: |
-          cat <<EOT >> .env
-          APIKEY=${{ secrets.ENV_APIKEY }}
-          APISECRET=${{ secrets.ENV_APISECRET }}
-          DB_URL=${{ secrets.ENV_DB_URL }}
-          TELEGRAM_API_URL=${{ secrets.ENV_TELEGRAM_API_URL }}
-          EOT
-
       - name: 🐳 Docker build
         uses: docker/build-push-action@v3
         with:
-          context: ./checker
+          context: .
           push: true
           tags: fictionaldev/binance-bot
           cache-from: type=local,src=/tmp/.buildx-cache
