@@ -4,10 +4,10 @@ class Person {
     this.age = age;
   }
 
-  method1() {
-    console.log('method1');
-    console.log(this);
-  }
+  // method1() {
+  //   console.log('method1');
+  //   console.log(this);
+  // }
 
   static statMeth() {
     console.log('Static');
