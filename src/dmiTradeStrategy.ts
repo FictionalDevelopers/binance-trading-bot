@@ -126,13 +126,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
     const initialState = JSON.parse(JSON.stringify(_head(response)));
 
     botState = {
-      ...initialLocalBotState,
+      ...initialState,
       availableUSDT: initialUSDTBalance,
       availableCryptoCoin: initialCryptoCoinBalance,
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: false,
-      status: 'buy',
+      // status: 'buy',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -1585,7 +1585,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
               indicatorsData.obv1h.sellSignalCount >= 10 &&
-              indicatorsData.dmi1h.willPriceGrow,
+              (indicatorsData.dmi1h.willPriceGrow ||
+                indicatorsData.dmi1h.sellSignalCount >= 1),
 
             // (indicatorsData.dmi1h.adxBuySignalVolume >= 2 ||
             //   indicatorsData.dmi1h.adxSellSignalVolume >= 2),
@@ -1724,7 +1725,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
               indicatorsData.obv1h.buySignalCount >= 10 &&
-              indicatorsData.dmi1h.willPriceGrow,
+              (indicatorsData.dmi1h.willPriceGrow ||
+                indicatorsData.dmi1h.sellSignalCount >= 1),
 
             // (indicatorsData.dmi1h.adxBuySignalVolume >= 2 ||
             //   indicatorsData.dmi1h.adxSellSignalVolume >= 2),

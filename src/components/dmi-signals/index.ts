@@ -127,7 +127,7 @@ export const getDMISignal = (
         }
       }
       if (
-        indicatorsData.adxSellSignalVolume >= 2 ||
+        // indicatorsData.adxSellSignalVolume >= 2 ||
         indicatorsData.adxBuySignalVolume >= 2
       )
         indicatorsData.willPriceGrow = true;
