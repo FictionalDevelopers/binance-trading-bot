@@ -1586,7 +1586,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               botState.dealType === 'long' &&
               indicatorsData.obv1h.sellSignalCount >= 10 &&
               (indicatorsData.dmi1h.willPriceGrow ||
-                indicatorsData.dmi1h.sellSignalCount >= 1),
+                indicatorsData.dmi1h.adxSellSignalVolume >= 1),
 
             // (indicatorsData.dmi1h.adxBuySignalVolume >= 2 ||
             //   indicatorsData.dmi1h.adxSellSignalVolume >= 2),
@@ -1726,7 +1726,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               botState.dealType === 'short' &&
               indicatorsData.obv1h.buySignalCount >= 10 &&
               (indicatorsData.dmi1h.willPriceGrow ||
-                indicatorsData.dmi1h.sellSignalCount >= 1),
+                indicatorsData.dmi1h.adxSellSignalVolume >= 1),
 
             // (indicatorsData.dmi1h.adxBuySignalVolume >= 2 ||
             //   indicatorsData.dmi1h.adxSellSignalVolume >= 2),
