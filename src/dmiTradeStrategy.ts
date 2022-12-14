@@ -2217,6 +2217,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
   getDMISignal(symbol, '15m', 14, indicatorsData.dmi15m, botState, true, true);
   getDMISignal(symbol, '1h', 14, indicatorsData.dmi1h, botState, true, true);
+  getDMISignal(symbol, '5m', 14, indicatorsData.dmi5m, botState, true, true);
   // getDMISignal(symbol, '15m', 14, indicatorsData.dmi1m, botState, true, false);
   // getDMISignal(symbol, '1d', 2, indicatorsData.dmi1m, botState, true);
   // getDMISignal(symbol, '5m', 2, indicatorsData.dmi5m, botState, true);
