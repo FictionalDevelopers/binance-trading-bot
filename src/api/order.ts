@@ -310,6 +310,9 @@ export const marketSellAction = async (
                                      } SSC: ${
             indicatorsData.obv2h.sellSignalCount
           }
+          OBV 4h: BSC: ${indicatorsData.obv4h.buySignalCount} SSC: ${
+            indicatorsData.obv4h.sellSignalCount
+          }
           OBV 1h: BSC: ${indicatorsData.obv1h.buySignalCount} SSC: ${
             indicatorsData.obv1h.sellSignalCount
           }                                   
@@ -826,6 +829,9 @@ export const marketBuyAction = async (
                                       indicatorsData.obv2h.buySignalCount
                                     } SSC: ${
           indicatorsData.obv2h.sellSignalCount
+        }
+        OBV 4h: BSC: ${indicatorsData.obv4h.buySignalCount} SSC: ${
+          indicatorsData.obv4h.sellSignalCount
         }
         OBV 1h: BSC: ${indicatorsData.obv1h.buySignalCount} SSC: ${
           indicatorsData.obv1h.sellSignalCount
