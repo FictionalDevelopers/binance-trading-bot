@@ -382,33 +382,46 @@ export const marketSellAction = async (
             'Current: ' +
             indicatorsData.dmi30m.adx}
          
-            Current profit: ${
-              botState.dealType === 'long'
-                ? expectedProfitPercent - 0.08
-                : expectedProfitPercent + 0.08
-            } %
-            Max av profit: ${
-              botState.dealType === 'long'
-                ? botState.maxAvailableLongProfit - 0.08
-                : botState.maxAvailableShortProfit + 0.08
-            } %
-            Min av profit: ${
-              botState.dealType === 'long'
-                ? botState.minAvailableLongProfit - 0.08
-                : botState.minAvailableShortProfit + 0.08
-            } %
-            Total Long profit: ${botState.totalLongProfit} %
-            Total Short profit: ${botState.totalShortProfit} %
-            Avg Deal Profit: ${botState.totalProfit / botState.dealsCount} %
-            Total max av Long profit: ${botState.totalMaxAvailableLongProfit} %
-            Total max av Short profit: ${
-              botState.totalMaxAvailableShortProfit
-            } %
-            Total min av Long profit: ${botState.totalMinAvailableLongProfit} %
-            Total min av Short profit: ${
-              botState.totalMinAvailableShortProfit
-            } %
-`);
+                                        Current profit: ${
+                                          botState.dealType === 'long'
+                                            ? expectedProfitPercent - 0.08
+                                            : expectedProfitPercent + 0.08
+                                        } %
+                                        Max av profit: ${
+                                          botState.dealType === 'long'
+                                            ? botState.maxAvailableLongProfit -
+                                              0.08
+                                            : botState.maxAvailableShortProfit +
+                                              0.08
+                                        } %
+                                        Min av profit: ${
+                                          botState.dealType === 'long'
+                                            ? botState.minAvailableLongProfit -
+                                              0.08
+                                            : botState.minAvailableShortProfit +
+                                              0.08
+                                        } %
+                                        Total Long profit: ${
+                                          botState.totalLongProfit
+                                        } %
+                                        Total Short profit: ${
+                                          botState.totalShortProfit
+                                        } %
+                                        Avg Deal Profit: ${botState.totalProfit /
+                                          botState.dealsCount} %
+                                        Total max av Long profit: ${
+                                          botState.totalMaxAvailableLongProfit
+                                        } %
+                                        Total max av Short profit: ${
+                                          botState.totalMaxAvailableShortProfit
+                                        } %
+                                        Total min av Long profit: ${
+                                          botState.totalMinAvailableLongProfit
+                                        } %
+                                        Total min av Short profit: ${
+                                          botState.totalMinAvailableShortProfit
+                                        } %
+                            `);
         }
         console.log(`SELL 
                                   Strategy: ${strategy}
