@@ -357,55 +357,58 @@ export const marketSellAction = async (
         ' ' +
         'Current: ' +
         indicatorsData.dmi15m.adx}
-        ADX 1h: ${'(UP: ' +
-          indicatorsData.dmi1h.adxBuySignalVolume +
+        ADX 4h: ${'(UP: ' +
+          indicatorsData.dmi4h.adxBuySignalVolume +
           ' ' +
           'DOWN: ' +
-          indicatorsData.dmi1h.adxSellSignalVolume +
+          indicatorsData.dmi4h.adxSellSignalVolume +
           ' ' +
           'Current: ' +
-          indicatorsData.dmi1h.adx}
-      
-      
-                                    
-                                    Current profit: ${
-                                      botState.dealType === 'long'
-                                        ? expectedProfitPercent - 0.08
-                                        : expectedProfitPercent + 0.08
-                                    } %
-                                    Max av profit: ${
-                                      botState.dealType === 'long'
-                                        ? botState.maxAvailableLongProfit - 0.08
-                                        : botState.maxAvailableShortProfit +
-                                          0.08
-                                    } %
-                                    Min av profit: ${
-                                      botState.dealType === 'long'
-                                        ? botState.minAvailableLongProfit - 0.08
-                                        : botState.minAvailableShortProfit +
-                                          0.08
-                                    } %
-                                    Total Long profit: ${
-                                      botState.totalLongProfit
-                                    } %
-                                    Total Short profit: ${
-                                      botState.totalShortProfit
-                                    } %
-                                    Avg Deal Profit: ${botState.totalProfit /
-                                      botState.dealsCount} %
-                                    Total max av Long profit: ${
-                                      botState.totalMaxAvailableLongProfit
-                                    } %
-                                    Total max av Short profit: ${
-                                      botState.totalMaxAvailableShortProfit
-                                    } %
-                                    Total min av Long profit: ${
-                                      botState.totalMinAvailableLongProfit
-                                    } %
-                                    Total min av Short profit: ${
-                                      botState.totalMinAvailableShortProfit
-                                    } %
-                      `);
+          indicatorsData.dmi4h.adx}
+          ADX 1h: ${'(UP: ' +
+            indicatorsData.dmi1h.adxBuySignalVolume +
+            ' ' +
+            'DOWN: ' +
+            indicatorsData.dmi1h.adxSellSignalVolume +
+            ' ' +
+            'Current: ' +
+            indicatorsData.dmi1h.adx}
+          ADX 30m: ${'(UP: ' +
+            indicatorsData.dmi30m.adxBuySignalVolume +
+            ' ' +
+            'DOWN: ' +
+            indicatorsData.dmi30m.adxSellSignalVolume +
+            ' ' +
+            'Current: ' +
+            indicatorsData.dmi30m.adx}
+         
+            Current profit: ${
+              botState.dealType === 'long'
+                ? expectedProfitPercent - 0.08
+                : expectedProfitPercent + 0.08
+            } %
+            Max av profit: ${
+              botState.dealType === 'long'
+                ? botState.maxAvailableLongProfit - 0.08
+                : botState.maxAvailableShortProfit + 0.08
+            } %
+            Min av profit: ${
+              botState.dealType === 'long'
+                ? botState.minAvailableLongProfit - 0.08
+                : botState.minAvailableShortProfit + 0.08
+            } %
+            Total Long profit: ${botState.totalLongProfit} %
+            Total Short profit: ${botState.totalShortProfit} %
+            Avg Deal Profit: ${botState.totalProfit / botState.dealsCount} %
+            Total max av Long profit: ${botState.totalMaxAvailableLongProfit} %
+            Total max av Short profit: ${
+              botState.totalMaxAvailableShortProfit
+            } %
+            Total min av Long profit: ${botState.totalMinAvailableLongProfit} %
+            Total min av Short profit: ${
+              botState.totalMinAvailableShortProfit
+            } %
+`);
         }
         console.log(`SELL 
                                   Strategy: ${strategy}
@@ -877,14 +880,30 @@ export const marketBuyAction = async (
         ' ' +
         'Current: ' +
         indicatorsData.dmi15m.adx}
-      ADX 1h: ${'(UP: ' +
-        indicatorsData.dmi1h.adxBuySignalVolume +
+      ADX 4h: ${'(UP: ' +
+        indicatorsData.dmi4h.adxBuySignalVolume +
         ' ' +
         'DOWN: ' +
-        indicatorsData.dmi1h.adxSellSignalVolume +
+        indicatorsData.dmi4h.adxSellSignalVolume +
         ' ' +
         'Current: ' +
-        indicatorsData.dmi1h.adx}
+        indicatorsData.dmi4h.adx}
+          ADX 1h: ${'(UP: ' +
+            indicatorsData.dmi1h.adxBuySignalVolume +
+            ' ' +
+            'DOWN: ' +
+            indicatorsData.dmi1h.adxSellSignalVolume +
+            ' ' +
+            'Current: ' +
+            indicatorsData.dmi1h.adx}
+          ADX 30m: ${'(UP: ' +
+            indicatorsData.dmi30m.adxBuySignalVolume +
+            ' ' +
+            'DOWN: ' +
+            indicatorsData.dmi30m.adxSellSignalVolume +
+            ' ' +
+            'Current: ' +
+            indicatorsData.dmi30m.adx}
                         `);
       }
       console.log(`BUY

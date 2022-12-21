@@ -905,6 +905,25 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       buySignalCount: 0,
       sellSignalCount: 0,
     },
+    dmi4h: {
+      adx: null,
+      prevAdx: null,
+      adxUpCount: 0,
+      adxDownCount: 0,
+      adxDiff: null,
+      adxDirection: null,
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      adxSignal: null,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+      signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+    },
     dmi1m: {
       adx: null,
       adxDirection: null,
@@ -2211,22 +2230,24 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
+  getDMISignal(symbol, '4h', 2, indicatorsData.dmi4h, botState, true, true);
+  getDMISignal(symbol, '1h', 2, indicatorsData.dmi1h, botState, true, true);
+  getDMISignal(symbol, '30m', 2, indicatorsData.dmi30m, botState, true, true);
   // getHeikinAshiSignal(symbol, '4h', 6, 6, indicatorsData.haCandle.ha4hCandle);
   // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
   // getMfiSignal(symbol, '5m', 14, indicatorsData.mfi.mfi1m, 1, 1);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
   // getDMISignal(symbol, '15m', 14, indicatorsData.dmi15m, botState, true, true);
-  getDMISignal(symbol, '1h', 14, indicatorsData.dmi1h, botState, true, true);
   // getDMISignal(symbol, '5m', 14, indicatorsData.dmi5m, botState, true, true);
   // getDMISignal(symbol, '15m', 14, indicatorsData.dmi1m, botState, true, false);
   // getDMISignal(symbol, '1d', 2, indicatorsData.dmi1m, botState, true);
-  // getDMISignal(symbol, '5m', 2, indicatorsData.dmi5m, botState, true);
+  // getDMISignal(s
+  //   // gymbol, '5m', 2, indicatorsData.dmi5m, botState, true);
   // getDMISignal(symbol, '5m', 2, indicatorsData.dmi5m, botState, true);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
   // getEMASignal(symbol, '1m', indicatorsData.fast1mEMA);
-
-  // getATRSignal(symbol, '5m', 14, indicatorsData.atr.atr1m);
+  etATRSignal(symbol, '5m', 14, indicatorsData.atr.atr1m);
   // getDMISignal(
   //   symbol,
   //   '15m',
