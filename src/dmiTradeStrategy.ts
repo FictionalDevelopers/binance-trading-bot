@@ -2247,7 +2247,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getDMISignal(symbol, '5m', 2, indicatorsData.dmi5m, botState, true);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
   // getEMASignal(symbol, '1m', indicatorsData.fast1mEMA);
-  etATRSignal(symbol, '5m', 14, indicatorsData.atr.atr1m);
+  // getATRSignal(symbol, '5m', 14, indicatorsData.atr.atr1m);
   // getDMISignal(
   //   symbol,
   //   '15m',
