@@ -1326,9 +1326,14 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv1h.buySignalCount >= 10 &&
-                // indicatorsData.obv5m.buySignalCount >= 20 &&
+                indicatorsData.obv4h.buySignalCount >= 30 &&
+                indicatorsData.obv1h.buySignalCount >= 30 &&
+                indicatorsData.obv30m.buySignalCount >= 30 &&
+                indicatorsData.obv15m.buySignalCount >= 20 &&
+                indicatorsData.obv5m.buySignalCount >= 20 &&
+                indicatorsData.dmi4h.willPriceGrow &&
                 indicatorsData.dmi1h.willPriceGrow,
+          // indicatorsData.obv5m.buySignalCount >= 20 &&
           // (indicatorsData.dmi1h.adxBuySignalVolume >= 2 ||
           //   indicatorsData.dmi1h.adxSellSignalVolume >= 2),
 
@@ -1441,9 +1446,14 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv1h.sellSignalCount >= 10 &&
-                // indicatorsData.obv5m.sellSignalCount >= 20 &&
+                indicatorsData.obv4h.sellSignalCount >= 30 &&
+                indicatorsData.obv1h.sellSignalCount >= 30 &&
+                indicatorsData.obv30m.sellSignalCount >= 30 &&
+                indicatorsData.obv15m.sellSignalCount >= 20 &&
+                indicatorsData.obv5m.sellSignalCount >= 20 &&
+                indicatorsData.dmi4h.willPriceGrow &&
                 indicatorsData.dmi1h.willPriceGrow,
+          // indicatorsData.obv5m.sellSignalCount >= 20 &&
 
           // (indicatorsData.dmi1h.adxBuySignalVolume >= 2 ||
           //   indicatorsData.dmi1h.adxSellSignalVolume >= 2),
@@ -2232,7 +2242,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
   getDMISignal(symbol, '4h', 14, indicatorsData.dmi4h, botState, true, true);
   getDMISignal(symbol, '1h', 14, indicatorsData.dmi1h, botState, true, true);
-  getDMISignal(symbol, '30m', 14, indicatorsData.dmi30m, botState, true, true);
+  // getDMISignal(symbol, '30m', 14, indicatorsData.dmi30m, botState, true, true);
   // getHeikinAshiSignal(symbol, '4h', 6, 6, indicatorsData.haCandle.ha4hCandle);
   // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
