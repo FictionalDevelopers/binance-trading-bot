@@ -71,17 +71,15 @@ export function getCandlesList(
 
 export async function getLastClosedCandles(
   config: CandleListConfig,
-  options: { limit: number } = { limit: 150 },
+  options: { limit: number } = { limit: 2 },
 ): Promise<CandleListItem[]> {
   const { interval, symbol } = config;
   const { limit } = options;
 
-  const candles = await getCandlesList(
-    { interval, symbol },
-    { limit: limit + 1 },
-  );
+  const candles = await getCandlesList({ interval, symbol }, { limit: limit });
 
-  return candles.filter(candle => candle.closeTime < Date.now());
+  return candles;
+  // .filter(candle => candle.closeTime < Date.now());
 }
 
 export type CandleDetails = {

@@ -32,7 +32,10 @@ import { getMACDStream } from './indicators/macd';
 import { calculateAvgPriceChange } from './tools/avgPriceTools';
 import { getCCISignal } from './components/cci-signals';
 import { getTrixSignal } from './components/trix-signal';
-import { getHeikinAshiSignal } from './indicators/heikinAshi';
+import {
+  getHeikinAshiSignal,
+  getHeikinAshiSignalForTheLastCandles,
+} from './indicators/heikinAshi';
 import { getForceIndexSignal } from './components/forceIndex';
 import { getRocSignal } from './components/roc-signals';
 import { getRSISignal } from './components/rsi-signals';
@@ -573,6 +576,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         sellSignalCount: 0,
         signal: null,
         shadowSignal: null,
+        prevCandle: {},
+        currentCandle: {},
       },
     },
     maxAvailableProfit: 0,
@@ -2224,6 +2229,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   getObvSignal(symbol, '15m', indicatorsData.obv1h, 2, 2);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getHeikinAshiSignal(symbol, '4h', 6, 6, indicatorsData.haCandle.ha4hCandle);
+  getHeikinAshiSignalForTheLastCandles(
+    symbol,
+    '1m',
+    6,
+    6,
+    indicatorsData.haCandle.ha1mCandle,
+  );
   // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
   // getMfiSignal(symbol, '5m', 14, indicatorsData.mfi.mfi1m, 1, 1);
@@ -2939,7 +2951,14 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         ')',
       );
 
-      console.log('haCandle 1m: ' + indicatorsData.haCandle.ha1mCandle.signal);
+      // console.log(
+      //   'haCandle 1m Prev: ' +
+      //     JSON.stringify(indicatorsData.haCandle.ha1mCandle.prevCandle),
+      // );
+      // console.log(
+      //   'haCandle 1m Current: ' +
+      //     JSON.stringify(indicatorsData.haCandle.ha1mCandle.currentCandle),
+      // );
       // console.log(
       //   'MFI 30m: ' +
       //     '(Buy Count: ' +
