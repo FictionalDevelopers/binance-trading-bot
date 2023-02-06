@@ -576,7 +576,9 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         sellSignalCount: 0,
         signal: null,
         shadowSignal: null,
-        prevCandle: {},
+        prevCandle: {
+          signal: null,
+        },
         currentCandle: {},
       },
     },
@@ -1312,12 +1314,15 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                ((indicatorsData.dmi1h.trend === 'UP' &&
-                  indicatorsData.dmi1h.adxBuySignalVolume >= 2) ||
-                  (indicatorsData.dmi1h.trend === 'DOWN' &&
-                    indicatorsData.dmi1h.adxSellSignalVolume >= 1)),
-          // indicatorsData.obv1h.buySignalCount >= 10 &&
-          // indicatorsData.obv5m.buySignalCount >= 20 &&
+                // ((indicatorsData.dmi1h.trend === 'UP' &&
+                //   indicatorsData.dmi1h.adxBuySignalVolume >= 2) ||
+                //   (indicatorsData.dmi1h.trend === 'DOWN' &&
+                //     indicatorsData.dmi1h.adxSellSignalVolume >= 1)),
+                // indicatorsData.obv1h.buySignalCount >= 10 &&
+                indicatorsData.obv5m.buySignalCount >= 4 &&
+                indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
+                  'buy' &&
+                indicatorsData.haCandle.ha1mCandle.signal === 'buy',
           // (indicatorsData.dmi1h.willPriceGrow || indicatorsData.dmi1h.adxSellSignalVolume >= 1),
           // (indicatorsData.dmi1h.adxBuySignalVolume >= 2 ||
           //   indicatorsData.dmi1h.adxSellSignalVolume >= 2),
@@ -1431,10 +1436,14 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                ((indicatorsData.dmi1h.trend === 'DOWN' &&
-                  indicatorsData.dmi1h.adxBuySignalVolume >= 2) ||
-                  (indicatorsData.dmi1h.trend === 'UP' &&
-                    indicatorsData.dmi1h.adxSellSignalVolume >= 1)),
+                indicatorsData.obv5m.sellSignalCount >= 4 &&
+                indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
+                  'sell' &&
+                indicatorsData.haCandle.ha1mCandle.signal === 'sell',
+          // ((indicatorsData.dmi1h.trend === 'DOWN' &&
+          //   indicatorsData.dmi1h.adxBuySignalVolume >= 2) ||
+          //   (indicatorsData.dmi1h.trend === 'UP' &&
+          //     indicatorsData.dmi1h.adxSellSignalVolume >= 1)),
           // indicatorsData.obv1h.sellSignalCount >= 10 &&
           // indicatorsData.obv5m.sellSignalCount >= 20 &&
           // indicatorsData.dmi1h.willPriceGrow,

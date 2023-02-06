@@ -116,25 +116,36 @@ export const getHeikinAshiSignalForTheLastCandles = (
     haData.currentCandle.close = haCandle.close[haCandle.close.length - 1];
     haData.currentCandle.high = haCandle.high[haCandle.high.length - 1];
     haData.currentCandle.low = haCandle.low[haCandle.low.length - 1];
-    console.log(haCandle.close[haCandle.close.length - 1]);
-    console.log(haCandle.close[haCandle.close.length - 2]);
+
+    if (
+      haData.prevCandle.open === haData.prevCandle.low &&
+      haData.prevCandle.close > haData.prevCandle.open
+    )
+      haData.prevCandle.signal === 'buy';
+    else if (
+      haData.prevCandle.open === haData.prevCandle.high &&
+      haData.prevCandle.close < haData.prevCandle.open
+    )
+      haData.prevCandle.signal === 'sell';
+    // console.log(haCandle.close[haCandle.close.length - 1]);
+    // console.log(haCandle.close[haCandle.close.length - 2]);
     // const { open, close, high, low } = haCandle;
     // haData.open = open;
     // haData.close = close;
     // haData.high = high;
     // haData.low = low;
     //
-    // if (close > open) {
-    //   haData.buySignalCount++;
-    //   haData.sellSignalCount = 0;
-    // } else if (close < open) {
-    //   haData.sellSignalCount++;
-    //   haData.buySignalCount = 0;
-    // }
+    if (haData.currentCandle.close > haData.currentCandle.open) {
+      haData.buySignalCount++;
+      haData.sellSignalCount = 0;
+    } else if (haData.currentCandle.close < haData.currentCandle.open) {
+      haData.sellSignalCount++;
+      haData.buySignalCount = 0;
+    }
     // if (haData.open === haData.low) haData.shadowSignal = 'buy';
     // else if (haData.open === haData.high) haData.shadowSignal = 'sell';
     //
-    // if (haData.buySignalCount >= buySignalCount) haData.signal = 'buy';
-    // else if (haData.sellSignalCount >= sellSignalCount) haData.signal = 'sell';
+    if (haData.buySignalCount >= buySignalCount) haData.signal = 'buy';
+    else if (haData.sellSignalCount >= sellSignalCount) haData.signal = 'sell';
   });
 };
