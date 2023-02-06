@@ -2960,14 +2960,14 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         ')',
       );
 
-      // console.log(
-      //   'haCandle 1m Prev: ' +
-      //     JSON.stringify(indicatorsData.haCandle.ha1mCandle.prevCandle),
-      // );
-      // console.log(
-      //   'haCandle 1m Current: ' +
-      //     JSON.stringify(indicatorsData.haCandle.ha1mCandle.currentCandle),
-      // );
+      console.log(
+        'haCandle 1m Prev: ' +
+          JSON.stringify(indicatorsData.haCandle.ha1mCandle.prevCandle),
+      );
+      console.log(
+        'haCandle 1m Current: ' +
+          JSON.stringify(indicatorsData.haCandle.ha1mCandle.currentCandle),
+      );
       // console.log(
       //   'MFI 30m: ' +
       //     '(Buy Count: ' +

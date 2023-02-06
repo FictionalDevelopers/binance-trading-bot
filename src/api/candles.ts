@@ -76,7 +76,10 @@ export async function getLastClosedCandles(
   const { interval, symbol } = config;
   const { limit } = options;
 
-  const candles = await getCandlesList({ interval, symbol }, { limit: limit });
+  const candles = await getCandlesList(
+    { interval, symbol },
+    { limit: limit + 1 },
+  );
 
   return candles;
   // .filter(candle => candle.closeTime < Date.now());

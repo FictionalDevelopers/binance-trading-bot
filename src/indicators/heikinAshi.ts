@@ -107,28 +107,52 @@ export const getHeikinAshiSignalForTheLastCandles = (
     symbol,
     interval,
   }).subscribe(haCandle => {
-    haData.prevCandle.open = haCandle.open[haCandle.open.length - 2];
-    haData.prevCandle.close = haCandle.close[haCandle.close.length - 2];
-    haData.prevCandle.high = haCandle.high[haCandle.high.length - 2];
-    haData.prevCandle.low = haCandle.low[haCandle.low.length - 2];
+    haData.prevCandle.open = +Number(
+      haCandle.open[haCandle.open.length - 2],
+    ).toFixed(3);
+    haData.prevCandle.close = +Number(
+      haCandle.close[haCandle.close.length - 2],
+    ).toFixed(3);
+    haData.prevCandle.high = +Number(
+      haCandle.high[haCandle.high.length - 2],
+    ).toFixed(3);
+    haData.prevCandle.low = +Number(
+      haCandle.low[haCandle.low.length - 2],
+    ).toFixed(3);
 
-    haData.currentCandle.open = haCandle.open[haCandle.open.length - 1];
-    haData.currentCandle.close = haCandle.close[haCandle.close.length - 1];
-    haData.currentCandle.high = haCandle.high[haCandle.high.length - 1];
-    haData.currentCandle.low = haCandle.low[haCandle.low.length - 1];
+    haData.currentCandle.open = +Number(
+      haCandle.open[haCandle.open.length - 1],
+    ).toFixed(3);
+    haData.currentCandle.close = +Number(
+      haCandle.close[haCandle.close.length - 1],
+    ).toFixed(3);
+    haData.currentCandle.high = +Number(
+      haCandle.high[haCandle.high.length - 1],
+    ).toFixed(3);
+    haData.currentCandle.low = +Number(
+      haCandle.low[haCandle.low.length - 1],
+    ).toFixed(3);
 
     if (
       haData.prevCandle.open === haData.prevCandle.low &&
       haData.prevCandle.close > haData.prevCandle.open
     )
-      haData.prevCandle.signal === 'buy';
+      haData.prevCandle.signal = 'buy';
     else if (
       haData.prevCandle.open === haData.prevCandle.high &&
       haData.prevCandle.close < haData.prevCandle.open
     )
-      haData.prevCandle.signal === 'sell';
-    // console.log(haCandle.close[haCandle.close.length - 1]);
-    // console.log(haCandle.close[haCandle.close.length - 2]);
+      haData.prevCandle.signal = 'sell';
+    else haData.prevCandle.signal = 'null';
+
+    // console.log(
+    //   haCandle.open[haCandle.open.length - 1],
+    //   haCandle.close[haCandle.close.length - 1],
+    // );
+    // console.log(
+    //   haCandle.open[haCandle.open.length - 2],
+    //   haCandle.low[haCandle.low.length - 2],
+    // );
     // const { open, close, high, low } = haCandle;
     // haData.open = open;
     // haData.close = close;
