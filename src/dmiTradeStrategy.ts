@@ -1334,8 +1334,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.obv5m.buySignalCount >= 5 &&
-                (indicatorsData.dmi15m.adxBuySignalVolume >= 6 ||
-                  indicatorsData.dmi15m.adxSellSignalVolume >= 6),
+                (indicatorsData.dmi15m.adxBuySignalVolume >= 10 ||
+                  indicatorsData.dmi15m.adxSellSignalVolume >= 10),
           // indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
           //   'buy' &&
           // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
@@ -1460,8 +1460,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.obv5m.sellSignalCount >= 5 &&
-                (indicatorsData.dmi15m.adxBuySignalVolume >= 6 ||
-                  indicatorsData.dmi15m.adxSellSignalVolume >= 6),
+                (indicatorsData.dmi15m.adxBuySignalVolume >= 10 ||
+                  indicatorsData.dmi15m.adxSellSignalVolume >= 10),
           // indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
           //   'sell' &&
           // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
