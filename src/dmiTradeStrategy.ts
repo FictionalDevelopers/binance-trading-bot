@@ -1333,10 +1333,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv5m.buySignalCount >= 4 &&
-                indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
-                  'buy' &&
-                indicatorsData.haCandle.ha1mCandle.signal === 'buy',
+                indicatorsData.obv5m.buySignalCount >= 5 &&
+                (indicatorsData.dmi15m.adxBuySignalVolume >= 6 ||
+                  indicatorsData.dmi15m.adxSellSignalVolume >= 6),
+          // indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
+          //   'buy' &&
+          // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
           // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
           // indicatorsData.obv4h.buySignalCount >= 4 &&
           // indicatorsData.obv1h.buySignalCount >= 4 &&
@@ -1457,10 +1459,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv5m.sellSignalCount >= 4 &&
-                indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
-                  'sell' &&
-                indicatorsData.haCandle.ha1mCandle.signal === 'sell',
+                indicatorsData.obv5m.sellSignalCount >= 5 &&
+                (indicatorsData.dmi15m.adxBuySignalVolume >= 6 ||
+                  indicatorsData.dmi15m.adxSellSignalVolume >= 6),
+          // indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
+          //   'sell' &&
+          // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
           // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
           // indicatorsData.obv4h.sellSignalCount >= 4 &&
           // indicatorsData.obv1h.sellSignalCount >= 4 &&
@@ -1628,7 +1632,10 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.obv5m.sellSignalCount >= 4,
+              indicatorsData.obv5m.sellSignalCount >= 5 &&
+              (indicatorsData.dmi15m.adxBuySignalVolume >= 6 ||
+                indicatorsData.dmi15m.adxSellSignalVolume >= 6),
+
             // indicatorsData.obv1h.sellSignalCount >= 4 &&
             // (indicatorsData.dmi1h.adxBuySignalVolume >= 1 ||
             //   indicatorsData.dmi1h.adxSellSignalVolume >= 1),
@@ -1769,7 +1776,9 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.obv5m.buySignalCount >= 4,
+              indicatorsData.obv5m.buySignalCount >= 5 &&
+              (indicatorsData.dmi15m.adxBuySignalVolume >= 6 ||
+                indicatorsData.dmi15m.adxSellSignalVolume >= 6),
             // indicatorsData.obv1h.buySignalCount >= 4 &&
             // (indicatorsData.dmi1h.adxBuySignalVolume >= 1 ||
             //   indicatorsData.dmi1h.adxSellSignalVolume >= 1),
@@ -2257,17 +2266,19 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
+  getDMISignal(symbol, '15m', 14, indicatorsData.dmi15m, botState, true, false);
+
   // getDMISignal(symbol, '1h', 14, indicatorsData.dmi1h, botState, true, true);
   // getDMISignal(symbol, '4h', 14, indicatorsData.dmi4h, botState, true, true);
   // getDMISignal(symbol, '30m', 14, indicatorsData.dmi30m, botState, true, true);
   // getHeikinAshiSignal(symbol, '4h', 6, 6, indicatorsData.haCandle.ha4hCandle);
-  getHeikinAshiSignalForTheLastCandles(
-    symbol,
-    '1m',
-    3,
-    3,
-    indicatorsData.haCandle.ha1mCandle,
-  );
+  // getHeikinAshiSignalForTheLastCandles(
+  //   symbol,
+  //   '1m',
+  //   3,
+  //   3,
+  //   indicatorsData.haCandle.ha1mCandle,
+  // );
 
   // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);

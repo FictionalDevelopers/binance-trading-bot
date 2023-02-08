@@ -2967,6 +2967,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       console.log(
         'haCandle 1m Current: ' +
           JSON.stringify(indicatorsData.haCandle.ha1mCandle.currentCandle),
+        'signal: ' + indicatorsData.haCandle.ha1mCandle.signal,
       );
       // console.log(
       //   'MFI 30m: ' +
