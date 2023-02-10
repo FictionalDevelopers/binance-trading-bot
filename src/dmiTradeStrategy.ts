@@ -1333,9 +1333,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
+                indicatorsData.obv15m.buySignalCount >= 5 &&
                 indicatorsData.obv5m.buySignalCount >= 5 &&
-                (indicatorsData.dmi15m.adxBuySignalVolume >= 10 ||
-                  indicatorsData.dmi15m.adxSellSignalVolume >= 10),
+                indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
+                indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
+                indicatorsData.dmi1m.adxBuySignalVolume >= 10,
+          // indicatorsData.dmi15m.adxSellSignalVolume >= 10),
           // indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
           //   'buy' &&
           // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
@@ -1459,9 +1462,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
+                indicatorsData.obv15m.sellSignalCount >= 5 &&
                 indicatorsData.obv5m.sellSignalCount >= 5 &&
-                (indicatorsData.dmi15m.adxBuySignalVolume >= 10 ||
-                  indicatorsData.dmi15m.adxSellSignalVolume >= 10),
+                indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
+                indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
+                indicatorsData.dmi1m.adxBuySignalVolume >= 10,
+          // indicatorsData.dmi15m.adxSellSignalVolume >= 10),
           // indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
           //   'sell' &&
           // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
@@ -1632,9 +1638,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
+              indicatorsData.obv15m.sellSignalCount >= 5 &&
               indicatorsData.obv5m.sellSignalCount >= 5 &&
-              (indicatorsData.dmi15m.adxBuySignalVolume >= 10 ||
-                indicatorsData.dmi15m.adxSellSignalVolume >= 10),
+              indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
+              indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
+              indicatorsData.dmi1m.adxBuySignalVolume >= 10,
+            // indicatorsData.dmi15m.adxSellSignalVolume >= 10),
 
             // indicatorsData.obv1h.sellSignalCount >= 4 &&
             // (indicatorsData.dmi1h.adxBuySignalVolume >= 1 ||
@@ -1776,9 +1785,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
+              indicatorsData.obv15m.buySignalCount >= 5 &&
               indicatorsData.obv5m.buySignalCount >= 5 &&
-              (indicatorsData.dmi15m.adxBuySignalVolume >= 10 ||
-                indicatorsData.dmi15m.adxSellSignalVolume >= 10),
+              indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
+              indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
+              indicatorsData.dmi1m.adxBuySignalVolume >= 10,
+            // indicatorsData.dmi15m.adxSellSignalVolume >= 10),
             // indicatorsData.obv1h.buySignalCount >= 4 &&
             // (indicatorsData.dmi1h.adxBuySignalVolume >= 1 ||
             //   indicatorsData.dmi1h.adxSellSignalVolume >= 1),
@@ -2266,6 +2278,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
   getDMISignal(symbol, '15m', 14, indicatorsData.dmi15m, botState, true, false);
   getDMISignal(symbol, '5m', 14, indicatorsData.dmi5m, botState, true, false);
   getDMISignal(symbol, '1m', 14, indicatorsData.dmi1m, botState, true, false);
