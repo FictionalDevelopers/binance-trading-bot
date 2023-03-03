@@ -29,7 +29,10 @@ import { getATRSignal } from './components/atr-signals';
 import { getObvStream } from './indicators/obv';
 import { getMACDSignal } from './components/macd-signals';
 import { getMACDStream } from './indicators/macd';
-import { calculateAvgPriceChange } from './tools/avgPriceTools';
+import {
+  calculateAvgPriceChange,
+  calculateAvgDealPriceChange,
+} from './tools/avgPriceTools';
 import { getCCISignal } from './components/cci-signals';
 import { getTrixSignal } from './components/trix-signal';
 import {
@@ -2195,20 +2198,20 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getCRSIStream({ symbol, interval: '5m' }, indicatorsData.crsi.crsi5m);
   // getCRSIStream({ symbol, interval: '1m' }, indicatorsData.crsi.crsi1m);
 
-  // calculateAvgPriceChange(
-  //   symbol,
-  //   RESOURCES.TRADE,
-  //   25,
-  //   botState,
-  //   indicatorsData.avgPrices.avgBig,
-  // );
-  // calculateAvgPriceChange(
-  //   symbol,
-  //   RESOURCES.TRADE,
-  //   10,
-  //   botState,
-  //   indicatorsData.avgPrices.avgSmall,
-  // );
+  calculateAvgPriceChange(
+    symbol,
+    RESOURCES.TRADE,
+    25,
+    botState,
+    indicatorsData.avgPrices.avgBig,
+  );
+  calculateAvgPriceChange(
+    symbol,
+    RESOURCES.TRADE,
+    10,
+    botState,
+    indicatorsData.avgPrices.avgSmall,
+  );
 
   /** *******************************INDICATORS SECTION**************************************/
 
@@ -2235,21 +2238,21 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2);
-  getObvSignal(symbol, '15m', indicatorsData.obv1h, 2, 2);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getHeikinAshiSignal(symbol, '4h', 6, 6, indicatorsData.haCandle.ha4hCandle);
-  getHeikinAshiSignalForTheLastCandles(
-    symbol,
-    '1m',
-    6,
-    6,
-    indicatorsData.haCandle.ha1mCandle,
-  );
+  // getHeikinAshiSignalForTheLastCandles(
+  //   symbol,
+  //   '1m',
+  //   6,
+  //   6,
+  //   indicatorsData.haCandle.ha1mCandle,
+  // );
   // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
   // getMfiSignal(symbol, '5m', 14, indicatorsData.mfi.mfi1m, 1, 1);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
   getDMISignal(symbol, '15m', 14, indicatorsData.dmi1h, botState, true, true);
   getDMISignal(symbol, '15m', 14, indicatorsData.dmi1m, botState, true, false);
   // getDMISignal(symbol, '1d', 2, indicatorsData.dmi1m, botState, true);
@@ -2754,41 +2757,41 @@ import { getStochRSISignal } from './components/stochRSI-signals';
     setInterval(async () => {
       console.log('isPricesStreamAlive: ' + botState.isPricesStreamAlive);
       console.log('Started at: ' + startTime);
-      // console.log(
-      //   'Avg Price Big: ' +
-      //     indicatorsData.avgPrices.avgBig.avgPrice +
-      //     '( ' +
-      //     indicatorsData.avgPrices.avgBig.avgPriceDiff +
-      //     ' %' +
-      //     ' )',
-      // );
-      // console.log(
-      //   'Avg Price Big Diff: ' +
-      //     indicatorsData.avgPrices.avgBig.avgPriceSignal +
-      //     '(UP: ' +
-      //     indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount +
-      //     ' DOWN: ' +
-      //     indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount +
-      //     ')',
-      // );
-      // console.log(
-      //   'Avg Price Small: ' +
-      //     indicatorsData.avgPrices.avgSmall.avgPrice +
-      //     '( ' +
-      //     indicatorsData.avgPrices.avgSmall.avgPriceDiff +
-      //     ' %' +
-      //     ' )',
-      // );
-      // console.log(
-      //   'Avg Price Small Diff: ' +
-      //     indicatorsData.avgPrices.avgSmall.avgPriceSignal +
-      //     '(UP: ' +
-      //     indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount +
-      //     ' DOWN: ' +
-      //     indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount +
-      //     ')',
-      // );
-      // calculateAvgDealPriceChange(botState, indicatorsData);
+      console.log(
+        'Avg Price Big: ' +
+          indicatorsData.avgPrices.avgBig.avgPrice +
+          '( ' +
+          indicatorsData.avgPrices.avgBig.avgPriceDiff +
+          ' %' +
+          ' )',
+      );
+      console.log(
+        'Avg Price Big Diff: ' +
+          indicatorsData.avgPrices.avgBig.avgPriceSignal +
+          '(UP: ' +
+          indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount +
+          ' DOWN: ' +
+          indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount +
+          ')',
+      );
+      console.log(
+        'Avg Price Small: ' +
+          indicatorsData.avgPrices.avgSmall.avgPrice +
+          '( ' +
+          indicatorsData.avgPrices.avgSmall.avgPriceDiff +
+          ' %' +
+          ' )',
+      );
+      console.log(
+        'Avg Price Small Diff: ' +
+          indicatorsData.avgPrices.avgSmall.avgPriceSignal +
+          '(UP: ' +
+          indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount +
+          ' DOWN: ' +
+          indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount +
+          ')',
+      );
+      calculateAvgDealPriceChange(botState, indicatorsData);
       // indicatorsData.dealType = determineDealType(indicatorsData, 4);
       // console.log(
       //   'OBV 4h: ' +

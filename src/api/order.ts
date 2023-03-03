@@ -328,6 +328,22 @@ export const marketSellAction = async (
           OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
             indicatorsData.obv1m.sellSignalCount
           }
+          Avg Price Big: ${indicatorsData.avgPrices.avgBig.avgPrice} (${
+            indicatorsData.avgPrices.avgBig.avgPriceDiff
+          } %)
+          Avg Price Big Diff: ${
+            indicatorsData.avgPrices.avgBig.avgPriceSignal
+          } (UP: ${
+            indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount
+          } DOWN: ${indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount})
+          Avg Price Small: ${indicatorsData.avgPrices.avgSmall.avgPrice} (${
+            indicatorsData.avgPrices.avgSmall.avgPriceDiff
+          } %)
+          Avg Price Small Diff: ${
+            indicatorsData.avgPrices.avgSmall.avgPriceSignal
+          } (UP: ${
+            indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount
+          } DOWN: ${indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount})
           RSI 5m: ${indicatorsData.rsi5m.rsiValue}        
           RSI 1m: ${indicatorsData.rsi1m.rsiValue}
           ADX 1m: ${'(UP: ' +
@@ -820,10 +836,8 @@ export const marketBuyAction = async (
                                Symbol: ${symbol.toUpperCase()}
                                Price: ${botState.buyPrice}
                                Date: ${format(new Date(), DATE_FORMAT)}
-                               Indicators data: 
-                                    OBV 2h: BSC: ${
-                                      indicatorsData.obv2h.buySignalCount
-                                    } SSC: ${
+        Indicators data: 
+        OBV 2h: BSC: ${indicatorsData.obv2h.buySignalCount} SSC: ${
           indicatorsData.obv2h.sellSignalCount
         }
         OBV 4h: BSC: ${indicatorsData.obv4h.buySignalCount} SSC: ${
@@ -844,6 +858,22 @@ export const marketBuyAction = async (
          OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
           indicatorsData.obv1m.sellSignalCount
         } 
+        Avg Price Big: ${indicatorsData.avgPrices.avgBig.avgPrice} (${
+          indicatorsData.avgPrices.avgBig.avgPriceDiff
+        } %)
+        Avg Price Big Diff: ${
+          indicatorsData.avgPrices.avgBig.avgPriceSignal
+        } (UP: ${indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount} DOWN: ${
+          indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount
+        })
+        Avg Price Small: ${indicatorsData.avgPrices.avgSmall.avgPrice} (${
+          indicatorsData.avgPrices.avgSmall.avgPriceDiff
+        } %)
+        Avg Price Small Diff: ${
+          indicatorsData.avgPrices.avgSmall.avgPriceSignal
+        } (UP: ${
+          indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount
+        } DOWN: ${indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount})
         RSI 5m: ${indicatorsData.rsi5m.rsiValue}        
         RSI 1m: ${indicatorsData.rsi1m.rsiValue}        
        ADX 1m: ${'(UP: ' +
