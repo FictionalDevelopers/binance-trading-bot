@@ -1336,9 +1336,14 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 indicatorsData.obv15m.buySignalCount >= 5 &&
                 indicatorsData.obv5m.buySignalCount >= 5 &&
                 indicatorsData.obv1m.buySignalCount >= 5 &&
-                (indicatorsData.dmi15m.adxBuySignalVolume >= 20 ||
-                  indicatorsData.dmi5m.adxBuySignalVolume >= 20 ||
-                  indicatorsData.dmi1m.adxBuySignalVolume >= 20),
+                indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2 &&
+                indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 2 &&
+                (indicatorsData.dmi15m.adxBuySignalVolume >= 10 ||
+                  indicatorsData.dmi15m.adxSellSignalVolume >= 10) &&
+                (indicatorsData.dmi5m.adxBuySignalVolume >= 10 ||
+                  indicatorsData.dmi5m.adxSellSignalVolume >= 10) &&
+                (indicatorsData.dmi1m.adxBuySignalVolume >= 10 ||
+                  indicatorsData.dmi1m.adxSellSignalVolume >= 10),
           // indicatorsData.dmi1m.adxBuySignalVolume >= 10,
           // indicatorsData.dmi15m.adxSellSignalVolume >= 10),
           // indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
@@ -1467,9 +1472,15 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 indicatorsData.obv15m.sellSignalCount >= 5 &&
                 indicatorsData.obv5m.sellSignalCount >= 5 &&
                 indicatorsData.obv1m.sellSignalCount >= 5 &&
-                (indicatorsData.dmi15m.adxBuySignalVolume >= 20 ||
-                  indicatorsData.dmi5m.adxBuySignalVolume >= 20 ||
-                  indicatorsData.dmi1m.adxBuySignalVolume >= 20),
+                indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2 &&
+                indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
+                  2 &&
+                (indicatorsData.dmi15m.adxBuySignalVolume >= 10 ||
+                  indicatorsData.dmi15m.adxSellSignalVolume >= 10) &&
+                (indicatorsData.dmi5m.adxBuySignalVolume >= 10 ||
+                  indicatorsData.dmi5m.adxSellSignalVolume >= 10) &&
+                (indicatorsData.dmi1m.adxBuySignalVolume >= 10 ||
+                  indicatorsData.dmi1m.adxSellSignalVolume >= 10),
           // indicatorsData.dmi1m.adxBuySignalVolume >= 10,
           // indicatorsData.dmi15m.adxSellSignalVolume >= 10),
           // indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
@@ -1645,9 +1656,17 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               indicatorsData.obv15m.sellSignalCount >= 5 &&
               indicatorsData.obv5m.sellSignalCount >= 5 &&
               indicatorsData.obv1m.sellSignalCount >= 5 &&
-              (indicatorsData.dmi15m.adxBuySignalVolume >= 20 ||
-                indicatorsData.dmi5m.adxBuySignalVolume >= 20 ||
-                indicatorsData.dmi1m.adxBuySignalVolume >= 20),
+              indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2 &&
+              indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 2 &&
+              (indicatorsData.dmi15m.adxBuySignalVolume >= 10 ||
+                indicatorsData.dmi15m.adxSellSignalVolume >= 10) &&
+              (indicatorsData.dmi5m.adxBuySignalVolume >= 10 ||
+                indicatorsData.dmi5m.adxSellSignalVolume >= 10) &&
+              (indicatorsData.dmi1m.adxBuySignalVolume >= 10 ||
+                indicatorsData.dmi1m.adxSellSignalVolume >= 10),
+            // (indicatorsData.dmi15m.adxBuySignalVolume >= 20 ||
+            //   indicatorsData.dmi5m.adxBuySignalVolume >= 20 ||
+            //   indicatorsData.dmi1m.adxBuySignalVolume >= 20),
             // indicatorsData.dmi1m.adxBuySignalVolume >= 10,
             // indicatorsData.dmi15m.adxSellSignalVolume >= 10),
 
@@ -1794,9 +1813,17 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               indicatorsData.obv15m.buySignalCount >= 5 &&
               indicatorsData.obv5m.buySignalCount >= 5 &&
               indicatorsData.obv1m.buySignalCount >= 5 &&
-              (indicatorsData.dmi15m.adxBuySignalVolume >= 20 ||
-                indicatorsData.dmi5m.adxBuySignalVolume >= 20 ||
-                indicatorsData.dmi1m.adxBuySignalVolume >= 20),
+              indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2 &&
+              indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 2 &&
+              (indicatorsData.dmi15m.adxBuySignalVolume >= 10 ||
+                indicatorsData.dmi15m.adxSellSignalVolume >= 10) &&
+              (indicatorsData.dmi5m.adxBuySignalVolume >= 10 ||
+                indicatorsData.dmi5m.adxSellSignalVolume >= 10) &&
+              (indicatorsData.dmi1m.adxBuySignalVolume >= 10 ||
+                indicatorsData.dmi1m.adxSellSignalVolume >= 10),
+            // (indicatorsData.dmi15m.adxBuySignalVolume >= 20 ||
+            //   indicatorsData.dmi5m.adxBuySignalVolume >= 20 ||
+            //   indicatorsData.dmi1m.adxBuySignalVolume >= 20),
             // indicatorsData.dmi1m.adxBuySignalVolume >= 10,
             // indicatorsData.dmi15m.adxSellSignalVolume >= 10),
             // indicatorsData.obv1h.buySignalCount >= 4 &&
