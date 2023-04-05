@@ -344,6 +344,7 @@ export const marketSellAction = async (
           } (UP: ${
             indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount
           } DOWN: ${indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount})
+          RSI 15m: ${indicatorsData.rsi15m.rsiValue}        
           RSI 5m: ${indicatorsData.rsi5m.rsiValue}        
           RSI 1m: ${indicatorsData.rsi1m.rsiValue}
           ADX 1m: ${'(UP: ' +
@@ -874,6 +875,7 @@ export const marketBuyAction = async (
         } (UP: ${
           indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount
         } DOWN: ${indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount})
+        RSI 15m: ${indicatorsData.rsi15m.rsiValue}        
         RSI 5m: ${indicatorsData.rsi5m.rsiValue}        
         RSI 1m: ${indicatorsData.rsi1m.rsiValue}        
        ADX 1m: ${'(UP: ' +
