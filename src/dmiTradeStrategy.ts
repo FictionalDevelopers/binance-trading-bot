@@ -1336,6 +1336,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 indicatorsData.obv15m.buySignalCount >= 5 &&
                 indicatorsData.obv5m.buySignalCount >= 5 &&
                 // indicatorsData.obv1m.buySignalCount >= 5 &&
+                indicatorsData.rsi1h.signal === 'buy' &&
                 indicatorsData.rsi5m.signal === 'buy' &&
                 // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 4 &&
                 // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4,
@@ -1474,6 +1475,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 indicatorsData.obv15m.sellSignalCount >= 5 &&
                 indicatorsData.obv5m.sellSignalCount >= 5 &&
                 // indicatorsData.obv1m.sellSignalCount >= 5 &&
+                indicatorsData.rsi1h.signal === 'sell' &&
                 indicatorsData.rsi5m.signal === 'sell' &&
                 // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 4 &&
                 // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4,
