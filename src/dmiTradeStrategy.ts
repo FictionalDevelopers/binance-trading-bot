@@ -1344,6 +1344,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.dmi15m.adxSellSignalVolume >= 10) &&
                 // indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
                 // indicatorsData.dmi5m.adxSellSignalVolume >= 10) &&
+                indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
                 indicatorsData.dmi1m.adxBuySignalVolume >= 4,
           // indicatorsData.dmi1m.adxSellSignalVolume >= 10),
 
@@ -1351,7 +1352,6 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           // indicatorsData.dmi15m.adxSellSignalVolume >= 10),
           // indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
           //   'buy' &&
-          // indicatorsData.haCandle.ha1mCandle.signal === 'buy',
           // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
           // indicatorsData.obv4h.buySignalCount >= 4 &&
           // indicatorsData.obv1h.buySignalCount >= 4 &&
@@ -1484,13 +1484,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.dmi15m.adxSellSignalVolume >= 10) &&
                 // indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
                 // indicatorsData.dmi5m.adxSellSignalVolume >= 10) &&
+                indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
                 indicatorsData.dmi1m.adxBuySignalVolume >= 4,
           // indicatorsData.dmi1m.adxSellSignalVolume >= 10),
 
           // indicatorsData.dmi1m.adxBuySignalVolume >= 10,
           // indicatorsData.dmi15m.adxSellSignalVolume >= 10),
-          // indicatorsData.haCandle.ha1mCandle.prevCandle.signal ===
-          //   'sell' &&
           // indicatorsData.haCandle.ha1mCandle.signal === 'sell',
           // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
           // indicatorsData.obv4h.sellSignalCount >= 4 &&
@@ -2310,7 +2309,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   symbol,
   //   '1h',
   //   indicatorsData.stochRsi.stoch1h,
-  //   1.5,sect
+  //   1.5,
   //   1.5,
   //   2,
   //   2,
@@ -2338,6 +2337,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   getDMISignal(symbol, '5m', 4, indicatorsData.dmi5m, botState, true, false);
   getDMISignal(symbol, '1m', 4, indicatorsData.dmi1m, botState, true, false);
   getRSISignal(symbol, '5m', 3, indicatorsData.rsi5m);
+  getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
   // getRSISignal(symbol, '1h', indicatorsData.rsi1h);
 
   // getDMISignal(symbol, '1h', 14, indicatorsData.dmi1h, botState, true, true);
@@ -2352,7 +2352,6 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   indicatorsData.haCandle.ha1mCandle,
   // );
 
-  // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 20, 20);
   // getMfiSignal(symbol, '5m', 14, indicatorsData.mfi.mfi1m, 1, 1);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
