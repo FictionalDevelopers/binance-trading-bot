@@ -2,10 +2,10 @@ import * as service from './service';
 import { getRsiStream } from '../../indicators/rsi';
 import _throttle from 'lodash/throttle';
 
-export const getRSISignal = (symbol, timeFrame, indicatorsData) => {
+export const getRSISignal = (symbol, timeFrame, period, indicatorsData) => {
   getRsiStream({
     symbol: symbol,
-    period: 4,
+    period,
     interval: timeFrame,
   }).subscribe(rsi => {
     if (!indicatorsData.prevRsi) {
