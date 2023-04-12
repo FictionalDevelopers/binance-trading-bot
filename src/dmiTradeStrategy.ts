@@ -1333,8 +1333,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv15m.buySignalCount >= 4 &&
-                indicatorsData.obv5m.buySignalCount >= 4 &&
+                indicatorsData.obv15m.buySignalCount >= 2 &&
+                indicatorsData.obv5m.buySignalCount >= 2 &&
                 // indicatorsData.rsi5m.signal === 'buy' &&
                 // indicatorsData.obv1m.buySignalCount >= 5 &&
                 // indicatorsData.rsi1h.signal === 'buy' &&
@@ -1473,8 +1473,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv15m.sellSignalCount >= 4 &&
-                indicatorsData.obv5m.sellSignalCount >= 4 &&
+                indicatorsData.obv15m.sellSignalCount >= 2 &&
+                indicatorsData.obv5m.sellSignalCount >= 2 &&
                 // indicatorsData.obv1m.sellSignalCount >= 5 &&
                 // indicatorsData.rsi1h.signal === 'sell' &&
                 // indicatorsData.rsi5m.signal === 'sell' &&
@@ -1660,8 +1660,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.obv15m.sellSignalCount >= 4 &&
-              indicatorsData.obv5m.sellSignalCount >= 4 &&
+              indicatorsData.obv15m.sellSignalCount >= 2 &&
+              indicatorsData.obv5m.sellSignalCount >= 2 &&
               // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
               indicatorsData.dmi5m.adxBuySignalVolume >= 4 &&
               indicatorsData.dmi1m.adxBuySignalVolume >= 8,
@@ -1827,8 +1827,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.obv15m.buySignalCount >= 4 &&
-              indicatorsData.obv5m.buySignalCount >= 4 &&
+              indicatorsData.obv15m.buySignalCount >= 2 &&
+              indicatorsData.obv5m.buySignalCount >= 2 &&
               // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
               indicatorsData.dmi5m.adxBuySignalVolume >= 4 &&
               indicatorsData.dmi1m.adxBuySignalVolume >= 8,
