@@ -1333,8 +1333,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv15m.buySignalCount >= 5 &&
-                indicatorsData.obv5m.buySignalCount >= 5 &&
+                indicatorsData.obv15m.buySignalCount >= 4 &&
+                indicatorsData.obv5m.buySignalCount >= 4 &&
                 // indicatorsData.rsi5m.signal === 'buy' &&
                 // indicatorsData.obv1m.buySignalCount >= 5 &&
                 // indicatorsData.rsi1h.signal === 'buy' &&
@@ -1346,7 +1346,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.dmi5m.adxSellSignalVolume >= 10) &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
                 indicatorsData.dmi5m.adxBuySignalVolume >= 4 &&
-                indicatorsData.dmi1m.adxBuySignalVolume >= 13,
+                indicatorsData.dmi1m.adxBuySignalVolume >= 8,
           // indicatorsData.dmi1m.adxSellSignalVolume >= 10),
 
           // indicatorsData.dmi1m.adxBuySignalVolume >= 10,
@@ -1473,8 +1473,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv15m.sellSignalCount >= 5 &&
-                indicatorsData.obv5m.sellSignalCount >= 5 &&
+                indicatorsData.obv15m.sellSignalCount >= 4 &&
+                indicatorsData.obv5m.sellSignalCount >= 4 &&
                 // indicatorsData.obv1m.sellSignalCount >= 5 &&
                 // indicatorsData.rsi1h.signal === 'sell' &&
                 // indicatorsData.rsi5m.signal === 'sell' &&
@@ -1487,7 +1487,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.dmi5m.adxSellSignalVolume >= 10) &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
                 indicatorsData.dmi5m.adxBuySignalVolume >= 4 &&
-                indicatorsData.dmi1m.adxBuySignalVolume >= 13,
+                indicatorsData.dmi1m.adxBuySignalVolume >= 8,
           // indicatorsData.dmi1m.adxSellSignalVolume >= 10),
 
           // indicatorsData.dmi1m.adxBuySignalVolume >= 10,
@@ -1660,11 +1660,11 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.obv15m.sellSignalCount >= 5 &&
-              indicatorsData.obv5m.sellSignalCount >= 5 &&
+              indicatorsData.obv15m.sellSignalCount >= 4 &&
+              indicatorsData.obv5m.sellSignalCount >= 4 &&
               // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
               indicatorsData.dmi5m.adxBuySignalVolume >= 4 &&
-              indicatorsData.dmi1m.adxBuySignalVolume >= 13,
+              indicatorsData.dmi1m.adxBuySignalVolume >= 8,
             // indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
             // indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
             // indicatorsData.dmi1m.adxBuySignalVolume >= 4) ||
@@ -1827,11 +1827,11 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.obv15m.buySignalCount >= 5 &&
-              indicatorsData.obv5m.buySignalCount >= 5 &&
+              indicatorsData.obv15m.buySignalCount >= 4 &&
+              indicatorsData.obv5m.buySignalCount >= 4 &&
               // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
               indicatorsData.dmi5m.adxBuySignalVolume >= 4 &&
-              indicatorsData.dmi1m.adxBuySignalVolume >= 13,
+              indicatorsData.dmi1m.adxBuySignalVolume >= 8,
             // indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
             // indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
             // indicatorsData.dmi1m.adxBuySignalVolume >= 4) ||
