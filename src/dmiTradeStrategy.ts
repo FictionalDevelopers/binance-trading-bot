@@ -1345,6 +1345,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
                 // indicatorsData.dmi5m.adxSellSignalVolume >= 10) &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+                indicatorsData.dmi15m.adxBuySignalVolume >= 6 &&
                 indicatorsData.dmi5m.adxBuySignalVolume >= 4 &&
                 indicatorsData.dmi1m.adxBuySignalVolume >= 8,
           // indicatorsData.dmi1m.adxSellSignalVolume >= 10),
@@ -1486,6 +1487,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
                 // indicatorsData.dmi5m.adxSellSignalVolume >= 10) &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+                indicatorsData.dmi15m.adxBuySignalVolume >= 6 &&
                 indicatorsData.dmi5m.adxBuySignalVolume >= 4 &&
                 indicatorsData.dmi1m.adxBuySignalVolume >= 8,
           // indicatorsData.dmi1m.adxSellSignalVolume >= 10),
@@ -1663,6 +1665,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               indicatorsData.obv15m.sellSignalCount >= 2 &&
               indicatorsData.obv5m.sellSignalCount >= 2 &&
               // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+              indicatorsData.dmi15m.adxBuySignalVolume >= 6 &&
               indicatorsData.dmi5m.adxBuySignalVolume >= 4 &&
               indicatorsData.dmi1m.adxBuySignalVolume >= 8,
             // indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
@@ -1830,6 +1833,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               indicatorsData.obv15m.buySignalCount >= 2 &&
               indicatorsData.obv5m.buySignalCount >= 2 &&
               // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+              indicatorsData.dmi15m.adxBuySignalVolume >= 6 &&
               indicatorsData.dmi5m.adxBuySignalVolume >= 4 &&
               indicatorsData.dmi1m.adxBuySignalVolume >= 8,
             // indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&

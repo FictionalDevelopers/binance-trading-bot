@@ -138,7 +138,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: true,
-      status: 'buy',
+      status: 'pending',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -858,7 +858,44 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       buySignalCount: 0,
       sellSignalCount: 0,
     },
+    dmi5m_1: {
+      adx: null,
+      adxUpCount: 0,
+      adxDownCount: 0,
+      adxDiff: null,
+      adxDirection: null,
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      adxSignal: null,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+      signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+    },
     dmi15m: {
+      adx: null,
+      prevAdx: null,
+      adxUpCount: 0,
+      adxDownCount: 0,
+      adxDiff: null,
+      adxDirection: null,
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      adxSignal: 0,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+      signal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+    },
+    dmi15m_1: {
       adx: null,
       prevAdx: null,
       adxUpCount: 0,
@@ -954,6 +991,25 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       sellSignalCount: 0,
     },
     dmi1m: {
+      adx: null,
+      adxDirection: null,
+      adxUpCount: 0,
+      adxDownCount: 0,
+      adxDiff: null,
+      prevDmi: null,
+      dmiMdiSignal: 0,
+      mdiSignal: 0,
+      adxBuySignalVolume: 0,
+      adxSellSignalVolume: 0,
+      willPriceGrow: false,
+      trend: null,
+      signal: null,
+      adxSignal: null,
+      buySignalCount: 0,
+      sellSignalCount: 0,
+      prevAdx: null,
+    },
+    dmi1m_1: {
       adx: null,
       adxDirection: null,
       adxUpCount: 0,
@@ -2347,14 +2403,25 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   //   2,
   // );
-  getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
-  getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
-  // getDMISignal(symbol, '15m', 14, indicatorsData.dmi15m, botState, true, false);
+  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
+  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
+  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
+  getDMISignal(symbol, '15m', 4, indicatorsData.dmi15m, botState, true, false);
   getDMISignal(symbol, '5m', 4, indicatorsData.dmi5m, botState, true, false);
   getDMISignal(symbol, '1m', 4, indicatorsData.dmi1m, botState, true, false);
+  getDMISignal(
+    symbol,
+    '15m',
+    2,
+    indicatorsData.dmi15m_1,
+    botState,
+    true,
+    false,
+  );
+  getDMISignal(symbol, '5m', 2, indicatorsData.dmi5m_1, botState, true, false);
+  getDMISignal(symbol, '1m', 2, indicatorsData.dmi1m_1, botState, true, false);
   // getRSISignal(symbol, '5m', 3, indicatorsData.rsi5m);
-  getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
+  // getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
   // getRSISignal(symbol, '15m', 4, indicatorsData.rsi5m);
   // getRSISignal(symbol, '15m', 14, indicatorsData.rsi15m);
@@ -3081,6 +3148,17 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         ')',
       );
       console.log(
+        'ADX 1m_1: ' +
+          '(UP: ' +
+          indicatorsData.dmi1m_1.adxBuySignalVolume +
+          ' DOWN: ' +
+          indicatorsData.dmi1m_1.adxSellSignalVolume +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi1m_1.adx,
+        ')',
+      );
+      console.log(
         'ADX 5m: ' +
           '(UP: ' +
           indicatorsData.dmi5m.adxBuySignalVolume +
@@ -3092,6 +3170,17 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         ')',
       );
       console.log(
+        'ADX 5m_1: ' +
+          '(UP: ' +
+          indicatorsData.dmi5m_1.adxBuySignalVolume +
+          ' DOWN: ' +
+          indicatorsData.dmi5m_1.adxSellSignalVolume +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi5m_1.adx,
+        ')',
+      );
+      console.log(
         'ADX 15m: ' +
           '(UP: ' +
           indicatorsData.dmi15m.adxBuySignalVolume +
@@ -3100,6 +3189,17 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           ' ' +
           'Current: ' +
           indicatorsData.dmi15m.adx,
+        ')',
+      );
+      console.log(
+        'ADX 15m_1: ' +
+          '(UP: ' +
+          indicatorsData.dmi15m_1.adxBuySignalVolume +
+          ' DOWN: ' +
+          indicatorsData.dmi15m_1.adxSellSignalVolume +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi15m_1.adx,
         ')',
       );
 
