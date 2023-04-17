@@ -2319,20 +2319,20 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getCRSIStream({ symbol, interval: '5m' }, indicatorsData.crsi.crsi5m);
   // getCRSIStream({ symbol, interval: '1m' }, indicatorsData.crsi.crsi1m);
 
-  // calculateAvgPriceChange(
-  //   symbol,
-  //   RESOURCES.TRADE,
-  //   25,
-  //   botState,
-  //   indicatorsData.avgPrices.avgBig,
-  // );
-  // calculateAvgPriceChange(
-  //   symbol,
-  //   RESOURCES.TRADE,
-  //   10,
-  //   botState,
-  //   indicatorsData.avgPrices.avgSmall,
-  // );
+  calculateAvgPriceChange(
+    symbol,
+    RESOURCES.TRADE,
+    25,
+    botState,
+    indicatorsData.avgPrices.avgBig,
+  );
+  calculateAvgPriceChange(
+    symbol,
+    RESOURCES.TRADE,
+    10,
+    botState,
+    indicatorsData.avgPrices.avgSmall,
+  );
 
   /** *******************************INDICATORS SECTION**************************************/
 
