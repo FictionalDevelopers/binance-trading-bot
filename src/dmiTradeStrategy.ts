@@ -1335,8 +1335,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               : botState.status === 'buy' &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
                 indicatorsData.obv15m.buySignalCount >= 9 &&
-                // indicatorsData.obv5m.buySignalCount >= 4 &&
-                // indicatorsData.obv1m.buySignalCount >= 3 &&
+                indicatorsData.obv1h.buySignalCount >= 1 &&
+                indicatorsData.obv30m.buySignalCount >= 1 &&
                 indicatorsData.dmi1m.adxBuySignalVolume >= 4,
           // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
           // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
@@ -1478,8 +1478,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               : botState.status === 'buy' &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
                 indicatorsData.obv15m.sellSignalCount >= 9 &&
-                // indicatorsData.obv5m.sellSignalCount >= 12 &&
-                // indicatorsData.obv1m.sellSignalCount >= 3 &&
+                indicatorsData.obv1h.sellSignalCount >= 1 &&
+                indicatorsData.obv30m.sellSignalCount >= 1 &&
                 indicatorsData.dmi1m.adxBuySignalVolume >= 4,
           // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
           // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
@@ -2372,6 +2372,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
+  getDMISignal(symbol, '1h', 2, indicatorsData.dmi1h, botState, true, false);
+  getDMISignal(symbol, '30m', 2, indicatorsData.dmi30m, botState, true, false);
   getDMISignal(symbol, '1m', 4, indicatorsData.dmi1m, botState, true, false);
   getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
   // getDMISignal(symbol, '15m', 2, indicatorsData.dmi15m, botState, true, false);
