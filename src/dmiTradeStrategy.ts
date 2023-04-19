@@ -2347,7 +2347,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
   getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
