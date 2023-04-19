@@ -1334,16 +1334,15 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-                // indicatorsData.obv1h.buySignalCount >= 1 &&
-                indicatorsData.obv30m.buySignalCount >= 4 &&
-                indicatorsData.obv15m.buySignalCount >= 4 &&
-                indicatorsData.dmi1m.adxBuySignalVolume >= 1,
-          // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
-          // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
+                indicatorsData.obv30m.buySignalCount >= 10 &&
+                indicatorsData.obv15m.buySignalCount >= 10 &&
+                indicatorsData.dmi1m.adxBuySignalVolume >= 10,
+          // indicatorsData.obv5m.buySignalCount >= 4 &&
+          // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 4 &&
+          // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4 &&
+          // indicatorsData.obv1m.buySignalCount >= 3 &&
           // indicatorsData.rsi5m.signal === 'buy' &&
           // indicatorsData.rsi1h.signal === 'buy' &&
-          // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 4 &&
-          // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4,
           // indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
           // indicatorsData.dmi15m.adxSellSignalVolume >= 10) &&
           // indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
@@ -1477,16 +1476,16 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-                // indicatorsData.obv1h.sellSignalCount >= 1 &&
-                indicatorsData.obv30m.sellSignalCount >= 4 &&
-                indicatorsData.obv15m.sellSignalCount >= 4 &&
-                indicatorsData.dmi1m.adxBuySignalVolume >= 1,
-          // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
-          // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
+                indicatorsData.obv30m.sellSignalCount >= 10 &&
+                indicatorsData.obv15m.sellSignalCount >= 10 &&
+                indicatorsData.dmi1m.adxBuySignalVolume >= 10,
+          // indicatorsData.obv5m.sellSignalCount >= 4 &&
+          // indicatorsData.obv1m.sellSignalCount >= 3 &&
           // indicatorsData.rsi1h.signal === 'sell' &&
           // indicatorsData.rsi5m.signal === 'sell' &&
           // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 4 &&
-          // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4,
+          // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
+          //   4 &&
           // &&
           // indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
           // indicatorsData.dmi15m.adxSellSignalVolume >= 10) &&
@@ -1667,21 +1666,11 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              // indicatorsData.obv1h.sellSignalCount >= 1 &&
-              indicatorsData.obv30m.sellSignalCount >= 4 &&
-              indicatorsData.obv15m.sellSignalCount >= 4 &&
-              indicatorsData.dmi1m.adxBuySignalVolume >= 1,
-            // indicatorsData.dmi15m.adxSellSignalVolume >= 1 ||
-            // indicatorsData.dmi5m.adxSellSignalVolume >= 1),
-
-            // ((expectedProfitPercent > 0 &&
-            //   indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-            //   indicatorsData.obv15m.sellSignalCount >= 9 &&
-            //   indicatorsData.obv5m.sellSignalCount >= 9 &&
-            //   indicatorsData.obv1m.sellSignalCount >= 3 &&
-            //   indicatorsData.dmi1m.adxBuySignalVolume >= 8) ||
-            //   (expectedProfitPercent < 0 &&
-            //     indicatorsData.dmi1m.adxSellSignalVolume >= 1)),
+              indicatorsData.obv30m.sellSignalCount >= 2 &&
+              indicatorsData.obv15m.sellSignalCount >= 2 &&
+              indicatorsData.dmi1m.adxBuySignalVolume >= 4,
+            // indicatorsData.obv5m.sellSignalCount >= 4 &&
+            // indicatorsData.obv1m.sellSignalCount >= 3 &&
             // indicatorsData.dmi1m.adxBuySignalVolume >= 8 &&
             // indicatorsData.dmi1m_1.adxBuySignalVolume >= 8 &&
 
@@ -1847,26 +1836,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              // indicatorsData.obv1h.buySignalCount >= 1 &&
-              indicatorsData.obv30m.buySignalCount >= 4 &&
-              indicatorsData.obv15m.buySignalCount >= 4 &&
-              indicatorsData.dmi1m.adxBuySignalVolume >= 1,
-            // indicatorsData.dmi15m.adxSellSignalVolume >= 1 ||
-            // indicatorsData.dmi5m.adxSellSignalVolume >= 1),
-            // ((expectedProfitPercent < 0 &&
-            //   indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-            //   indicatorsData.obv15m.buySignalCount >= 9 &&
-            //   indicatorsData.obv5m.buySignalCount >= 9 &&
-            //   indicatorsData.obv1m.buySignalCount >= 3 &&
-            //   indicatorsData.dmi1m.adxBuySignalVolume >= 8) ||
-            //   (expectedProfitPercent > 0 &&
-            //     indicatorsData.dmi1m.adxSellSignalVolume >= 1)),
-            // indicatorsData.obv15m.buySignalCount >= 9 &&
-            // indicatorsData.obv5m.buySignalCount >= 9 &&
+              indicatorsData.obv30m.buySignalCount >= 2 &&
+              indicatorsData.obv15m.buySignalCount >= 2 &&
+              indicatorsData.dmi1m.adxBuySignalVolume >= 4,
+            // indicatorsData.obv5m.buySignalCount >= 4 &&
             // indicatorsData.obv1m.buySignalCount >= 3 &&
             // indicatorsData.dmi1m.adxBuySignalVolume >= 8 &&
             // indicatorsData.dmi1m_1.adxBuySignalVolume >= 8 &&
-            // indicatorsData.dmi1m_2.adxBuySignalVolume >= 8,
             // indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
             // indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
             // indicatorsData.dmi1m_2.adxBuySignalVolume >= 8,
@@ -2374,10 +2350,10 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
   getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
-  // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
-  getDMISignal(symbol, '1h', 2, indicatorsData.dmi1h, botState, true, false);
-  getDMISignal(symbol, '30m', 2, indicatorsData.dmi30m, botState, true, false);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
+  // getDMISignal(symbol, '1h', 2, indicatorsData.dmi1h, botState, true, false);
+  // getDMISignal(symbol, '30m', 2, indicatorsData.dmi30m, botState, true, false);
   getDMISignal(symbol, '1m', 4, indicatorsData.dmi1m, botState, true, false);
   getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
   // getDMISignal(symbol, '15m', 2, indicatorsData.dmi15m, botState, true, false);
