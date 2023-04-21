@@ -1333,9 +1333,9 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+                indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
                 // indicatorsData.obv1h.buySignalCount >= 2 &&
-                indicatorsData.obv30m.buySignalCount >= 2 &&
+                // indicatorsData.obv30m.buySignalCount >= 2 &&
                 indicatorsData.obv15m.buySignalCount >= 2 &&
                 indicatorsData.obv5m.buySignalCount >= 2 &&
                 // indicatorsData.obv1m.buySignalCount >= 2 &&
@@ -1481,9 +1481,9 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+                indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
                 // indicatorsData.obv1h.sellSignalCount >= 2 &&
-                indicatorsData.obv30m.sellSignalCount >= 2 &&
+                // indicatorsData.obv30m.sellSignalCount >= 2 &&
                 indicatorsData.obv15m.sellSignalCount >= 2 &&
                 indicatorsData.obv5m.sellSignalCount >= 2 &&
                 // indicatorsData.obv1m.sellSignalCount >= 2 &&
@@ -2376,12 +2376,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
 
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
-  getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
+  getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
   getDMISignal(symbol, '1m', 2, indicatorsData.dmi1m, botState, true, false);
   getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, false);
   getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, false);
   // getDMISignal(symbol, '5m', 2, indicatorsData.dmi4h, botState, true, false);
-  // getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
+  getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
