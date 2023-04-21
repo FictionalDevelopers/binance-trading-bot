@@ -1336,12 +1336,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
                 // indicatorsData.obv1h.buySignalCount >= 2 &&
                 // indicatorsData.obv30m.buySignalCount >= 8 &&
-                indicatorsData.obv15m.buySignalCount >= 2 &&
-                indicatorsData.obv5m.buySignalCount >= 2 &&
+                indicatorsData.obv15m.buySignalCount >= 3 &&
+                indicatorsData.obv5m.buySignalCount >= 3 &&
                 // indicatorsData.obv1m.buySignalCount >= 2 &&
                 indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
                 indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
-                indicatorsData.dmi1m.adxBuySignalVolume >= 1,
+                indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi4h.adxBuySignalVolume >= 3,
           // indicatorsData.obv5m.buySignalCount >= 4 &&
           // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 4 &&
           // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4 &&
@@ -1483,12 +1484,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
                 // indicatorsData.obv1h.sellSignalCount >= 2 &&
                 // indicatorsData.obv30m.sellSignalCount >= 8 &&
-                indicatorsData.obv15m.sellSignalCount >= 2 &&
-                indicatorsData.obv5m.sellSignalCount >= 2 &&
+                indicatorsData.obv15m.sellSignalCount >= 3 &&
+                indicatorsData.obv5m.sellSignalCount >= 3 &&
                 // indicatorsData.obv1m.sellSignalCount >= 2 &&
                 indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
                 indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
-                indicatorsData.dmi1m.adxBuySignalVolume >= 1,
+                indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi4h.adxBuySignalVolume >= 3,
           // indicatorsData.obv5m.sellSignalCount >= 4 &&
           // indicatorsData.obv1m.sellSignalCount >= 3 &&
           // indicatorsData.rsi1h.signal === 'sell' &&
