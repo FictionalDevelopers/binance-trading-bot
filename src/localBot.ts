@@ -2476,7 +2476,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   getDMISignal(symbol, '1m', 2, indicatorsData.dmi1m, botState, true, false);
   getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, false);
   getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, false);
-  getDMISignal(symbol, '5m', 2, indicatorsData.dmi4h, botState, true, false);
+  getDMISignal(symbol, '15m', 2, indicatorsData.dmi4h, botState, true, false);
   // getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
   // getDMISignal(symbol, '15m', 4, indicatorsData.dmi15m, botState, true, false);
   // getDMISignal(symbol, '5m', 4, indicatorsData.dmi5m, botState, true, false);
