@@ -2384,7 +2384,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
-  getRSISignal(symbol, '1m', 14, indicatorsData.rsi1m);
+  getRSISignal(symbol, '5m', 4, indicatorsData.rsi1m);
 
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
