@@ -1337,7 +1337,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.rsi1m.signal === 'buy' &&
                 // indicatorsData.obv1h.buySignalCount >= 2 &&
                 // indicatorsData.obv30m.buySignalCount >= 2 &&
-                indicatorsData.obv15m.buySignalCount >= 2 &&
+                indicatorsData.obv15m.buySignalCount >= 4 &&
                 indicatorsData.obv5m.buySignalCount >= 2 &&
                 // indicatorsData.obv1m.buySignalCount >= 2 &&
                 // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
@@ -1486,7 +1486,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.rsi1m.signal === 'sell' &&
                 // indicatorsData.obv1h.sellSignalCount >= 2 &&
                 // indicatorsData.obv30m.sellSignalCount >= 2 &&
-                indicatorsData.obv15m.sellSignalCount >= 2 &&
+                indicatorsData.obv15m.sellSignalCount >= 4 &&
                 indicatorsData.obv5m.sellSignalCount >= 2 &&
                 // indicatorsData.obv1m.sellSignalCount >= 2 &&
                 // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
