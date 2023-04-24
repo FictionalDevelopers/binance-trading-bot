@@ -1334,7 +1334,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-                // indicatorsData.rsi1m.signal === 'buy' &&
+                indicatorsData.rsi5m.signal === 'buy' &&
                 // indicatorsData.obv1h.buySignalCount >= 2 &&
                 // indicatorsData.obv30m.buySignalCount >= 2 &&
                 indicatorsData.obv15m.buySignalCount >= 4 &&
@@ -1483,7 +1483,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-                // indicatorsData.rsi1m.signal === 'sell' &&
+                indicatorsData.rsi5m.signal === 'sell' &&
                 // indicatorsData.obv1h.sellSignalCount >= 2 &&
                 // indicatorsData.obv30m.sellSignalCount >= 2 &&
                 indicatorsData.obv15m.sellSignalCount >= 4 &&
@@ -2384,7 +2384,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
-  // getRSISignal(symbol, '5m', 4, indicatorsData.rsi1m);
+  getRSISignal(symbol, '5m', 4, indicatorsData.rsi5m);
 
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
