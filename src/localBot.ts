@@ -138,7 +138,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: true,
-      status: 'buy',
+      status: 'pending',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -2481,12 +2481,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   // );
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 2, 2);
-  getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
+  // getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
-  getDMISignal(symbol, '1m', 2, indicatorsData.dmi1m, botState, true, false);
-  getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, false);
+  // getDMISignal(symbol, '1m', 2, indicatorsData.dmi1m, botState, true, false);
+  // getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, false);
   // getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, false);
   // getRSISignal(symbol, '1m', 14, indicatorsData.rsi1m);
   // getDMISignal(symbol, '15m', 2, indicatorsData.dmi5m, botState, true, true);
@@ -2502,12 +2502,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getRSISignal(symbol, '15m', 4, indicatorsData.rsi5m);
   // getRSISignal(symbol, '15m', 14, indicatorsData.rsi15m);
   // getRSISignal(symbol, '5m', indicatorsData.rsi5m);
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 2, 2);
+  getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
-  // getDMISignal(symbol, '1h', 4, indicatorsData.dmi1h, botState, true, false);
-  // getDMISignal(symbol, '15m', 4, indicatorsData.dmi15m, botState, true, false);
+  getDMISignal(symbol, '1h', 2, indicatorsData.dmi1h, botState, true, false);
+  getDMISignal(symbol, '4h', 2, indicatorsData.dmi4h, botState, true, false);
   // getDMISignal(symbol, '5m', 4, indicatorsData.dmi5m, botState, true, false);
   // getDMISignal(symbol, '1m', 4, indicatorsData.dmi1m, botState, true, false);
   // getHeikinAshiSignal(symbol, '1m', 6, 6, indicatorsData.haCandle.ha1mCandle);
@@ -3068,17 +3069,17 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       );
       calculateAvgDealPriceChange(botState, indicatorsData);
       // indicatorsData.dealType = determineDealType(indicatorsData, 4);
-      // console.log(
-      //   'OBV 4h: ' +
-      //     indicatorsData.obv4h.signal +
-      //     ' ' +
-      //     '(Buy Count: ' +
-      //     indicatorsData.obv4h.buySignalCount +
-      //     ' ' +
-      //     'Sell Count: ' +
-      //     indicatorsData.obv4h.sellSignalCount +
-      //     ')',
-      // );
+      console.log(
+        'OBV 4h: ' +
+          indicatorsData.obv4h.signal +
+          ' ' +
+          '(Buy Count: ' +
+          indicatorsData.obv4h.buySignalCount +
+          ' ' +
+          'Sell Count: ' +
+          indicatorsData.obv4h.sellSignalCount +
+          ')',
+      );
       // console.log(
       //   'OBV Av 5m: ' +
       //     '(Buy Count: ' +
@@ -3195,23 +3196,34 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           indicatorsData.obv1m.sellSignalCount +
           ')',
       );
-      // console.log(
-      //   'ADX 1h: ' +
-      //     'TREND: ' +
-      //     indicatorsData.dmi1h.trend +
-      //     ' ' +
-      //     '(UP: ' +
-      //     indicatorsData.dmi1h.adxBuySignalVolume +
-      //     ' ' +
-      //     'DOWN: ' +
-      //     indicatorsData.dmi1h.adxSellSignalVolume +
-      //     ' ' +
-      //     'Current: ' +
-      //     indicatorsData.dmi1h.adx +
-      //     ') ' +
-      //     'willPriceGrow: ' +
-      //     indicatorsData.dmi1h.willPriceGrow,
-      // );
+      console.log(
+        'ADX 4h: ' +
+          '(UP: ' +
+          indicatorsData.dmi4h.adxBuySignalVolume +
+          ' DOWN: ' +
+          indicatorsData.dmi4h.adxSellSignalVolume +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi4h.adx,
+        ')',
+      );
+      console.log(
+        'ADX 1h: ' +
+          'TREND: ' +
+          indicatorsData.dmi1h.trend +
+          ' ' +
+          '(UP: ' +
+          indicatorsData.dmi1h.adxBuySignalVolume +
+          ' ' +
+          'DOWN: ' +
+          indicatorsData.dmi1h.adxSellSignalVolume +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi1h.adx +
+          ') ' +
+          'willPriceGrow: ' +
+          indicatorsData.dmi1h.willPriceGrow,
+      );
       console.log(
         'ADX 1m: ' +
           '(UP: ' +
@@ -3265,17 +3277,6 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           ' ' +
           'Current: ' +
           indicatorsData.dmi15m.adx,
-        ')',
-      );
-      console.log(
-        'ADX 4h: ' +
-          '(UP: ' +
-          indicatorsData.dmi4h.adxBuySignalVolume +
-          ' DOWN: ' +
-          indicatorsData.dmi4h.adxSellSignalVolume +
-          ' ' +
-          'Current: ' +
-          indicatorsData.dmi4h.adx,
         ')',
       );
 
