@@ -1334,8 +1334,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-                indicatorsData.rsi1h.signal === 'buy' &&
-                indicatorsData.rsi5m.signal === 'buy' &&
+                // indicatorsData.rsi1h.signal === 'buy' &&
+                // indicatorsData.rsi5m.signal === 'buy' &&
                 // indicatorsData.obv1h.buySignalCount >= 2 &&
                 // indicatorsData.obv30m.buySignalCount >= 2 &&
                 indicatorsData.obv15m.buySignalCount >= 2 &&
@@ -1484,8 +1484,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-                indicatorsData.rsi1h.signal === 'sell' &&
-                indicatorsData.rsi5m.signal === 'sell' &&
+                // indicatorsData.rsi1h.signal === 'sell' &&
+                // indicatorsData.rsi5m.signal === 'sell' &&
                 // indicatorsData.obv1h.sellSignalCount >= 2 &&
                 // indicatorsData.obv30m.sellSignalCount >= 2 &&
                 indicatorsData.obv15m.sellSignalCount >= 2 &&
@@ -2350,20 +2350,20 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getCRSIStream({ symbol, interval: '5m' }, indicatorsData.crsi.crsi5m);
   // getCRSIStream({ symbol, interval: '1m' }, indicatorsData.crsi.crsi1m);
 
-  // calculateAvgPriceChange(
-  //   symbol,
-  //   RESOURCES.TRADE,
-  //   25,
-  //   botState,
-  //   indicatorsData.avgPrices.avgBig,
-  // );
-  // calculateAvgPriceChange(
-  //   symbol,
-  //   RESOURCES.TRADE,
-  //   10,
-  //   botState,
-  //   indicatorsData.avgPrices.avgSmall,
-  // );
+  calculateAvgPriceChange(
+    symbol,
+    RESOURCES.TRADE,
+    25,
+    botState,
+    indicatorsData.avgPrices.avgBig,
+  );
+  calculateAvgPriceChange(
+    symbol,
+    RESOURCES.TRADE,
+    10,
+    botState,
+    indicatorsData.avgPrices.avgSmall,
+  );
 
   /** *******************************INDICATORS SECTION**************************************/
 
@@ -2387,8 +2387,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
   getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
-  getRSISignal(symbol, '1h', 4, indicatorsData.rsi1h);
-  getRSISignal(symbol, '5m', 4, indicatorsData.rsi5m);
+  // getRSISignal(symbol, '1h', 4, indicatorsData.rsi1h);
+  // getRSISignal(symbol, '5m', 4, indicatorsData.rsi5m);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
