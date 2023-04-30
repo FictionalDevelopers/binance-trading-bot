@@ -1338,12 +1338,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.rsi5m.signal === 'buy' &&
                 // indicatorsData.obv1h.buySignalCount >= 2 &&
                 // indicatorsData.obv30m.buySignalCount >= 2 &&
-                indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2 &&
-                indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 2 &&
-                indicatorsData.obv15m.buySignalCount >= 3 &&
-                indicatorsData.obv5m.buySignalCount >= 3 &&
+                // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2 &&
+                // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 2 &&
+                indicatorsData.obv15m.buySignalCount >= 2 &&
+                indicatorsData.obv5m.buySignalCount >= 2 &&
                 // indicatorsData.obv1m.buySignalCount >= 2 &&
-                // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
                 indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
                 indicatorsData.dmi1m.adxBuySignalVolume >= 1,
           // indicatorsData.dmi4h.adxBuySignalVolume >= 5,
@@ -1489,13 +1490,15 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.rsi5m.signal === 'sell' &&
                 // indicatorsData.obv1h.sellSignalCount >= 2 &&
                 // indicatorsData.obv30m.sellSignalCount >= 2 &&
-                indicatorsData.obv15m.sellSignalCount >= 3 &&
-                indicatorsData.obv5m.sellSignalCount >= 3 &&
-                indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2 &&
-                indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
-                  2 &&
+                indicatorsData.obv15m.sellSignalCount >= 2 &&
+                indicatorsData.obv5m.sellSignalCount >= 2 &&
+                // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2 &&
+                // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
+                //   2 &&
                 // indicatorsData.obv1m.sellSignalCount >= 2 &&
                 // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
                 indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
                 indicatorsData.dmi1m.adxBuySignalVolume >= 1,
           // indicatorsData.dmi4h.adxBuySignalVolume >= 5,
@@ -1689,7 +1692,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               // indicatorsData.obv30m.sellSignalCount >= 8 &&
               indicatorsData.obv15m.sellSignalCount >= 2 &&
               indicatorsData.obv5m.sellSignalCount >= 2 &&
-              // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
+              indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
+              indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
               indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
               indicatorsData.dmi1m.adxBuySignalVolume >= 1,
             // ||
@@ -1873,6 +1877,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               indicatorsData.obv15m.buySignalCount >= 2 &&
               indicatorsData.obv5m.buySignalCount >= 2 &&
               // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
+              indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
+              indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
               indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
               indicatorsData.dmi1m.adxBuySignalVolume >= 1,
             // ||
@@ -2352,20 +2358,20 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getCRSIStream({ symbol, interval: '5m' }, indicatorsData.crsi.crsi5m);
   // getCRSIStream({ symbol, interval: '1m' }, indicatorsData.crsi.crsi1m);
 
-  calculateAvgPriceChange(
-    symbol,
-    RESOURCES.TRADE,
-    25,
-    botState,
-    indicatorsData.avgPrices.avgBig,
-  );
-  calculateAvgPriceChange(
-    symbol,
-    RESOURCES.TRADE,
-    10,
-    botState,
-    indicatorsData.avgPrices.avgSmall,
-  );
+  // calculateAvgPriceChange(
+  //   symbol,
+  //   RESOURCES.TRADE,
+  //   25,
+  //   botState,
+  //   indicatorsData.avgPrices.avgBig,
+  // );
+  // calculateAvgPriceChange(
+  //   symbol,
+  //   RESOURCES.TRADE,
+  //   10,
+  //   botState,
+  //   indicatorsData.avgPrices.avgSmall,
+  // );
 
   /** *******************************INDICATORS SECTION**************************************/
 
@@ -2396,8 +2402,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
   getDMISignal(symbol, '1m', 2, indicatorsData.dmi1m, botState, true, false);
   getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, false);
-  // getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, false);
-  // getDMISignal(symbol, '15m', 2, indicatorsData.dmi4h, botState, true, false);
+  getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, false);
+  getDMISignal(symbol, '1m', 14, indicatorsData.dmi30m, botState, true, false);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);

@@ -138,7 +138,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: true,
-      status: 'buy',
+      status: 'pending',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -2454,20 +2454,20 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getCRSIStream({ symbol, interval: '5m' }, indicatorsData.crsi.crsi5m);
   // getCRSIStream({ symbol, interval: '1m' }, indicatorsData.crsi.crsi1m);
 
-  calculateAvgPriceChange(
-    symbol,
-    RESOURCES.TRADE,
-    25,
-    botState,
-    indicatorsData.avgPrices.avgBig,
-  );
-  calculateAvgPriceChange(
-    symbol,
-    RESOURCES.TRADE,
-    10,
-    botState,
-    indicatorsData.avgPrices.avgSmall,
-  );
+  // calculateAvgPriceChange(
+  //   symbol,
+  //   RESOURCES.TRADE,
+  //   25,
+  //   botState,
+  //   indicatorsData.avgPrices.avgBig,
+  // );
+  // calculateAvgPriceChange(
+  //   symbol,
+  //   RESOURCES.TRADE,
+  //   10,
+  //   botState,
+  //   indicatorsData.avgPrices.avgSmall,
+  // );
 
   /** *******************************INDICATORS SECTION**************************************/
 
@@ -2490,13 +2490,14 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   // );
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 2, 2);
-  getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
+  // getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
   getDMISignal(symbol, '1m', 2, indicatorsData.dmi1m, botState, true, false);
   getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, false);
   getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, false);
+  getDMISignal(symbol, '1m', 14, indicatorsData.dmi30m, botState, true, false);
   // getRSISignal(symbol, '1m', 14, indicatorsData.rsi1m);
   // getDMISignal(symbol, '15m', 2, indicatorsData.dmi5m, botState, true, true);
   // getDMISignal(symbol, '15m', 4, indicatorsData.dmi15m, botState, true, true);
@@ -3289,17 +3290,17 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         ')',
       );
 
-      // console.log(
-      //   'ADX 15m: ' +
-      //     '(UP: ' +
-      //     indicatorsData.dmi15m.adxBuySignalVolume +
-      //     ' DOWN: ' +
-      //     indicatorsData.dmi15m.adxSellSignalVolume +
-      //     ' ' +
-      //     'Current: ' +
-      //     indicatorsData.dmi15m.adx,
-      //   ')',
-      // );
+      console.log(
+        'ADX 30m: ' +
+          '(UP: ' +
+          indicatorsData.dmi30m.adxBuySignalVolume +
+          ' DOWN: ' +
+          indicatorsData.dmi30m.adxSellSignalVolume +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi30m.adx,
+        ')',
+      );
       // console.log(
       //   'ADX 15m_1: ' +
       //     '(UP: ' +
