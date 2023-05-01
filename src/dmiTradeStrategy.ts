@@ -1340,8 +1340,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.obv30m.buySignalCount >= 2 &&
                 // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2 &&
                 // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 2 &&
-                indicatorsData.obv15m.buySignalCount >= 2 &&
-                indicatorsData.obv5m.buySignalCount >= 2 &&
+                indicatorsData.obv15m.buySignalCount >= 3 &&
+                indicatorsData.obv5m.buySignalCount >= 3 &&
                 // indicatorsData.obv1m.buySignalCount >= 2 &&
                 indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
                 indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
@@ -1490,8 +1490,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.rsi5m.signal === 'sell' &&
                 // indicatorsData.obv1h.sellSignalCount >= 2 &&
                 // indicatorsData.obv30m.sellSignalCount >= 2 &&
-                indicatorsData.obv15m.sellSignalCount >= 2 &&
-                indicatorsData.obv5m.sellSignalCount >= 2 &&
+                indicatorsData.obv15m.sellSignalCount >= 3 &&
+                indicatorsData.obv5m.sellSignalCount >= 3 &&
                 // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2 &&
                 // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
                 //   2 &&
@@ -2407,7 +2407,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
   // getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
   // getObvSignal(symbol, '15m', indicatorsData.obv15m, 2, 2);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60);
