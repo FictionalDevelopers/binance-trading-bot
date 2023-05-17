@@ -1357,9 +1357,10 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // (indicatorsData.dmi1h.adxBuySignalVolume >= 1 ||
                 //   indicatorsData.dmi1h.adxSellSignalVolume >= 1) &&
                 // indicatorsData.dmi1h.adxBuySignalVolume >= 10 &&
-                indicatorsData.dmi1m.adxBuySignalVolume >= 3 &&
-                indicatorsData.dmi5m.adxBuySignalVolume >= 3 &&
-                indicatorsData.dmi15m.adxBuySignalVolume >= 3,
+                indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
+                indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi15m.adxBuySignalVolume >= 1,
           // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
           // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
           // indicatorsData.dmi4h.adxBuySignalVolume >= 5,
@@ -1514,9 +1515,10 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
                 //   2 &&
                 // indicatorsData.obv1m.sellSignalCount >= 2 &&
-                indicatorsData.dmi1m.adxBuySignalVolume >= 3 &&
-                indicatorsData.dmi5m.adxBuySignalVolume >= 3 &&
-                indicatorsData.dmi15m.adxBuySignalVolume >= 3,
+                indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
+                indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi15m.adxBuySignalVolume >= 1,
           // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
           // (indicatorsData.dmi1h.adxBuySignalVolume >= 1 ||
           //   indicatorsData.dmi1h.adxSellSignalVolume >= 1) &&
@@ -1721,9 +1723,10 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               // indicatorsData.dmi1h.adxBuySignalVolume >= 10 &&
               // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
               // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
-              indicatorsData.dmi1m.adxBuySignalVolume >= 3 &&
-              indicatorsData.dmi5m.adxBuySignalVolume >= 3 &&
-              indicatorsData.dmi15m.adxBuySignalVolume >= 3,
+              indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
+              indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
+              indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
+              indicatorsData.dmi15m.adxBuySignalVolume >= 1,
             // ||
             // (indicatorsData.dmi15m.adxSellSignalVolume >= 1 &&
             //   indicatorsData.dmi5m.adxSellSignalVolume >= 1 &&
@@ -1907,9 +1910,10 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               // indicatorsData.obv30m.buySignalCount >= 8 &&
               indicatorsData.obv15m.buySignalCount >= 2 &&
               indicatorsData.obv5m.buySignalCount >= 2 &&
-              indicatorsData.dmi1m.adxBuySignalVolume >= 3 &&
-              indicatorsData.dmi5m.adxBuySignalVolume >= 3 &&
-              indicatorsData.dmi15m.adxBuySignalVolume >= 3,
+              indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
+              indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
+              indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
+              indicatorsData.dmi15m.adxBuySignalVolume >= 1,
             // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
             // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
             // indicatorsData.dmi1h.adxBuySignalVolume >= 10 &&
@@ -2440,12 +2444,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
   // getDMISignal(symbol, '1h', 2, indicatorsData.dmi1h, botState, true, false);
   // getDMISignal(symbol, '30m', 2, indicatorsData.dmi30m, botState, true, false);
-  getDMISignal(symbol, '5m', 2, indicatorsData.dmi1m, botState, true, false);
-  getDMISignal(symbol, '5m', 4, indicatorsData.dmi5m, botState, true, false);
-  getDMISignal(symbol, '5m', 8, indicatorsData.dmi15m, botState, true, false);
-  getDMISignal(symbol, '15m', 2, indicatorsData.dmi4h, botState, true, false);
-  getDMISignal(symbol, '15m', 4, indicatorsData.dmi1h, botState, true, false);
-  getDMISignal(symbol, '15m', 8, indicatorsData.dmi30m, botState, true, false);
+  getDMISignal(symbol, '1m', 2, indicatorsData.dmi1m, botState, true, false);
+  getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, false);
+  getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, false);
+  getDMISignal(symbol, '5m', 2, indicatorsData.dmi4h, botState, true, false);
+  getDMISignal(symbol, '5m', 4, indicatorsData.dmi1h, botState, true, false);
+  getDMISignal(symbol, '5m', 8, indicatorsData.dmi30m, botState, true, false);
   // getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, false);
   // getDMISignal(symbol, '1m', 14, indicatorsData.dmi30m, botState, true, false);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 20, 20);
