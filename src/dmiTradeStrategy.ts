@@ -3683,16 +3683,16 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       // console.log('OBV 1m: ' + indicatorsData.obv1m.obvDiff);
       botState.updateState('isPricesStreamAlive', false);
       indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount++;
-      if (
-        indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount >= 100
-      ) {
-        console.log(`WARNING (LOCAL) !!! TRENDS CATCHER
-            Prices stream is DEAD!!! Be ready to restart the bot!
-      `);
-        await sendToRecipients(`WARNING (LOCAL) !!! TRENDS CATCHER
-            Prices stream is DEAD!!! Be ready to restart the bot!
-      `);
-      }
+      // if (
+      //   indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount >= 100
+      // ) {
+      //   console.log(`WARNING (LOCAL) !!! TRENDS CATCHER
+      //       Prices stream is DEAD!!! Be ready to restart the bot!
+      // `);
+      //   await sendToRecipients(`WARNING (LOCAL) !!! TRENDS CATCHER
+      //       Prices stream is DEAD!!! Be ready to restart the bot!
+      // `);
+      // }
     }, 500);
   })();
 
