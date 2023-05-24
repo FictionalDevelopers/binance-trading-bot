@@ -1657,12 +1657,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              ((indicatorsData.obv15m.sellSignalCount >= 5 &&
-                indicatorsData.obv5m.sellSignalCount >= 5 &&
-                indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
-                indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
-                indicatorsData.dmi1m.adxBuySignalVolume >= 10) ||
-                indicatorsData.rsi5m.signal === 'sell'),
+              indicatorsData.obv15m.sellSignalCount >= 5 &&
+              indicatorsData.obv5m.sellSignalCount >= 5 &&
+              indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
+              indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
+              indicatorsData.dmi1m.adxBuySignalVolume >= 10,
+            // ||
+            // indicatorsData.rsi5m.signal === 'sell'
 
             // indicatorsData.obv15m.sellSignalCount >= 20 &&
             // indicatorsData.obv5m.sellSignalCount >= 20 &&
@@ -1821,12 +1822,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              ((indicatorsData.obv15m.buySignalCount >= 5 &&
-                indicatorsData.obv5m.buySignalCount >= 5 &&
-                indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
-                indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
-                indicatorsData.dmi1m.adxBuySignalVolume >= 10) ||
-                indicatorsData.rsi5m.signal === 'buy'),
+              indicatorsData.obv15m.buySignalCount >= 5 &&
+              indicatorsData.obv5m.buySignalCount >= 5 &&
+              indicatorsData.dmi15m.adxBuySignalVolume >= 10 &&
+              indicatorsData.dmi5m.adxBuySignalVolume >= 10 &&
+              indicatorsData.dmi1m.adxBuySignalVolume >= 10,
+            // ||
+            // indicatorsData.rsi5m.signal === 'buy'
 
             // indicatorsData.obv15m.buySignalCount >= 20 &&
             // indicatorsData.obv5m.buySignalCount >= 20 &&
