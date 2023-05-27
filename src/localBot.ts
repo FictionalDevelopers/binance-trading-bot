@@ -1449,9 +1449,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
+                indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+                indicatorsData.obv5m.buySignalCount >= 2 &&
                 // indicatorsData.dmi1h.trend === 'UP' &&
-                indicatorsData.dmi1h.willPriceGrow,
-          // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+                ((indicatorsData.dmi1h.trend === 'UP' &&
+                  indicatorsData.dmi1h.adxBuySignalVolume >= 1) ||
+                  (indicatorsData.dmi1h.trend === 'DOWN' &&
+                    indicatorsData.dmi1h.adxSellSignalVolume >= 2)),
           // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 4 &&
           // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4 &&
           // indicatorsData.rsi1m.signal === 'buy' &&
@@ -1599,11 +1603,18 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           // indicatorsData.haCandle.ha4hCandle.signal === 'buy' &&
           // indicatorsData.obv1d.buySignalCount >= 30 &&
           // indicatorsData.haCandle.ha1hCandle.signal === 'buy',
-          short: botState.initialDealType === 'long' ? null : null,
-          // botState.status === 'buy' &&
+          short:
+            botState.initialDealType === 'long'
+              ? null
+              : botState.status === 'buy' &&
+                indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+                indicatorsData.obv5m.sellSignalCount >= 2 &&
+                ((indicatorsData.dmi1h.trend === 'DOWN' &&
+                  indicatorsData.dmi1h.adxBuySignalVolume >= 1) ||
+                  (indicatorsData.dmi1h.trend === 'UP' &&
+                    indicatorsData.dmi1h.adxSellSignalVolume >= 2)),
           // indicatorsData.dmi1h.trend === 'DOWN' &&
           // indicatorsData.dmi1h.willPriceGrow,
-          // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
           // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 4 &&
           // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
           //   4 &&
@@ -1611,7 +1622,6 @@ import { getStochRSISignal } from './components/stochRSI-signals';
           // indicatorsData.obv1h.sellSignalCount >= 2 &&
           // indicatorsData.obv30m.sellSignalCount >= 2 &&
           // indicatorsData.obv15m.sellSignalCount >= 8 &&
-          // indicatorsData.obv5m.sellSignalCount >= 20 &&
           // indicatorsData.obv1m.buySignalCount >= 2 &&
           // indicatorsData.obv1m.sellSignalCount >= 2 &&
           // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
@@ -1806,14 +1816,18 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              // indicatorsData.dmi1h.trend === 'UP' &&
-              !indicatorsData.dmi1h.willPriceGrow,
+              // indicatorsData.obv5m.sellSignalCount >= 2,
+              ((indicatorsData.dmi1h.trend === 'DOWN' &&
+                indicatorsData.dmi1h.adxBuySignalVolume >= 1) ||
+                (indicatorsData.dmi1h.trend === 'UP' &&
+                  indicatorsData.dmi1h.adxSellSignalVolume >= 1)),
+            // indicatorsData.dmi1h.trend === 'UP' &&
+            // indicatorsData.dmi1h.trend === 'UP' && indicatorsData.dmi1h.adx
             // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 4 &&
             // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >= 4 &&
             // indicatorsData.obv1h.sellSignalCount >= 2 &&
             // indicatorsData.obv30m.sellSignalCount >= 8 &&
             // indicatorsData.obv15m.sellSignalCount >= 2 &&
-            // indicatorsData.obv5m.sellSignalCount >= 20 &&
             // indicatorsData.obv1m.sellSignalCount >= 2 &&
             // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
             // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
@@ -1994,16 +2008,20 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 4 &&
-              // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4 &&
-              // indicatorsData.obv1h.buySignalCount >= 2 &&
-              // indicatorsData.obv30m.buySignalCount >= 8 &&
-              indicatorsData.obv15m.buySignalCount >= 2 &&
-              // indicatorsData.obv5m.buySignalCount >= 20 &&
-              // indicatorsData.obv1m.buySignalCount >= 2 &&
-              indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
-              indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
-              indicatorsData.dmi1m.adxBuySignalVolume >= 1,
+              // indicatorsData.obv5m.buySignalCount >= 2,
+              ((indicatorsData.dmi1h.trend === 'UP' &&
+                indicatorsData.dmi1h.adxBuySignalVolume >= 1) ||
+                (indicatorsData.dmi1h.trend === 'DOWN' &&
+                  indicatorsData.dmi1h.adxSellSignalVolume >= 1)),
+            // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 4 &&
+            // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 4 &&
+            // indicatorsData.obv1h.buySignalCount >= 2 &&
+            // indicatorsData.obv30m.buySignalCount >= 8 &&
+            // indicatorsData.obv15m.buySignalCount >= 2 &&
+            // indicatorsData.obv1m.buySignalCount >= 2 &&
+            // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
+            // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
+            // indicatorsData.dmi1m.adxBuySignalVolume >= 1,
             // ||
             // (indicatorsData.dmi15m.adxSellSignalVolume >= 1 &&
             //   indicatorsData.dmi5m.adxSellSignalVolume >= 1 &&
@@ -2516,13 +2534,13 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   //   2,
   // );
-  // getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
+  getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
   // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
   // getObvSignal(symbol, '30m', indicatorsData.obv30m, 2, 2);
   // getObvSignal(symbol, '1m', indicatorsData.obv1h, 60, 60, true);
   // getObvSignal(symbol, '1m', indicatorsData.obv30m, 60, 60, false);
-  // getObvSignal(symbol, '5m', indicatorsData.obv15m, 60, 60, true);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, true);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, false);
   getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   // getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, false);
@@ -3265,23 +3283,23 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       //     indicatorsData.dmi4h.adx,
       //   ')',
       // );
-      // console.log(
-      //   'ADX 1h: ' +
-      //     'TREND: ' +
-      //     indicatorsData.dmi1h.trend +
-      //     ' ' +
-      //     '(UP: ' +
-      //     indicatorsData.dmi1h.adxBuySignalVolume +
-      //     ' ' +
-      //     'DOWN: ' +
-      //     indicatorsData.dmi1h.adxSellSignalVolume +
-      //     ' ' +
-      //     'Current: ' +
-      //     indicatorsData.dmi1h.adx +
-      //     ') ' +
-      //     'willPriceGrow: ' +
-      //     indicatorsData.dmi1h.willPriceGrow,
-      // );
+      console.log(
+        'ADX 1h: ' +
+          'TREND: ' +
+          indicatorsData.dmi1h.trend +
+          ' ' +
+          '(UP: ' +
+          indicatorsData.dmi1h.adxBuySignalVolume +
+          ' ' +
+          'DOWN: ' +
+          indicatorsData.dmi1h.adxSellSignalVolume +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi1h.adx +
+          ') ' +
+          'willPriceGrow: ' +
+          indicatorsData.dmi1h.willPriceGrow,
+      );
       console.log(
         'ADX 1m: ' +
           '(UP: ' +
