@@ -1453,7 +1453,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 indicatorsData.obv5m.buySignalCount >= 2 &&
                 // indicatorsData.dmi1h.trend === 'UP' &&
                 ((indicatorsData.dmi1h.trend === 'UP' &&
-                  indicatorsData.dmi1h.adxBuySignalVolume >= 1) ||
+                  indicatorsData.dmi1h.adxBuySignalVolume >= 2) ||
                   (indicatorsData.dmi1h.trend === 'DOWN' &&
                     indicatorsData.dmi1h.adxSellSignalVolume >= 2)),
           // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 4 &&
@@ -1610,7 +1610,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
                 indicatorsData.obv5m.sellSignalCount >= 2 &&
                 ((indicatorsData.dmi1h.trend === 'DOWN' &&
-                  indicatorsData.dmi1h.adxBuySignalVolume >= 1) ||
+                  indicatorsData.dmi1h.adxBuySignalVolume >= 2) ||
                   (indicatorsData.dmi1h.trend === 'UP' &&
                     indicatorsData.dmi1h.adxSellSignalVolume >= 2)),
           // indicatorsData.dmi1h.trend === 'DOWN' &&
