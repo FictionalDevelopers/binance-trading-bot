@@ -347,8 +347,16 @@ export const marketSellAction = async (
           RSI 1h: ${indicatorsData.rsi1h.rsiValue}        
           RSI 5m: ${indicatorsData.rsi5m.rsiValue}        
           RSI 1m: ${indicatorsData.rsi1m.rsiValue}
-          ATR 5m: ${indicatorsData.atr.atr5m.prevAtr}
-          ATR 1m: ${indicatorsData.atr.atr1m.prevAtr}
+          ATR 5m: ${indicatorsData.atr.atr5m.prevAtr +
+            ' UP: ' +
+            indicatorsData.atr.atr5m.buySignalCount +
+            'DOWN: ' +
+            indicatorsData.atr.atr5m.downSignalCount}
+          ATR 1m: ${indicatorsData.atr.atr1m.prevAtr +
+            ' UP: ' +
+            indicatorsData.atr.atr1m.buySignalCount +
+            'DOWN: ' +
+            indicatorsData.atr.atr1m.downSignalCount}
           ADX 1m: ${'(UP: ' +
             indicatorsData.dmi1m.adxBuySignalVolume +
             ' ' +
@@ -880,8 +888,16 @@ export const marketBuyAction = async (
         RSI 1h: ${indicatorsData.rsi1h.rsiValue}        
         RSI 5m: ${indicatorsData.rsi5m.rsiValue}        
         RSI 1m: ${indicatorsData.rsi1m.rsiValue}        
-        ATR 5m: ${indicatorsData.atr.atr5m.prevAtr}
-        ATR 1m: ${indicatorsData.atr.atr1m.prevAtr}
+        ATR 5m: ${indicatorsData.atr.atr5m.prevAtr +
+          ' UP: ' +
+          indicatorsData.atr.atr5m.buySignalCount +
+          'DOWN: ' +
+          indicatorsData.atr.atr5m.downSignalCount}
+        ATR 1m: ${indicatorsData.atr.atr1m.prevAtr +
+          ' UP: ' +
+          indicatorsData.atr.atr1m.buySignalCount +
+          'DOWN: ' +
+          indicatorsData.atr.atr1m.downSignalCount}
        ADX 1m: ${'(UP: ' +
          indicatorsData.dmi1m.adxBuySignalVolume +
          ' ' +
