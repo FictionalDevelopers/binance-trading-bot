@@ -1780,6 +1780,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             // indicatorsData.obv1m.sellSignalCount >= 4,
             // indicatorsData.dmi5m.adxBuySignalVolume >= 8,
             // indicatorsData.dmi5m.adxBuySignalVolume >= 6,
+            // indicatorsData.dmi5m.adxBuySignalVolume >= 6,
             // (indicatorsData.dmi5m.adxSellSignalVolume >= 1 ||
             //   indicatorsData.dmi5m.adxBuySignalVolume >= 2),
             // (indicatorsData.dmi15m.adxSellSignalVolume >= 1 ||
@@ -2436,6 +2437,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
   getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
   getATRSignal(symbol, '5m', 1, indicatorsData.atr.atr5m);
+  getATRSignal(symbol, '1m', 1, indicatorsData.atr.atr1m);
 
   // getHeikinAshiSignal(symbol, '5m', 4, 4, indicatorsData.haCandle.ha5mCandle);
   // getRSISignal(symbol, '1m', 14, indicatorsData.rsi1m);

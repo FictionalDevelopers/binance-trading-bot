@@ -348,6 +348,7 @@ export const marketSellAction = async (
           RSI 5m: ${indicatorsData.rsi5m.rsiValue}        
           RSI 1m: ${indicatorsData.rsi1m.rsiValue}
           ATR 5m: ${indicatorsData.atr.atr5m.prevAtr}
+          ATR 1m: ${indicatorsData.atr.atr1m.prevAtr}
           ADX 1m: ${'(UP: ' +
             indicatorsData.dmi1m.adxBuySignalVolume +
             ' ' +
@@ -880,6 +881,7 @@ export const marketBuyAction = async (
         RSI 5m: ${indicatorsData.rsi5m.rsiValue}        
         RSI 1m: ${indicatorsData.rsi1m.rsiValue}        
         ATR 5m: ${indicatorsData.atr.atr5m.prevAtr}
+        ATR 1m: ${indicatorsData.atr.atr1m.prevAtr}
        ADX 1m: ${'(UP: ' +
          indicatorsData.dmi1m.adxBuySignalVolume +
          ' ' +
