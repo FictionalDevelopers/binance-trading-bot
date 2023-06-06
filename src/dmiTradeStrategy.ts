@@ -1342,7 +1342,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
-                indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
+                // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
                 // indicatorsData.rsi1m.signal === 'buy' &&
                 // indicatorsData.rsi30m.signal === 'buy' &&
                 // indicatorsData.rsi15m.signal === 'buy' &&
@@ -1503,7 +1503,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               ? null
               : botState.status === 'buy' &&
                 indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-                indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
+                // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
                 // indicatorsData.rsi1m.signal === 'sell' &&
                 // indicatorsData.rsi30m.signal === 'sell' &&
                 // indicatorsData.rsi15m.signal === 'sell' &&
@@ -2435,7 +2435,9 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
   getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
-  getHeikinAshiSignal(symbol, '5m', 4, 4, indicatorsData.haCandle.ha5mCandle);
+  getATRSignal(symbol, '5m', 1, indicatorsData.atr.atr5m);
+
+  // getHeikinAshiSignal(symbol, '5m', 4, 4, indicatorsData.haCandle.ha5mCandle);
   // getRSISignal(symbol, '1m', 14, indicatorsData.rsi1m);
   // getRSISignal(symbol, '30m', 2, indicatorsData.rsi30m);
   // getRSISignal(symbol, '15m', 2, indicatorsData.rsi15m);

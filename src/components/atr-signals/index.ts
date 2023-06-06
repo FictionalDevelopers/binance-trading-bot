@@ -14,7 +14,7 @@ export const getATRSignal = (symbol, timeframe, period, indicatorsData) => {
       } else if (indicatorsData.prevAtr < atr) {
         indicatorsData.sellSignalCount = 0;
         indicatorsData.buySignalCount++;
-      } else if (indicatorsData.prevObv === atr) {
+      } else if (indicatorsData.prevAtr === atr) {
         // indicatorsData.sellSignalCount = 0;
         // indicatorsData.buySignalCount = 0;
         // indicatorsData.signal = null;

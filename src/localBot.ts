@@ -2542,8 +2542,8 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // getObvSignal(symbol, '1m', indicatorsData.obv30m, 60, 60, false);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, true);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, false);
-  getDMISignal(symbol, '1h', indicatorsData.dmi1h);
-  getDMISignal(symbol, '15m', indicatorsData.dmi15m);
+  // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
+  // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
   // getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, false);
   // getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, false);
   // getDMISignal(symbol, '15m', 2, indicatorsData.dmi15m, botState, true, false);
@@ -2565,6 +2565,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   true,
   //   false,
   // );
+  getATRSignal(symbol, '5m', 1, indicatorsData.atr.atr5m);
   // getDMISignal(symbol, '1m', 14, indicatorsData.dmi30m, botState, true, false);
   // getRSISignal(symbol, '1m', 14, indicatorsData.rsi1m);
   // getDMISignal(symbol, '15m', 2, indicatorsData.dmi5m, botState, true, true);
@@ -3218,6 +3219,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       //     'down : ' +
       //     indicatorsData.rsi5m.downCount,
       // );
+      console.log('ATR 5m: ' + indicatorsData.atr.atr5m.prevAtr);
       console.log(
         'OBV 1h: ' +
           indicatorsData.obv1h.signal +
