@@ -138,7 +138,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       availableFuturesUSDT: initialFuturesUSDTBalance,
       // availableFuturesCryptocoin: initialFuturesCryptocoinBalance,
       local: true,
-      status: 'buy',
+      status: 'pending',
       testMode: true,
       logToTelegram: true,
       updateState: function(fieldName, value) {
@@ -2535,12 +2535,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   // );
   // getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
-  // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2);
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
-  // getObvSignal(symbol, '30m', indicatorsData.obv30m, 2, 2);
+  getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2, false);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60, false);
+  getObvSignal(symbol, '30m', indicatorsData.obv30m, 2, 2, false);
   // getObvSignal(symbol, '1m', indicatorsData.obv1h, 60, 60, true);
-  // getObvSignal(symbol, '1m', indicatorsData.obv30m, 60, 60, false);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, true);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60, false);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, false);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, false);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
@@ -2565,7 +2565,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   true,
   //   false,
   // );
-  getATRSignal(symbol, '5m', 1, indicatorsData.atr.atr5m);
+  // getATRSignal(symbol, '5m', 1, indicatorsData.atr.atr5m);
   // getDMISignal(symbol, '1m', 14, indicatorsData.dmi30m, botState, true, false);
   // getRSISignal(symbol, '1m', 14, indicatorsData.rsi1m);
   // getDMISignal(symbol, '15m', 2, indicatorsData.dmi5m, botState, true, true);
@@ -3219,7 +3219,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       //     'down : ' +
       //     indicatorsData.rsi5m.downCount,
       // );
-      console.log('ATR 5m: ' + indicatorsData.atr.atr5m.prevAtr);
+      // console.log('ATR 5m: ' + indicatorsData.atr.atr5m.prevAtr);
       console.log(
         'OBV 1h: ' +
           indicatorsData.obv1h.signal +
