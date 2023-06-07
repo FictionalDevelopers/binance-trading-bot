@@ -239,6 +239,12 @@ import { getStochRSISignal } from './components/stochRSI-signals';
         buySignalCount: 0,
         sellSignalCount: 0,
       },
+      atr15m: {
+        prevAtr: null,
+        atr: null,
+        buySignalCount: 0,
+        sellSignalCount: 0,
+      },
     },
     candle: {
       candle1m: null,
@@ -2436,6 +2442,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
   getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
+  getATRSignal(symbol, '15m', 1, indicatorsData.atr.atr15m);
   getATRSignal(symbol, '5m', 1, indicatorsData.atr.atr5m);
   getATRSignal(symbol, '1m', 1, indicatorsData.atr.atr1m);
 
