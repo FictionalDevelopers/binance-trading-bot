@@ -1351,7 +1351,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
                 // indicatorsData.rsi1m.signal === 'buy' &&
                 // indicatorsData.rsi30m.signal === 'buy' &&
-                // indicatorsData.rsi15m.signal === 'buy' &&
+                indicatorsData.rsi15m.signal === 'buy' &&
                 // indicatorsData.obv1h.buySignalCount >= 2 &&
                 // indicatorsData.obv30m.buySignalCount >= 2 &&
                 // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2 &&
@@ -1512,7 +1512,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
                 // indicatorsData.rsi1m.signal === 'sell' &&
                 // indicatorsData.rsi30m.signal === 'sell' &&
-                // indicatorsData.rsi15m.signal === 'sell' &&
+                indicatorsData.rsi15m.signal === 'sell' &&
                 // indicatorsData.obv1h.sellSignalCount >= 2 &&
                 // indicatorsData.obv30m.sellSignalCount >= 2 &&
                 // indicatorsData.obv1h.sellSignalCount >= 2 &&
@@ -2442,17 +2442,17 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
   getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
-  getATRSignal(symbol, '15m', 1, indicatorsData.atr.atr15m);
-  getATRSignal(symbol, '5m', 1, indicatorsData.atr.atr5m);
-  getATRSignal(symbol, '1m', 1, indicatorsData.atr.atr1m);
+  // getATRSignal(symbol, '15m', 1, indicatorsData.atr.atr15m);
+  // getATRSignal(symbol, '5m', 1, indicatorsData.atr.atr5m);
+  // getATRSignal(symbol, '1m', 1, indicatorsData.atr.atr1m);
 
   // getHeikinAshiSignal(symbol, '5m', 4, 4, indicatorsData.haCandle.ha5mCandle);
   // getRSISignal(symbol, '1m', 14, indicatorsData.rsi1m);
   // getRSISignal(symbol, '30m', 2, indicatorsData.rsi30m);
-  // getRSISignal(symbol, '15m', 2, indicatorsData.rsi15m);
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
-  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60);
-  // getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60);
+  getRSISignal(symbol, '15m', 3, indicatorsData.rsi15m);
+  getObvSignal(symbol, '4h', indicatorsData.obv4h, 60, 60, false);
+  getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60, false);
+  getObvSignal(symbol, '30m', indicatorsData.obv30m, 60, 60, false);
   getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60, true);
   getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, true);
   // getObvSignal(symbol, '1m', indicatorsData.obv1m, 60, 60);
