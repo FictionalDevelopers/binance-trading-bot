@@ -1357,11 +1357,11 @@ import { getStochRSISignal } from './components/stochRSI-signals';
                 // indicatorsData.obv30m.buySignalCount >= 2 &&
                 // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2 &&
                 // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 2 &&
-                indicatorsData.obv4h.buySignalCount >= 10 &&
-                indicatorsData.obv2h.buySignalCount >= 10 &&
-                indicatorsData.obv1h.buySignalCount >= 10 &&
-                indicatorsData.obv30m.buySignalCount >= 10 &&
-                indicatorsData.obv5m.buySignalCount >= 4,
+                indicatorsData.obv4h.buySignalCount >= 20 &&
+                indicatorsData.obv2h.buySignalCount >= 20 &&
+                indicatorsData.obv1h.buySignalCount >= 20 &&
+                indicatorsData.obv30m.buySignalCount >= 20,
+          // indicatorsData.obv5m.buySignalCount >= 4,
           // indicatorsData.obv15m.buySignalCount >= 2 &&
           // indicatorsData.obv1m.buySignalCount >= 2 &&
           // (indicatorsData.dmi1h.adxBuySignalVolume >= 1 ||
@@ -1511,11 +1511,11 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv4h.sellSignalCount >= 10 &&
-                indicatorsData.obv2h.sellSignalCount >= 10 &&
-                indicatorsData.obv1h.sellSignalCount >= 10 &&
-                indicatorsData.obv30m.sellSignalCount >= 10 &&
-                indicatorsData.obv5m.sellSignalCount >= 4,
+                indicatorsData.obv4h.sellSignalCount >= 20 &&
+                indicatorsData.obv2h.sellSignalCount >= 20 &&
+                indicatorsData.obv1h.sellSignalCount >= 20 &&
+                indicatorsData.obv30m.sellSignalCount >= 20,
+          // indicatorsData.obv5m.sellSignalCount >= 4,
 
           // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
           // indicatorsData.atr.atr1m.prevAtr >= 0.007 &&
@@ -1730,13 +1730,17 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              // indicatorsData.rsi1h.signal === 'sell' &&
-              // indicatorsData.rsi30m.signal === 'sell' &&
-              // indicatorsData.rsi15m.signal === 'sell' &&
-              // indicatorsData.obv1h.sellSignalCount >= 2 &&
-              // indicatorsData.obv30m.sellSignalCount >= 8 &&
-              // indicatorsData.obv15m.sellSignalCount >= 2 &&
-              indicatorsData.obv5m.sellSignalCount >= 4,
+              indicatorsData.obv4h.sellSignalCount >= 20 &&
+              indicatorsData.obv2h.sellSignalCount >= 20 &&
+              indicatorsData.obv1h.sellSignalCount >= 20 &&
+              indicatorsData.obv30m.sellSignalCount >= 20,
+            // indicatorsData.rsi1h.signal === 'sell' &&
+            // indicatorsData.rsi30m.signal === 'sell' &&
+            // indicatorsData.rsi15m.signal === 'sell' &&
+            // indicatorsData.obv1h.sellSignalCount >= 2 &&
+            // indicatorsData.obv30m.sellSignalCount >= 8 &&
+            // indicatorsData.obv15m.sellSignalCount >= 2 &&
+            // indicatorsData.obv5m.sellSignalCount >= 4,
             // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
             // indicatorsData.dmi1h.adxBuySignalVolume >= 10 &&
             // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
@@ -1922,13 +1926,17 @@ import { getStochRSISignal } from './components/stochRSI-signals';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              // indicatorsData.rsi1h.signal === 'buy' &&
-              // indicatorsData.rsi30m.signal === 'buy' &&
-              // indicatorsData.rsi15m.signal === 'buy' &&
-              // indicatorsData.obv1h.buySignalCount >= 2 &&
-              // indicatorsData.obv30m.buySignalCount >= 8 &&
-              // indicatorsData.obv15m.buySignalCount >= 2 &&
-              indicatorsData.obv5m.buySignalCount >= 4,
+              indicatorsData.obv4h.buySignalCount >= 20 &&
+              indicatorsData.obv2h.buySignalCount >= 20 &&
+              indicatorsData.obv1h.buySignalCount >= 20 &&
+              indicatorsData.obv30m.buySignalCount >= 20,
+            // indicatorsData.rsi1h.signal === 'buy' &&
+            // indicatorsData.rsi30m.signal === 'buy' &&
+            // indicatorsData.rsi15m.signal === 'buy' &&
+            // indicatorsData.obv1h.buySignalCount >= 2 &&
+            // indicatorsData.obv30m.buySignalCount >= 8 &&
+            // indicatorsData.obv15m.buySignalCount >= 2 &&
+            // indicatorsData.obv5m.buySignalCount >= 4,
             // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
             // indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
             // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
@@ -2456,7 +2464,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2, false);
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60, false);
   getObvSignal(symbol, '30m', indicatorsData.obv30m, 2, 2, false);
-  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2, true);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 2, 2, false);
   // getATRSignal(symbol, '15m', 1, indicatorsData.atr.atr15m);
   // getATRSignal(symbol, '5m', 1, indicatorsData.atr.atr5m);
   // getATRSignal(symbol, '1m', 1, indicatorsData.atr.atr1m);
@@ -3842,16 +3850,16 @@ import { getStochRSISignal } from './components/stochRSI-signals';
       // console.log('OBV 1m: ' + indicatorsData.obv1m.obvDiff);
       botState.updateState('isPricesStreamAlive', false);
       indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount++;
-      if (
-        indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount >= 100
-      ) {
-        console.log(`WARNING (LOCAL) !!! TRENDS CATCHER
-            Prices stream is DEAD!!! Be ready to restart the bot!
-      `);
-        await sendToRecipients(`WARNING (LOCAL) !!! TRENDS CATCHER
-            Prices stream is DEAD!!! Be ready to restart the bot!
-      `);
-      }
+      // if (
+      //   indicatorsData.isPricesStreamAliveNegativeSignalConfirmationCount >= 100
+      // ) {
+      //   console.log(`WARNING (LOCAL) !!! TRENDS CATCHER
+      //       Prices stream is DEAD!!! Be ready to restart the bot!
+      // `);
+      //   await sendToRecipients(`WARNING (LOCAL) !!! TRENDS CATCHER
+      //       Prices stream is DEAD!!! Be ready to restart the bot!
+      // `);
+      // }
     }, 500);
   })();
 

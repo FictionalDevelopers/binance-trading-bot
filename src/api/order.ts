@@ -304,14 +304,12 @@ export const marketSellAction = async (
                                       pricesStream[pricesStream.length - 1]
                                     }
                                     Date: ${format(new Date(), DATE_FORMAT)}
-                                    Indicators data:
-                                     OBV 2h: BSC: ${
-                                       indicatorsData.obv2h.buySignalCount
-                                     } SSC: ${
-            indicatorsData.obv2h.sellSignalCount
-          }
+                                    
           OBV 4h: BSC: ${indicatorsData.obv4h.buySignalCount} SSC: ${
             indicatorsData.obv4h.sellSignalCount
+          }
+          OBV 2h: BSC: ${indicatorsData.obv2h.buySignalCount} SSC: ${
+            indicatorsData.obv2h.sellSignalCount
           }
           OBV 1h: BSC: ${indicatorsData.obv1h.buySignalCount} SSC: ${
             indicatorsData.obv1h.sellSignalCount
@@ -846,13 +844,13 @@ export const marketBuyAction = async (
                                Deal №: ${botState.dealsCount}
                                Symbol: ${symbol.toUpperCase()}
                                Price: ${botState.buyPrice}
-                               Date: ${format(new Date(), DATE_FORMAT)}
-        Indicators data: 
-        OBV 2h: BSC: ${indicatorsData.obv2h.buySignalCount} SSC: ${
-          indicatorsData.obv2h.sellSignalCount
-        }
+                               Date: ${format(new Date(), DATE_FORMAT)}        
+        
         OBV 4h: BSC: ${indicatorsData.obv4h.buySignalCount} SSC: ${
           indicatorsData.obv4h.sellSignalCount
+        }
+        OBV 2h: BSC: ${indicatorsData.obv2h.buySignalCount} SSC: ${
+          indicatorsData.obv2h.sellSignalCount
         }
         OBV 1h: BSC: ${indicatorsData.obv1h.buySignalCount} SSC: ${
           indicatorsData.obv1h.sellSignalCount
