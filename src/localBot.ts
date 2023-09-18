@@ -1464,7 +1464,7 @@ import { binance } from './api/binance';
             botState.initialDealType === 'short'
               ? null
               : botState.status === 'buy' &&
-                // indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
+                indicatorsData.haCandle.ha1mCandle.signal === 'buy' &&
                 // indicatorsData.atr.atr1m.prevAtr >= 0.007 &&
                 // indicatorsData.haCandle.ha5mCandle.signal === 'buy' &&
                 // indicatorsData.rsi1m.signal === 'buy' &&
@@ -1474,20 +1474,20 @@ import { binance } from './api/binance';
                 // indicatorsData.obv30m.buySignalCount >= 2 &&
                 // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2 &&
                 // indicatorsData.avgPrices.avgSmall.avgPriceUpSignalCount >= 2 &&
-                indicatorsData.obv4h.buySignalCount >= 20 &&
-                indicatorsData.obv2h.buySignalCount >= 20 &&
-                indicatorsData.obv1h.buySignalCount >= 20 &&
-                indicatorsData.obv30m.buySignalCount >= 20,
-          // indicatorsData.obv5m.buySignalCount >= 4,
-          // indicatorsData.obv15m.buySignalCount >= 2 &&
-          // indicatorsData.obv1m.buySignalCount >= 2 &&
-          // (indicatorsData.dmi1h.adxBuySignalVolume >= 1 ||
-          //   indicatorsData.dmi1h.adxSellSignalVolume >= 1) &&
-          // indicatorsData.dmi1h.adxBuySignalVolume >= 10 &&
-          // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
-          // indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
-          // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
-          // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
+                // indicatorsData.obv4h.buySignalCount >= 20 &&
+                // indicatorsData.obv2h.buySignalCount >= 20 &&
+                // indicatorsData.obv1h.buySignalCount >= 20 &&
+                // indicatorsData.obv30m.buySignalCount >= 20,
+                indicatorsData.obv5m.buySignalCount >= 4 &&
+                indicatorsData.obv15m.buySignalCount >= 4 &&
+                // indicatorsData.obv1m.buySignalCount >= 2 &&
+                // (indicatorsData.dmi1h.adxBuySignalVolume >= 1 ||
+                //   indicatorsData.dmi1h.adxSellSignalVolume >= 1) &&
+                // indicatorsData.dmi1h.adxBuySignalVolume >= 10 &&
+                // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
+                indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi15m.adxBuySignalVolume >= 1,
           // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
           // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
           // indicatorsData.dmi4h.adxBuySignalVolume >= 5,
@@ -1628,32 +1628,32 @@ import { binance } from './api/binance';
             botState.initialDealType === 'long'
               ? null
               : botState.status === 'buy' &&
-                indicatorsData.obv4h.sellSignalCount >= 20 &&
-                indicatorsData.obv2h.sellSignalCount >= 20 &&
-                indicatorsData.obv1h.sellSignalCount >= 20 &&
-                indicatorsData.obv30m.sellSignalCount >= 20,
-          // indicatorsData.obv5m.sellSignalCount >= 4,
-
-          // indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
-          // indicatorsData.atr.atr1m.prevAtr >= 0.007 &&
-          // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
-          // indicatorsData.rsi1m.signal === 'sell' &&
-          // indicatorsData.rsi30m.signal === 'sell' &&
-          // indicatorsData.rsi15m.signal === 'sell' &&
-          // indicatorsData.obv1h.sellSignalCount >= 2 &&
-          // indicatorsData.obv30m.sellSignalCount >= 2 &&
-          // indicatorsData.obv1h.sellSignalCount >= 2 &&
-          // indicatorsData.obv30m.sellSignalCount >= 2 &&
-          // indicatorsData.obv15m.sellSignalCount >= 2 &&
-          // indicatorsData.obv5m.sellSignalCount >= 2 &&
-          // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2 &&
-          // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
-          //   2 &&
-          // indicatorsData.obv1m.sellSignalCount >= 2 &&
-          // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
-          // indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
-          // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
-          // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
+                indicatorsData.haCandle.ha1mCandle.signal === 'sell' &&
+                // indicatorsData.obv4h.sellSignalCount >= 20 &&
+                // indicatorsData.obv2h.sellSignalCount >= 20 &&
+                // indicatorsData.obv1h.sellSignalCount >= 20 &&
+                // indicatorsData.obv30m.sellSignalCount >= 20,
+                indicatorsData.obv15m.sellSignalCount >= 4 &&
+                indicatorsData.obv5m.sellSignalCount >= 4 &&
+                // indicatorsData.atr.atr1m.prevAtr >= 0.007 &&
+                // indicatorsData.haCandle.ha5mCandle.signal === 'sell' &&
+                // indicatorsData.rsi1m.signal === 'sell' &&
+                // indicatorsData.rsi30m.signal === 'sell' &&
+                // indicatorsData.rsi15m.signal === 'sell' &&
+                // indicatorsData.obv1h.sellSignalCount >= 2 &&
+                // indicatorsData.obv30m.sellSignalCount >= 2 &&
+                // indicatorsData.obv1h.sellSignalCount >= 2 &&
+                // indicatorsData.obv30m.sellSignalCount >= 2 &&
+                // indicatorsData.obv15m.sellSignalCount >= 2 &&
+                // indicatorsData.obv5m.sellSignalCount >= 2 &&
+                // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2 &&
+                // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
+                //   2 &&
+                // indicatorsData.obv1m.sellSignalCount >= 2 &&
+                // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
+                indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
+                indicatorsData.dmi15m.adxBuySignalVolume >= 1,
           // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
           // (indicatorsData.dmi1h.adxBuySignalVolume >= 1 ||
           //   indicatorsData.dmi1h.adxSellSignalVolume >= 1) &&
@@ -1847,25 +1847,25 @@ import { binance } from './api/binance';
             long:
               botState.status === 'sell' &&
               botState.dealType === 'long' &&
-              indicatorsData.obv4h.sellSignalCount >= 20 &&
-              indicatorsData.obv2h.sellSignalCount >= 20 &&
-              indicatorsData.obv1h.sellSignalCount >= 20 &&
-              indicatorsData.obv30m.sellSignalCount >= 20,
-            // indicatorsData.rsi1h.signal === 'sell' &&
-            // indicatorsData.rsi30m.signal === 'sell' &&
-            // indicatorsData.rsi15m.signal === 'sell' &&
-            // indicatorsData.obv1h.sellSignalCount >= 2 &&
-            // indicatorsData.obv30m.sellSignalCount >= 8 &&
-            // indicatorsData.obv15m.sellSignalCount >= 2 &&
-            // indicatorsData.obv5m.sellSignalCount >= 4,
-            // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
-            // indicatorsData.dmi1h.adxBuySignalVolume >= 10 &&
-            // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
-            // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
-            // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
-            // indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
-            // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
-            // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
+              // indicatorsData.obv4h.sellSignalCount >= 20 &&
+              // indicatorsData.obv2h.sellSignalCount >= 20 &&
+              // indicatorsData.obv1h.sellSignalCount >= 20 &&
+              // indicatorsData.obv30m.sellSignalCount >= 20,
+              // indicatorsData.rsi1h.signal === 'sell' &&
+              // indicatorsData.rsi30m.signal === 'sell' &&
+              // indicatorsData.rsi15m.signal === 'sell' &&
+              // indicatorsData.obv1h.sellSignalCount >= 2 &&
+              // indicatorsData.obv30m.sellSignalCount >= 8 &&
+              indicatorsData.obv15m.sellSignalCount >= 4 &&
+              indicatorsData.obv5m.sellSignalCount >= 4 &&
+              // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
+              // indicatorsData.dmi1h.adxBuySignalVolume >= 10 &&
+              // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
+              // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
+              // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
+              indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
+              indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
+              indicatorsData.dmi15m.adxBuySignalVolume >= 1,
             // ||
             // (indicatorsData.dmi15m.adxSellSignalVolume >= 1 &&
             //   indicatorsData.dmi5m.adxSellSignalVolume >= 1 &&
@@ -2043,21 +2043,21 @@ import { binance } from './api/binance';
             short:
               botState.status === 'sell' &&
               botState.dealType === 'short' &&
-              indicatorsData.obv4h.buySignalCount >= 20 &&
-              indicatorsData.obv2h.buySignalCount >= 20 &&
-              indicatorsData.obv1h.buySignalCount >= 20 &&
-              indicatorsData.obv30m.buySignalCount >= 20,
-            // indicatorsData.rsi1h.signal === 'buy' &&
-            // indicatorsData.rsi30m.signal === 'buy' &&
-            // indicatorsData.rsi15m.signal === 'buy' &&
-            // indicatorsData.obv1h.buySignalCount >= 2 &&
-            // indicatorsData.obv30m.buySignalCount >= 8 &&
-            // indicatorsData.obv15m.buySignalCount >= 2 &&
-            // indicatorsData.obv5m.buySignalCount >= 4,
-            // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
-            // indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
-            // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
-            // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
+              // indicatorsData.obv4h.buySignalCount >= 20 &&
+              // indicatorsData.obv2h.buySignalCount >= 20 &&
+              // indicatorsData.obv1h.buySignalCount >= 20 &&
+              // indicatorsData.obv30m.buySignalCount >= 20,
+              // indicatorsData.rsi1h.signal === 'buy' &&
+              // indicatorsData.rsi30m.signal === 'buy' &&
+              // indicatorsData.rsi15m.signal === 'buy' &&
+              // indicatorsData.obv1h.buySignalCount >= 2 &&
+              // indicatorsData.obv30m.buySignalCount >= 8 &&
+              indicatorsData.obv15m.buySignalCount >= 4 &&
+              indicatorsData.obv5m.buySignalCount >= 4 &&
+              // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
+              indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
+              indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
+              indicatorsData.dmi15m.adxBuySignalVolume >= 1,
             // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
             // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
             // indicatorsData.dmi1h.adxBuySignalVolume >= 10 &&
@@ -2488,7 +2488,7 @@ import { binance } from './api/binance';
   };
 
   if (botState.testMode) {
-    await sendToRecipients(`INIT TEST MODE (REMOTE)
+    await sendToRecipients(`INIT TEST MODE (LOCAL)
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
   Strategies: STRATEGY 1(take prof)
@@ -2496,7 +2496,7 @@ import { binance } from './api/binance';
   Symbol: ${symbol.toUpperCase()}
   `);
   } else {
-    await sendToRecipients(`INIT REAL MODE (REMOTE)
+    await sendToRecipients(`INIT REAL MODE (LOCAL)
   Traiding market: ${botState.traidingMarket.toUpperCase()}
   Bot started working at: ${format(new Date(), DATE_FORMAT)}
   Revision N: ${revisionNumber}
@@ -2589,23 +2589,23 @@ import { binance } from './api/binance';
   //   2,
   //   2,
   // );
-  // getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
+  getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
   // getObvSignal(symbol, '1d', indicatorsData.obv1d, 2, 2, false);
-  getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2, false);
-  getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2, false);
-  getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60, false);
-  getObvSignal(symbol, '30m', indicatorsData.obv30m, 2, 2, false);
-  // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, true);
-  // getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60, false);
+  // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2, false);
+  // getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2, false);
+  // getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60, false);
+  // getObvSignal(symbol, '30m', indicatorsData.obv30m, 2, 2, false);
+  getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, true);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60, true);
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, false);
   // getATRSignal(symbol, '1m', 1, indicatorsData.atr.atr1m);
 
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, false);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
-  // getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, false);
-  // getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, false);
-  // getDMISignal(symbol, '15m', 2, indicatorsData.dmi15m, botState, true, false);
+  getDMISignal(symbol, '1m', 2, indicatorsData.dmi1m, botState, true, true);
+  getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, true);
+  getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, true);
   // getDMISignal(
   //   symbol,
   //   '15m',
@@ -3262,28 +3262,28 @@ import { binance } from './api/binance';
       //     indicatorsData.obv1d.sellSignalCount +
       //     ')',
       // );
-      console.log(
-        'OBV 4h: ' +
-          indicatorsData.obv4h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv4h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv4h.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 2h: ' +
-          indicatorsData.obv2h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv2h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv2h.sellSignalCount +
-          ')',
-      );
+      // console.log(
+      //   'OBV 4h: ' +
+      //     indicatorsData.obv4h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv4h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv4h.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 2h: ' +
+      //     indicatorsData.obv2h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv2h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv2h.sellSignalCount +
+      //     ')',
+      // );
       // console.log(
       //   'RSI 5m: ' +
       //     indicatorsData.rsi5m.rsiValue +
@@ -3293,39 +3293,39 @@ import { binance } from './api/binance';
       //     indicatorsData.rsi5m.downCount,
       // );
       // console.log('ATR 5m: ' + indicatorsData.atr.atr5m.prevAtr);
-      console.log(
-        'OBV 1h: ' +
-          indicatorsData.obv1h.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv1h.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv1h.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 30m: ' +
-          indicatorsData.obv30m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv30m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv30m.sellSignalCount +
-          ')',
-      );
-      console.log(
-        'OBV 15m: ' +
-          indicatorsData.obv15m.signal +
-          ' ' +
-          '(Buy Count: ' +
-          indicatorsData.obv15m.buySignalCount +
-          ' ' +
-          'Sell Count: ' +
-          indicatorsData.obv15m.sellSignalCount +
-          ')',
-      );
+      // console.log(
+      //   'OBV 1h: ' +
+      //     indicatorsData.obv1h.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv1h.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv1h.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 30m: ' +
+      //     indicatorsData.obv30m.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv30m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv30m.sellSignalCount +
+      //     ')',
+      // );
+      // console.log(
+      //   'OBV 15m: ' +
+      //     indicatorsData.obv15m.signal +
+      //     ' ' +
+      //     '(Buy Count: ' +
+      //     indicatorsData.obv15m.buySignalCount +
+      //     ' ' +
+      //     'Sell Count: ' +
+      //     indicatorsData.obv15m.sellSignalCount +
+      //     ')',
+      // );
       console.log(
         'OBV 5m: ' +
           indicatorsData.obv5m.signal +
@@ -3378,17 +3378,17 @@ import { binance } from './api/binance';
       //     'willPriceGrow: ' +
       //     indicatorsData.dmi1h.willPriceGrow,
       // );
-      // console.log(
-      //   'ADX 1m: ' +
-      //     '(UP: ' +
-      //     indicatorsData.dmi1m.adxBuySignalVolume +
-      //     ' DOWN: ' +
-      //     indicatorsData.dmi1m.adxSellSignalVolume +
-      //     ' ' +
-      //     'Current: ' +
-      //     indicatorsData.dmi1m.adx,
-      //   ')',
-      // );
+      console.log(
+        'ADX 1m: ' +
+          '(UP: ' +
+          indicatorsData.dmi1m.adxBuySignalVolume +
+          ' DOWN: ' +
+          indicatorsData.dmi1m.adxSellSignalVolume +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi1m.adx,
+        ')',
+      );
       // console.log(
       //   'ADX 1m_1: ' +
       //     '(UP: ' +
@@ -3411,28 +3411,28 @@ import { binance } from './api/binance';
       //     indicatorsData.dmi1m_2.adx,
       //   ')',
       // );
-      // console.log(
-      //   'ADX 5m: ' +
-      //     '(UP: ' +
-      //     indicatorsData.dmi5m.adxBuySignalVolume +
-      //     ' DOWN: ' +
-      //     indicatorsData.dmi5m.adxSellSignalVolume +
-      //     ' ' +
-      //     'Current: ' +
-      //     indicatorsData.dmi5m.adx,
-      //   ')',
-      // );
-      // console.log(
-      //   'ADX 15m: ' +
-      //     '(UP: ' +
-      //     indicatorsData.dmi15m.adxBuySignalVolume +
-      //     ' DOWN: ' +
-      //     indicatorsData.dmi15m.adxSellSignalVolume +
-      //     ' ' +
-      //     'Current: ' +
-      //     indicatorsData.dmi15m.adx,
-      //   ')',
-      // );
+      console.log(
+        'ADX 5m: ' +
+          '(UP: ' +
+          indicatorsData.dmi5m.adxBuySignalVolume +
+          ' DOWN: ' +
+          indicatorsData.dmi5m.adxSellSignalVolume +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi5m.adx,
+        ')',
+      );
+      console.log(
+        'ADX 15m: ' +
+          '(UP: ' +
+          indicatorsData.dmi15m.adxBuySignalVolume +
+          ' DOWN: ' +
+          indicatorsData.dmi15m.adxSellSignalVolume +
+          ' ' +
+          'Current: ' +
+          indicatorsData.dmi15m.adx,
+        ')',
+      );
       // console.log(
       //   'ADX 15m_1: ' +
       //     '(UP: ' +
