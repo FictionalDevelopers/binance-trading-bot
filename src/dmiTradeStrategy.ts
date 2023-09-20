@@ -2459,7 +2459,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   // );
   // getStochRSISignal(symbol, '15m', indicatorsData.stochRsi.stoch15m, 2.5, 2.5);
-  // getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
+  getHeikinAshiSignal(symbol, '1m', 4, 4, indicatorsData.haCandle.ha1mCandle);
   // getObvSignal(symbol, '4h', indicatorsData.obv4h, 2, 2, false);
   // getObvSignal(symbol, '2h', indicatorsData.obv2h, 2, 2, false);
   getObvSignal(symbol, '1h', indicatorsData.obv1h, 60, 60, false);
