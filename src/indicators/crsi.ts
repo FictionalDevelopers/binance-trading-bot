@@ -13,6 +13,8 @@ import {
   getLastClosedCandles,
 } from '../api/candles';
 import { cRSI as CRSI } from '@debut/indicators';
+import Binance from 'node-binance-api';
+const binance = new Binance();
 
 type CRSIStreamConfig = {
   symbol: string;
@@ -42,6 +44,8 @@ type CRSIStreamConfig = {
 //       // console.log(crsi.nextValue(Number(candle[0].closePrice)));
 //       // console.log(crsi.momentValue(Number(candle[0].closePrice)));
 //     });
+const closePrices = [];
+const connorsRSIValues = [];
 
 export const getCRSIStream = (config: CRSIStreamConfig, indicatorsData) =>
   getCandleStreamForInterval(config.symbol, config.interval)
@@ -87,6 +91,30 @@ export const getCRSIStream = (config: CRSIStreamConfig, indicatorsData) =>
       // console.log(crsi.momentValue(Number(candle[0].closePrice)));
     });
 
+export const getCRSIStream2 = (
+  config: CRSIStreamConfig,
+  // timeframe,
+  indicatorsData,
+) => {
+  const crsi = new CRSI(3, 2, 100);
+
+  binance.websockets.candlesticks(
+    config.symbol,
+    config.interval,
+    candlesticks => {
+      const closePrice = parseFloat(candlesticks.k.c);
+      closePrices.push(closePrice);
+
+      if (closePrices.length > 14) {
+        closePrices.shift(); // Удаляем самый старый элемент
+      }
+
+      const crsiValue = crsi.momentValue(closePrice);
+      indicatorsData.crsi = crsiValue;
+    },
+  );
+};
+
 //     .pipe(
 //   switchMap(_ => from(getCandlesList(config))),
 //   // eslint-disable-next-line new-cap
@@ -98,3 +126,14 @@ export const getCRSIStream = (config: CRSIStreamConfig, indicatorsData) =>
 //   pluck('result'),
 //   map(last),
 // );
+
+// binance.websockets.candlesticks(symbol, '1m', candlesticks => {
+//   const closePrice = parseFloat(candlesticks.k.c);
+//   closePrices.push(closePrice);
+//
+//   if (closePrices.length > period) {
+//     closePrices.shift(); // Удаляем самый старый элемент
+//   }
+//
+//   calculateConnorsRSI();
+// });

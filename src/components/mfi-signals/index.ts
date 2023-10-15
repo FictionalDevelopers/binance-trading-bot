@@ -7,6 +7,7 @@ export const getMfiSignal = (
   indicatorsData,
   buySignalCount,
   sellSignalCount,
+  doubleSignalConfirmation,
 ) => {
   getMfiStream({
     symbol: symbol,
@@ -41,8 +42,10 @@ export const getMfiSignal = (
         indicatorsData.sellSignalCount = 0;
         indicatorsData.buySignalCount++;
       } else if (indicatorsData.prevMfi === mfi) {
-        // indicatorsData.sellSignalCount = 0;
-        // indicatorsData.buySignalCount = 0;
+        if (doubleSignalConfirmation) {
+          indicatorsData.sellSignalCount = 0;
+          indicatorsData.buySignalCount = 0;
+        }
         // indicatorsData.signal = null;
       }
 

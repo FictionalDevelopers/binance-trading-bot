@@ -326,6 +326,9 @@ export const marketSellAction = async (
           OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
             indicatorsData.obv1m.sellSignalCount
           }
+          MFI 5m: BSC: ${indicatorsData.mfi.mfi5m.buySignalCount} SSC: ${
+            indicatorsData.mfi.mfi5m.sellSignalCount
+          }
           Avg Price Big: ${indicatorsData.avgPrices.avgBig.avgPrice} (${
             indicatorsData.avgPrices.avgBig.avgPriceDiff
           } %)
@@ -866,6 +869,9 @@ export const marketBuyAction = async (
         }
          OBV 1m: BSC: ${indicatorsData.obv1m.buySignalCount} SSC: ${
           indicatorsData.obv1m.sellSignalCount
+        }
+        MFI 5m: BSC: ${indicatorsData.mfi.mfi5m.buySignalCount} SSC: ${
+          indicatorsData.mfi.mfi5m.sellSignalCount
         } 
         Avg Price Big: ${indicatorsData.avgPrices.avgBig.avgPrice} (${
           indicatorsData.avgPrices.avgBig.avgPriceDiff
