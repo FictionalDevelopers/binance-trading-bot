@@ -100,7 +100,7 @@ import { binance } from './api/binance';
     order: null,
     prevPrice: 0,
     sellError: false,
-    status: 'buy',
+    status: 'pending',
     strategies: {
       scalper: { enabled: true, stopLoss: false },
       upTrend: { enabled: false, stopLoss: false },
@@ -1478,16 +1478,16 @@ import { binance } from './api/binance';
                 // indicatorsData.obv2h.buySignalCount >= 20 &&
                 // indicatorsData.obv1h.buySignalCount >= 20 &&
                 // indicatorsData.obv30m.buySignalCount >= 20,
-                indicatorsData.obv5m.buySignalCount >= 6 &&
-                // indicatorsData.obv15m.buySignalCount >= 2 &&
+                indicatorsData.obv5m.buySignalCount >= 2 &&
+                indicatorsData.obv15m.buySignalCount >= 2 &&
                 // indicatorsData.obv1m.buySignalCount >= 2 &&
                 // (indicatorsData.dmi1h.adxBuySignalVolume >= 1 ||
                 //   indicatorsData.dmi1h.adxSellSignalVolume >= 1) &&
                 // indicatorsData.dmi1h.adxBuySignalVolume >= 10 &&
                 // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
-                indicatorsData.dmi1m.adxBuySignalVolume >= 3,
-          // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
-          // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
+                indicatorsData.dmi1m.adxBuySignalVolume >= 2 &&
+                indicatorsData.dmi5m.adxBuySignalVolume >= 2 &&
+                indicatorsData.dmi15m.adxBuySignalVolume >= 2,
           // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
           // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
           // indicatorsData.dmi4h.adxBuySignalVolume >= 5,
@@ -1645,16 +1645,16 @@ import { binance } from './api/binance';
                 // indicatorsData.obv30m.sellSignalCount >= 2 &&
                 // indicatorsData.obv1h.sellSignalCount >= 2 &&
                 // indicatorsData.obv30m.sellSignalCount >= 2 &&
-                // indicatorsData.obv15m.sellSignalCount >= 2 &&
-                indicatorsData.obv5m.sellSignalCount >= 6 &&
+                indicatorsData.obv15m.sellSignalCount >= 2 &&
+                indicatorsData.obv5m.sellSignalCount >= 2 &&
                 // indicatorsData.avgPrices.avgBig.avgPriceDownSignalCount >= 2 &&
                 // indicatorsData.avgPrices.avgSmall.avgPriceDownSignalCount >=
                 //   2 &&
                 // indicatorsData.obv1m.sellSignalCount >= 2 &&
                 // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
-                indicatorsData.dmi1m.adxBuySignalVolume >= 3,
-          // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
-          // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
+                indicatorsData.dmi1m.adxBuySignalVolume >= 2 &&
+                indicatorsData.dmi5m.adxBuySignalVolume >= 2 &&
+                indicatorsData.dmi15m.adxBuySignalVolume >= 2,
           // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
           // (indicatorsData.dmi1h.adxBuySignalVolume >= 1 ||
           //   indicatorsData.dmi1h.adxSellSignalVolume >= 1) &&
@@ -2616,7 +2616,9 @@ import { binance } from './api/binance';
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, false);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
-  getDMISignal(symbol, '1m', 3, indicatorsData.dmi1m, botState, true, true);
+  getDMISignal(symbol, '1m', 3, indicatorsData.dmi1m, botState, true, false);
+  getDMISignal(symbol, '5m', 3, indicatorsData.dmi5m, botState, true, false);
+  getDMISignal(symbol, '15m', 3, indicatorsData.dmi15m, botState, true, false);
   // getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, false);
   // getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, false);
   // getDMISignal(

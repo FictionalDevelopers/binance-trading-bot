@@ -1739,14 +1739,14 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               // indicatorsData.rsi15m.signal === 'sell' &&
               // indicatorsData.obv1h.sellSignalCount >= 2 &&
               // indicatorsData.obv30m.sellSignalCount >= 8 &&
-              indicatorsData.obv15m.sellSignalCount >= 2 &&
-              indicatorsData.obv5m.sellSignalCount >= 2,
-            // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
-            // indicatorsData.dmi1h.adxBuySignalVolume >= 10 &&
-            // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
-            // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
-            // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
-            // indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
+              // indicatorsData.obv15m.sellSignalCount >= 2 &&
+              indicatorsData.obv5m.sellSignalCount >= 2 &&
+              // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
+              // indicatorsData.dmi1h.adxBuySignalVolume >= 10 &&
+              // indicatorsData.dmi30m.adxBuySignalVolume >= 1 &&
+              // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
+              // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
+              indicatorsData.dmi1m.adxBuySignalVolume >= 1,
             // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
             // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
             // ||
@@ -1935,10 +1935,10 @@ import { getStochRSISignal } from './components/stochRSI-signals';
               // indicatorsData.rsi15m.signal === 'buy' &&
               // indicatorsData.obv1h.buySignalCount >= 2 &&
               // indicatorsData.obv30m.buySignalCount >= 8 &&
-              indicatorsData.obv15m.buySignalCount >= 2 &&
-              indicatorsData.obv5m.buySignalCount >= 2,
-            // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
-            // indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
+              // indicatorsData.obv15m.buySignalCount >= 2 &&
+              indicatorsData.obv5m.buySignalCount >= 2 &&
+              // indicatorsData.dmi4h.adxBuySignalVolume >= 3 &&
+              indicatorsData.dmi1m.adxBuySignalVolume >= 1,
             // indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
             // indicatorsData.dmi15m.adxBuySignalVolume >= 1,
             // indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
