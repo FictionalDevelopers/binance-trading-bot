@@ -382,14 +382,14 @@ export const marketSellAction = async (
         ' ' +
         'Current: ' +
         indicatorsData.dmi15m.adx}
-        ADX 4h: ${'(UP: ' +
-          indicatorsData.dmi4h.adxBuySignalVolume +
+        ADX 30m: ${'(UP: ' +
+          indicatorsData.dmi30m.adxBuySignalVolume +
           ' ' +
           'DOWN: ' +
-          indicatorsData.dmi4h.adxSellSignalVolume +
+          indicatorsData.dmi30m.adxSellSignalVolume +
           ' ' +
           'Current: ' +
-          indicatorsData.dmi4h.adx}
+          indicatorsData.dmi30m.adx}
           ADX 1h: ${'(UP: ' +
             indicatorsData.dmi1h.adxBuySignalVolume +
             ' ' +
@@ -398,14 +398,14 @@ export const marketSellAction = async (
             ' ' +
             'Current: ' +
             indicatorsData.dmi1h.adx}
-          ADX 30m: ${'(UP: ' +
-            indicatorsData.dmi30m.adxBuySignalVolume +
+          ADX 4h: ${'(UP: ' +
+            indicatorsData.dmi4h.adxBuySignalVolume +
             ' ' +
             'DOWN: ' +
-            indicatorsData.dmi30m.adxSellSignalVolume +
+            indicatorsData.dmi4h.adxSellSignalVolume +
             ' ' +
             'Current: ' +
-            indicatorsData.dmi30m.adx}
+            indicatorsData.dmi4h.adx}
          
           Current profit: ${
             botState.dealType === 'long'
@@ -926,14 +926,14 @@ export const marketBuyAction = async (
         ' ' +
         'Current: ' +
         indicatorsData.dmi15m.adx}
-      ADX 4h: ${'(UP: ' +
-        indicatorsData.dmi4h.adxBuySignalVolume +
+      ADX 30m: ${'(UP: ' +
+        indicatorsData.dmi30m.adxBuySignalVolume +
         ' ' +
         'DOWN: ' +
-        indicatorsData.dmi4h.adxSellSignalVolume +
+        indicatorsData.dmi30m.adxSellSignalVolume +
         ' ' +
         'Current: ' +
-        indicatorsData.dmi4h.adx}
+        indicatorsData.dmi30m.adx}
           ADX 1h: ${'(UP: ' +
             indicatorsData.dmi1h.adxBuySignalVolume +
             ' ' +
@@ -942,14 +942,14 @@ export const marketBuyAction = async (
             ' ' +
             'Current: ' +
             indicatorsData.dmi1h.adx}
-          ADX 30m: ${'(UP: ' +
-            indicatorsData.dmi30m.adxBuySignalVolume +
+          ADX 4h: ${'(UP: ' +
+            indicatorsData.dmi4h.adxBuySignalVolume +
             ' ' +
             'DOWN: ' +
-            indicatorsData.dmi30m.adxSellSignalVolume +
+            indicatorsData.dmi4h.adxSellSignalVolume +
             ' ' +
             'Current: ' +
-            indicatorsData.dmi30m.adx}
+            indicatorsData.dmi4h.adx}
                         `);
       }
       console.log(`BUY
