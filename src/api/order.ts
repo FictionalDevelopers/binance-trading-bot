@@ -961,6 +961,12 @@ export const marketBuyAction = async (
                              Price: ${botState.buyPrice}
                              Date: ${format(new Date(), DATE_FORMAT)}
               `);
+      // indicatorsData.dmi1m.adxSellSignalVolume = 0;
+      // indicatorsData.dmi5m.adxSellSignalVolume = 0;
+      // indicatorsData.dmi15m.adxSellSignalVolume = 0;
+      // indicatorsData.dmi30m.adxSellSignalVolume = 0;
+      // indicatorsData.dmi1h.adxSellSignalVolume = 0;
+      // indicatorsData.dmi4h.adxSellSignalVolume = 0;
       botState.confirmation = false;
       botState.updateState('dealType', dealType);
       botState.updateState('status', 'sell');
