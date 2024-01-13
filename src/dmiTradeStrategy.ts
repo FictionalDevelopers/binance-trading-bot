@@ -2523,7 +2523,7 @@ import { getStochRSISignal } from './components/stochRSI-signals';
   //   2,
   //   2,
   // );
-  getObvSignal(symbol, '1m', indicatorsData.obv1h, 60, 60, true);
+  getObvSignal(symbol, '5m', indicatorsData.obv1h, 60, 60, true);
   getDMISignal(symbol, '1m', 2, indicatorsData.dmi1m, botState, true, true);
   getDMISignal(symbol, '1m', 3, indicatorsData.dmi5m, botState, true, true);
   getDMISignal(symbol, '1m', 4, indicatorsData.dmi15m, botState, true, true);

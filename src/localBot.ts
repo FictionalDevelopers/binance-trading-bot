@@ -2678,7 +2678,7 @@ import { binance } from './api/binance';
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, false);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
-  getObvSignal(symbol, '1m', indicatorsData.obv1h, 60, 60, true);
+  getObvSignal(symbol, '5m', indicatorsData.obv1h, 60, 60, true);
   getDMISignal(symbol, '1m', 2, indicatorsData.dmi1m, botState, true, true);
   getDMISignal(symbol, '1m', 3, indicatorsData.dmi5m, botState, true, true);
   getDMISignal(symbol, '1m', 5, indicatorsData.dmi15m, botState, true, true);
