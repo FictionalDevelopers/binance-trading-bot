@@ -1470,6 +1470,7 @@ import { binance } from './api/binance';
                 // indicatorsData.rsi1m.signal === 'buy' &&
                 // indicatorsData.rsi30m.signal === 'buy' &&
                 // indicatorsData.rsi15m.signal === 'buy' &&
+                indicatorsData.obv15m.buySignalCount >= 4 &&
                 indicatorsData.obv1h.buySignalCount >= 4 &&
                 // indicatorsData.obv30m.buySignalCount >= 2 &&
                 // indicatorsData.avgPrices.avgBig.avgPriceUpSignalCount >= 2 &&
@@ -1654,6 +1655,7 @@ import { binance } from './api/binance';
                 // indicatorsData.rsi15m.signal === 'sell' &&
                 // indicatorsData.obv1h.sellSignalCount >= 2 &&
                 // indicatorsData.obv30m.sellSignalCount >= 2 &&
+                indicatorsData.obv15m.sellSignalCount >= 4 &&
                 indicatorsData.obv1h.sellSignalCount >= 4 &&
                 // indicatorsData.obv1h.sellSignalCount >= 2 &&
                 // indicatorsData.obv15m.sellSignalCount >= 2 &&
@@ -1882,14 +1884,14 @@ import { binance } from './api/binance';
               // indicatorsData.obv1h.sellSignalCount >= 2 &&
               // indicatorsData.obv30m.sellSignalCount >= 8 &&
               // indicatorsData.obv15m.sellSignalCount >= 2 &&
-              ((indicatorsData.obv1h.sellSignalCount >= 4 &&
+              ((indicatorsData.obv15m.sellSignalCount >= 4 &&
                 indicatorsData.dmi1m.adxSellSignalVolume >= 1 &&
                 indicatorsData.dmi5m.adxSellSignalVolume >= 1 &&
                 indicatorsData.dmi15m.adxSellSignalVolume >= 1 &&
                 indicatorsData.dmi30m.adxSellSignalVolume >= 1 &&
                 indicatorsData.dmi1h.adxSellSignalVolume >= 1 &&
                 indicatorsData.dmi4h.adxSellSignalVolume >= 1) ||
-                (indicatorsData.obv1h.sellSignalCount >= 4 &&
+                (indicatorsData.obv15m.sellSignalCount >= 4 &&
                   indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
                   indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
                   indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
@@ -2098,14 +2100,14 @@ import { binance } from './api/binance';
               // indicatorsData.obv1h.buySignalCount >= 2 &&
               // indicatorsData.obv30m.buySignalCount >= 8 &&
               // indicatorsData.obv15m.buySignalCount >= 2 &&
-              ((indicatorsData.obv1h.buySignalCount >= 4 &&
+              ((indicatorsData.obv15m.buySignalCount >= 4 &&
                 indicatorsData.dmi1m.adxSellSignalVolume >= 1 &&
                 indicatorsData.dmi5m.adxSellSignalVolume >= 1 &&
                 indicatorsData.dmi15m.adxSellSignalVolume >= 1 &&
                 indicatorsData.dmi30m.adxSellSignalVolume >= 1 &&
                 indicatorsData.dmi1h.adxSellSignalVolume >= 1 &&
                 indicatorsData.dmi4h.adxSellSignalVolume >= 1) ||
-                (indicatorsData.obv1h.buySignalCount >= 4 &&
+                (indicatorsData.obv15m.buySignalCount >= 4 &&
                   indicatorsData.dmi1m.adxBuySignalVolume >= 1 &&
                   indicatorsData.dmi5m.adxBuySignalVolume >= 1 &&
                   indicatorsData.dmi15m.adxBuySignalVolume >= 1 &&
@@ -2678,13 +2680,14 @@ import { binance } from './api/binance';
   // getObvSignal(symbol, '5m', indicatorsData.obv5m, 60, 60, false);
   // getDMISignal(symbol, '1h', indicatorsData.dmi1h);
   // getDMISignal(symbol, '15m', indicatorsData.dmi15m);
-  getObvSignal(symbol, '5m', indicatorsData.obv1h, 60, 60, true);
-  getDMISignal(symbol, '1m', 2, indicatorsData.dmi1m, botState, true, true);
-  getDMISignal(symbol, '1m', 3, indicatorsData.dmi5m, botState, true, true);
-  getDMISignal(symbol, '1m', 5, indicatorsData.dmi15m, botState, true, true);
-  getDMISignal(symbol, '1m', 8, indicatorsData.dmi30m, botState, true, true);
-  getDMISignal(symbol, '1m', 13, indicatorsData.dmi1h, botState, true, true);
-  getDMISignal(symbol, '1m', 21, indicatorsData.dmi4h, botState, true, true);
+  getObvSignal(symbol, '15m', indicatorsData.obv15m, 60, 60, true);
+  getObvSignal(symbol, '30m', indicatorsData.obv1h, 60, 60, true);
+  getDMISignal(symbol, '30m', 2, indicatorsData.dmi1m, botState, true, true);
+  getDMISignal(symbol, '30m', 3, indicatorsData.dmi5m, botState, true, true);
+  getDMISignal(symbol, '30m', 5, indicatorsData.dmi15m, botState, true, true);
+  getDMISignal(symbol, '30m', 8, indicatorsData.dmi30m, botState, true, true);
+  getDMISignal(symbol, '30m', 13, indicatorsData.dmi1h, botState, true, true);
+  getDMISignal(symbol, '30m', 21, indicatorsData.dmi4h, botState, true, true);
   // getDMISignal(symbol, '1m', 4, indicatorsData.dmi5m, botState, true, false);
   // getDMISignal(symbol, '1m', 8, indicatorsData.dmi15m, botState, true, false);
   // getDMISignal(
