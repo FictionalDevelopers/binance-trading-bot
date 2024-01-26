@@ -3,7 +3,13 @@ import { getForceIndexStream } from '../../indicators/forceIndex';
 
 export const runEFIInterval = efi => {};
 
-export const getForceIndexSignal = (symbol, timeFrame, period, efiData) => {
+export const getForceIndexSignal = (
+  symbol,
+  timeFrame,
+  period,
+  efiData,
+  doubleSignalConfirmation,
+) => {
   getForceIndexStream({
     symbol: symbol,
     interval: timeFrame,
@@ -19,6 +25,11 @@ export const getForceIndexSignal = (symbol, timeFrame, period, efiData) => {
     } else if (efiData.prevEfi > efi) {
       efiData.efiSellSignalCount++;
       efiData.efiBuySignalCount = 0;
+    } else {
+      if (doubleSignalConfirmation) {
+        efiData.efiSellSignalCount = 0;
+        efiData.efiBuySignalCount = 0;
+      }
     }
     efiData.prevEfi = efi;
   });

@@ -19,8 +19,8 @@ export function getStochRsiStream(
         stochasticRSI(
           1,
           1,
-          2,
-          2,
+          7,
+          7,
           'close',
           'binance',
           INDICATORS_LIST_SYMBOLS[config.symbol],

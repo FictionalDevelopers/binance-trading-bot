@@ -76,6 +76,9 @@ export const getStochRSISignal = (
     } else if (Number(stochRsi.d) === 0) {
       stochRsiData.sellSignalCount++;
       stochRsiData.buySignalCount = 0;
+    } else {
+      stochRsiData.buySignalCount = 0;
+      stochRsiData.sellSignalCount = 0;
     }
     stochRsiData.data = stochRsi;
 
